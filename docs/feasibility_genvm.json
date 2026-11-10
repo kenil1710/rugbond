@@ -236,6 +236,124 @@
     "delegated": true
    },
    "identical": true
+  },
+  {
+   "key": "eth-05:check:0",
+   "id": "eth-05",
+   "kind": "check",
+   "tx": "0xd8cf91f401e7a37ffe1a8d8f3073be6f6741903a8ca1f3dfad28b3280ee195a5",
+   "status": "ACCEPTED",
+   "exec": "SUCCESS",
+   "range": [
+    25702574,
+    25782573
+   ],
+   "genvm": {
+    "b": 25702677,
+    "logs": 1,
+    "probes": [
+     [
+      25702574,
+      "32087380697090250342426192"
+     ],
+     [
+      25702677,
+      "0"
+     ]
+    ],
+    "rug": 25702677
+   },
+   "identical": true,
+   "attempts": 1,
+   "mac_reason": "",
+   "sha_genvm": 1316
+  },
+  {
+   "key": "eth-05:holder:0xc25704958d0e5dade6f5ab775a3e10dbab0f0426",
+   "id": "eth-05",
+   "kind": "holder",
+   "tx": "0x3c099618c7a753ac8e121e4c6899e9611717e1ee85c191dba4f9c6717c4b8622",
+   "status": "ACCEPTED",
+   "holder": "0xc25704958d0e5dade6f5ab775a3e10dbab0f0426",
+   "genvm": {
+    "balance": "31579983793049458453098433498278",
+    "code": false,
+    "delegated": false
+   },
+   "identical": true
+  },
+  {
+   "key": "eth-05:holder:0xfe117c4e15dfb6e7e612da3041d5d79d526fc79b",
+   "id": "eth-05",
+   "kind": "holder",
+   "tx": "0x1053f032808ebbe4c12819d43b69fc88d20b7137c5cb938926cd123fb78ae508",
+   "status": "ACCEPTED",
+   "holder": "0xfe117c4e15dfb6e7e612da3041d5d79d526fc79b",
+   "genvm": {
+    "balance": "29073985832272767736878863318056",
+    "code": false,
+    "delegated": false
+   },
+   "identical": true
+  },
+  {
+   "key": "eth-06:check:0",
+   "id": "eth-06",
+   "kind": "check",
+   "tx": "0xbebcf9d5b159d0ab9cbb70a9fd2d4546a4b133834f410b7c632cf5db9eebf146",
+   "status": "ACCEPTED",
+   "exec": "SUCCESS",
+   "range": [
+    25712755,
+    25792754
+   ],
+   "genvm": {
+    "b": 25712799,
+    "logs": 1,
+    "probes": [
+     [
+      25712755,
+      "30615355624261495747763233"
+     ],
+     [
+      25712799,
+      "0"
+     ]
+    ],
+    "rug": 25712799
+   },
+   "identical": true,
+   "attempts": 1,
+   "mac_reason": "",
+   "sha_genvm": 1316
+  },
+  {
+   "key": "eth-06:holder:0xb1bb546a06592e6611af7996e8ffaa51261fb410",
+   "id": "eth-06",
+   "kind": "holder",
+   "tx": "0xf9d32636c528e74af286acc0a04cbd534bfebce77ceb760465c083b412a4ae0e",
+   "status": "ACCEPTED",
+   "holder": "0xb1bb546a06592e6611af7996e8ffaa51261fb410",
+   "genvm": {
+    "balance": "24588417466263216813876313848914",
+    "code": false,
+    "delegated": false
+   },
+   "identical": true
+  },
+  {
+   "key": "eth-06:holder:0x3824f68659a6228576564157285493cf9bc00cf4",
+   "id": "eth-06",
+   "kind": "holder",
+   "tx": "0x7e1ae3c2bd6877ea158871123887985d5c075f74596c129f1945f75894cf9a8e",
+   "status": "ACCEPTED",
+   "holder": "0x3824f68659a6228576564157285493cf9bc00cf4",
+   "genvm": {
+    "balance": "23132838346259809604368547153971",
+    "code": false,
+    "delegated": false
+   },
+   "identical": true
   }
  ]
 }
