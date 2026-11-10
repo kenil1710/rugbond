@@ -18,8 +18,9 @@ import typing
 # - is never read.
 #
 #   NO_BOND            no such bond, another token, a VOID bond (its pair is not
-#                      a pool of the token), or a replay (its start block is older
-#                      than the bond: a promise made after the fact)
+#                      a pool of the token), or a replay that did not rug (its
+#                      start block is older than the bond: a promise made after
+#                      the fact proves nothing favorable)
 #   ACTIVE_HELD_SO_FAR ACTIVE, at least one agreed read, the last check not
 #                      PENDING, and the last block read is at most stale_s old
 #   HELD_FINAL         the promise held to its end time (HELD or RETURNED)
@@ -334,13 +335,6 @@ def gate_state(raw: typing.Any, token: str, now: int, stale_s: int) -> dict:
         out["state"] = G_NO_BOND
         out["why"] = "the bond's pair is not a pool of the token"
         return out
-    if v.get("replay") is True:
-        out["state"] = G_NO_BOND
-        out["why"] = "replay: the start block is older than the bond"
-        return out
-    if st in ("HELD", "RETURNED"):
-        out["state"] = G_HELD
-        return out
     if st == "CLOSED":
         out["state"] = G_CLOSED
         return out
@@ -349,6 +343,14 @@ def gate_state(raw: typing.Any, token: str, now: int, stale_s: int) -> dict:
             out["state"] = G_CLOSED
         else:
             out["state"] = G_PAYING
+        return out
+    if v.get("replay") is True:
+        # a promise made after the fact proves nothing favorable (a rug is still reported above)
+        out["state"] = G_NO_BOND
+        out["why"] = "replay: the start block is older than the bond"
+        return out
+    if st in ("HELD", "RETURNED"):
+        out["state"] = G_HELD
         return out
     if st != "ACTIVE":
         out["why"] = "status " + st
