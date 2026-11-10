@@ -19,3 +19,6 @@ state/
 .venv-gl/
 e2e/node_modules/
 *.tmp.mjs
+demo/out/
+demo/cache/
+.venv-gl/
