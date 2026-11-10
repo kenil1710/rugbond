@@ -818,7 +818,7 @@
    "bond_id": 17,
    "cursor": 0,
    "n_checks_before": 2,
-   "status": "SUBMITTED",
+   "status": "ACCEPTED",
    "attempts": 0,
    "first_seen_at": 1794340920,
    "tx": "0x83877b74c54d342380d307b6b85cb0f1763e6af66cee6425b77276a3b3638885",
@@ -887,7 +887,7 @@
  "contract": "RugBond",
  "address": "0x24ff68A1adc70B9EA9eEE518a5f912ce65eb2CAE",
  "keeper": "0xfEC989fC1176c5524C3b20ef2c09bca724d6BD4e",
- "saved_at": "2026-11-10T20:02:35.902Z",
+ "saved_at": "2026-11-10T20:03:06.882Z",
  "totals": {
   "actions": 34,
   "done": 34,
