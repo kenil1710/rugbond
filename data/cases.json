@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-10T11:12:25.870Z",
+ "generated_at": "2026-11-10T11:42:07.085Z",
  "cases": [
   {
    "id": "eth-01",
@@ -347,6 +347,74 @@
    "min_lp": "43829168369933737541503674",
    "start_ts": 1786102811,
    "end_time": 1786707611,
+   "excluded": [
+    "0x7a250d5630b4cf539739df2c5dacb4c659f2488d",
+    "0x66a9893cc07d91d95644aedd05d03f95e1dba8af",
+    "0x3fc91a3afd70395cd496c647d5a6cc9d4b2b7fad",
+    "0xd9e1ce17f2641f24ae83637ab66a2cca9c378b9f"
+   ]
+  },
+  {
+   "id": "eth-17",
+   "chain": "ethereum",
+   "kind": "uniswap-v2",
+   "token": "0xff8691574741b015c2ec31f8752cf22ae611bc38",
+   "pair": "0x5d5434dfbe84a3416fe0834e91ee558263855ab6",
+   "team": "0x1c96e29d0102845d886f841f5bafb22ec779eb72",
+   "lp_holders": [
+    "0x1c96e29d0102845d886f841f5bafb22ec779eb72"
+   ],
+   "start_block": 25502829,
+   "expect": "HELD",
+   "min_lp": "267192814274634761",
+   "start_ts": 1783694207,
+   "end_time": 1784299007,
+   "excluded": [
+    "0x7a250d5630b4cf539739df2c5dacb4c659f2488d",
+    "0x66a9893cc07d91d95644aedd05d03f95e1dba8af",
+    "0x3fc91a3afd70395cd496c647d5a6cc9d4b2b7fad",
+    "0xd9e1ce17f2641f24ae83637ab66a2cca9c378b9f"
+   ]
+  },
+  {
+   "id": "eth-18",
+   "chain": "ethereum",
+   "kind": "uniswap-v2",
+   "token": "0xbeec04b78c6795bdb7f92e3f9789591081cbb609",
+   "pair": "0x86bc7b7b0f2c030dc4b7a67b3d83440ca6178976",
+   "team": "0x9e4499f83a2dcd768fbb29fc55a7bda1e44d00cc",
+   "lp_holders": [
+    "0x000000000000000000000000000000000000dead"
+   ],
+   "start_block": 25507197,
+   "expect": "HELD",
+   "locker": "LP burned to 0x000000000000000000000000000000000000dead",
+   "min_lp": "999999999999999000",
+   "start_ts": 1783746695,
+   "end_time": 1784351495,
+   "excluded": [
+    "0x7a250d5630b4cf539739df2c5dacb4c659f2488d",
+    "0x66a9893cc07d91d95644aedd05d03f95e1dba8af",
+    "0x3fc91a3afd70395cd496c647d5a6cc9d4b2b7fad",
+    "0xd9e1ce17f2641f24ae83637ab66a2cca9c378b9f"
+   ]
+  },
+  {
+   "id": "eth-19",
+   "chain": "ethereum",
+   "kind": "uniswap-v2",
+   "token": "0x083428b98e3c274ab1194db7ea076d47998ee0c5",
+   "pair": "0xd2ed05f906b2c9325b6f74a667fc1c6454031b2b",
+   "team": "0xfee4b3dc949032f762252f8cc10515d513ce1c7e",
+   "lp_holders": [
+    "0x000000000000000000000000000000000000dead"
+   ],
+   "start_block": 25507737,
+   "expect": "HELD",
+   "locker": "LP burned to 0x000000000000000000000000000000000000dead",
+   "min_lp": "999999999999999000",
+   "start_ts": 1783753187,
+   "end_time": 1784357987,
    "excluded": [
     "0x7a250d5630b4cf539739df2c5dacb4c659f2488d",
     "0x66a9893cc07d91d95644aedd05d03f95e1dba8af",

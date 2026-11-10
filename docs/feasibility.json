@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-10T11:30:48.399Z",
+ "generated_at": "2026-11-10T11:42:07.151Z",
  "rpcs": {
   "ethereum": [
    "https://gateway.tenderly.co/public/mainnet",
@@ -2089,6 +2089,144 @@
    "seconds": 11.328,
    "end_block": 25782848,
    "end_ts": 1787066627
+  },
+  {
+   "id": "eth-17",
+   "chain": "ethereum",
+   "kind": "uniswap-v2",
+   "token": "0xff8691574741b015c2ec31f8752cf22ae611bc38",
+   "pair": "0x5d5434dfbe84a3416fe0834e91ee558263855ab6",
+   "team": "0x1c96e29d0102845d886f841f5bafb22ec779eb72",
+   "lp_holders": [
+    "0x1c96e29d0102845d886f841f5bafb22ec779eb72"
+   ],
+   "min_lp": "267192814274634761",
+   "start_block": 25502829,
+   "start_ts": 1783694207,
+   "end_time": 1784299007,
+   "expect": "HELD",
+   "verdict": "HELD",
+   "reason": "",
+   "checks": [
+    {
+     "range": [
+      25502829,
+      25582828
+     ],
+     "verdict": "HELD",
+     "b": 25582828,
+     "logs": 0,
+     "probes": [
+      [
+       25502829,
+       "267192814274634761"
+      ]
+     ],
+     "end_ts": 1784657711
+    }
+   ],
+   "pair_check": {
+    "token0": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+    "token1": "0xff8691574741b015c2ec31f8752cf22ae611bc38",
+    "factory": "0x5c69bee701ef814a2b6a3edd4b1652cb9cc5aa6f",
+    "ok": true,
+    "why": ""
+   },
+   "seconds": 11.126,
+   "end_block": 25582828,
+   "end_ts": 1784657711
+  },
+  {
+   "id": "eth-18",
+   "chain": "ethereum",
+   "kind": "uniswap-v2",
+   "token": "0xbeec04b78c6795bdb7f92e3f9789591081cbb609",
+   "pair": "0x86bc7b7b0f2c030dc4b7a67b3d83440ca6178976",
+   "team": "0x9e4499f83a2dcd768fbb29fc55a7bda1e44d00cc",
+   "lp_holders": [
+    "0x000000000000000000000000000000000000dead"
+   ],
+   "min_lp": "999999999999999000",
+   "start_block": 25507197,
+   "start_ts": 1783746695,
+   "end_time": 1784351495,
+   "expect": "HELD",
+   "verdict": "HELD",
+   "reason": "",
+   "checks": [
+    {
+     "range": [
+      25507197,
+      25587196
+     ],
+     "verdict": "HELD",
+     "b": 25587196,
+     "logs": 0,
+     "probes": [
+      [
+       25507197,
+       "999999999999999000"
+      ]
+     ],
+     "end_ts": 1784710319
+    }
+   ],
+   "pair_check": {
+    "token0": "0xbeec04b78c6795bdb7f92e3f9789591081cbb609",
+    "token1": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+    "factory": "0x5c69bee701ef814a2b6a3edd4b1652cb9cc5aa6f",
+    "ok": true,
+    "why": ""
+   },
+   "seconds": 11.798,
+   "end_block": 25587196,
+   "end_ts": 1784710319
+  },
+  {
+   "id": "eth-19",
+   "chain": "ethereum",
+   "kind": "uniswap-v2",
+   "token": "0x083428b98e3c274ab1194db7ea076d47998ee0c5",
+   "pair": "0xd2ed05f906b2c9325b6f74a667fc1c6454031b2b",
+   "team": "0xfee4b3dc949032f762252f8cc10515d513ce1c7e",
+   "lp_holders": [
+    "0x000000000000000000000000000000000000dead"
+   ],
+   "min_lp": "999999999999999000",
+   "start_block": 25507737,
+   "start_ts": 1783753187,
+   "end_time": 1784357987,
+   "expect": "HELD",
+   "verdict": "HELD",
+   "reason": "",
+   "checks": [
+    {
+     "range": [
+      25507737,
+      25587736
+     ],
+     "verdict": "HELD",
+     "b": 25587736,
+     "logs": 0,
+     "probes": [
+      [
+       25507737,
+       "999999999999999000"
+      ]
+     ],
+     "end_ts": 1784716835
+    }
+   ],
+   "pair_check": {
+    "token0": "0x083428b98e3c274ab1194db7ea076d47998ee0c5",
+    "token1": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+    "factory": "0x5c69bee701ef814a2b6a3edd4b1652cb9cc5aa6f",
+    "ok": true,
+    "why": ""
+   },
+   "seconds": 11.538,
+   "end_block": 25587736,
+   "end_ts": 1784716835
   }
  ]
 }

@@ -211,11 +211,11 @@
   "pair": "0x86bc7b7b0f2c030dc4b7a67b3d83440ca6178976",
   "team": "0x9e4499f83a2dcd768fbb29fc55a7bda1e44d00cc",
   "lp_holders": [
-   "0x0000000000000000000000000000000000000000"
+   "0x000000000000000000000000000000000000dead"
   ],
   "start_block": 25507197,
   "expect": "HELD",
-  "locker": "LP burned to the zero address"
+  "locker": "LP burned to 0x000000000000000000000000000000000000dead"
  },
  {
   "chain": "ethereum",
@@ -224,10 +224,10 @@
   "pair": "0xd2ed05f906b2c9325b6f74a667fc1c6454031b2b",
   "team": "0xfee4b3dc949032f762252f8cc10515d513ce1c7e",
   "lp_holders": [
-   "0x0000000000000000000000000000000000000000"
+   "0x000000000000000000000000000000000000dead"
   ],
   "start_block": 25507737,
   "expect": "HELD",
-  "locker": "LP burned to the zero address"
+  "locker": "LP burned to 0x000000000000000000000000000000000000dead"
  }
 ]
