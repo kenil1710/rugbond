@@ -1,0 +1,10 @@
+{
+  "name": "rugbond-tests",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0",
+  "description": "Probe, deploy, seed, keeper and on-chain verification scripts for RugBond on GenLayer Studio Dev",
+  "dependencies": {
+    "genlayer-js": "2.0.0-rc.1"
+  }
+}
