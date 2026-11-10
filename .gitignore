@@ -18,3 +18,4 @@ frontend/.vercel/
 state/
 .venv-gl/
 e2e/node_modules/
+*.tmp.mjs

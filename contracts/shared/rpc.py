@@ -191,6 +191,7 @@ def read_window(url: str, chain: str, t: dict, a: int, b: int) -> dict:
               and the token snapshot at R-1 (totalSupply and every excluded
               address's balance), or None
       end_ts  the timestamp of b (of R when there is a rug)
+      start_ts the start block's timestamp on the first check (else 0)
     Any transport or JSON-RPC failure raises ReadFailed."""
     ch = CHAINS[chain]
     per = ch[4]
@@ -261,7 +262,10 @@ def read_window(url: str, chain: str, t: dict, a: int, b: int) -> dict:
             if s < floor:
                 rug_at = blk
                 break
-    out = {"a": a, "b": b, "logs": logs, "probes": probes, "rug": None, "end_ts": 0}
+    out = {"a": a, "b": b, "logs": logs, "probes": probes, "rug": None, "end_ts": 0, "start_ts": 0}
+    if a == start:
+        hs = rpc_send(url, [["eth_getBlockByNumber", [hex(start), False]]], per)
+        out["start_ts"] = _ts(hs[0], start)
     if rug_at < 0:
         hb = rpc_send(url, [["eth_getBlockByNumber", [hex(b), False]]], per)
         out["end_ts"] = _ts(hb[0], b)

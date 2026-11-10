@@ -1,0 +1,195 @@
+[
+ {
+  "chain": "ethereum",
+  "kind": "uniswap-v2",
+  "token": "0xd4f45dd47dd476378ee1b06f6a57be4ebc0f7199",
+  "pair": "0x11e50df8622233ea3bf325e4151f70dc1bf9b4d3",
+  "team": "0x966fff671c53bbe0ab04e4143aa0a3de83e81a41",
+  "lp_holders": [
+   "0x966fff671c53bbe0ab04e4143aa0a3de83e81a41"
+  ],
+  "start_block": 25710254,
+  "expect": "RUGGED"
+ },
+ {
+  "chain": "ethereum",
+  "kind": "uniswap-v2",
+  "token": "0x89d3a86b3dd25a8d58b8e390abb2a805d0e88dff",
+  "pair": "0x93b25e4f8b58b6f08ec5513fd788daa83a4f7cb7",
+  "team": "0x55c1eedc859d85b6cba589575981cc22ffd67206",
+  "lp_holders": [
+   "0x55c1eedc859d85b6cba589575981cc22ffd67206"
+  ],
+  "start_block": 25706729,
+  "expect": "RUGGED"
+ },
+ {
+  "chain": "ethereum",
+  "kind": "uniswap-v2",
+  "token": "0xaf95e728195671a8be8da44dcd127f1bca732f8c",
+  "pair": "0xd4667ab61b091f8878b8339b8392cca2274c2b2b",
+  "team": "0x798db2a75d2e6874b37528f3abd59c882c3dada0",
+  "lp_holders": [
+   "0x798db2a75d2e6874b37528f3abd59c882c3dada0"
+  ],
+  "start_block": 25710265,
+  "expect": "RUGGED"
+ },
+ {
+  "chain": "ethereum",
+  "kind": "uniswap-v2",
+  "token": "0xc97c6be6ee14693b01d79694bd73c26e4d58e31b",
+  "pair": "0x42fe3b88964fb8b4e0cef66f0406764f8136b9ec",
+  "team": "0x292c2062f6bb46380ad132e7582f770ab08c552b",
+  "lp_holders": [
+   "0x292c2062f6bb46380ad132e7582f770ab08c552b"
+  ],
+  "start_block": 25713707,
+  "expect": "RUGGED"
+ },
+ {
+  "chain": "ethereum",
+  "kind": "uniswap-v2",
+  "token": "0x2c127a4991d0353c1e6e4a70f83892cedb110720",
+  "pair": "0x18d907d9d022ade8507a00d330ef5cf2d58f8577",
+  "team": "0x37a56ec3adc45333e52969e39969766182635bdc",
+  "lp_holders": [
+   "0x37a56ec3adc45333e52969e39969766182635bdc"
+  ],
+  "start_block": 25702574,
+  "expect": "RUGGED"
+ },
+ {
+  "chain": "ethereum",
+  "kind": "uniswap-v2",
+  "token": "0xa5084c8d45c05560aecaf533982bd6e5210bf770",
+  "pair": "0x2767430a66c121a875cf986612a325a8ba409d4f",
+  "team": "0x4a651adfd7dd262e327ad54413a348357f330e22",
+  "lp_holders": [
+   "0x4a651adfd7dd262e327ad54413a348357f330e22"
+  ],
+  "start_block": 25712755,
+  "expect": "RUGGED"
+ },
+ {
+  "chain": "ethereum",
+  "kind": "uniswap-v2",
+  "token": "0xd9536442ebe8bc674107a0b1383f847a3aaa4d48",
+  "pair": "0xfe45f83bb0e111e24d0f3f085185587814ebf019",
+  "team": "0x651cef9c5b892a5eb70add7ddf6f66612f93d7d4",
+  "lp_holders": [
+   "0x651cef9c5b892a5eb70add7ddf6f66612f93d7d4"
+  ],
+  "start_block": 25707359,
+  "expect": "RUGGED"
+ },
+ {
+  "chain": "base",
+  "kind": "uniswap-v2",
+  "token": "0x4b9b4bbabe9fa75aaba80e28f12f8f4e697645e7",
+  "pair": "0xcb52cba8d6397500cabce1f45683f173d2d84ac8",
+  "team": "0xe4fd16c685500c986cea5cdf74865d77deb15796",
+  "lp_holders": [
+   "0xe4fd16c685500c986cea5cdf74865d77deb15796"
+  ],
+  "start_block": 53000499,
+  "expect": "RUGGED"
+ },
+ {
+  "chain": "base",
+  "kind": "uniswap-v2",
+  "token": "0x7d927554c5eef785cd1528b0f82a0a794c10597b",
+  "pair": "0xccb5c3e43d240631ef11f096fe1530f93aa1b434",
+  "team": "0xf952be5abcf358ce8b85d9bfa87909b5a6b1a0f0",
+  "lp_holders": [
+   "0xf952be5abcf358ce8b85d9bfa87909b5a6b1a0f0"
+  ],
+  "start_block": 53001731,
+  "expect": "RUGGED"
+ },
+ {
+  "chain": "base",
+  "kind": "uniswap-v2",
+  "token": "0x856190117a741f30725f28268a14561c2834cc9d",
+  "pair": "0xc025ca921ddd03a615ebf5c298e3564739d3e11b",
+  "team": "0xd8dd8cc004c4637de31f5651f166dc9bbe89ceca",
+  "lp_holders": [
+   "0xd8dd8cc004c4637de31f5651f166dc9bbe89ceca"
+  ],
+  "start_block": 53003149,
+  "expect": "RUGGED"
+ },
+ {
+  "chain": "base",
+  "kind": "uniswap-v2",
+  "token": "0x4f7d70e1636eebcb41d3bff04b2862a08ef0ceb1",
+  "pair": "0x07bc2f934b7bbe04dbaaa2325d162b830bd560c9",
+  "team": "0xcba01f159c6ed6832ca16ecb96c13a466d44bb8f",
+  "lp_holders": [
+   "0xcba01f159c6ed6832ca16ecb96c13a466d44bb8f"
+  ],
+  "start_block": 53004429,
+  "expect": "RUGGED"
+ },
+ {
+  "chain": "base",
+  "kind": "uniswap-v2",
+  "token": "0x3e7f526098fb5e14de74a4304bab5f4be3bdb716",
+  "pair": "0x4a04a00163a374fda00b4bfd5218247c99064745",
+  "team": "0x3637ee93a4d1254a8778858aec160c38e5e8f13f",
+  "lp_holders": [
+   "0x3637ee93a4d1254a8778858aec160c38e5e8f13f"
+  ],
+  "start_block": 53003152,
+  "expect": "RUGGED"
+ },
+ {
+  "chain": "base",
+  "kind": "uniswap-v2",
+  "token": "0x969a5c20dcd88d19b3b3d2d7ff00e446f55d00ec",
+  "pair": "0x340481665104e99e2f5c66f7f669b6b6d563426f",
+  "team": "0x623248b73403e477e8b0731d83a16892a604b944",
+  "lp_holders": [
+   "0x623248b73403e477e8b0731d83a16892a604b944"
+  ],
+  "start_block": 53003145,
+  "expect": "RUGGED"
+ },
+ {
+  "chain": "ethereum",
+  "kind": "uniswap-v2",
+  "token": "0x937e98238a40ce221a5bd412578dcb383c9126b6",
+  "pair": "0x0597c2b5855f1c464cb989e2abd1b14c8e0eb668",
+  "team": "0xdc8a1c25081bf3c57f6e7feaea6952a23040be2e",
+  "lp_holders": [
+   "0xdc8a1c25081bf3c57f6e7feaea6952a23040be2e"
+  ],
+  "start_block": 25703717,
+  "expect": "HELD"
+ },
+ {
+  "chain": "ethereum",
+  "kind": "uniswap-v2",
+  "token": "0xa324d9464e8d639ad3579c8f8bb07aec0c0651f6",
+  "pair": "0x287c4edf5ce82a545165a987ba5a68b0b5298fa9",
+  "team": "0x3df76ed6dc53bc3332637f89f54f31566778cb5a",
+  "lp_holders": [
+   "0x3df76ed6dc53bc3332637f89f54f31566778cb5a"
+  ],
+  "start_block": 25708488,
+  "expect": "HELD"
+ },
+ {
+  "chain": "ethereum",
+  "kind": "uniswap-v2",
+  "token": "0x1884daa51e761519d847e19b367ad1ba164370be",
+  "pair": "0x4667efacfa2bc9ea474d8e3e9364461485a81ed4",
+  "team": "0x248c2fcebac1413fca4da21b675cdaeb4ff20681",
+  "lp_holders": [
+   "0x663a5c229c09b049e36dcc11a9b0d4a8eb9db214"
+  ],
+  "start_block": 25702849,
+  "expect": "HELD",
+  "locker": "UNCX UniswapV2Locker"
+ }
+]

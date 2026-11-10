@@ -6,7 +6,7 @@
 import { CHAINS, TRANSFER } from "./chains.mjs";
 
 export const MAX_PROBES = 6;
-export const BATCH = { ethereum: 12, base: 3, "base-sepolia": 12 };
+export const BATCH = { ethereum: 4, base: 3, "base-sepolia": 12 };
 const FACTORIES = {
   ethereum: { "0x5c69bee701ef814a2b6a3edd4b1652cb9cc5aa6f": "getPair", "0xc0aee478e3658e2610c5f7a4a2e1777ce9e4f2ac": "getPair" },
   base: { "0x8909dc15e40173ff4699343b6eb8132c65e18ec6": "getPair", "0x71524b4f93c58fcbf659783284e38825f0622859": "getPair",
@@ -41,14 +41,14 @@ let stats = { requests: 0, retries: 0 };
 export const rpcStats = () => ({ ...stats });
 
 /** One endpoint, every call, in batches of `per`; retried like the contract does (4 tries), plus backoff. */
-export async function rpcSend(url, calls, per, { tries = 4 } = {}) {
+export async function rpcSend(url, calls, per, { tries = Number(process.env.RPC_TRIES ?? 4) } = {}) {
   const out = [];
   for (let i = 0; i < calls.length; i += per) {
     const chunk = calls.slice(i, i + per);
     const body = JSON.stringify(chunk.map((c, j) => ({ jsonrpc: "2.0", id: j, method: c[0], params: c[1] })));
     let got = null, why = "";
     for (let k = 0; k < tries && got === null; k++) {
-      if (k) { stats.retries++; await sleep(1500 * k); }
+      if (k) { stats.retries++; await sleep(2500 * k); }
       stats.requests++;
       try {
         const r = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body, signal: AbortSignal.timeout(30000) });
@@ -150,7 +150,11 @@ export async function readWindow(url, chain, t, a, b) {
       if (s < floor) { rugAt = blk; break; }
     }
   }
-  const out = { a, b, logs, probes, rug: null, end_ts: 0 };
+  const out = { a, b, logs, probes, rug: null, end_ts: 0, start_ts: 0 };
+  if (a === start) {
+    const hs = await rpcSend(url, [["eth_getBlockByNumber", [hex(start), false]]], per);
+    out.start_ts = ts(hs[0], start);
+  }
   if (rugAt < 0) {
     const hb = await rpcSend(url, [["eth_getBlockByNumber", [hex(b), false]]], per);
     out.end_ts = ts(hb[0], b);

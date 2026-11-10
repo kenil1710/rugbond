@@ -8,7 +8,7 @@
 # over the window, from GenVM with every validator reading at once
 # (docs/FEASIBILITY.md). tools/lib/chains.mjs holds the same table.
 CHAINS = {
-    "ethereum": (1, ("https://gateway.tenderly.co/public/mainnet", "https://rpc.mevblocker.io"), 10000, 8, 12),
+    "ethereum": (1, ("https://gateway.tenderly.co/public/mainnet", "https://rpc.mevblocker.io"), 10000, 8, 4),
     "base": (8453, ("https://base.gateway.tenderly.co", "https://base.rpc.thirdweb.com"), 1000, 8, 3),
     "base-sepolia": (84532, ("https://base-sepolia.gateway.tenderly.co", "https://base-sepolia-rpc.publicnode.com"),
                      10000, 4, 12),
@@ -102,6 +102,19 @@ def _days_from_civil(y: int, m: int, d: int) -> int:
     doy = (153 * (m + (-3 if m > 2 else 9)) + 2) // 5 + d - 1
     doe = yoe * 365 + yoe // 4 - yoe // 100 + doy
     return era * 146097 + doe - 719468
+
+
+def _civil_from_days(z: int) -> tuple:
+    z += 719468
+    era = (z if z >= 0 else z - 146096) // 146097
+    doe = z - era * 146097
+    yoe = (doe - doe // 1460 + doe // 36524 - doe // 146096) // 365
+    y = yoe + era * 400
+    doy = doe - (365 * yoe + yoe // 4 - yoe // 100)
+    mp = (5 * doy + 2) // 153
+    d = doy - (153 * mp + 2) // 5 + 1
+    m = mp + 3 if mp < 10 else mp - 9
+    return (y + (1 if m <= 2 else 0), m, d)
 
 
 def _epoch_from_iso(value: typing.Any) -> int:
