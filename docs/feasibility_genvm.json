@@ -177,6 +177,51 @@
     "delegated": true
    },
    "identical": true
+  },
+  {
+   "key": "eth-04:check:0",
+   "id": "eth-04",
+   "kind": "check",
+   "tx": "0x34b1879a978448b7a51a01e84eec3751ac52cc419c620d38ba04840b8d392117",
+   "status": "ACCEPTED",
+   "exec": "SUCCESS",
+   "range": [
+    25713707,
+    25793706
+   ],
+   "genvm": {
+    "b": 25714292,
+    "logs": 1,
+    "probes": [
+     [
+      25713707,
+      "4242640687119285145405"
+     ],
+     [
+      25714292,
+      "1000"
+     ]
+    ],
+    "rug": 25714292
+   },
+   "identical": true,
+   "attempts": 1,
+   "mac_reason": "",
+   "sha_genvm": 1312
+  },
+  {
+   "key": "eth-04:holder:0x8c8723ab182b1dffe08391e5062efd020cc576b0",
+   "id": "eth-04",
+   "kind": "holder",
+   "tx": "0x54278feba8a2c3f19983a8d770edabaa7ffb8a48b0e4ed5052a719c5922d139a",
+   "status": "ACCEPTED",
+   "holder": "0x8c8723ab182b1dffe08391e5062efd020cc576b0",
+   "genvm": {
+    "balance": "1239591375738386416935758",
+    "code": false,
+    "delegated": true
+   },
+   "identical": true
   }
  ]
 }
