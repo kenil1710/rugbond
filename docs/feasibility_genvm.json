@@ -149,6 +149,20 @@
    "attempts": 1,
    "mac_reason": "",
    "sha_genvm": 1312
+  },
+  {
+   "key": "eth-03:holder:0x8c8723ab182b1dffe08391e5062efd020cc576b0",
+   "id": "eth-03",
+   "kind": "holder",
+   "tx": "0xd8c9b013eaca71f23d1bafba408bd8495e34ec17e8cca22aade49bf804554aee",
+   "status": "ACCEPTED",
+   "holder": "0x8c8723ab182b1dffe08391e5062efd020cc576b0",
+   "genvm": {
+    "balance": "1373398909794976176322199",
+    "code": false,
+    "delegated": true
+   },
+   "identical": true
   }
  ]
 }
