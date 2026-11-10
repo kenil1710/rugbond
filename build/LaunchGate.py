@@ -55,7 +55,7 @@ MAX_TEAM_BONDS = 200
 # over the window, from GenVM with every validator reading at once
 # (docs/FEASIBILITY.md). tools/lib/chains.mjs holds the same table.
 CHAINS = {
-    "ethereum": (1, ("https://gateway.tenderly.co/public/mainnet", "https://rpc.mevblocker.io"), 10000, 8, 4),
+    "ethereum": (1, ("https://eth-mainnet.nodereal.io/v1/1659dfb40aa24bbb8153a677b98064d7", "https://rpc.mevblocker.io"), 10000, 8, 4),
     "base": (8453, ("https://base.gateway.tenderly.co", "https://base.rpc.thirdweb.com"), 1000, 8, 3),
     "base-sepolia": (84532, ("https://base-sepolia.gateway.tenderly.co", "https://base-sepolia-rpc.publicnode.com"),
                      10000, 4, 12),

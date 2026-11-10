@@ -3,7 +3,7 @@
 // (every read is made on both and must be identical), the eth_getLogs window
 // both accept (blocks) and how many windows one rug check may read.
 export const CHAINS = {
-  ethereum: { id: 1, rpcs: ["https://gateway.tenderly.co/public/mainnet", "https://rpc.mevblocker.io"], span: 10000, windows: 8,
+  ethereum: { id: 1, rpcs: ["https://eth-mainnet.nodereal.io/v1/1659dfb40aa24bbb8153a677b98064d7", "https://rpc.mevblocker.io"], span: 10000, windows: 8,
     explorer: "https://etherscan.io", weth: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2" },
   base: { id: 8453, rpcs: ["https://base.gateway.tenderly.co", "https://base.rpc.thirdweb.com"], span: 1000, windows: 8,
     explorer: "https://basescan.org", weth: "0x4200000000000000000000000000000000000006" },
