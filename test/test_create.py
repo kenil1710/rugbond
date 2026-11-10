@@ -92,15 +92,15 @@ class More(unittest.TestCase):
         r = create(w, reg, terms(s, pair=s.token))
         self.assertEqual(r["reason"], "TOKEN_IS_PAIR")
 
-    def test_canonical_allows_ethereum_and_base_only(self):
-        for ch, ok in (("ethereum", True), ("base", True), ("base-sepolia", False)):
+    def test_canonical_allows_ethereum_only(self):
+        for ch, ok in (("ethereum", True), ("base", False), ("base-sepolia", False)):
             w, reg = fresh("CANONICAL")
             r = create(w, reg, terms(Sim(chain=ch), claim_window_s=3600))
             self.assertEqual(r["ok"], ok, ch)
 
     def test_canonical_min_claim_window_one_hour(self):
         w, reg = fresh("CANONICAL")
-        r = create(w, reg, terms(Sim(chain="base"), claim_window_s=3599))
+        r = create(w, reg, terms(Sim(chain="ethereum"), claim_window_s=3599))
         self.assertEqual(r["reason"], "CLAIM_WINDOW_INVALID")
 
     def test_withdraw_credit(self):

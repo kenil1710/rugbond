@@ -79,7 +79,7 @@ COUNT_KEYS = ("bonds", "create_refused", "checks", "checks_scanned", "checks_pen
 #                       than this is PENDING, never "held so far"
 #   sweep_delay_s       sweep_stray waits this long after the last send
 MODES = {
-    "CANONICAL": (("ethereum", "base"), 3600, 7 * 86400, 6 * 3600, 172800),
+    "CANONICAL": (("ethereum",), 3600, 7 * 86400, 6 * 3600, 172800),
     "DEMO": (("base-sepolia",), 60, 3600, 1800, 3600),
 }
 MAX_PERIOD_S = 366 * 86400      # end time at most this far after creation
@@ -849,8 +849,9 @@ class RugBond(gl.contract.Contract):
                 "last_send_at": int(self.last_send_at), "max_period_s": MAX_PERIOD_S, "min_bond": str(MIN_BOND),
                 "max_holders": MAX_HOLDERS, "max_excluded": MAX_EXCLUDED, "max_probes": MAX_PROBES,
                 "replay_grace_s": REPLAY_GRACE_S, "page_max": PAGE_MAX, "statuses": list(STATUSES),
-                "chains": {k: {"chain_id": CHAINS[k][0], "rpcs": list(CHAINS[k][1]), "log_window": CHAINS[k][2],
-                               "windows_per_check": CHAINS[k][3], "batch": CHAINS[k][4],
+                "chains": {k: {"chain_id": CHAINS[k][0], "rpcs": list(CHAINS[k][1]), "blocks_per_check": CHAINS[k][2],
+                               "rpc_limits": {u: {"log_window": RPC_LIMITS[u][0], "batch": RPC_LIMITS[u][1]}
+                                              for u in CHAINS[k][1]},
                                "factories": FACTORIES.get(k, {})} for k in CHAINS}}
 
     @gl.public.view

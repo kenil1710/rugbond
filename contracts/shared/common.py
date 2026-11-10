@@ -1,17 +1,25 @@
 # ==== shared helpers: contracts/shared/common.py, inlined by tools/build.py; edit there ====
 # The runner rejects the str replace method; slice around find() instead.
 
-# chain -> (chain id, (RPC A, RPC B), log window in blocks, windows per check, calls per JSON-RPC batch)
+# chain -> (chain id, (RPC A, RPC B), blocks one check reads)
 # Every read is made on BOTH RPCs of the chain and refused unless they answer
 # identically. Each pair is run by two different operators and serves archive
 # state (eth_call at old blocks) and eth_getLogs filtered by address and topic
-# over the window, from GenVM with every validator reading at once
+# over old blocks, from GenVM with every validator reading at once
 # (docs/FEASIBILITY.md). tools/lib/chains.mjs holds the same table.
 CHAINS = {
-    "ethereum": (1, ("https://eth-mainnet.nodereal.io/v1/1659dfb40aa24bbb8153a677b98064d7", "https://rpc.mevblocker.io"), 10000, 8, 4),
-    "base": (8453, ("https://base.gateway.tenderly.co", "https://base.rpc.thirdweb.com"), 1000, 8, 3),
+    "ethereum": (1, ("https://gateway.tenderly.co/public/mainnet", "https://rpc.mevblocker.io"), 80000),
     "base-sepolia": (84532, ("https://base-sepolia.gateway.tenderly.co", "https://base-sepolia-rpc.publicnode.com"),
-                     10000, 4, 12),
+                     40000),
+}
+# url -> (blocks per eth_getLogs request, calls per JSON-RPC batch): what each
+# endpoint serves without throttling validators that read at once. The two RPCs
+# may cut a range differently; the merged logs are what is compared.
+RPC_LIMITS = {
+    "https://gateway.tenderly.co/public/mainnet": (80000, 4),
+    "https://rpc.mevblocker.io": (10000, 12),
+    "https://base-sepolia.gateway.tenderly.co": (40000, 4),
+    "https://base-sepolia-rpc.publicnode.com": (40000, 12),
 }
 TRANSFER = "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"
 ZERO = "0x" + "0" * 40
@@ -177,11 +185,11 @@ def addr_list(raw: typing.Any, most: int) -> typing.Any:
 
 def scan_range(t: dict, cursor: int, fin: int) -> list:
     """The blocks one check reads: [a, b], a = the block after the cursor (the
-    start block on the first check), b = a + window * windows - 1, cut at the
+    start block on the first check), b = a + the chain's check span - 1, cut at the
     finalized head. a > b: nothing new is finalized."""
     ch = CHAINS[t["chain"]]
     a = cursor + 1 if cursor >= int(t["start_block"]) else int(t["start_block"])
-    b = a + ch[2] * ch[3] - 1
+    b = a + ch[2] - 1
     if b > fin:
         b = fin
     return [a, b]

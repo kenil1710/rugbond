@@ -3,14 +3,13 @@
 // site. Same calls, same field order, same canonical JSON as
 // contracts/shared/{common,rpc}.py, so a read here can be compared byte for
 // byte with the one GenVM stored (tools/feasibility.mjs does).
-import { CHAINS, TRANSFER } from "./chains.mjs";
+import { ALL_CHAINS as CHAINS, ALL_LIMITS as LIMITS, TRANSFER } from "./chains.mjs";
 
 export const MAX_PROBES = 6;
-export const BATCH = { ethereum: 4, base: 3, "base-sepolia": 12 };
 const FACTORIES = {
   ethereum: { "0x5c69bee701ef814a2b6a3edd4b1652cb9cc5aa6f": "getPair", "0xc0aee478e3658e2610c5f7a4a2e1777ce9e4f2ac": "getPair" },
   base: { "0x8909dc15e40173ff4699343b6eb8132c65e18ec6": "getPair", "0x71524b4f93c58fcbf659783284e38825f0622859": "getPair",
-    "0x420dd381b31aef6683db6b902084cb0ffece40da": "getPool" },
+    "0x420dd381b31aef6683db6b902084cb0ffece40da": "getPool" },          // Mac-only (see chains.mjs)
   "base-sepolia": { "0x7ae58f10f7849ca6f5fb71b7f45cb416c9204b1e": "getPair" },
 };
 export { FACTORIES };
@@ -67,7 +66,7 @@ export async function rpcSend(url, calls, per, { tries = Number(process.env.RPC_
         got = res;
       } catch (e) { why = String(e.message ?? e).slice(0, 100); }
     }
-    if (got === null) throw new ReadFailed(why);
+    if (got === null) throw new ReadFailed(new URL(url).host + " " + why);
     out.push(...got);
   }
   return out;
@@ -75,7 +74,7 @@ export async function rpcSend(url, calls, per, { tries = Number(process.env.RPC_
 
 export async function readHead(url, chain) {
   const ch = CHAINS[chain];
-  const a = await rpcSend(url, [["eth_chainId", []], ["eth_getBlockByNumber", ["finalized", false]]], BATCH[chain]);
+  const a = await rpcSend(url, [["eth_chainId", []], ["eth_getBlockByNumber", ["finalized", false]]], LIMITS[url].batch);
   if (hexInt(a[0]) !== ch.id) throw new ReadFailed("wrong chain id");
   const fin = a[1] && typeof a[1] === "object" ? hexInt(a[1].number) : -1;
   if (fin < 0) throw new ReadFailed("no finalized head");
@@ -90,7 +89,7 @@ function ts(h, n) {
 }
 
 export async function readPair(url, chain, t) {
-  const per = BATCH[chain], p = t.pair;
+  const per = LIMITS[url].batch, p = t.pair;
   const a = await rpcSend(url, [["eth_call", [{ to: p, data: "0x0dfe1681" }, "latest"]], ["eth_call", [{ to: p, data: "0xd21220a7" }, "latest"]],
     ["eth_call", [{ to: p, data: "0xc45a0155" }, "latest"]]], per);
   const t0 = wordAddr(a[0]), t1 = wordAddr(a[1]), fac = wordAddr(a[2]);
@@ -114,10 +113,10 @@ export function denominator(supply, excluded) {
 }
 
 export async function readWindow(url, chain, t, a, b) {
-  const ch = CHAINS[chain], per = BATCH[chain], pair = t.pair, holders = t.lp_holders, start = Number(t.start_block), floor = BigInt(t.min_lp);
+  const per = LIMITS[url].batch, span = LIMITS[url].span, pair = t.pair, holders = t.lp_holders, start = Number(t.start_block), floor = BigInt(t.min_lp);
   const topics = [TRANSFER, holders.map(pad)];
   const calls = [];
-  for (let w = a; w <= b;) { const z = Math.min(w + ch.span - 1, b); calls.push(["eth_getLogs", [{ address: pair, topics, fromBlock: hex(w), toBlock: hex(z) }]]); w = z + 1; }
+  for (let w = a; w <= b;) { const z = Math.min(w + span - 1, b); calls.push(["eth_getLogs", [{ address: pair, topics, fromBlock: hex(w), toBlock: hex(z) }]]); w = z + 1; }
   const got = await rpcSend(url, calls, 1);
   let logs = [];
   for (const part of got) {
@@ -186,7 +185,7 @@ export async function readWindow(url, chain, t, a, b) {
 export function scanRange(t, cursor, fin) {
   const ch = CHAINS[t.chain];
   const a = cursor >= Number(t.start_block) ? cursor + 1 : Number(t.start_block);
-  return [a, Math.min(a + ch.span * ch.windows - 1, fin)];
+  return [a, Math.min(a + ch.check_blocks - 1, fin)];
 }
 
 /** read_check: both RPCs, compared. -> {facts, range} | {reason, detail, range?} */
@@ -199,7 +198,7 @@ export async function readCheck(chain, t, cursor, first, bFixed = -1) {
     const fin = Math.min(...heads);
     rng = scanRange(t, cursor, fin);
     if (bFixed >= 0) {
-      const top = rng[0] + CHAINS[chain].span * CHAINS[chain].windows - 1;
+      const top = rng[0] + CHAINS[chain].check_blocks - 1;
       if (bFixed > fin || bFixed > top) return { reason: "RPC_DISAGREE", detail: "range not finalized here", range: rng };
       rng[1] = bFixed;
     }
@@ -221,7 +220,7 @@ export async function readHolder(chain, token, holder, rugBlock) {
   const views = [];
   try {
     for (const url of ch.rpcs) {
-      const a = await rpcSend(url, [["eth_chainId", []], balCall(token, holder, rugBlock - 1), ["eth_getCode", [holder, "latest"]]], BATCH[chain]);
+      const a = await rpcSend(url, [["eth_chainId", []], balCall(token, holder, rugBlock - 1), ["eth_getCode", [holder, "latest"]]], LIMITS[url].batch);
       if (hexInt(a[0]) !== ch.id) throw new ReadFailed("wrong chain id");
       const code = String(a[2]).trim().toLowerCase();
       if (!code.startsWith("0x")) throw new ReadFailed("code");

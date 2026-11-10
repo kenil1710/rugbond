@@ -95,7 +95,9 @@ class Rpcs(unittest.TestCase):
         for k, v in ch.items():
             for u in v[1]:
                 self.assertIn(u, js)
-            self.assertIn("span: %d, windows: %d" % (v[2], v[3]), js)
+                lim = world.module("RugBond").RPC_LIMITS[u]
+                self.assertIn('"%s": { span: %d, batch: %d }' % (u, lim[0], lim[1]), js)
+            self.assertIn("check_blocks: %d" % v[2], js)
 
 
 if __name__ == "__main__":

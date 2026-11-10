@@ -79,7 +79,7 @@ COUNT_KEYS = ("bonds", "create_refused", "checks", "checks_scanned", "checks_pen
 #                       than this is PENDING, never "held so far"
 #   sweep_delay_s       sweep_stray waits this long after the last send
 MODES = {
-    "CANONICAL": (("ethereum", "base"), 3600, 7 * 86400, 6 * 3600, 172800),
+    "CANONICAL": (("ethereum",), 3600, 7 * 86400, 6 * 3600, 172800),
     "DEMO": (("base-sepolia",), 60, 3600, 1800, 3600),
 }
 MAX_PERIOD_S = 366 * 86400      # end time at most this far after creation
@@ -94,17 +94,25 @@ PAGE_MAX = 50
 # ==== shared helpers: contracts/shared/common.py, inlined by tools/build.py; edit there ====
 # The runner rejects the str replace method; slice around find() instead.
 
-# chain -> (chain id, (RPC A, RPC B), log window in blocks, windows per check, calls per JSON-RPC batch)
+# chain -> (chain id, (RPC A, RPC B), blocks one check reads)
 # Every read is made on BOTH RPCs of the chain and refused unless they answer
 # identically. Each pair is run by two different operators and serves archive
 # state (eth_call at old blocks) and eth_getLogs filtered by address and topic
-# over the window, from GenVM with every validator reading at once
+# over old blocks, from GenVM with every validator reading at once
 # (docs/FEASIBILITY.md). tools/lib/chains.mjs holds the same table.
 CHAINS = {
-    "ethereum": (1, ("https://eth-mainnet.nodereal.io/v1/1659dfb40aa24bbb8153a677b98064d7", "https://rpc.mevblocker.io"), 10000, 8, 4),
-    "base": (8453, ("https://base.gateway.tenderly.co", "https://base.rpc.thirdweb.com"), 1000, 8, 3),
+    "ethereum": (1, ("https://gateway.tenderly.co/public/mainnet", "https://rpc.mevblocker.io"), 80000),
     "base-sepolia": (84532, ("https://base-sepolia.gateway.tenderly.co", "https://base-sepolia-rpc.publicnode.com"),
-                     10000, 4, 12),
+                     40000),
+}
+# url -> (blocks per eth_getLogs request, calls per JSON-RPC batch): what each
+# endpoint serves without throttling validators that read at once. The two RPCs
+# may cut a range differently; the merged logs are what is compared.
+RPC_LIMITS = {
+    "https://gateway.tenderly.co/public/mainnet": (80000, 4),
+    "https://rpc.mevblocker.io": (10000, 12),
+    "https://base-sepolia.gateway.tenderly.co": (40000, 4),
+    "https://base-sepolia-rpc.publicnode.com": (40000, 12),
 }
 TRANSFER = "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"
 ZERO = "0x" + "0" * 40
@@ -270,11 +278,11 @@ def addr_list(raw: typing.Any, most: int) -> typing.Any:
 
 def scan_range(t: dict, cursor: int, fin: int) -> list:
     """The blocks one check reads: [a, b], a = the block after the cursor (the
-    start block on the first check), b = a + window * windows - 1, cut at the
+    start block on the first check), b = a + the chain's check span - 1, cut at the
     finalized head. a > b: nothing new is finalized."""
     ch = CHAINS[t["chain"]]
     a = cursor + 1 if cursor >= int(t["start_block"]) else int(t["start_block"])
-    b = a + ch[2] * ch[3] - 1
+    b = a + ch[2] - 1
     if b > fin:
         b = fin
     return [a, b]
@@ -332,9 +340,6 @@ def snapshot_denominator(supply: int, excluded: list) -> int:
 FACTORIES = {
     "ethereum": {"0x5c69bee701ef814a2b6a3edd4b1652cb9cc5aa6f": "getPair",       # Uniswap V2
                  "0xc0aee478e3658e2610c5f7a4a2e1777ce9e4f2ac": "getPair"},      # SushiSwap
-    "base": {"0x8909dc15e40173ff4699343b6eb8132c65e18ec6": "getPair",           # Uniswap V2
-             "0x71524b4f93c58fcbf659783284e38825f0622859": "getPair",           # SushiSwap V2
-             "0x420dd381b31aef6683db6b902084cb0ffece40da": "getPool"},          # Aerodrome (volatile only)
     "base-sepolia": {"0x7ae58f10f7849ca6f5fb71b7f45cb416c9204b1e": "getPair"},  # Uniswap V2 (official testnet)
 }
 
@@ -425,7 +430,7 @@ def rpc_send(url: str, calls: list, per: int) -> list:
             except Exception:
                 why = "json"
         if got is None:
-            raise ReadFailed(why)
+            raise ReadFailed(_host(url) + " " + why)
         out = out + got
         i += per
     return out
@@ -451,7 +456,7 @@ def _uint(v: typing.Any) -> int:
 def read_head(url: str, chain: str) -> int:
     """The finalized block number on one endpoint (its chain id checked)."""
     ch = CHAINS[chain]
-    a = rpc_send(url, [["eth_chainId", []], ["eth_getBlockByNumber", ["finalized", False]]], ch[4])
+    a = rpc_send(url, [["eth_chainId", []], ["eth_getBlockByNumber", ["finalized", False]]], RPC_LIMITS[url][1])
     if _hex_int(a[0]) != ch[0]:
         raise ReadFailed("wrong chain id")
     fin = _hex_int(a[1].get("number")) if isinstance(a[1], dict) else -1
@@ -472,11 +477,11 @@ def _ts(h: typing.Any, n: int) -> int:
 def read_pair(url: str, chain: str, t: dict) -> dict:
     """Is the bond's pair a genuine V2-style pool of the bond's token? token0,
     token1, factory() of the pair, then the factory's own mapping back."""
-    ch = CHAINS[chain]
+    per = RPC_LIMITS[url][1]
     p = t["pair"]
     a = rpc_send(url, [["eth_call", [{"to": p, "data": "0x0dfe1681"}, "latest"]],
                        ["eth_call", [{"to": p, "data": "0xd21220a7"}, "latest"]],
-                       ["eth_call", [{"to": p, "data": "0xc45a0155"}, "latest"]]], ch[4])
+                       ["eth_call", [{"to": p, "data": "0xc45a0155"}, "latest"]]], per)
     t0 = _word_addr(a[0])
     t1 = _word_addr(a[1])
     fac = _word_addr(a[2])
@@ -494,7 +499,7 @@ def read_pair(url: str, chain: str, t: dict) -> dict:
     data = ("0xe6a43905" if how == "getPair" else "0x79bc57d5") + "0" * 24 + t0[2:] + "0" * 24 + t1[2:]
     if how == "getPool":
         data = data + "0" * 64          # stable = false: volatile pools only
-    b = rpc_send(url, [["eth_call", [{"to": fac, "data": data}, "latest"]]], ch[4])
+    b = rpc_send(url, [["eth_call", [{"to": fac, "data": data}, "latest"]]], per)
     if _word_addr(b[0]) != p:
         out["why"] = "FACTORY_DOES_NOT_KNOW_PAIR"
         return out
@@ -518,8 +523,8 @@ def read_window(url: str, chain: str, t: dict, a: int, b: int) -> dict:
       end_ts  the timestamp of b (of R when there is a rug)
       start_ts the start block's timestamp on the first check (else 0)
     Any transport or JSON-RPC failure raises ReadFailed."""
-    ch = CHAINS[chain]
-    per = ch[4]
+    span = RPC_LIMITS[url][0]
+    per = RPC_LIMITS[url][1]
     pair = t["pair"]
     holders = t["lp_holders"]
     start = int(t["start_block"])
@@ -528,7 +533,7 @@ def read_window(url: str, chain: str, t: dict, a: int, b: int) -> dict:
     calls = []
     w = a
     while w <= b:
-        z = w + ch[2] - 1
+        z = w + span - 1
         if z > b:
             z = b
         calls.append(["eth_getLogs", [{"address": pair, "topics": topics, "fromBlock": hex(w), "toBlock": hex(z)}]])
@@ -645,7 +650,7 @@ def read_check(chain: str, t: dict, cursor: int, first: bool, b_fixed: int) -> d
         fin = heads[0] if heads[0] < heads[1] else heads[1]
         rng = scan_range(t, cursor, fin)
         if b_fixed >= 0:
-            top = rng[0] + CHAINS[chain][2] * CHAINS[chain][3] - 1
+            top = rng[0] + CHAINS[chain][2] - 1
             if b_fixed > fin or b_fixed > top:
                 return {"reason": "RPC_DISAGREE", "detail": "range not finalized here", "range": rng}
             rng[1] = b_fixed
@@ -673,7 +678,7 @@ def read_holder(chain: str, token: str, holder: str, rug_block: int) -> dict:
     try:
         for url in ch[1]:
             a = rpc_send(url, [["eth_chainId", []], _bal_call(token, holder, rug_block - 1),
-                               ["eth_getCode", [holder, "latest"]]], ch[4])
+                               ["eth_getCode", [holder, "latest"]]], RPC_LIMITS[url][1])
             if _hex_int(a[0]) != ch[0]:
                 raise ReadFailed("wrong chain id")
             code = str(a[2]).strip().lower()
@@ -1447,8 +1452,9 @@ class RugBond(gl.contract.Contract):
                 "last_send_at": int(self.last_send_at), "max_period_s": MAX_PERIOD_S, "min_bond": str(MIN_BOND),
                 "max_holders": MAX_HOLDERS, "max_excluded": MAX_EXCLUDED, "max_probes": MAX_PROBES,
                 "replay_grace_s": REPLAY_GRACE_S, "page_max": PAGE_MAX, "statuses": list(STATUSES),
-                "chains": {k: {"chain_id": CHAINS[k][0], "rpcs": list(CHAINS[k][1]), "log_window": CHAINS[k][2],
-                               "windows_per_check": CHAINS[k][3], "batch": CHAINS[k][4],
+                "chains": {k: {"chain_id": CHAINS[k][0], "rpcs": list(CHAINS[k][1]), "blocks_per_check": CHAINS[k][2],
+                               "rpc_limits": {u: {"log_window": RPC_LIMITS[u][0], "batch": RPC_LIMITS[u][1]}
+                                              for u in CHAINS[k][1]},
                                "factories": FACTORIES.get(k, {})} for k in CHAINS}}
 
     @gl.public.view

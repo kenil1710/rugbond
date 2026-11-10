@@ -147,7 +147,7 @@ class Sim:
         self.c.finalized = self.fin
         chains = module("RugBond").CHAINS
         out = []
-        for url in chains[self.chain][1]:
+        for url in (chains[self.chain][1] if self.chain in chains else ()):
             cc = copy.deepcopy(self.c)
             stub.WEB.chains[url] = cc
             out.append(cc)

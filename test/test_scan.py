@@ -261,21 +261,34 @@ class Detection(unittest.TestCase):
 
     def test_window_size_per_chain(self):
         rb = module("RugBond")
-        for ch in ("ethereum", "base", "base-sepolia"):
+        for ch in ("ethereum", "base-sepolia"):
             w, reg = fresh("DEMO" if ch == "base-sepolia" else "CANONICAL")
             s = Sim(chain=ch, fin=1000 + 10 ** 6).launch().install()
-            bid = bond(w, reg, s, end_time=s.ts(1000) + 30 * 86400, claim_window_s=3600)
+            bid = bond(w, reg, s, end_time=s.ts(1000) + 300 * 86400, claim_window_s=3600)
             r = check(w, reg, bid)
-            self.assertEqual(r["cursor"] - 1000 + 1, rb.CHAINS[ch][2] * rb.CHAINS[ch][3], ch)
+            self.assertEqual(r["cursor"] - 1000 + 1, rb.CHAINS[ch][2], ch)
 
-    def test_log_requests_respect_window(self):
+    def test_log_requests_respect_each_rpc_window(self):
+        rb = module("RugBond")
         w, reg = fresh("CANONICAL")
-        s = Sim(chain="base", fin=1000 + 10 ** 5).launch()
+        s = Sim(chain="ethereum", fin=1000 + 10 ** 6).launch()
         s.install()
-        for c in s.rpcs:
-            c.log_span = 1000
-        bid = bond(w, reg, s, end_time=s.ts(1000) + 30 * 86400, claim_window_s=3600)
+        for c, u in zip(s.rpcs, rb.CHAINS["ethereum"][1]):
+            c.log_span = rb.RPC_LIMITS[u][0]
+        bid = bond(w, reg, s, end_time=s.ts(1000) + 300 * 86400, claim_window_s=3600)
         self.assertEqual(check(w, reg, bid)["result"], "SCANNED")
+        for c, u in zip(s.rpcs, rb.CHAINS["ethereum"][1]):
+            n = sum(1 for m, _ in c.log if m == "eth_getLogs")
+            self.assertEqual(n, 2 * (rb.CHAINS["ethereum"][2] // rb.RPC_LIMITS[u][0]), u)     # leader + validator
+
+    def test_rpc_cutting_log_ranges_differently_still_agrees(self):
+        w, reg = fresh("CANONICAL")
+        s = Sim(chain="ethereum", fin=200000).launch()
+        s.rug(95000)
+        s.install()
+        bid = bond(w, reg, s, end_time=s.ts(1000) + 300 * 86400, claim_window_s=3600)
+        out = until_verdict(w, reg, bid)
+        self.assertEqual(out[-1]["rug_block"], 95000)
 
 
 class PairValidity(unittest.TestCase):
@@ -319,11 +332,17 @@ class PairValidity(unittest.TestCase):
         r = w.call(reg, "settle", bid, sender=STRANGER)
         self.assertEqual((r["status"], r["to"]), ("RETURNED", TEAM))
 
-    def test_aerodrome_volatile_pool_accepted(self):
+    def test_sushiswap_pair_accepted(self):
         w, reg = fresh("CANONICAL")
-        s = Sim(chain="base", factory=AERODROME).launch().install()
+        s = Sim(chain="ethereum", factory="0xc0aee478e3658e2610c5f7a4a2e1777ce9e4f2ac").launch().install()
         bid = bond(w, reg, s, claim_window_s=3600)
         self.assertNotEqual(check(w, reg, bid)["result"], "VOID")
+
+    def test_aerodrome_factory_not_listed_is_void(self):
+        w, reg = fresh("CANONICAL")
+        s = Sim(chain="ethereum", factory=AERODROME).launch().install()
+        bid = bond(w, reg, s, claim_window_s=3600)
+        self.assertEqual(check(w, reg, bid)["reason"], "UNKNOWN_FACTORY")
 
     def test_pair_checked_only_on_first_check(self):
         w, reg = fresh()

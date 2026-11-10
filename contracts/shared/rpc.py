@@ -7,9 +7,6 @@
 FACTORIES = {
     "ethereum": {"0x5c69bee701ef814a2b6a3edd4b1652cb9cc5aa6f": "getPair",       # Uniswap V2
                  "0xc0aee478e3658e2610c5f7a4a2e1777ce9e4f2ac": "getPair"},      # SushiSwap
-    "base": {"0x8909dc15e40173ff4699343b6eb8132c65e18ec6": "getPair",           # Uniswap V2
-             "0x71524b4f93c58fcbf659783284e38825f0622859": "getPair",           # SushiSwap V2
-             "0x420dd381b31aef6683db6b902084cb0ffece40da": "getPool"},          # Aerodrome (volatile only)
     "base-sepolia": {"0x7ae58f10f7849ca6f5fb71b7f45cb416c9204b1e": "getPair"},  # Uniswap V2 (official testnet)
 }
 
@@ -100,7 +97,7 @@ def rpc_send(url: str, calls: list, per: int) -> list:
             except Exception:
                 why = "json"
         if got is None:
-            raise ReadFailed(why)
+            raise ReadFailed(_host(url) + " " + why)
         out = out + got
         i += per
     return out
@@ -126,7 +123,7 @@ def _uint(v: typing.Any) -> int:
 def read_head(url: str, chain: str) -> int:
     """The finalized block number on one endpoint (its chain id checked)."""
     ch = CHAINS[chain]
-    a = rpc_send(url, [["eth_chainId", []], ["eth_getBlockByNumber", ["finalized", False]]], ch[4])
+    a = rpc_send(url, [["eth_chainId", []], ["eth_getBlockByNumber", ["finalized", False]]], RPC_LIMITS[url][1])
     if _hex_int(a[0]) != ch[0]:
         raise ReadFailed("wrong chain id")
     fin = _hex_int(a[1].get("number")) if isinstance(a[1], dict) else -1
@@ -147,11 +144,11 @@ def _ts(h: typing.Any, n: int) -> int:
 def read_pair(url: str, chain: str, t: dict) -> dict:
     """Is the bond's pair a genuine V2-style pool of the bond's token? token0,
     token1, factory() of the pair, then the factory's own mapping back."""
-    ch = CHAINS[chain]
+    per = RPC_LIMITS[url][1]
     p = t["pair"]
     a = rpc_send(url, [["eth_call", [{"to": p, "data": "0x0dfe1681"}, "latest"]],
                        ["eth_call", [{"to": p, "data": "0xd21220a7"}, "latest"]],
-                       ["eth_call", [{"to": p, "data": "0xc45a0155"}, "latest"]]], ch[4])
+                       ["eth_call", [{"to": p, "data": "0xc45a0155"}, "latest"]]], per)
     t0 = _word_addr(a[0])
     t1 = _word_addr(a[1])
     fac = _word_addr(a[2])
@@ -169,7 +166,7 @@ def read_pair(url: str, chain: str, t: dict) -> dict:
     data = ("0xe6a43905" if how == "getPair" else "0x79bc57d5") + "0" * 24 + t0[2:] + "0" * 24 + t1[2:]
     if how == "getPool":
         data = data + "0" * 64          # stable = false: volatile pools only
-    b = rpc_send(url, [["eth_call", [{"to": fac, "data": data}, "latest"]]], ch[4])
+    b = rpc_send(url, [["eth_call", [{"to": fac, "data": data}, "latest"]]], per)
     if _word_addr(b[0]) != p:
         out["why"] = "FACTORY_DOES_NOT_KNOW_PAIR"
         return out
@@ -193,8 +190,8 @@ def read_window(url: str, chain: str, t: dict, a: int, b: int) -> dict:
       end_ts  the timestamp of b (of R when there is a rug)
       start_ts the start block's timestamp on the first check (else 0)
     Any transport or JSON-RPC failure raises ReadFailed."""
-    ch = CHAINS[chain]
-    per = ch[4]
+    span = RPC_LIMITS[url][0]
+    per = RPC_LIMITS[url][1]
     pair = t["pair"]
     holders = t["lp_holders"]
     start = int(t["start_block"])
@@ -203,7 +200,7 @@ def read_window(url: str, chain: str, t: dict, a: int, b: int) -> dict:
     calls = []
     w = a
     while w <= b:
-        z = w + ch[2] - 1
+        z = w + span - 1
         if z > b:
             z = b
         calls.append(["eth_getLogs", [{"address": pair, "topics": topics, "fromBlock": hex(w), "toBlock": hex(z)}]])
@@ -320,7 +317,7 @@ def read_check(chain: str, t: dict, cursor: int, first: bool, b_fixed: int) -> d
         fin = heads[0] if heads[0] < heads[1] else heads[1]
         rng = scan_range(t, cursor, fin)
         if b_fixed >= 0:
-            top = rng[0] + CHAINS[chain][2] * CHAINS[chain][3] - 1
+            top = rng[0] + CHAINS[chain][2] - 1
             if b_fixed > fin or b_fixed > top:
                 return {"reason": "RPC_DISAGREE", "detail": "range not finalized here", "range": rng}
             rng[1] = b_fixed
@@ -348,7 +345,7 @@ def read_holder(chain: str, token: str, holder: str, rug_block: int) -> dict:
     try:
         for url in ch[1]:
             a = rpc_send(url, [["eth_chainId", []], _bal_call(token, holder, rug_block - 1),
-                               ["eth_getCode", [holder, "latest"]]], ch[4])
+                               ["eth_getCode", [holder, "latest"]]], RPC_LIMITS[url][1])
             if _hex_int(a[0]) != ch[0]:
                 raise ReadFailed("wrong chain id")
             code = str(a[2]).strip().lower()
