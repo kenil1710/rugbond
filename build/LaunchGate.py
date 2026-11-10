@@ -479,8 +479,13 @@ class LaunchGate(gl.contract.Contract):
                     if g["state"] != G_NO_BOND:
                         states.append(g["state"])
                 nxt = pg.get("next_offset")
-                if not isinstance(nxt, int) or isinstance(nxt, bool) or nxt <= off:
+                if not isinstance(nxt, int) or isinstance(nxt, bool) or nxt < 0:
                     break
+                if nxt <= off or nxt >= MAX_TEAM_BONDS:
+                    # more bonds than the gate reads (or a malformed page): an unread one could be rugged
+                    out["state"] = G_PENDING
+                    out["why"] = "the team has more bonds than the gate reads"
+                    return out
                 off = nxt
         except Exception:
             out["state"] = G_PENDING

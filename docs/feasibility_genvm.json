@@ -90,6 +90,65 @@
    "attempts": 1,
    "mac_reason": "",
    "sha_genvm": 1318
+  },
+  {
+   "key": "eth-02:holder:0x8c8723ab182b1dffe08391e5062efd020cc576b0",
+   "id": "eth-02",
+   "kind": "holder",
+   "tx": "0x40f04dc1e015fe798b03554b6f3ce2a730517edc6c2cc116198cd3e819a81944",
+   "status": "ACCEPTED",
+   "holder": "0x8c8723ab182b1dffe08391e5062efd020cc576b0",
+   "genvm": {
+    "balance": "6058089165307452392862894",
+    "code": false,
+    "delegated": true
+   },
+   "identical": true
+  },
+  {
+   "key": "eth-02:holder:0x0fbc1b2055b52da393195dcd2755b591219152e1",
+   "id": "eth-02",
+   "kind": "holder",
+   "tx": "0xb968833bb8a34dcbec4a2ec32b02d74d68ef7da73a6cd1cfd5b3297a2217fbe7",
+   "status": "ACCEPTED",
+   "holder": "0x0fbc1b2055b52da393195dcd2755b591219152e1",
+   "genvm": {
+    "balance": "4189631087248182850652670",
+    "code": false,
+    "delegated": true
+   },
+   "identical": true
+  },
+  {
+   "key": "eth-03:check:0",
+   "id": "eth-03",
+   "kind": "check",
+   "tx": "0x61fcaef98e8b6e1d4ace2f4715109adc87a5778b92c609db93f890023c17a2c6",
+   "status": "ACCEPTED",
+   "exec": "SUCCESS",
+   "range": [
+    25710265,
+    25790264
+   ],
+   "genvm": {
+    "b": 25710973,
+    "logs": 1,
+    "probes": [
+     [
+      25710265,
+      "3911521443121589227749"
+     ],
+     [
+      25710973,
+      "1000"
+     ]
+    ],
+    "rug": 25710973
+   },
+   "identical": true,
+   "attempts": 1,
+   "mac_reason": "",
+   "sha_genvm": 1312
   }
  ]
 }

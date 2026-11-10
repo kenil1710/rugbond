@@ -5,7 +5,7 @@ import stub
 from fixtures import (Sim, fresh, bond, check, until_verdict, get, Reverted, TEAM, TEAM2, HOLDERS, GEN, STRANGER,
                       NOW, A, urls, module)
 
-LG = None
+LG_MAX = module("LaunchGate").MAX_TEAM_BONDS
 
 
 def setup(rug=None, fin=None, sender=TEAM, **o):
@@ -199,6 +199,18 @@ class TeamBound(unittest.TestCase):
         gate = w.deploy("LaunchGate", reg)
         r = w.view(gate, "is_safe_for", A(1), TEAM)
         self.assertEqual((r["state"], r["safe"]), ("NO_BOND", False))
+
+    def test_team_with_more_bonds_than_the_gate_reads_is_pending(self):
+        w, reg = fresh()
+        gate = w.deploy("LaunchGate", reg)
+        other = Sim(token=A(700), pair=A(701))
+        for i in range(LG_MAX):
+            bond(w, reg, other, value=10 ** 15)
+        s = Sim(fin=1100).launch().install()
+        bid = bond(w, reg, s, end_time=s.ts(1000) + 3600)
+        check(w, reg, bid)
+        r = w.view(gate, "is_safe_for", s.token, TEAM)
+        self.assertEqual((r["state"], r["safe"]), ("PENDING", False))
 
     def test_team_pagination_over_50(self):
         w, reg = fresh()
