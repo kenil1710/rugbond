@@ -151,7 +151,8 @@ class Sim:
             cc = copy.deepcopy(self.c)
             stub.WEB.chains[url] = cc
             out.append(cc)
-        return out
+        self.rpcs = out
+        return self
 
 
 def urls(chain):

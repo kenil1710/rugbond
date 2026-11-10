@@ -163,6 +163,304 @@
      }
     ]
    }
+  },
+  {
+   "id": "eth-02",
+   "chain": "ethereum",
+   "kind": "uniswap-v2",
+   "token": "0x89d3a86b3dd25a8d58b8e390abb2a805d0e88dff",
+   "pair": "0x93b25e4f8b58b6f08ec5513fd788daa83a4f7cb7",
+   "team": "0x55c1eedc859d85b6cba589575981cc22ffd67206",
+   "lp_holders": [
+    "0x55c1eedc859d85b6cba589575981cc22ffd67206"
+   ],
+   "min_lp": "21213203435596425731025",
+   "start_block": 25706729,
+   "start_ts": 1786149599,
+   "end_time": 1786754399,
+   "expect": "RUGGED",
+   "verdict": "RUGGED",
+   "reason": "",
+   "checks": [
+    {
+     "range": [
+      25706729,
+      25786728
+     ],
+     "verdict": "RUGGED",
+     "b": 25707553,
+     "logs": 1,
+     "probes": [
+      [
+       25706729,
+       "21213203435596425731025"
+      ],
+      [
+       25707553,
+       "1000"
+      ]
+     ],
+     "end_ts": 1786159583
+    }
+   ],
+   "pair_check": {
+    "token0": "0x89d3a86b3dd25a8d58b8e390abb2a805d0e88dff",
+    "token1": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+    "factory": "0x5c69bee701ef814a2b6a3edd4b1652cb9cc5aa6f",
+    "ok": true,
+    "why": ""
+   },
+   "seconds": 15.758,
+   "rug": {
+    "block": 25707553,
+    "ts": 1786159583,
+    "txs": [
+     "0xfd44987b9fd7dfd8206347508cda2f1aa98792540533c576c027dc114d916cd0"
+    ],
+    "lp_after": "1000",
+    "supply": "100000000000000000000000000",
+    "lp_before": "21213203435596425731025",
+    "excluded": [
+     [
+      "0x0000000000000000000000000000000000000000",
+      "0"
+     ],
+     [
+      "0x000000000000000000000000000000000000dead",
+      "0"
+     ],
+     [
+      "0x3fc91a3afd70395cd496c647d5a6cc9d4b2b7fad",
+      "0"
+     ],
+     [
+      "0x55c1eedc859d85b6cba589575981cc22ffd67206",
+      "10000000000000000000000000"
+     ],
+     [
+      "0x66a9893cc07d91d95644aedd05d03f95e1dba8af",
+      "0"
+     ],
+     [
+      "0x7a250d5630b4cf539739df2c5dacb4c659f2488d",
+      "0"
+     ],
+     [
+      "0x89d3a86b3dd25a8d58b8e390abb2a805d0e88dff",
+      "0"
+     ],
+     [
+      "0x93b25e4f8b58b6f08ec5513fd788daa83a4f7cb7",
+      "38328889688223247261817040"
+     ],
+     [
+      "0xd9e1ce17f2641f24ae83637ab66a2cca9c378b9f",
+      "0"
+     ]
+    ],
+    "denom": "51671110311776752738182960"
+   },
+   "weth_before": "11831628780417648900",
+   "weth_after": "7609463155611867",
+   "holders": {
+    "candidates": 41,
+    "readable": 41,
+    "unreadable": 0,
+    "eoa_with_balance": 38,
+    "contracts": 1,
+    "sum_eoa_balance": "51671110311776752738182960",
+    "top": [
+     {
+      "holder": "0x8c8723ab182b1dffe08391e5062efd020cc576b0",
+      "balance": "6058089165307452392862894",
+      "share_of_1_gen": "117243255055943854"
+     },
+     {
+      "holder": "0x0fbc1b2055b52da393195dcd2755b591219152e1",
+      "balance": "4189631087248182850652670",
+      "share_of_1_gen": "81082660348664743"
+     },
+     {
+      "holder": "0x3f2fd973a2b80799fe6c3b063ab06290216abad8",
+      "balance": "3814290282310983849566691",
+      "share_of_1_gen": "73818624358873901"
+     },
+     {
+      "holder": "0xabb17dfe30f201ad7e7d37319fa829ce15f2e5f8",
+      "balance": "3122123290943548517626032",
+      "share_of_1_gen": "60422995985669033"
+     },
+     {
+      "holder": "0xbad33bb6c5b0283b9393d87b5561cea97fa8c9a7",
+      "balance": "3042383299387094006121554",
+      "share_of_1_gen": "58879774036782822"
+     },
+     {
+      "holder": "0x11ed9baa1b7ffe3c015ea6fee7cd0d2e72af5ee3",
+      "balance": "2825873083230346671769067",
+      "share_of_1_gen": "54689614103110933"
+     },
+     {
+      "holder": "0xf217cb032e6b23c29a5220bb1232d97bc9fe3936",
+      "balance": "2736008092425713739650311",
+      "share_of_1_gen": "52950441279798268"
+     },
+     {
+      "holder": "0x2513aba521b50779ee792ce8ad5f9b723558d0ab",
+      "balance": "2237795092208967427603739",
+      "share_of_1_gen": "43308438287979553"
+     }
+    ]
+   }
+  },
+  {
+   "id": "eth-03",
+   "chain": "ethereum",
+   "kind": "uniswap-v2",
+   "token": "0xaf95e728195671a8be8da44dcd127f1bca732f8c",
+   "pair": "0xd4667ab61b091f8878b8339b8392cca2274c2b2b",
+   "team": "0x798db2a75d2e6874b37528f3abd59c882c3dada0",
+   "lp_holders": [
+    "0x798db2a75d2e6874b37528f3abd59c882c3dada0"
+   ],
+   "min_lp": "3911521443121589227749",
+   "start_block": 25710265,
+   "start_ts": 1786192379,
+   "end_time": 1786797179,
+   "expect": "RUGGED",
+   "verdict": "RUGGED",
+   "reason": "",
+   "checks": [
+    {
+     "range": [
+      25710265,
+      25790264
+     ],
+     "verdict": "RUGGED",
+     "b": 25710973,
+     "logs": 1,
+     "probes": [
+      [
+       25710265,
+       "3911521443121589227749"
+      ],
+      [
+       25710973,
+       "1000"
+      ]
+     ],
+     "end_ts": 1786200899
+    }
+   ],
+   "pair_check": {
+    "token0": "0xaf95e728195671a8be8da44dcd127f1bca732f8c",
+    "token1": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+    "factory": "0x5c69bee701ef814a2b6a3edd4b1652cb9cc5aa6f",
+    "ok": true,
+    "why": ""
+   },
+   "seconds": 17.092,
+   "rug": {
+    "block": 25710973,
+    "ts": 1786200899,
+    "txs": [
+     "0x7df1296fcb53e75214edf362e0d85fdb17cd5c39854b195347eb683045a5c5f8"
+    ],
+    "lp_after": "1000",
+    "supply": "10000000000000000000000000",
+    "lp_before": "3911521443121589227749",
+    "excluded": [
+     [
+      "0x0000000000000000000000000000000000000000",
+      "0"
+     ],
+     [
+      "0x000000000000000000000000000000000000dead",
+      "0"
+     ],
+     [
+      "0x3fc91a3afd70395cd496c647d5a6cc9d4b2b7fad",
+      "0"
+     ],
+     [
+      "0x66a9893cc07d91d95644aedd05d03f95e1dba8af",
+      "0"
+     ],
+     [
+      "0x798db2a75d2e6874b37528f3abd59c882c3dada0",
+      "1000000000000000000000000"
+     ],
+     [
+      "0x7a250d5630b4cf539739df2c5dacb4c659f2488d",
+      "0"
+     ],
+     [
+      "0xaf95e728195671a8be8da44dcd127f1bca732f8c",
+      "0"
+     ],
+     [
+      "0xd4667ab61b091f8878b8339b8392cca2274c2b2b",
+      "1918052594137483208336138"
+     ],
+     [
+      "0xd9e1ce17f2641f24ae83637ab66a2cca9c378b9f",
+      "0"
+     ]
+    ],
+    "denom": "7081947405862516791663862"
+   },
+   "weth_before": "8088581206458400506",
+   "weth_after": "9344092221352349",
+   "holders": {
+    "candidates": 43,
+    "readable": 43,
+    "unreadable": 0,
+    "eoa_with_balance": 39,
+    "contracts": 2,
+    "sum_eoa_balance": "7065295386530507121448960",
+    "top": [
+     {
+      "holder": "0x8c8723ab182b1dffe08391e5062efd020cc576b0",
+      "balance": "1373398909794976176322199",
+      "share_of_1_gen": "193929555118986184"
+     },
+     {
+      "holder": "0x0fbc1b2055b52da393195dcd2755b591219152e1",
+      "balance": "691440637097980115208748",
+      "share_of_1_gen": "97634251918560941"
+     },
+     {
+      "holder": "0x8c31093e57f9827c162f8f190ee29669f8bf2ee9",
+      "balance": "642667361644721839275274",
+      "share_of_1_gen": "90747265520881229"
+     },
+     {
+      "holder": "0x3f2fd973a2b80799fe6c3b063ab06290216abad8",
+      "balance": "600360776946369834425191",
+      "share_of_1_gen": "84773402362376249"
+     },
+     {
+      "holder": "0xbad33bb6c5b0283b9393d87b5561cea97fa8c9a7",
+      "balance": "404698643649376285206317",
+      "share_of_1_gen": "57145107193871862"
+     },
+     {
+      "holder": "0x11ed9baa1b7ffe3c015ea6fee7cd0d2e72af5ee3",
+      "balance": "298006665529387582454394",
+      "share_of_1_gen": "42079762592234766"
+     },
+     {
+      "holder": "0xf217cb032e6b23c29a5220bb1232d97bc9fe3936",
+      "balance": "264087403940609003949921",
+      "share_of_1_gen": "37290223833347652"
+     },
+     {
+      "holder": "0xabb17dfe30f201ad7e7d37319fa829ce15f2e5f8",
+      "balance": "241577226128613956437201",
+      "share_of_1_gen": "34111694465371710"
+     }
+    ]
+   }
   }
  ]
 }
