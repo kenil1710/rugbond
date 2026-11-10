@@ -40,7 +40,7 @@ let stats = { requests: 0, retries: 0 };
 export const rpcStats = () => ({ ...stats });
 
 /** One endpoint, every call, in batches of `per`; retried like the contract does (4 tries), plus backoff. */
-export async function rpcSend(url, calls, per, { tries = Number(process.env.RPC_TRIES ?? 4) } = {}) {
+export async function rpcSend(url, calls, per, { tries = Number(process.env.RPC_TRIES ?? 4), soft = -1 } = {}) {
   const out = [];
   for (let i = 0; i < calls.length; i += per) {
     const chunk = calls.slice(i, i + per);
@@ -59,7 +59,7 @@ export async function rpcSend(url, calls, per, { tries = Number(process.env.RPC_
         for (let j = 0; j < chunk.length; j++) {
           const it = byId.get(j);
           if (!it) throw new ReadFailed("missing id");
-          if (it.error) throw new ReadFailed("rpc error: " + JSON.stringify(it.error).slice(0, 80));
+          if (it.error) { if (i + j === soft) { res.push(null); continue; } throw new ReadFailed("rpc error: " + JSON.stringify(it.error).slice(0, 80)); }
           if (!("result" in it)) throw new ReadFailed("no result");
           res.push(it.result);
         }
@@ -72,15 +72,6 @@ export async function rpcSend(url, calls, per, { tries = Number(process.env.RPC_
   return out;
 }
 
-export async function readHead(url, chain) {
-  const ch = CHAINS[chain];
-  const a = await rpcSend(url, [["eth_chainId", []], ["eth_getBlockByNumber", ["finalized", false]]], LIMITS[url].batch);
-  if (hexInt(a[0]) !== ch.id) throw new ReadFailed("wrong chain id");
-  const fin = a[1] && typeof a[1] === "object" ? hexInt(a[1].number) : -1;
-  if (fin < 0) throw new ReadFailed("no finalized head");
-  return fin;
-}
-
 function ts(h, n) {
   if (!h || typeof h !== "object" || hexInt(h.number) !== n) throw new ReadFailed("header");
   const t = hexInt(h.timestamp);
@@ -88,22 +79,13 @@ function ts(h, n) {
   return t;
 }
 
-export async function readPair(url, chain, t) {
-  const per = LIMITS[url].batch, p = t.pair;
-  const a = await rpcSend(url, [["eth_call", [{ to: p, data: "0x0dfe1681" }, "latest"]], ["eth_call", [{ to: p, data: "0xd21220a7" }, "latest"]],
-    ["eth_call", [{ to: p, data: "0xc45a0155" }, "latest"]]], per);
-  const t0 = wordAddr(a[0]), t1 = wordAddr(a[1]), fac = wordAddr(a[2]);
-  const out = { token0: t0, token1: t1, factory: fac, ok: false, why: "" };
-  if (!t0 || !t1 || !fac) { out.why = "NOT_A_PAIR"; return out; }
-  if (t.token !== t0 && t.token !== t1) { out.why = "TOKEN_NOT_IN_PAIR"; return out; }
-  const how = FACTORIES[chain]?.[fac] ?? "";
-  if (!how) { out.why = "UNKNOWN_FACTORY"; return out; }
-  let data = (how === "getPair" ? "0xe6a43905" : "0x79bc57d5") + "0".repeat(24) + t0.slice(2) + "0".repeat(24) + t1.slice(2);
-  if (how === "getPool") data += "0".repeat(64);
-  const b = await rpcSend(url, [["eth_call", [{ to: fac, data }, "latest"]]], per);
-  if (wordAddr(b[0]) !== p) { out.why = "FACTORY_DOES_NOT_KNOW_PAIR"; return out; }
-  out.ok = true;
-  return out;
+/** The finalized head on one endpoint (display / keeper use). */
+export async function readHead(url, chain) {
+  const a = await rpcSend(url, [["eth_chainId", []], ["eth_getBlockByNumber", ["finalized", false]]], LIMITS[url].batch);
+  if (hexInt(a[0]) !== CHAINS[chain].id) throw new ReadFailed("wrong chain id");
+  const fin = a[1] && typeof a[1] === "object" ? hexInt(a[1].number) : -1;
+  if (fin < 0) throw new ReadFailed("no finalized head");
+  return fin;
 }
 
 export function denominator(supply, excluded) {
@@ -112,74 +94,113 @@ export function denominator(supply, excluded) {
   return d > 0n ? d : 0n;
 }
 
-export async function readWindow(url, chain, t, a, b) {
-  const per = LIMITS[url].batch, span = LIMITS[url].span, pair = t.pair, holders = t.lp_holders, start = Number(t.start_block), floor = BigInt(t.min_lp);
-  const topics = [TRANSFER, holders.map(pad)];
-  const calls = [];
-  for (let w = a; w <= b;) { const z = Math.min(w + span - 1, b); calls.push(["eth_getLogs", [{ address: pair, topics, fromBlock: hex(w), toBlock: hex(z) }]]); w = z + 1; }
-  const got = await rpcSend(url, calls, 1);
-  let logs = [];
-  for (const part of got) {
+const logsCall = (t, w, z) => ["eth_getLogs", [{ address: t.pair, topics: [TRANSFER, t.lp_holders.map(pad)], fromBlock: hex(w), toBlock: typeof z === "string" ? z : hex(z) }]];
+
+function parseLogs(parts, t, a, b) {
+  const logs = [];
+  for (const part of parts) {
     if (!Array.isArray(part)) throw new ReadFailed("logs");
     for (const lg of part) {
       if (!lg || typeof lg !== "object" || lg.removed === true) throw new ReadFailed("log");
       const tp = lg.topics ?? [];
-      if (addr(lg.address) !== pair || !Array.isArray(tp) || tp.length !== 3 || String(tp[0]).toLowerCase() !== TRANSFER) continue;
+      if (addr(lg.address) !== t.pair || !Array.isArray(tp) || tp.length !== 3 || String(tp[0]).toLowerCase() !== TRANSFER) continue;
       const frm = wordAddr(tp[1]), to = wordAddr(tp[2]), amt = wordUint(lg.data), blk = hexInt(lg.blockNumber), li = hexInt(lg.logIndex), txh = hash32(lg.transactionHash);
-      if (!holders.includes(frm) || !to || amt < 0n || blk < a || blk > b || li < 0 || !txh) throw new ReadFailed("log fields");
-      logs.push([blk, li, txh, frm, to, amt.toString()]);
+      if (!t.lp_holders.includes(frm) || !to || amt < 0n || blk < a || li < 0 || !txh) throw new ReadFailed("log fields");
+      if (blk <= b) logs.push([blk, li, txh, frm, to, amt.toString()]);
     }
   }
-  logs.sort((x, y) => (x[0] * 1000000 + x[1]) - (y[0] * 1000000 + y[1]));
+  return logs.sort((x, y) => (x[0] * 1000000 + x[1]) - (y[0] * 1000000 + y[1]));
+}
+
+export async function readOpen(url, chain, t, a) {
+  const lim = LIMITS[url];
+  const top = a + CHAINS[chain].check_blocks - 1;
+  const z = Math.min(a + lim.span - 1, top);
+  const call = logsCall(t, a, lim.beyond_head ? z : "finalized");
+  const r = await rpcSend(url, [["eth_chainId", []], ["eth_getBlockByNumber", ["finalized", false]], call], 3, { soft: 2 });
+  if (hexInt(r[0]) !== CHAINS[chain].id) throw new ReadFailed("wrong chain id");
+  const fin = r[1] && typeof r[1] === "object" ? hexInt(r[1].number) : -1;
+  if (fin < 0) throw new ReadFailed("no finalized head");
+  if (r[2] === null) return { fin, logs: [], to: a - 1 };
+  return { fin, logs: r[2], to: lim.beyond_head ? z : Math.min(fin, top) };
+}
+
+export async function readWindow(url, surl, chain, t, a, b, opened, first) {
+  const span = LIMITS[url].span, per = LIMITS[surl].batch;
+  const pair = t.pair, holders = t.lp_holders, start = Number(t.start_block), floor = BigInt(t.min_lp);
+  let parts = [opened.logs];
+  const more = [];
+  for (let w = opened.to + 1; w <= b;) { const z = Math.min(w + span - 1, b); more.push(logsCall(t, w, z)); w = z + 1; }
+  if (more.length) parts = parts.concat(await rpcSend(url, more, 1));
+  let logs = parseLogs(parts, t, a, b);
   let pb = [];
   if (a === start) pb.push(start);
   for (const lg of logs) if (!pb.includes(lg[0])) pb.push(lg[0]);
   if (pb.length > MAX_PROBES) { b = pb[MAX_PROBES] - 1; pb = pb.slice(0, MAX_PROBES); logs = logs.filter((lg) => lg[0] <= b); }
+  const sc = [["eth_getBlockByNumber", [hex(b), false]]];
+  if (a === start) sc.push(["eth_getBlockByNumber", [hex(start), false]]);
+  if (first) for (const d of ["0x0dfe1681", "0xd21220a7", "0xc45a0155"]) sc.push(["eth_call", [{ to: pair, data: d }, "latest"]]);
+  const k0 = sc.length;
+  for (const blk of pb) for (const h of holders) sc.push(balCall(pair, h, blk));
+  const vals = await rpcSend(surl, sc, per);
+  const endTs = ts(vals[0], b);
+  const startTs = a === start ? ts(vals[1], start) : 0;
+  let pr = null;
+  if (first) { const j = a === start ? 2 : 1; pr = { token0: wordAddr(vals[j]), token1: wordAddr(vals[j + 1]), factory: wordAddr(vals[j + 2]), ok: false, why: "" }; }
   const probes = [];
-  let rugAt = -1;
-  if (pb.length) {
-    const sc = [];
-    for (const blk of pb) for (const h of holders) sc.push(balCall(pair, h, blk));
-    const vals = await rpcSend(url, sc, per);
-    let k = 0;
-    for (const blk of pb) {
-      let s = 0n;
-      for (const _ of holders) s += uint(vals[k++]);
-      probes.push([blk, s.toString()]);
-      if (s < floor) { rugAt = blk; break; }
+  let rugAt = -1, k = k0;
+  for (const blk of pb) {
+    let tot = 0n;
+    for (const _ of holders) tot += uint(vals[k++]);
+    probes.push([blk, tot.toString()]);
+    if (tot < floor) { rugAt = blk; break; }
+  }
+  const third = [];
+  let how = "";
+  if (pr) {
+    if (!pr.token0 || !pr.token1 || !pr.factory) pr.why = "NOT_A_PAIR";
+    else if (t.token !== pr.token0 && t.token !== pr.token1) pr.why = "TOKEN_NOT_IN_PAIR";
+    else {
+      how = FACTORIES[chain]?.[pr.factory] ?? "";
+      if (!how) pr.why = "UNKNOWN_FACTORY";
+      else {
+        let data = (how === "getPair" ? "0xe6a43905" : "0x79bc57d5") + "0".repeat(24) + pr.token0.slice(2) + "0".repeat(24) + pr.token1.slice(2);
+        if (how === "getPool") data += "0".repeat(64);
+        third.push(["eth_call", [{ to: pr.factory, data }, "latest"]]);
+      }
     }
   }
-  const out = { a, b, logs, probes, rug: null, end_ts: 0, start_ts: 0 };
-  if (a === start) {
-    const hs = await rpcSend(url, [["eth_getBlockByNumber", [hex(start), false]]], per);
-    out.start_ts = ts(hs[0], start);
+  const out = { a, b, logs, probes, rug: null, end_ts: endTs, start_ts: startTs };
+  const snap = rugAt >= 0;
+  if (snap) {
+    third.push(["eth_getBlockByNumber", [hex(rugAt), false]]);
+    third.push(["eth_call", [{ to: t.token, data: "0x18160ddd" }, hex(rugAt - 1)]]);
+    for (const h of holders) third.push(balCall(pair, h, rugAt - 1));
+    for (const e of t.excluded_all) third.push(balCall(t.token, e, rugAt - 1));
   }
-  if (rugAt < 0) {
-    const hb = await rpcSend(url, [["eth_getBlockByNumber", [hex(b), false]]], per);
-    out.end_ts = ts(hb[0], b);
-    return out;
+  const got = third.length ? await rpcSend(surl, third, per) : [];
+  let i = 0;
+  if (how) { pr.ok = wordAddr(got[0]) === pair; if (!pr.ok) pr.why = "FACTORY_DOES_NOT_KNOW_PAIR"; i = 1; }
+  if (snap) {
+    out.b = rugAt;
+    const keep = logs.filter((lg) => lg[0] <= rugAt);
+    out.logs = keep;
+    const t2 = ts(got[i], rugAt);
+    out.end_ts = t2;
+    const txs = [...new Set(keep.filter((lg) => lg[0] === rugAt).map((lg) => lg[2]))].sort();
+    const rug = { block: rugAt, ts: t2, txs, lp_after: probes[probes.length - 1][1] };
+    if (t2 <= Number(t.end_time)) {
+      const supply = uint(got[i + 1]);
+      let lpb = 0n;
+      holders.forEach((_, n) => { lpb += uint(got[i + 2 + n]); });
+      const ex = t.excluded_all.map((e, n) => [e, uint(got[i + 2 + holders.length + n]).toString()]);
+      Object.assign(rug, { supply: supply.toString(), lp_before: lpb.toString(), excluded: ex, denom: denominator(supply, ex).toString() });
+    }
+    out.rug = rug;
   }
-  out.b = rugAt;
-  const keep = logs.filter((lg) => lg[0] <= rugAt);
-  out.logs = keep;
-  const hr = await rpcSend(url, [["eth_getBlockByNumber", [hex(rugAt), false]]], per);
-  const t2 = ts(hr[0], rugAt);
-  out.end_ts = t2;
-  const txs = [...new Set(keep.filter((lg) => lg[0] === rugAt).map((lg) => lg[2]))].sort();
-  const rug = { block: rugAt, ts: t2, txs, lp_after: probes[probes.length - 1][1] };
-  if (t2 <= Number(t.end_time)) {
-    const sc = [["eth_call", [{ to: t.token, data: "0x18160ddd" }, hex(rugAt - 1)]]];
-    for (const h of holders) sc.push(balCall(pair, h, rugAt - 1));
-    for (const e of t.excluded_all) sc.push(balCall(t.token, e, rugAt - 1));
-    const vals = await rpcSend(url, sc, per);
-    const supply = uint(vals[0]);
-    let lpb = 0n;
-    holders.forEach((_, i) => { lpb += uint(vals[1 + i]); });
-    const ex = t.excluded_all.map((e, i) => [e, uint(vals[1 + holders.length + i]).toString()]);
-    Object.assign(rug, { supply: supply.toString(), lp_before: lpb.toString(), excluded: ex, denom: denominator(supply, ex).toString() });
-  }
-  out.rug = rug;
-  return out;
+  const view = { window: out };
+  if (pr) view.pair = pr;
+  return view;
 }
 
 export function scanRange(t, cursor, fin) {
@@ -189,13 +210,16 @@ export function scanRange(t, cursor, fin) {
 }
 
 /** read_check: both RPCs, compared. -> {facts, range} | {reason, detail, range?} */
+/** read_check: both RPCs, compared. -> {facts, range} | {reason, detail, range} */
 export async function readCheck(chain, t, cursor, first, bFixed = -1) {
   const views = [];
-  let rng;
+  let rng = [0, 0];
   try {
-    const heads = [];
-    for (const url of CHAINS[chain].rpcs) heads.push(await readHead(url, chain));
-    const fin = Math.min(...heads);
+    const urls = CHAINS[chain].rpcs;
+    const a = cursor >= Number(t.start_block) ? cursor + 1 : Number(t.start_block);
+    const opened = [];
+    for (const u of urls) opened.push(await readOpen(u, chain, t, a));
+    const fin = Math.min(opened[0].fin, opened[1].fin);
     rng = scanRange(t, cursor, fin);
     if (bFixed >= 0) {
       const top = rng[0] + CHAINS[chain].check_blocks - 1;
@@ -203,13 +227,10 @@ export async function readCheck(chain, t, cursor, first, bFixed = -1) {
       rng[1] = bFixed;
     }
     if (rng[0] > rng[1]) return { reason: "NOTHING_NEW", detail: "no new finalized block", range: rng };
-    for (const url of CHAINS[chain].rpcs) {
-      const v = { window: await readWindow(url, chain, t, rng[0], rng[1]) };
-      if (first) v.pair = await readPair(url, chain, t);
-      views.push(v);
-    }
+    const surls = CHAINS[chain].state;
+    for (let n = 0; n < urls.length; n++) views.push(await readWindow(urls[n], surls[n], chain, t, rng[0], rng[1], opened[n], first));
   } catch (e) {
-    return { reason: "RPC_UNREADABLE", detail: String(e.message ?? e).slice(0, 60), ...(rng ? { range: rng } : {}) };
+    return { reason: "RPC_UNREADABLE", detail: String(e.message ?? e).slice(0, 60), range: rng };
   }
   if (canon(views[0]) !== canon(views[1])) return { reason: "RPC_DISAGREE", detail: "the two RPCs answer differently", range: rng, views };
   return { facts: views[0], range: rng };
@@ -219,7 +240,7 @@ export async function readHolder(chain, token, holder, rugBlock) {
   const ch = CHAINS[chain];
   const views = [];
   try {
-    for (const url of ch.rpcs) {
+    for (const url of ch.state) {
       const a = await rpcSend(url, [["eth_chainId", []], balCall(token, holder, rugBlock - 1), ["eth_getCode", [holder, "latest"]]], LIMITS[url].batch);
       if (hexInt(a[0]) !== ch.id) throw new ReadFailed("wrong chain id");
       const code = String(a[2]).trim().toLowerCase();

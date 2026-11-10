@@ -849,9 +849,11 @@ class RugBond(gl.contract.Contract):
                 "last_send_at": int(self.last_send_at), "max_period_s": MAX_PERIOD_S, "min_bond": str(MIN_BOND),
                 "max_holders": MAX_HOLDERS, "max_excluded": MAX_EXCLUDED, "max_probes": MAX_PROBES,
                 "replay_grace_s": REPLAY_GRACE_S, "page_max": PAGE_MAX, "statuses": list(STATUSES),
-                "chains": {k: {"chain_id": CHAINS[k][0], "rpcs": list(CHAINS[k][1]), "blocks_per_check": CHAINS[k][2],
-                               "rpc_limits": {u: {"log_window": RPC_LIMITS[u][0], "batch": RPC_LIMITS[u][1]}
-                                              for u in CHAINS[k][1]},
+                "chains": {k: {"chain_id": CHAINS[k][0], "log_rpcs": list(CHAINS[k][1]), "blocks_per_check": CHAINS[k][2],
+                               "state_rpcs": list(CHAINS[k][3]),
+                               "rpc_limits": {u: {"log_window": RPC_LIMITS[u][0], "batch": RPC_LIMITS[u][1],
+                                                  "range_past_head": RPC_LIMITS[u][2]}
+                                              for u in CHAINS[k][1] + CHAINS[k][3]},
                                "factories": FACTORIES.get(k, {})} for k in CHAINS}}
 
     @gl.public.view

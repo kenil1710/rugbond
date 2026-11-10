@@ -116,12 +116,28 @@ Never favorable on missing, pending or stale data. `attest` / `attest_team` stor
 
 ## 6. RPCs
 
-| chain | RPC A | RPC B | blocks per check |
-|---|---|---|---|
-| ethereum | https://gateway.tenderly.co/public/mainnet (logs 80,000 blocks per request, batches of 4) | https://rpc.mevblocker.io (logs 10,000 blocks per request, batches of 12) | 80,000 |
-| base-sepolia | https://base-sepolia.gateway.tenderly.co (40,000, batches of 4) | https://base-sepolia-rpc.publicnode.com (40,000, batches of 12) | 40,000 |
+Two RPCs run by different operators for each kind of read. View A is built from log RPC A and state RPC A, view B
+from log RPC B and state RPC B; the two views must be identical.
 
-Each request is retried up to 4 times on a transport error, a 429 or a 5xx.
+| chain | log RPC A | log RPC B | state RPC A | state RPC B | blocks per check |
+|---|---|---|---|---|---|
+| ethereum | https://gateway.tenderly.co/public/mainnet | https://rpc.mevblocker.io | https://rpc.mevblocker.io | https://eth-mainnet.public.blastapi.io | 80,000 |
+| base-sepolia | https://base-sepolia.gateway.tenderly.co | https://base-sepolia-rpc.publicnode.com | https://base-sepolia-rpc.publicnode.com | https://sepolia.base.org | 40,000 |
+
+| endpoint | blocks per eth_getLogs request | calls per batch | log range past its head |
+|---|---|---|---|
+| https://gateway.tenderly.co/public/mainnet | 80,000 | 3 | accepted |
+| https://rpc.mevblocker.io | 10,000 | 12 | accepted |
+| https://eth-mainnet.public.blastapi.io | (state only) | 12 | accepted |
+| https://base-sepolia.gateway.tenderly.co | 40,000 | 3 | refused: up to the finalized block |
+| https://base-sepolia-rpc.publicnode.com | 40,000 | 12 | refused: up to the finalized block |
+| https://sepolia.base.org | (state only) | 6 | refused: up to the finalized block |
+
+A check asks each endpoint as few times as it can: one batch to each log RPC with the chain id, the finalized head
+and the first log window; the remaining log windows; one batch of state (block headers, pair calls, balances); and
+one more batch when there is a rug snapshot or a factory to ask. The range is cut at the lower of the two log RPCs'
+finalized heads. Claims read the claimant's balance and code from the two state RPCs. Each request is retried up to
+4 times on a transport error, a 429 or a 5xx.
 
 ## 7. Views
 

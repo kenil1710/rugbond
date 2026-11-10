@@ -61,7 +61,7 @@ class Pending(unittest.TestCase):
 
     def test_json_rpc_error_on_balance(self):
         w, reg, s, bid = world()
-        s.rpcs[0].fail = lambda m, p: {"code": 3, "message": "reverted"} if m == "eth_call" else None
+        s.states[0].fail = lambda m, p: {"code": 3, "message": "reverted"} if m == "eth_call" else None
         self.assertPending(w, reg, bid)
 
     def test_wrong_chain_id(self):
@@ -250,7 +250,8 @@ def _gen():
         for side in (0, 1):
             def t(self, m=m, side=side):
                 w, reg, s, bid = world()
-                s.rpcs[side].fail = lambda mm, p, m=m: {"code": -32000, "message": "x"} if mm == m else None
+                target = s.states[side] if m == "eth_call" else s.rpcs[side]
+                target.fail = lambda mm, p, m=m: {"code": -32000, "message": "x"} if mm == m else None
                 r = check(w, reg, bid)
                 self.assertEqual(r["result"], "PENDING")
                 self.assertEqual(get(w, reg, bid)["status"], "ACTIVE")
@@ -260,7 +261,7 @@ def _gen():
             def t(self, m=m, side=side):
                 w, reg, s, bid = world()
                 until_verdict(w, reg, bid)
-                s.rpcs[side].fail = lambda mm, p, m=m: {"code": -32000, "message": "x"} if mm == m else None
+                s.states[side].fail = lambda mm, p, m=m: {"code": -32000, "message": "x"} if mm == m else None
                 with self.assertRaises(Reverted):
                     w.call(reg, "claim", bid, sender=HOLDERS[0])
                 self.assertEqual(get(w, reg, bid)["paid"], "0")

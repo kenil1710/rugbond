@@ -334,6 +334,7 @@ class MockChain:
         self.fail = None      # fn(method, params) -> error dict | None
         self.batch_cap = 12
         self.log_span = 10 ** 9
+        self.head_strict = False
         self.log = []
         self.ts_override = {}
 
@@ -371,7 +372,9 @@ class MockChain:
         if m == "eth_getLogs":
             f = p[0]
             lo = int(f["fromBlock"], 16)
-            hi = int(f["toBlock"], 16)
+            hi = self.finalized if f["toBlock"] == "finalized" else int(f["toBlock"], 16)
+            if hi > self.finalized + 1000 and self.head_strict:
+                return {"jsonrpc": "2.0", "id": rid, "error": {"code": -32602, "message": "block range extends beyond current head block"}}
             if hi - lo + 1 > self.log_span:
                 return {"jsonrpc": "2.0", "id": rid, "error": {"code": -32602, "message": "block range too large"}}
             addr = str(f.get("address", "")).lower()

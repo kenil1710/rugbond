@@ -56,16 +56,16 @@ class DocsMatchCode(unittest.TestCase):
         self.assertEqual(RB.PAGE_MAX, 50)
         self.assertIn("limit at most 50", RULES)
         self.assertEqual(RB.RPC_TRIES, 4)
-        self.assertIn("retried up to 4 times", RULES)
+        self.assertIn("retried up to 4 times", " ".join(RULES.split()))
 
     def test_rpcs_and_spans(self):
         for ch, v in RB.CHAINS.items():
-            self.assertIn("| %s | %s" % (ch, v[1][0]), RULES)
-            self.assertIn(v[1][1], RULES)
-            self.assertIn(fmt(v[2]) + " |", RULES)
-            for u in v[1]:
-                self.assertIn("%s (%s" % (u, ("logs " if ch == "ethereum" else "") + fmt(RB.RPC_LIMITS[u][0])), RULES)
-                self.assertIn("batches of %d" % RB.RPC_LIMITS[u][1], RULES)
+            self.assertIn("| %s | %s | %s | %s | %s | %s |" % (ch, v[1][0], v[1][1], v[3][0], v[3][1], fmt(v[2])), RULES)
+            for u in set(v[1]) | set(v[3]):
+                lim = RB.RPC_LIMITS[u]
+                span = fmt(lim[0]) if u in v[1] else "(state only)"
+                past = "accepted" if lim[2] else "refused: up to the finalized block"
+                self.assertIn("| %s | %s | %d | %s |" % (u, span, lim[1], past), RULES)
         self.assertIn("80,000 blocks on Ethereum, 40,000 on Base Sepolia", RULES)
 
     def test_refusal_reasons_exist_in_code(self):

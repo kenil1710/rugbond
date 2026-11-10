@@ -9,6 +9,7 @@ import pytest
 
 RPC_A = "https://base-sepolia.gateway.tenderly.co"
 RPC_B = "https://base-sepolia-rpc.publicnode.com"
+RPC_C = "https://sepolia.base.org"           # state RPC B
 TRANSFER = "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"
 FACTORY = "0x7ae58f10f7849ca6f5fb71b7f45cb416c9204b1e"
 GEN = 10 ** 18
@@ -91,7 +92,8 @@ class Chain:
             r = self.code.get(p[0], "0x")
         elif m == "eth_getLogs":
             f = p[0]
-            lo, hi = int(f["fromBlock"], 16), int(f["toBlock"], 16)
+            lo = int(f["fromBlock"], 16)
+            hi = self.fin if f["toBlock"] == "finalized" else int(f["toBlock"], 16)
             want = f["topics"][1]
             r = [l for l in self.logs if lo <= int(l["blockNumber"], 16) <= hi and l["address"] == f["address"]
                  and l["topics"][1] in want]
@@ -110,7 +112,8 @@ class Chain:
 
 
 class Net:
-    """Both RPC URLs; each can be its own chain, down, or failing."""
+    """The RPC URLs: log A (Tenderly) and log B + state A (PublicNode) read chain `a`; state B (sepolia.base.org)
+    reads chain `b`. Each can be its own chain, down, or failing."""
 
     def __init__(self):
         self.a = Chain()
@@ -121,7 +124,7 @@ class Net:
         url = data.get("url", "")
         if url in self.down:
             return {"ok": {"response": {"status": 503, "headers": {}, "body": b"down"}}}
-        ch = self.a if url == RPC_A else self.b if url == RPC_B else None
+        ch = self.a if url in (RPC_A, RPC_B) else self.b if url == RPC_C else None
         if ch is None:
             return {"ok": {"response": {"status": 404, "headers": {}, "body": b""}}}
         body = data.get("body")

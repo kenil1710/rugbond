@@ -94,25 +94,30 @@ PAGE_MAX = 50
 # ==== shared helpers: contracts/shared/common.py, inlined by tools/build.py; edit there ====
 # The runner rejects the str replace method; slice around find() instead.
 
-# chain -> (chain id, (RPC A, RPC B), blocks one check reads)
-# Every read is made on BOTH RPCs of the chain and refused unless they answer
-# identically. Each pair is run by two different operators and serves archive
-# state (eth_call at old blocks) and eth_getLogs filtered by address and topic
-# over old blocks, from GenVM with every validator reading at once
-# (docs/FEASIBILITY.md). tools/lib/chains.mjs holds the same table.
+# chain -> (chain id, (log RPC A, log RPC B), blocks one check reads, (state RPC A, state RPC B))
+# Every read is made from TWO RPCs run by different operators and refused unless
+# they answer identically: the LP Transfer logs from the two log RPCs, the
+# balances, headers and pair calls (archive state) from the two state RPCs. A
+# check builds view A from log A + state A and view B from log B + state B and
+# compares them. Each endpoint is used for what it serves from GenVM with every
+# validator reading at once (docs/FEASIBILITY.md). tools/lib/chains.mjs holds the
+# same table.
 CHAINS = {
-    "ethereum": (1, ("https://gateway.tenderly.co/public/mainnet", "https://rpc.mevblocker.io"), 80000),
+    "ethereum": (1, ("https://gateway.tenderly.co/public/mainnet", "https://rpc.mevblocker.io"), 80000,
+                 ("https://rpc.mevblocker.io", "https://eth-mainnet.public.blastapi.io")),
     "base-sepolia": (84532, ("https://base-sepolia.gateway.tenderly.co", "https://base-sepolia-rpc.publicnode.com"),
-                     40000),
+                     40000, ("https://base-sepolia-rpc.publicnode.com", "https://sepolia.base.org")),
 }
-# url -> (blocks per eth_getLogs request, calls per JSON-RPC batch): what each
-# endpoint serves without throttling validators that read at once. The two RPCs
-# may cut a range differently; the merged logs are what is compared.
+# url -> (blocks per eth_getLogs request, calls per JSON-RPC batch, accepts a log
+# range past its head). The two log RPCs may cut a range differently; the merged
+# logs are what is compared.
 RPC_LIMITS = {
-    "https://gateway.tenderly.co/public/mainnet": (80000, 4),
-    "https://rpc.mevblocker.io": (10000, 12),
-    "https://base-sepolia.gateway.tenderly.co": (40000, 4),
-    "https://base-sepolia-rpc.publicnode.com": (40000, 12),
+    "https://gateway.tenderly.co/public/mainnet": (80000, 3, True),
+    "https://rpc.mevblocker.io": (10000, 12, True),
+    "https://eth-mainnet.public.blastapi.io": (10, 12, True),
+    "https://base-sepolia.gateway.tenderly.co": (40000, 3, False),
+    "https://base-sepolia-rpc.publicnode.com": (40000, 12, False),
+    "https://sepolia.base.org": (200, 6, False),
 }
 TRANSFER = "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"
 ZERO = "0x" + "0" * 40
@@ -367,13 +372,14 @@ def _raw(res: typing.Any) -> bytes:
 
 def rpc_url_allowed(url: str) -> bool:
     for ch in CHAINS:
-        if url in CHAINS[ch][1]:
+        if url in CHAINS[ch][1] or url in CHAINS[ch][3]:
             return True
     return False
 
 
-def parse_batch(doc: typing.Any, n: int) -> list:
-    """A JSON-RPC batch answer -> results in call order. Any error raises."""
+def parse_batch(doc: typing.Any, n: int, soft: int = -1) -> list:
+    """A JSON-RPC batch answer -> results in call order. Any error raises,
+    except at index `soft`, which then reads None."""
     if isinstance(doc, dict):
         doc = [doc]
     if not isinstance(doc, list):
@@ -388,6 +394,9 @@ def parse_batch(doc: typing.Any, n: int) -> list:
         if item is None:
             raise ReadFailed("missing id")
         if "error" in item and item["error"] is not None:
+            if i == soft:
+                out.append(None)
+                continue
             raise ReadFailed("rpc error")
         if "result" not in item:
             raise ReadFailed("no result")
@@ -395,7 +404,7 @@ def parse_batch(doc: typing.Any, n: int) -> list:
     return out
 
 
-def rpc_send(url: str, calls: list, per: int) -> list:
+def rpc_send(url: str, calls: list, per: int, soft: int = -1) -> list:
     """One endpoint, every call, in JSON-RPC batches of `per` calls. A batch is
     retried (up to RPC_TRIES) on a transport failure, a 429 or 5xx, or an
     answer that is not a usable batch."""
@@ -423,7 +432,8 @@ def rpc_send(url: str, calls: list, per: int) -> list:
                     break
                 continue
             try:
-                got = parse_batch(json.loads(_raw(res).decode("utf-8", errors="replace")), len(chunk))
+                got = parse_batch(json.loads(_raw(res).decode("utf-8", errors="replace")), len(chunk),
+                                  soft - i if 0 <= soft - i < len(chunk) else -1)
                 break
             except ReadFailed as e:
                 why = str(e)
@@ -453,18 +463,6 @@ def _uint(v: typing.Any) -> int:
     return n
 
 
-def read_head(url: str, chain: str) -> int:
-    """The finalized block number on one endpoint (its chain id checked)."""
-    ch = CHAINS[chain]
-    a = rpc_send(url, [["eth_chainId", []], ["eth_getBlockByNumber", ["finalized", False]]], RPC_LIMITS[url][1])
-    if _hex_int(a[0]) != ch[0]:
-        raise ReadFailed("wrong chain id")
-    fin = _hex_int(a[1].get("number")) if isinstance(a[1], dict) else -1
-    if fin < 0:
-        raise ReadFailed("no finalized head")
-    return fin
-
-
 def _ts(h: typing.Any, n: int) -> int:
     if not isinstance(h, dict) or _hex_int(h.get("number")) != n:
         raise ReadFailed("header")
@@ -474,73 +472,11 @@ def _ts(h: typing.Any, n: int) -> int:
     return t
 
 
-def read_pair(url: str, chain: str, t: dict) -> dict:
-    """Is the bond's pair a genuine V2-style pool of the bond's token? token0,
-    token1, factory() of the pair, then the factory's own mapping back."""
-    per = RPC_LIMITS[url][1]
-    p = t["pair"]
-    a = rpc_send(url, [["eth_call", [{"to": p, "data": "0x0dfe1681"}, "latest"]],
-                       ["eth_call", [{"to": p, "data": "0xd21220a7"}, "latest"]],
-                       ["eth_call", [{"to": p, "data": "0xc45a0155"}, "latest"]]], per)
-    t0 = _word_addr(a[0])
-    t1 = _word_addr(a[1])
-    fac = _word_addr(a[2])
-    out = {"token0": t0, "token1": t1, "factory": fac, "ok": False, "why": ""}
-    if t0 == "" or t1 == "" or fac == "":
-        out["why"] = "NOT_A_PAIR"
-        return out
-    if t["token"] != t0 and t["token"] != t1:
-        out["why"] = "TOKEN_NOT_IN_PAIR"
-        return out
-    how = FACTORIES.get(chain, {}).get(fac, "")
-    if how == "":
-        out["why"] = "UNKNOWN_FACTORY"
-        return out
-    data = ("0xe6a43905" if how == "getPair" else "0x79bc57d5") + "0" * 24 + t0[2:] + "0" * 24 + t1[2:]
-    if how == "getPool":
-        data = data + "0" * 64          # stable = false: volatile pools only
-    b = rpc_send(url, [["eth_call", [{"to": fac, "data": data}, "latest"]]], per)
-    if _word_addr(b[0]) != p:
-        out["why"] = "FACTORY_DOES_NOT_KNOW_PAIR"
-        return out
-    out["ok"] = True
-    return out
-
-
-def read_window(url: str, chain: str, t: dict, a: int, b: int) -> dict:
-    """Blocks [a, b] of one bond from ONE endpoint (both are read; the caller
-    compares). -> {a, b, logs, probes, rug, end_ts, pair}
-      logs    every LP Transfer out of an LP holder in [a, b] (eth_getLogs on
-              the pair, topic1 = any holder, one call per log window):
-              [block, log index, tx, from, to, amount]
-      probes  [block, summed LP balance of the holders at the end of that block]
-              for the start block (first check) and each block with such a
-              transfer, in order, up to MAX_PROBES, stopping at the first below
-              min_lp. More blocks than that: b is cut before the first unread one.
-      rug     that first block below min_lp: its timestamp, the transfers in it,
-              and the token snapshot at R-1 (totalSupply and every excluded
-              address's balance), or None
-      end_ts  the timestamp of b (of R when there is a rug)
-      start_ts the start block's timestamp on the first check (else 0)
-    Any transport or JSON-RPC failure raises ReadFailed."""
-    span = RPC_LIMITS[url][0]
-    per = RPC_LIMITS[url][1]
+def _parse_logs(parts: list, t: dict, a: int, b: int) -> list:
     pair = t["pair"]
     holders = t["lp_holders"]
-    start = int(t["start_block"])
-    floor = int(t["min_lp"])
-    topics = [TRANSFER, [_pad(h) for h in holders]]
-    calls = []
-    w = a
-    while w <= b:
-        z = w + span - 1
-        if z > b:
-            z = b
-        calls.append(["eth_getLogs", [{"address": pair, "topics": topics, "fromBlock": hex(w), "toBlock": hex(z)}]])
-        w = z + 1
-    got = rpc_send(url, calls, 1)          # one eth_getLogs per request: both gateways meter batched log queries
     logs = []
-    for part in got:
+    for part in parts:
         if not isinstance(part, list):
             raise ReadFailed("logs")
         for lg in part:
@@ -556,10 +492,79 @@ def read_window(url: str, chain: str, t: dict, a: int, b: int) -> dict:
             blk = _hex_int(lg.get("blockNumber"))
             li = _hex_int(lg.get("logIndex"))
             txh = _hash32(lg.get("transactionHash", ""))
-            if frm not in holders or to == "" or amt < 0 or blk < a or blk > b or li < 0 or txh == "":
+            if frm not in holders or to == "" or amt < 0 or blk < a or li < 0 or txh == "":
                 raise ReadFailed("log fields")
-            logs.append([blk, li, txh, frm, to, str(amt)])
-    logs = sorted(logs, key=lambda x: x[0] * 1000000 + x[1])
+            if blk <= b:
+                logs.append([blk, li, txh, frm, to, str(amt)])
+    return sorted(logs, key=lambda x: x[0] * 1000000 + x[1])
+
+
+def _logs_call(t: dict, w: int, z: int) -> list:
+    return ["eth_getLogs", [{"address": t["pair"], "topics": [TRANSFER, [_pad(h) for h in t["lp_holders"]]],
+                             "fromBlock": hex(w), "toBlock": hex(z)}]]
+
+
+def read_open(url: str, chain: str, t: dict, a: int) -> dict:
+    """Request 1 on one endpoint: chain id, finalized head and the first log
+    window from block a. An endpoint that refuses ranges past its head is asked
+    up to its "finalized" block; if that range is too long for it, the logs are
+    read in windows afterwards (logs None, to = a - 1). Blocks past the check's
+    range are dropped later."""
+    lim = RPC_LIMITS[url]
+    top = a + CHAINS[chain][2] - 1
+    z = a + lim[0] - 1
+    if z > top:
+        z = top
+    call = _logs_call(t, a, z)
+    if not lim[2]:
+        call[1][0]["toBlock"] = "finalized"
+    r = rpc_send(url, [["eth_chainId", []], ["eth_getBlockByNumber", ["finalized", False]], call], 3, 2)
+    if _hex_int(r[0]) != CHAINS[chain][0]:
+        raise ReadFailed("wrong chain id")
+    fin = _hex_int(r[1].get("number")) if isinstance(r[1], dict) else -1
+    if fin < 0:
+        raise ReadFailed("no finalized head")
+    if r[2] is None:
+        return {"fin": fin, "logs": [], "to": a - 1}
+    return {"fin": fin, "logs": r[2], "to": z if lim[2] else (fin if fin < top else top)}
+
+
+def read_window(url: str, surl: str, chain: str, t: dict, a: int, b: int, opened: dict, first: bool) -> dict:
+    """Blocks [a, b] of one bond as ONE view: logs from the log endpoint `url`,
+    state from the state endpoint `surl` (both views are read; the caller
+    compares), in as few requests as each endpoint allows: the opening request
+    (read_open), the rest of the log windows, one batch of state, and one more
+    when there is a rug or a pair to check. -> {"window": ..., "pair": ...}
+      logs    every LP Transfer out of an LP holder in [a, b] (eth_getLogs on
+              the pair, topic1 = any holder): [block, log index, tx, from, to, amount]
+      probes  [block, summed LP balance of the holders at the end of that block]
+              for the start block (first check) and each block with such a
+              transfer, in order, up to MAX_PROBES, stopping at the first below
+              min_lp. More blocks than that: b is cut before the first unread one.
+      rug     that first block below min_lp: its timestamp, the transfers in it,
+              and the token snapshot at R-1 (totalSupply and every excluded
+              address's balance), or None
+      end_ts  the timestamp of b (of R when there is a rug)
+      start_ts the start block's timestamp on the first check (else 0)
+    Any transport or JSON-RPC failure raises ReadFailed."""
+    span = RPC_LIMITS[url][0]
+    per = RPC_LIMITS[surl][1]
+    pair = t["pair"]
+    holders = t["lp_holders"]
+    start = int(t["start_block"])
+    floor = int(t["min_lp"])
+    parts = [opened["logs"]]
+    w = int(opened["to"]) + 1
+    more = []
+    while w <= b:
+        z = w + span - 1
+        if z > b:
+            z = b
+        more.append(_logs_call(t, w, z))
+        w = z + 1
+    if len(more) > 0:
+        parts = parts + rpc_send(url, more, 1)
+    logs = _parse_logs(parts, t, a, b)
     pb = []
     if a == start:
         pb.append(start)
@@ -574,80 +579,118 @@ def read_window(url: str, chain: str, t: dict, a: int, b: int) -> dict:
             if lg[0] <= b:
                 keep.append(lg)
         logs = keep
+    sc = [["eth_getBlockByNumber", [hex(b), False]]]
+    if a == start:
+        sc.append(["eth_getBlockByNumber", [hex(start), False]])
+    if first:
+        sc.append(["eth_call", [{"to": pair, "data": "0x0dfe1681"}, "latest"]])
+        sc.append(["eth_call", [{"to": pair, "data": "0xd21220a7"}, "latest"]])
+        sc.append(["eth_call", [{"to": pair, "data": "0xc45a0155"}, "latest"]])
+    k0 = len(sc)
+    for blk in pb:
+        for h in holders:
+            sc.append(_bal_call(pair, h, blk))
+    vals = rpc_send(surl, sc, per)
+    end_ts = _ts(vals[0], b)
+    start_ts = _ts(vals[1], start) if a == start else 0
+    pr = None
+    if first:
+        j = 2 if a == start else 1
+        pr = {"token0": _word_addr(vals[j]), "token1": _word_addr(vals[j + 1]), "factory": _word_addr(vals[j + 2]),
+              "ok": False, "why": ""}
     probes = []
     rug_at = -1
-    if len(pb) > 0:
-        sc = []
-        for blk in pb:
-            for h in holders:
-                sc.append(_bal_call(pair, h, blk))
-        vals = rpc_send(url, sc, per)
-        k = 0
-        for blk in pb:
-            s = 0
-            for h in holders:
-                s += _uint(vals[k])
-                k += 1
-            probes.append([blk, str(s)])
-            if s < floor:
-                rug_at = blk
-                break
-    out = {"a": a, "b": b, "logs": logs, "probes": probes, "rug": None, "end_ts": 0, "start_ts": 0}
-    if a == start:
-        hs = rpc_send(url, [["eth_getBlockByNumber", [hex(start), False]]], per)
-        out["start_ts"] = _ts(hs[0], start)
-    if rug_at < 0:
-        hb = rpc_send(url, [["eth_getBlockByNumber", [hex(b), False]]], per)
-        out["end_ts"] = _ts(hb[0], b)
-        return out
-    out["b"] = rug_at
-    keep = []
-    for lg in logs:
-        if lg[0] <= rug_at:
-            keep.append(lg)
-    out["logs"] = keep
-    hr = rpc_send(url, [["eth_getBlockByNumber", [hex(rug_at), False]]], per)
-    ts = _ts(hr[0], rug_at)
-    out["end_ts"] = ts
-    txs = []
-    for lg in keep:
-        if lg[0] == rug_at and lg[2] not in txs:
-            txs.append(lg[2])
-    rug = {"block": rug_at, "ts": ts, "txs": sorted(txs), "lp_after": probes[len(probes) - 1][1]}
-    if ts <= int(t["end_time"]):
-        sc = [["eth_call", [{"to": t["token"], "data": "0x18160ddd"}, hex(rug_at - 1)]]]
+    k = k0
+    for blk in pb:
+        tot = 0
         for h in holders:
-            sc.append(_bal_call(pair, h, rug_at - 1))
+            tot += _uint(vals[k])
+            k += 1
+        probes.append([blk, str(tot)])
+        if tot < floor:
+            rug_at = blk
+            break
+    third = []
+    how = ""
+    if pr is not None:
+        if pr["token0"] == "" or pr["token1"] == "" or pr["factory"] == "":
+            pr["why"] = "NOT_A_PAIR"
+        elif t["token"] != pr["token0"] and t["token"] != pr["token1"]:
+            pr["why"] = "TOKEN_NOT_IN_PAIR"
+        else:
+            how = FACTORIES.get(chain, {}).get(pr["factory"], "")
+            if how == "":
+                pr["why"] = "UNKNOWN_FACTORY"
+            else:
+                data = ("0xe6a43905" if how == "getPair" else "0x79bc57d5") + "0" * 24 + pr["token0"][2:] + "0" * 24 + \
+                    pr["token1"][2:]
+                if how == "getPool":
+                    data = data + "0" * 64          # stable = false: volatile pools only
+                third.append(["eth_call", [{"to": pr["factory"], "data": data}, "latest"]])
+    out = {"a": a, "b": b, "logs": logs, "probes": probes, "rug": None, "end_ts": end_ts, "start_ts": start_ts}
+    snap = rug_at >= 0
+    if snap:
+        third.append(["eth_getBlockByNumber", [hex(rug_at), False]])
+        third.append(["eth_call", [{"to": t["token"], "data": "0x18160ddd"}, hex(rug_at - 1)]])
+        for h in holders:
+            third.append(_bal_call(pair, h, rug_at - 1))
         for e in t["excluded_all"]:
-            sc.append(_bal_call(t["token"], e, rug_at - 1))
-        vals = rpc_send(url, sc, per)
-        supply = _uint(vals[0])
-        lpb = 0
-        for i in range(len(holders)):
-            lpb += _uint(vals[1 + i])
-        ex = []
-        for i in range(len(t["excluded_all"])):
-            ex.append([t["excluded_all"][i], str(_uint(vals[1 + len(holders) + i]))])
-        rug["supply"] = str(supply)
-        rug["lp_before"] = str(lpb)
-        rug["excluded"] = ex
-        rug["denom"] = str(snapshot_denominator(supply, ex))
-    out["rug"] = rug
-    return out
+            third.append(_bal_call(t["token"], e, rug_at - 1))
+    got = rpc_send(surl, third, per) if len(third) > 0 else []
+    i = 0
+    if how != "":
+        pr["ok"] = _word_addr(got[0]) == pair
+        if not pr["ok"]:
+            pr["why"] = "FACTORY_DOES_NOT_KNOW_PAIR"
+        i = 1
+    if snap:
+        out["b"] = rug_at
+        keep = []
+        for lg in logs:
+            if lg[0] <= rug_at:
+                keep.append(lg)
+        out["logs"] = keep
+        ts = _ts(got[i], rug_at)
+        out["end_ts"] = ts
+        txs = []
+        for lg in keep:
+            if lg[0] == rug_at and lg[2] not in txs:
+                txs.append(lg[2])
+        rug = {"block": rug_at, "ts": ts, "txs": sorted(txs), "lp_after": probes[len(probes) - 1][1]}
+        if ts <= int(t["end_time"]):
+            supply = _uint(got[i + 1])
+            lpb = 0
+            for n in range(len(holders)):
+                lpb += _uint(got[i + 2 + n])
+            ex = []
+            for n in range(len(t["excluded_all"])):
+                ex.append([t["excluded_all"][n], str(_uint(got[i + 2 + len(holders) + n]))])
+            rug["supply"] = str(supply)
+            rug["lp_before"] = str(lpb)
+            rug["excluded"] = ex
+            rug["denom"] = str(snapshot_denominator(supply, ex))
+        out["rug"] = rug
+    view = {"window": out}
+    if pr is not None:
+        view["pair"] = pr
+    return view
 
 
 def read_check(chain: str, t: dict, cursor: int, first: bool, b_fixed: int) -> dict:
     """One rug check read from BOTH RPCs of the chain ->
-    {"facts": ...} when they agree, else {"reason": ..., "detail": ...}
+    {"facts": ..., "range": [a, b]} when they agree, else {"reason": ..., "detail": ...}
     (RPC_UNREADABLE, RPC_DISAGREE, NOTHING_NEW). b_fixed < 0: the leader picks b
     (cut at the lower of the two finalized heads); else a validator re-reads the
     leader's range and needs b at or below both its finalized heads."""
     views = []
+    rng = [0, 0]
     try:
-        heads = []
-        for url in CHAINS[chain][1]:
-            heads.append(read_head(url, chain))
-        fin = heads[0] if heads[0] < heads[1] else heads[1]
+        urls = CHAINS[chain][1]
+        a = cursor + 1 if cursor >= int(t["start_block"]) else int(t["start_block"])
+        opened = []
+        for url in urls:
+            opened.append(read_open(url, chain, t, a))
+        fin = opened[0]["fin"] if opened[0]["fin"] < opened[1]["fin"] else opened[1]["fin"]
         rng = scan_range(t, cursor, fin)
         if b_fixed >= 0:
             top = rng[0] + CHAINS[chain][2] - 1
@@ -656,15 +699,13 @@ def read_check(chain: str, t: dict, cursor: int, first: bool, b_fixed: int) -> d
             rng[1] = b_fixed
         if rng[0] > rng[1]:
             return {"reason": "NOTHING_NEW", "detail": "no new finalized block", "range": rng}
-        for url in CHAINS[chain][1]:
-            v = {"window": read_window(url, chain, t, rng[0], rng[1])}
-            if first:
-                v["pair"] = read_pair(url, chain, t)
-            views.append(v)
+        surls = CHAINS[chain][3]
+        for n in range(len(urls)):
+            views.append(read_window(urls[n], surls[n], chain, t, rng[0], rng[1], opened[n], first))
     except ReadFailed as e:
-        return {"reason": "RPC_UNREADABLE", "detail": str(e)[:60]}
+        return {"reason": "RPC_UNREADABLE", "detail": str(e)[:60], "range": rng}
     except Exception:
-        return {"reason": "RPC_UNREADABLE", "detail": "unexpected answer"}
+        return {"reason": "RPC_UNREADABLE", "detail": "unexpected answer", "range": rng}
     if _canon(views[0]) != _canon(views[1]):
         return {"reason": "RPC_DISAGREE", "detail": "the two RPCs answer differently", "range": rng}
     return {"facts": views[0], "range": rng}
@@ -672,11 +713,11 @@ def read_check(chain: str, t: dict, cursor: int, first: bool, b_fixed: int) -> d
 
 def read_holder(chain: str, token: str, holder: str, rug_block: int) -> dict:
     """A claimant's token balance at R-1 and whether it has code now, from BOTH
-    RPCs -> {"balance": n, "code": bool} or {"reason": ..., "detail": ...}."""
+    state RPCs -> {"balance": n, "code": bool} or {"reason": ..., "detail": ...}."""
     ch = CHAINS[chain]
     views = []
     try:
-        for url in ch[1]:
+        for url in ch[3]:
             a = rpc_send(url, [["eth_chainId", []], _bal_call(token, holder, rug_block - 1),
                                ["eth_getCode", [holder, "latest"]]], RPC_LIMITS[url][1])
             if _hex_int(a[0]) != ch[0]:
@@ -1452,9 +1493,11 @@ class RugBond(gl.contract.Contract):
                 "last_send_at": int(self.last_send_at), "max_period_s": MAX_PERIOD_S, "min_bond": str(MIN_BOND),
                 "max_holders": MAX_HOLDERS, "max_excluded": MAX_EXCLUDED, "max_probes": MAX_PROBES,
                 "replay_grace_s": REPLAY_GRACE_S, "page_max": PAGE_MAX, "statuses": list(STATUSES),
-                "chains": {k: {"chain_id": CHAINS[k][0], "rpcs": list(CHAINS[k][1]), "blocks_per_check": CHAINS[k][2],
-                               "rpc_limits": {u: {"log_window": RPC_LIMITS[u][0], "batch": RPC_LIMITS[u][1]}
-                                              for u in CHAINS[k][1]},
+                "chains": {k: {"chain_id": CHAINS[k][0], "log_rpcs": list(CHAINS[k][1]), "blocks_per_check": CHAINS[k][2],
+                               "state_rpcs": list(CHAINS[k][3]),
+                               "rpc_limits": {u: {"log_window": RPC_LIMITS[u][0], "batch": RPC_LIMITS[u][1],
+                                                  "range_past_head": RPC_LIMITS[u][2]}
+                                              for u in CHAINS[k][1] + CHAINS[k][3]},
                                "factories": FACTORIES.get(k, {})} for k in CHAINS}}
 
     @gl.public.view

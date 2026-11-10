@@ -4,7 +4,7 @@ Covers RUGGED and HELD verdicts, claims, validator agreement and disagreement,
 forged leader results, RPC failures and disagreement between the RPCs."""
 import json
 
-from conftest import GEN, HOLDERS, PAIR, RPC_A, RPC_B, START, TEAM, Chain, warp
+from conftest import GEN, HOLDERS, PAIR, RPC_A, RPC_B, RPC_C, START, TEAM, Chain, warp
 
 
 def test_rug_is_detected_at_the_first_block(direct_vm, net, contract, bond):
@@ -39,7 +39,7 @@ def test_validator_agrees_on_the_same_data(direct_vm, net, contract, bond):
 def test_validator_disagrees_when_its_rpcs_answer_differently(direct_vm, net, contract, bond):
     net.a.rug(START + 300)
     contract.check(bond)
-    net.a.logs[0]["data"] = net.a.logs[0]["data"][:-1] + "7"
+    net.a.logs[0]["transactionHash"] = "0x" + "7" * 64
     assert direct_vm.run_validator() is False
 
 

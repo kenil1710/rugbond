@@ -142,21 +142,36 @@ class Sim:
         return self
 
     def install(self, fin=None):
+        """One mock per endpoint URL: rpcs[0] answers log RPC A, rpcs[1] log RPC B; states[i] answers state RPC i
+        (an endpoint that is both a log and a state RPC is one mock, as it is one server)."""
         if fin is not None:
             self.fin = fin
         self.c.finalized = self.fin
         chains = module("RugBond").CHAINS
-        out = []
-        for url in (chains[self.chain][1] if self.chain in chains else ()):
-            cc = copy.deepcopy(self.c)
-            stub.WEB.chains[url] = cc
-            out.append(cc)
-        self.rpcs = out
+        by_url = {}
+        if self.chain in chains:
+            for url in list(chains[self.chain][1]) + list(chains[self.chain][3]):
+                if url not in by_url:
+                    by_url[url] = copy.deepcopy(self.c)
+                    stub.WEB.chains[url] = by_url[url]
+            self.rpcs = [by_url[u] for u in chains[self.chain][1]]
+            self.states = [by_url[u] for u in chains[self.chain][3]]
         return self
+
+    def all_mocks(self):
+        out = []
+        for c in self.rpcs + self.states:
+            if c not in out:
+                out.append(c)
+        return out
 
 
 def urls(chain):
     return module("RugBond").CHAINS[chain][1]
+
+
+def surls(chain):
+    return module("RugBond").CHAINS[chain][3]
 
 
 def fresh(mode="DEMO", now=NOW):

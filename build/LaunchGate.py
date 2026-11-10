@@ -48,25 +48,30 @@ MAX_TEAM_BONDS = 200
 # ==== shared helpers: contracts/shared/common.py, inlined by tools/build.py; edit there ====
 # The runner rejects the str replace method; slice around find() instead.
 
-# chain -> (chain id, (RPC A, RPC B), blocks one check reads)
-# Every read is made on BOTH RPCs of the chain and refused unless they answer
-# identically. Each pair is run by two different operators and serves archive
-# state (eth_call at old blocks) and eth_getLogs filtered by address and topic
-# over old blocks, from GenVM with every validator reading at once
-# (docs/FEASIBILITY.md). tools/lib/chains.mjs holds the same table.
+# chain -> (chain id, (log RPC A, log RPC B), blocks one check reads, (state RPC A, state RPC B))
+# Every read is made from TWO RPCs run by different operators and refused unless
+# they answer identically: the LP Transfer logs from the two log RPCs, the
+# balances, headers and pair calls (archive state) from the two state RPCs. A
+# check builds view A from log A + state A and view B from log B + state B and
+# compares them. Each endpoint is used for what it serves from GenVM with every
+# validator reading at once (docs/FEASIBILITY.md). tools/lib/chains.mjs holds the
+# same table.
 CHAINS = {
-    "ethereum": (1, ("https://gateway.tenderly.co/public/mainnet", "https://rpc.mevblocker.io"), 80000),
+    "ethereum": (1, ("https://gateway.tenderly.co/public/mainnet", "https://rpc.mevblocker.io"), 80000,
+                 ("https://rpc.mevblocker.io", "https://eth-mainnet.public.blastapi.io")),
     "base-sepolia": (84532, ("https://base-sepolia.gateway.tenderly.co", "https://base-sepolia-rpc.publicnode.com"),
-                     40000),
+                     40000, ("https://base-sepolia-rpc.publicnode.com", "https://sepolia.base.org")),
 }
-# url -> (blocks per eth_getLogs request, calls per JSON-RPC batch): what each
-# endpoint serves without throttling validators that read at once. The two RPCs
-# may cut a range differently; the merged logs are what is compared.
+# url -> (blocks per eth_getLogs request, calls per JSON-RPC batch, accepts a log
+# range past its head). The two log RPCs may cut a range differently; the merged
+# logs are what is compared.
 RPC_LIMITS = {
-    "https://gateway.tenderly.co/public/mainnet": (80000, 4),
-    "https://rpc.mevblocker.io": (10000, 12),
-    "https://base-sepolia.gateway.tenderly.co": (40000, 4),
-    "https://base-sepolia-rpc.publicnode.com": (40000, 12),
+    "https://gateway.tenderly.co/public/mainnet": (80000, 3, True),
+    "https://rpc.mevblocker.io": (10000, 12, True),
+    "https://eth-mainnet.public.blastapi.io": (10, 12, True),
+    "https://base-sepolia.gateway.tenderly.co": (40000, 3, False),
+    "https://base-sepolia-rpc.publicnode.com": (40000, 12, False),
+    "https://sepolia.base.org": (200, 6, False),
 }
 TRANSFER = "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"
 ZERO = "0x" + "0" * 40
