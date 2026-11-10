@@ -6,7 +6,7 @@
 //   node tools/feasibility.mjs [--only=id,id]
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { scanToVerdict, readHolder, shareOf, rpcSend, rpcStats, canon } from "./lib/rug.mjs";
-import { CHAINS, TRANSFER } from "./lib/chains.mjs";
+import { ALL_CHAINS as CHAINS, TRANSFER } from "./lib/chains.mjs";
 import { termsOf } from "./lib/terms.mjs";
 const root = new URL("../", import.meta.url);
 const only = process.argv.find((a) => a.startsWith("--only="))?.slice(7).split(",");

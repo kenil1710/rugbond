@@ -7,7 +7,7 @@
 // team / pair / token / LP holders / zero / dead.
 //   node tools/make_cases.mjs
 import { readFileSync, writeFileSync } from "node:fs";
-import { CHAINS } from "./lib/chains.mjs";
+import { ALL_CHAINS as CHAINS } from "./lib/chains.mjs";
 import { rpcSend } from "./lib/rug.mjs";
 const root = new URL("../", import.meta.url);
 const picks = JSON.parse(readFileSync(new URL("data/picks.json", root)));

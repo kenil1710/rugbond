@@ -1,7 +1,7 @@
 // docs/feasibility.json + docs/feasibility_genvm.json -> docs/FEASIBILITY.md
 //   node tools/feasibility_md.mjs
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
-import { CHAINS } from "./lib/chains.mjs";
+import { ALL_CHAINS as CHAINS } from "./lib/chains.mjs";
 const root = new URL("../", import.meta.url);
 const F = JSON.parse(readFileSync(new URL("docs/feasibility.json", root)));
 const G = existsSync(new URL("docs/feasibility_genvm.json", root)) ? JSON.parse(readFileSync(new URL("docs/feasibility_genvm.json", root))) : { rows: [] };

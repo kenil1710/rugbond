@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-10T11:42:07.085Z",
+ "generated_at": "2026-11-10T11:57:19.264Z",
  "cases": [
   {
    "id": "eth-01",
@@ -415,6 +415,94 @@
    "min_lp": "999999999999999000",
    "start_ts": 1783753187,
    "end_time": 1784357987,
+   "excluded": [
+    "0x7a250d5630b4cf539739df2c5dacb4c659f2488d",
+    "0x66a9893cc07d91d95644aedd05d03f95e1dba8af",
+    "0x3fc91a3afd70395cd496c647d5a6cc9d4b2b7fad",
+    "0xd9e1ce17f2641f24ae83637ab66a2cca9c378b9f"
+   ]
+  },
+  {
+   "id": "eth-20",
+   "chain": "ethereum",
+   "kind": "uniswap-v2",
+   "token": "0xf72e876110de094f333241f42c2281baf0a6d923",
+   "pair": "0xe47418d430a21d7eff1662963e05798bfc91a5c1",
+   "team": "0xfe131c156a46e32a9edf30ff2a72e5dd7dc22685",
+   "lp_holders": [
+    "0xfe131c156a46e32a9edf30ff2a72e5dd7dc22685"
+   ],
+   "start_block": 25700104,
+   "expect": "RUGGED",
+   "min_lp": "116189500386222506554377",
+   "start_ts": 1786069751,
+   "end_time": 1786674551,
+   "excluded": [
+    "0x7a250d5630b4cf539739df2c5dacb4c659f2488d",
+    "0x66a9893cc07d91d95644aedd05d03f95e1dba8af",
+    "0x3fc91a3afd70395cd496c647d5a6cc9d4b2b7fad",
+    "0xd9e1ce17f2641f24ae83637ab66a2cca9c378b9f"
+   ]
+  },
+  {
+   "id": "eth-21",
+   "chain": "ethereum",
+   "kind": "uniswap-v2",
+   "token": "0x3f287a97fdf77f8ef40ef7440eccac3407810492",
+   "pair": "0x871b2e930b6dfa128421ca01281aa2d8dd331e2d",
+   "team": "0xee2e1f71ea2ba631e3071a941291c7a51d2b1f81",
+   "lp_holders": [
+    "0xee2e1f71ea2ba631e3071a941291c7a51d2b1f81"
+   ],
+   "start_block": 25702296,
+   "expect": "RUGGED",
+   "min_lp": "36742346141747671471959",
+   "start_ts": 1786096127,
+   "end_time": 1786700927,
+   "excluded": [
+    "0x7a250d5630b4cf539739df2c5dacb4c659f2488d",
+    "0x66a9893cc07d91d95644aedd05d03f95e1dba8af",
+    "0x3fc91a3afd70395cd496c647d5a6cc9d4b2b7fad",
+    "0xd9e1ce17f2641f24ae83637ab66a2cca9c378b9f"
+   ]
+  },
+  {
+   "id": "eth-22",
+   "chain": "ethereum",
+   "kind": "uniswap-v2",
+   "token": "0x4e9fccbd1b1e64efca8d0f72521ba065384fead5",
+   "pair": "0xc022beb58700a2e1e5814ba6597036694782dbfb",
+   "team": "0xc5c6eb6822f270a3508da0e9b6b2a3e2ab4e267d",
+   "lp_holders": [
+    "0xc5c6eb6822f270a3508da0e9b6b2a3e2ab4e267d"
+   ],
+   "start_block": 25700698,
+   "expect": "RUGGED",
+   "min_lp": "29999999999999999999000",
+   "start_ts": 1786076891,
+   "end_time": 1786681691,
+   "excluded": [
+    "0x7a250d5630b4cf539739df2c5dacb4c659f2488d",
+    "0x66a9893cc07d91d95644aedd05d03f95e1dba8af",
+    "0x3fc91a3afd70395cd496c647d5a6cc9d4b2b7fad",
+    "0xd9e1ce17f2641f24ae83637ab66a2cca9c378b9f"
+   ]
+  },
+  {
+   "id": "eth-23",
+   "chain": "ethereum",
+   "kind": "uniswap-v2",
+   "token": "0xc2742418134519e3b4a66b088e3c398f9f1214eb",
+   "pair": "0x1e634e05c3105a46f1d6d61349e46cb9c5a5e7b2",
+   "team": "0x3714c3c6edcda3f19e4859b9b457622d86a07b64",
+   "lp_holders": [
+    "0x3714c3c6edcda3f19e4859b9b457622d86a07b64"
+   ],
+   "start_block": 25703958,
+   "expect": "RUGGED",
+   "min_lp": "29999999999999999999000",
+   "start_ts": 1786116167,
+   "end_time": 1786720967,
    "excluded": [
     "0x7a250d5630b4cf539739df2c5dacb4c659f2488d",
     "0x66a9893cc07d91d95644aedd05d03f95e1dba8af",

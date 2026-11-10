@@ -229,5 +229,53 @@
   "start_block": 25507737,
   "expect": "HELD",
   "locker": "LP burned to 0x000000000000000000000000000000000000dead"
+ },
+ {
+  "chain": "ethereum",
+  "kind": "uniswap-v2",
+  "token": "0xf72e876110de094f333241f42c2281baf0a6d923",
+  "pair": "0xe47418d430a21d7eff1662963e05798bfc91a5c1",
+  "team": "0xfe131c156a46e32a9edf30ff2a72e5dd7dc22685",
+  "lp_holders": [
+   "0xfe131c156a46e32a9edf30ff2a72e5dd7dc22685"
+  ],
+  "start_block": 25700104,
+  "expect": "RUGGED"
+ },
+ {
+  "chain": "ethereum",
+  "kind": "uniswap-v2",
+  "token": "0x3f287a97fdf77f8ef40ef7440eccac3407810492",
+  "pair": "0x871b2e930b6dfa128421ca01281aa2d8dd331e2d",
+  "team": "0xee2e1f71ea2ba631e3071a941291c7a51d2b1f81",
+  "lp_holders": [
+   "0xee2e1f71ea2ba631e3071a941291c7a51d2b1f81"
+  ],
+  "start_block": 25702296,
+  "expect": "RUGGED"
+ },
+ {
+  "chain": "ethereum",
+  "kind": "uniswap-v2",
+  "token": "0x4e9fccbd1b1e64efca8d0f72521ba065384fead5",
+  "pair": "0xc022beb58700a2e1e5814ba6597036694782dbfb",
+  "team": "0xc5c6eb6822f270a3508da0e9b6b2a3e2ab4e267d",
+  "lp_holders": [
+   "0xc5c6eb6822f270a3508da0e9b6b2a3e2ab4e267d"
+  ],
+  "start_block": 25700698,
+  "expect": "RUGGED"
+ },
+ {
+  "chain": "ethereum",
+  "kind": "uniswap-v2",
+  "token": "0xc2742418134519e3b4a66b088e3c398f9f1214eb",
+  "pair": "0x1e634e05c3105a46f1d6d61349e46cb9c5a5e7b2",
+  "team": "0x3714c3c6edcda3f19e4859b9b457622d86a07b64",
+  "lp_holders": [
+   "0x3714c3c6edcda3f19e4859b9b457622d86a07b64"
+  ],
+  "start_block": 25703958,
+  "expect": "RUGGED"
  }
 ]
