@@ -59,6 +59,37 @@
     "delegated": false
    },
    "identical": true
+  },
+  {
+   "key": "eth-02:check:0",
+   "id": "eth-02",
+   "kind": "check",
+   "tx": "0xcae86e8ff04171022f7033b862a18e6d65ba3c9e10de304eb8f4f28317e7707f",
+   "status": "ACCEPTED",
+   "exec": "SUCCESS",
+   "range": [
+    25706729,
+    25786728
+   ],
+   "genvm": {
+    "b": 25707553,
+    "logs": 1,
+    "probes": [
+     [
+      25706729,
+      "21213203435596425731025"
+     ],
+     [
+      25707553,
+      "1000"
+     ]
+    ],
+    "rug": 25707553
+   },
+   "identical": true,
+   "attempts": 1,
+   "mac_reason": "",
+   "sha_genvm": 1318
   }
  ]
 }
