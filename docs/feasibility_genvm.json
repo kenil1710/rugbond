@@ -44,5 +44,93 @@
    },
    "identical": false
   }
+ ],
+ "endpoints": [
+  {
+   "chain": "base",
+   "url": "https://base.gateway.tenderly.co",
+   "tx": "0xe568a29c59691c4fba531f146fd6173682d1199fae695420f1ea4a7a97632332",
+   "status": "ACCEPTED",
+   "result": [
+    "head ok",
+    "archive eth_call ok",
+    "eth_getLogs ok (0)"
+   ]
+  },
+  {
+   "chain": "base",
+   "url": "https://base.rpc.thirdweb.com",
+   "tx": "0x1c3aae5617e53ff3a006b870f440b740d55f15026548658f0eec3b152a436e2a",
+   "status": "ACCEPTED",
+   "result": [
+    "not JSON: You are using a public RPC with rate limits, to lift those limits you can obtain"
+   ]
+  },
+  {
+   "chain": "base",
+   "url": "https://mainnet.base.org",
+   "tx": "0x86ecb7912941adc73ba364fd9c67978d8fe3dff4d5433404df33e6f4ced1dc6b",
+   "status": "ACCEPTED",
+   "result": [
+    "head ok",
+    "archive eth_call ok",
+    "error: request limit reached"
+   ]
+  },
+  {
+   "chain": "base",
+   "url": "https://base.drpc.org",
+   "tx": "0x4b52d8a70f174079ca5f68645c06929a7f5aba880c5cee35609e157a91ac522d",
+   "status": "ACCEPTED",
+   "result": [
+    "error: ranges over 10000 blocks are not supported on free plan",
+    "error: ranges over 10000 blocks are not supported on free plan",
+    "error: ranges over 10000 blocks are not supported on free plan"
+   ]
+  },
+  {
+   "chain": "base",
+   "url": "https://base-mainnet.public.blastapi.io",
+   "tx": "0x3cc963c65a1356c9fae7c4d8b5d8192964b7876b370d98a2f216211f8ce34b84",
+   "status": "ACCEPTED",
+   "result": [
+    "head ok",
+    "archive eth_call ok",
+    "error: You can make eth_getLogs requests with up to a 10 block range. Based o"
+   ]
+  },
+  {
+   "chain": "ethereum",
+   "url": "https://gateway.tenderly.co/public/mainnet",
+   "tx": "0x45535929c862b2c36ca042eade46534c3750611d1d53d0d3e28a77bf7149aaa5",
+   "status": "ACCEPTED",
+   "result": [
+    "head ok",
+    "archive eth_call ok",
+    "eth_getLogs ok (0)"
+   ]
+  },
+  {
+   "chain": "ethereum",
+   "url": "https://rpc.mevblocker.io",
+   "tx": "0xe53cfc38eda770c9594abf6f8579608b1c0301630181506a16f6fda0b0136c49",
+   "status": "ACCEPTED",
+   "result": [
+    "head ok",
+    "archive eth_call ok",
+    "eth_getLogs ok (0)"
+   ]
+  },
+  {
+   "chain": "ethereum",
+   "url": "https://eth-mainnet.nodereal.io/v1/1659dfb40aa24bbb8153a677b98064d7",
+   "tx": "0xa38212f62714bc135c830ed8071d10c5f753f9b33a0507d553491f3a9ff3d8dc",
+   "status": "ACCEPTED",
+   "result": [
+    "head ok",
+    "archive eth_call ok",
+    "eth_getLogs ok (0)"
+   ]
+  }
  ]
 }
