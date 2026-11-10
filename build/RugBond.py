@@ -679,7 +679,10 @@ def read_holder(chain: str, token: str, holder: str, rug_block: int) -> dict:
             code = str(a[2]).strip().lower()
             if not code.startswith("0x"):
                 raise ReadFailed("code")
-            views.append({"balance": _uint(a[1]), "code": len(code) > 2})
+            # EIP-7702: an EOA delegating to a contract carries 0xef0100 + address (23 bytes);
+            # it still has its own key and can sign, so it is not a contract here.
+            delegated = len(code) == 48 and code.startswith("0xef0100")
+            views.append({"balance": _uint(a[1]), "code": len(code) > 2 and not delegated, "delegated": delegated})
     except ReadFailed as e:
         return {"reason": "RPC_UNREADABLE", "detail": str(e)[:60]}
     except Exception:

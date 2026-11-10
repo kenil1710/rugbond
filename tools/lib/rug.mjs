@@ -225,7 +225,8 @@ export async function readHolder(chain, token, holder, rugBlock) {
       if (hexInt(a[0]) !== ch.id) throw new ReadFailed("wrong chain id");
       const code = String(a[2]).trim().toLowerCase();
       if (!code.startsWith("0x")) throw new ReadFailed("code");
-      views.push({ balance: uint(a[1]).toString(), code: code.length > 2 });
+      const delegated = code.length === 48 && code.startsWith("0xef0100");
+      views.push({ balance: uint(a[1]), code: code.length > 2 && !delegated, delegated });
     }
   } catch (e) { return { reason: "RPC_UNREADABLE", detail: String(e.message ?? e).slice(0, 60) }; }
   if (canon(views[0]) !== canon(views[1])) return { reason: "RPC_DISAGREE", detail: "the two RPCs answer differently" };
