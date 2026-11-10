@@ -1997,6 +1997,98 @@
    "seconds": 11.377,
    "end_block": 25783716,
    "end_ts": 1787077079
+  },
+  {
+   "id": "eth-15",
+   "chain": "ethereum",
+   "kind": "uniswap-v2",
+   "token": "0xa324d9464e8d639ad3579c8f8bb07aec0c0651f6",
+   "pair": "0x287c4edf5ce82a545165a987ba5a68b0b5298fa9",
+   "team": "0x3df76ed6dc53bc3332637f89f54f31566778cb5a",
+   "lp_holders": [
+    "0x3df76ed6dc53bc3332637f89f54f31566778cb5a"
+   ],
+   "min_lp": "44721359549995792928",
+   "start_block": 25708488,
+   "start_ts": 1786170935,
+   "end_time": 1786775735,
+   "expect": "HELD",
+   "verdict": "HELD",
+   "reason": "",
+   "checks": [
+    {
+     "range": [
+      25708488,
+      25788487
+     ],
+     "verdict": "HELD",
+     "b": 25788487,
+     "logs": 0,
+     "probes": [
+      [
+       25708488,
+       "44721359549995792928"
+      ]
+     ],
+     "end_ts": 1787134451
+    }
+   ],
+   "pair_check": {
+    "token0": "0xa324d9464e8d639ad3579c8f8bb07aec0c0651f6",
+    "token1": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+    "factory": "0x5c69bee701ef814a2b6a3edd4b1652cb9cc5aa6f",
+    "ok": true,
+    "why": ""
+   },
+   "seconds": 11.595,
+   "end_block": 25788487,
+   "end_ts": 1787134451
+  },
+  {
+   "id": "eth-16",
+   "chain": "ethereum",
+   "kind": "uniswap-v2",
+   "token": "0x1884daa51e761519d847e19b367ad1ba164370be",
+   "pair": "0x4667efacfa2bc9ea474d8e3e9364461485a81ed4",
+   "team": "0x248c2fcebac1413fca4da21b675cdaeb4ff20681",
+   "lp_holders": [
+    "0x663a5c229c09b049e36dcc11a9b0d4a8eb9db214"
+   ],
+   "min_lp": "43829168369933737541503674",
+   "start_block": 25702849,
+   "start_ts": 1786102811,
+   "end_time": 1786707611,
+   "expect": "HELD",
+   "verdict": "HELD",
+   "reason": "",
+   "checks": [
+    {
+     "range": [
+      25702849,
+      25782848
+     ],
+     "verdict": "HELD",
+     "b": 25782848,
+     "logs": 1,
+     "probes": [
+      [
+       25702849,
+       "43829168369933737541503674"
+      ]
+     ],
+     "end_ts": 1787066627
+    }
+   ],
+   "pair_check": {
+    "token0": "0x1884daa51e761519d847e19b367ad1ba164370be",
+    "token1": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+    "factory": "0x5c69bee701ef814a2b6a3edd4b1652cb9cc5aa6f",
+    "ok": true,
+    "why": ""
+   },
+   "seconds": 11.328,
+   "end_block": 25782848,
+   "end_ts": 1787066627
   }
  ]
 }
