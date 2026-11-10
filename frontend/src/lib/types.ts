@@ -1,0 +1,20 @@
+export type Page<T> = { total: number; offset: number; limit: number; items: T[]; next_offset: number };
+export type Rug = { block: number; ts: number; txs: string[]; lp_after: string; lp_before?: string; supply?: string; excluded?: [string, string][]; denom?: string };
+export type Bond = {
+  found?: boolean; bond_id: number; team: string; name: string; chain: string; token: string; pair: string; lp_holders: string[];
+  min_lp: string; start_block: number; end_time: number; claim_window_s: number; victim_fund: string; excluded: string[];
+  excluded_all: string[]; dust_floor: string; amount: string; created_at: number; recovery_deadline: number; status: string;
+  cursor: number; cursor_ts: number; scanned_at: number; n_checks: number; n_pending: number; last_result: string;
+  last_reason: string; last_check_at: number; pair_check: Record<string, unknown>; start_ts: number; replay: boolean;
+  rug_block: number; rug_ts: number; rug: Rug | Record<string, never>; denominator: string; rugged_at: number;
+  claim_deadline: number; paid: string; n_claims: number; remaining: string; settled_amount: string; settled_to: string;
+  settled_at: number; settled_by: string; verdict_at: number; due: string; checkable: boolean;
+};
+export type Check = { check_id: number; bond_id: number; by: string; at: number; result: string; reason: string; detail: string; a: number; b: number;
+  n_logs: number; probes: [number, string][]; logs: [number, number, string, string, string, string][] };
+export type Claim = { bond_id: number; holder: string; payee: string; balance: string; share: string; claimed_at: number; claim_no: number };
+export type Stats = { bonds: number; checks: number; counts: Record<string, number>; received_total: string; open_total: string; claims_paid_total: string;
+  returned_total: string; victim_total: string; credit_owed_total: string; credit_paid_total: string; stray_swept_total: string; held: string; balance: string };
+export type GateAnswer = { state: string; safe: boolean; why: string; bond_id?: number; token: string; team: string; status?: string; bonds?: { bond_id: number; state: string; why: string }[] };
+export type TxProgress = { phase: "signing" | "submitted" | "accepted" | "finalized" | "failed" | "rejected"; hash: string | null; message: string };
+export type WriteResult<T> = { kind: "ok"; hash: string; data: T } | { kind: "rejected"; hash: string; reason: string } | { kind: "failed"; hash: string | null; error: string };
