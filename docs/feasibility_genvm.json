@@ -163,6 +163,20 @@
     "delegated": true
    },
    "identical": true
+  },
+  {
+   "key": "eth-03:holder:0x0fbc1b2055b52da393195dcd2755b591219152e1",
+   "id": "eth-03",
+   "kind": "holder",
+   "tx": "0xb6281400e2d6954f9381cff9a32b4121423c62dc8249c2427b88f3f7426b4cd5",
+   "status": "ACCEPTED",
+   "holder": "0x0fbc1b2055b52da393195dcd2755b591219152e1",
+   "genvm": {
+    "balance": "691440637097980115208748",
+    "code": false,
+    "delegated": true
+   },
+   "identical": true
   }
  ]
 }
