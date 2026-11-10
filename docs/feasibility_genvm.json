@@ -1,11 +1,11 @@
 {
- "probe": "0xD95062C5e0b8C049D7edC72076546BF415F07817",
+ "probe": "0x0b7C10e05f70f87dfaF72Dc84F3B1F4133E87926",
  "rows": [
   {
    "key": "eth-01:check:0",
    "id": "eth-01",
    "kind": "check",
-   "tx": "0x49083cc87d9ea1f0012d0b7bd760f2f56b72cb08ee9fe868f8a1a53b6c3e0019",
+   "tx": "0xb085a25e2908a0321bea784395acd7b342982e0b334f2cd79be65e05308ed1de",
    "status": "ACCEPTED",
    "exec": "SUCCESS",
    "range": [
@@ -13,23 +13,30 @@
     25790253
    ],
    "genvm": {
-    "detail": "gateway.tenderly.co http 429",
-    "range": [
-     25710254,
-     25790253
+    "b": 25723942,
+    "logs": 1,
+    "probes": [
+     [
+      25710254,
+      "1843172023201251106705"
+     ],
+     [
+      25723942,
+      "0"
+     ]
     ],
-    "reason": "RPC_UNREADABLE"
+    "rug": 25723942
    },
-   "identical": false,
-   "attempts": 3,
-   "mac_reason": "RPC_UNREADABLE",
-   "sha_genvm": 0
+   "identical": true,
+   "attempts": 2,
+   "mac_reason": "",
+   "sha_genvm": 1302
   },
   {
    "key": "eth-01:holder:0x93fa8d7313f3dbcc627fdc7896d2323e71865eb6",
    "id": "eth-01",
    "kind": "holder",
-   "tx": "0xb63246d0c84f193d9c5d63fec944971c06acd7798a80776dde7fa800e150c582",
+   "tx": "0xe887257e63896cb89b923baa74128283cda0fd9de915fd109b09b9f9e428b704",
    "status": "ACCEPTED",
    "holder": "0x93fa8d7313f3dbcc627fdc7896d2323e71865eb6",
    "genvm": {
@@ -43,7 +50,7 @@
    "key": "eth-01:holder:0xd85785c9db1aebcef7885613ec70f0cd331d92e8",
    "id": "eth-01",
    "kind": "holder",
-   "tx": "0x014731bd4feea60fafc878470764ff9d8ebe7ed02706614e40ab11111440196e",
+   "tx": "0x5c60fe079548de7c3eb5b017496e5bf352998f98a07b19a8571d57c58f72540e",
    "status": "ACCEPTED",
    "holder": "0xd85785c9db1aebcef7885613ec70f0cd331d92e8",
    "genvm": {
@@ -52,61 +59,6 @@
     "delegated": false
    },
    "identical": true
-  }
- ],
- "endpoints": [
-  {
-   "chain": "base",
-   "url": "https://base.gateway.tenderly.co",
-   "tx": "0xab4b79ddbb9e9f170d58920671e82570e2936f06201fbf102f4050aeb8d1c653",
-   "status": "ACCEPTED",
-   "result": [
-    "head ok",
-    "archive eth_call ok",
-    "eth_getLogs ok (0)"
-   ]
-  },
-  {
-   "chain": "base",
-   "url": "https://base.rpc.thirdweb.com",
-   "tx": "0x9238fd76bacaa532d10c9f541107cffb3c6506269379a3c1a5ea44ea03170bf2",
-   "status": "ACCEPTED",
-   "result": [
-    "not JSON: You are using a public RPC with rate limits, to lift those limits you can obtain"
-   ]
-  },
-  {
-   "chain": "base",
-   "url": "https://mainnet.base.org",
-   "tx": "0x86fa5972835a5929da46c9db81aa2345212f10432313dd034ff525b4488ecc56",
-   "status": "ACCEPTED",
-   "result": [
-    "head ok",
-    "archive eth_call ok",
-    "error: request limit reached"
-   ]
-  },
-  {
-   "chain": "base",
-   "url": "https://base.drpc.org",
-   "tx": "0x052f532abe43d3177cff7224a8e940a8408993964397c7a57efbe5168889e849",
-   "status": "ACCEPTED",
-   "result": [
-    "error: ranges over 10000 blocks are not supported on free plan",
-    "error: ranges over 10000 blocks are not supported on free plan",
-    "error: ranges over 10000 blocks are not supported on free plan"
-   ]
-  },
-  {
-   "chain": "base",
-   "url": "https://base-mainnet.public.blastapi.io",
-   "tx": "0xd42b08e36e7322ed75eb9339a9d695dba433a270cdd4b32e5fe0683203c74551",
-   "status": "ACCEPTED",
-   "result": [
-    "head ok",
-    "archive eth_call ok",
-    "error: You can make eth_getLogs requests with up to a 10 block range. Based o"
-   ]
   }
  ]
 }
