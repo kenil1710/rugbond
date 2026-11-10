@@ -841,7 +841,7 @@ class RugBond(gl.contract.Contract):
     claims: gl.storage.TreeMap[str, Claim]
     bond_claims: gl.storage.TreeMap[str, str]
     holder_n: gl.storage.TreeMap[str, u64]
-    holder_claims: gl.storage.TreeMap[str, u64]
+    holder_bonds: gl.storage.TreeMap[str, u64]
     beneficiary: gl.storage.TreeMap[str, str]
     token_n: gl.storage.TreeMap[str, u64]
     token_bonds: gl.storage.TreeMap[str, u64]
@@ -1185,7 +1185,7 @@ class RugBond(gl.contract.Contract):
         b.n_claims = u64(no + 1)
         b.paid = u256(int(b.paid) + share)
         hn = int(self.holder_n.get(who, u64(0)))
-        self.holder_claims[who + ":" + str(hn)] = b.bond_id
+        self.holder_bonds[who + ":" + str(hn)] = b.bond_id
         self.holder_n[who] = u64(hn + 1)
         self.open_total = u256(int(self.open_total) - share)
         self.claims_paid_total = u256(int(self.claims_paid_total) + share)
@@ -1426,7 +1426,7 @@ class RugBond(gl.contract.Contract):
         items = []
         i = pg[0]
         while i < n and len(items) < pg[1]:
-            bid = self.holder_claims.get(h + ":" + str(i))
+            bid = self.holder_bonds.get(h + ":" + str(i))
             c = self.claims.get(str(int(bid)) + ":" + h) if bid is not None else None
             if c is not None:
                 items.append(self._claim_view(c))
