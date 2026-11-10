@@ -1,1 +1,56 @@
-{"commit":"","registry":"","registryDemo":"","gate":"","gateDemo":"","contracts":{}}
+{
+  "commit": "ede6ade9a488bf42a30f1c3fd65345cd3de6bdeb",
+  "network": "studiodev",
+  "chain_id": 61997,
+  "explorer": "https://explorer-studio-dev.genlayer.com/",
+  "registry": "0x24ff68A1adc70B9EA9eEE518a5f912ce65eb2CAE",
+  "registryDemo": "0xbaa8FD3ecdCef962A59cc71a335B81E0Cf9b5016",
+  "gate": "0x58E6D16082fE2Cb0FB38F8e1Ea407e5dc72280FF",
+  "gateDemo": "0x75089E0b8C9027bf43561431f93E38DeA3D71303",
+  "contracts": {
+    "RugBond": {
+      "address": "0x24ff68A1adc70B9EA9eEE518a5f912ce65eb2CAE",
+      "file": "build/RugBond.py",
+      "sha256": "188d9135b632689c1d1ff24a014bcaad28aeecec08142bf6045c7c1b1309c541",
+      "bytes": 64597,
+      "commit": "ede6ade9a488bf42a30f1c3fd65345cd3de6bdeb",
+      "deploy_tx": "0x0a33e388f8586872225b035ec4117f738120ef29ee24e2ba835a6f2353056de5",
+      "constructor_args": [
+        "CANONICAL"
+      ]
+    },
+    "RugBondDemo": {
+      "address": "0xbaa8FD3ecdCef962A59cc71a335B81E0Cf9b5016",
+      "file": "build/RugBond.py",
+      "sha256": "188d9135b632689c1d1ff24a014bcaad28aeecec08142bf6045c7c1b1309c541",
+      "bytes": 64597,
+      "commit": "ede6ade9a488bf42a30f1c3fd65345cd3de6bdeb",
+      "deploy_tx": "0xe49d37d86db8ad97e1209a1bf89be453cad43353e8af42ceb84a7b970ec488d6",
+      "constructor_args": [
+        "DEMO"
+      ]
+    },
+    "LaunchGate": {
+      "address": "0x58E6D16082fE2Cb0FB38F8e1Ea407e5dc72280FF",
+      "file": "build/LaunchGate.py",
+      "sha256": "8d832d46aa1f3e3aaeb539c17c46bc837cc7eba01db43a2b05fa09686fa142a2",
+      "bytes": 21988,
+      "commit": "ede6ade9a488bf42a30f1c3fd65345cd3de6bdeb",
+      "deploy_tx": "0xf66ca2694baaa6a2557213e7c13d1de403c7746e6eb050f8ae8dff32ce33cd0e",
+      "constructor_args": [
+        "0x24ff68A1adc70B9EA9eEE518a5f912ce65eb2CAE"
+      ]
+    },
+    "LaunchGateDemo": {
+      "address": "0x75089E0b8C9027bf43561431f93E38DeA3D71303",
+      "file": "build/LaunchGate.py",
+      "sha256": "8d832d46aa1f3e3aaeb539c17c46bc837cc7eba01db43a2b05fa09686fa142a2",
+      "bytes": 21988,
+      "commit": "ede6ade9a488bf42a30f1c3fd65345cd3de6bdeb",
+      "deploy_tx": "0xd9d0c0e645d1bfd8eece73b860d124eb11066d87aeb08cd577f62e3cc39676c7",
+      "constructor_args": [
+        "0xbaa8FD3ecdCef962A59cc71a335B81E0Cf9b5016"
+      ]
+    }
+  }
+}
