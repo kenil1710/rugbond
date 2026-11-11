@@ -29,7 +29,8 @@ jobs:
           git worktree add state keeper-state
           git -C state config user.name rugbond-keeper
           git -C state config user.email keeper@users.noreply.github.com
-      - run: node tools/keeper.mjs --state=state --push --max=30 --wait=240 --settle=900
+      # KEEPER_CONTRACTS (repository variable, optional) limits a run to some registries, e.g. while a demo drives its own
+      - run: node tools/keeper.mjs --state=state --push --max=30 --wait=240 --settle=900 --contracts=${{ vars.KEEPER_CONTRACTS || 'RugBond,RugBondDemo' }}
         env:
           RUGBOND_KEEPER_KEY: ${{ secrets.RUGBOND_KEEPER_KEY }}
       - name: Push the final checkpoint
