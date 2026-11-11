@@ -100,6 +100,26 @@
    "ok": true,
    "value": "100000000000000000",
    "name": "Replay eth-16 0x1884da"
+  },
+  {
+   "case_id": "eth-17",
+   "expect": "HELD",
+   "bond_id": 11,
+   "tx": "0xae90e5021d2915a4dae8fe220ccddbd20cde90e5920551e53415028fd2bbe8f0",
+   "status": "ACCEPTED",
+   "ok": true,
+   "value": "110000000000000000",
+   "name": "Replay eth-17 0xff8691"
+  },
+  {
+   "case_id": "eth-18",
+   "expect": "HELD",
+   "bond_id": 12,
+   "tx": "0x7580b436bd0d40f0398bb0ce0a2204b4a60972a500358a31703cbc710e6b9df6",
+   "status": "ACCEPTED",
+   "ok": true,
+   "value": "120000000000000000",
+   "name": "Replay eth-18 0xbeec04"
   }
  ],
  "previous": "0x24ff68A1adc70B9EA9eEE518a5f912ce65eb2CAE"

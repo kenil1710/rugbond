@@ -7,6 +7,7 @@ import { lpSeries } from "@/lib/evm";
 import { LiquidityChart } from "@/components/LiquidityChart";
 import { StatusPill } from "@/components/Status";
 import { Meter } from "@/components/BondCard";
+import { BondActions } from "@/components/BondActions";
 import { CHAIN_LABEL, REASON_TEXT, ago, gen, scan, short, units, when } from "@/lib/format";
 
 export const revalidate = 60;
@@ -53,7 +54,8 @@ export default async function BondPage({ params }: { params: Promise<{ id: strin
         <div className="sticker kpi"><div className="label">holders paid</div><div className="big">{b.n_claims}</div><div className="small">{gen(b.paid)} GEN</div></div>
         <div className="sticker kpi"><div className="label">checks</div><div className="big">{b.n_checks}</div><div className="small">{b.n_pending} pending · last {ago(b.last_check_at)}</div></div>
       </div>
-      <section className="sticker">
+      <BondActions address={addr} bond={{ bond_id: b.bond_id, status: b.status, checkable: b.checkable, due: b.due, team: b.team, victim_fund: b.victim_fund, n_checks: b.n_checks }} />
+      <section className="sticker" style={{ marginTop: 16 }}>
         <h2 style={{ marginTop: 0 }}>Liquidity vs the promise</h2>
         {series ? <LiquidityChart points={series.points} floor={b.min_lp} rug={rug} endTime={b.end_time} title={`LP held by ${b.name}'s LP holders against the promised floor`} />
           : <p className="small">The chart appears after the first agreed read.</p>}
