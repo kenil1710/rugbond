@@ -3,7 +3,7 @@
  "bonds_offset": 0,
  "bonds": {
   "1": {
-   "status": "RUGGED",
+   "status": "CLOSED",
    "chain": "ethereum",
    "token": "0xd4f45dd47dd476378ee1b06f6a57be4ebc0f7199",
    "cursor": 25723942,
@@ -11,11 +11,11 @@
    "n_checks": 1,
    "n_pending": 0,
    "last_result": "RUGGED",
-   "due": "VICTIM_FUND",
+   "due": "",
    "name": "Replay eth-01 0xd4f45d"
   },
   "2": {
-   "status": "RUGGED",
+   "status": "CLOSED",
    "chain": "ethereum",
    "token": "0x89d3a86b3dd25a8d58b8e390abb2a805d0e88dff",
    "cursor": 25707553,
@@ -23,11 +23,11 @@
    "n_checks": 1,
    "n_pending": 0,
    "last_result": "RUGGED",
-   "due": "VICTIM_FUND",
+   "due": "",
    "name": "Replay eth-02 0x89d3a8"
   },
   "3": {
-   "status": "RUGGED",
+   "status": "CLOSED",
    "chain": "ethereum",
    "token": "0xaf95e728195671a8be8da44dcd127f1bca732f8c",
    "cursor": 25710973,
@@ -35,11 +35,11 @@
    "n_checks": 1,
    "n_pending": 0,
    "last_result": "RUGGED",
-   "due": "VICTIM_FUND",
+   "due": "",
    "name": "Replay eth-03 0xaf95e7"
   },
   "4": {
-   "status": "RUGGED",
+   "status": "CLOSED",
    "chain": "ethereum",
    "token": "0xc97c6be6ee14693b01d79694bd73c26e4d58e31b",
    "cursor": 25714292,
@@ -47,11 +47,11 @@
    "n_checks": 1,
    "n_pending": 0,
    "last_result": "RUGGED",
-   "due": "VICTIM_FUND",
+   "due": "",
    "name": "Replay eth-04 0xc97c6b"
   },
   "5": {
-   "status": "RUGGED",
+   "status": "CLOSED",
    "chain": "ethereum",
    "token": "0x2c127a4991d0353c1e6e4a70f83892cedb110720",
    "cursor": 25702677,
@@ -59,11 +59,11 @@
    "n_checks": 1,
    "n_pending": 0,
    "last_result": "RUGGED",
-   "due": "VICTIM_FUND",
+   "due": "",
    "name": "Replay eth-05 0x2c127a"
   },
   "6": {
-   "status": "RUGGED",
+   "status": "CLOSED",
    "chain": "ethereum",
    "token": "0xa5084c8d45c05560aecaf533982bd6e5210bf770",
    "cursor": 25712799,
@@ -71,7 +71,7 @@
    "n_checks": 1,
    "n_pending": 0,
    "last_result": "RUGGED",
-   "due": "VICTIM_FUND",
+   "due": "",
    "name": "Replay eth-06 0xa5084c"
   },
   "7": {
@@ -83,7 +83,7 @@
    "n_checks": 2,
    "n_pending": 1,
    "last_result": "RUGGED",
-   "due": "",
+   "due": "VICTIM_FUND",
    "name": "Replay eth-07 0xd95364"
   },
   "8": {
@@ -159,7 +159,7 @@
    "name": "Replay eth-19 0x083428"
   },
   "14": {
-   "status": "RUGGED",
+   "status": "CLOSED",
    "chain": "ethereum",
    "token": "0xf72e876110de094f333241f42c2281baf0a6d923",
    "cursor": 25700691,
@@ -167,11 +167,11 @@
    "n_checks": 1,
    "n_pending": 0,
    "last_result": "RUGGED",
-   "due": "VICTIM_FUND",
+   "due": "",
    "name": "Replay eth-20 0xf72e87"
   },
   "15": {
-   "status": "RUGGED",
+   "status": "CLOSED",
    "chain": "ethereum",
    "token": "0x3f287a97fdf77f8ef40ef7440eccac3407810492",
    "cursor": 25702916,
@@ -179,11 +179,11 @@
    "n_checks": 1,
    "n_pending": 0,
    "last_result": "RUGGED",
-   "due": "VICTIM_FUND",
+   "due": "",
    "name": "Replay eth-21 0x3f287a"
   },
   "16": {
-   "status": "RUGGED",
+   "status": "CLOSED",
    "chain": "ethereum",
    "token": "0x4e9fccbd1b1e64efca8d0f72521ba065384fead5",
    "cursor": 25701193,
@@ -191,7 +191,7 @@
    "n_checks": 1,
    "n_pending": 0,
    "last_result": "RUGGED",
-   "due": "VICTIM_FUND",
+   "due": "",
    "name": "Replay eth-22 0x4e9fcc"
   },
   "17": {
@@ -203,7 +203,7 @@
    "n_checks": 2,
    "n_pending": 1,
    "last_result": "RUGGED",
-   "due": "",
+   "due": "VICTIM_FUND",
    "name": "Replay eth-23 0xc27424"
   }
  },
@@ -770,6 +770,26 @@
    ],
    "verified_at": 1794393940,
    "result": "CLOSED"
+  },
+  "settle:7": {
+   "key": "settle:7",
+   "kind": "SETTLE",
+   "bond_id": 7,
+   "payee": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
+   "status": "QUEUED",
+   "attempts": 0,
+   "first_seen_at": 1794402780,
+   "tx": null
+  },
+  "settle:17": {
+   "key": "settle:17",
+   "kind": "SETTLE",
+   "bond_id": 17,
+   "payee": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
+   "status": "QUEUED",
+   "attempts": 0,
+   "first_seen_at": 1794402780,
+   "tx": null
   }
  },
  "runs": [
@@ -848,7 +868,7 @@
  "contract": "RugBond",
  "address": "0x4D2a5e250a419b1D1798E103F80A23aC5be59a23",
  "keeper": "0xfEC989fC1176c5524C3b20ef2c09bca724d6BD4e",
- "saved_at": "2026-11-11T13:12:59.697Z",
+ "saved_at": "2026-11-11T13:13:00.922Z",
  "totals": {
   "actions": 34,
   "done": 34,
