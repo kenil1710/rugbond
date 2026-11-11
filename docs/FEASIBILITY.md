@@ -14,13 +14,13 @@ Every case below was scanned to a verdict with the contract's own reads (contrac
 
 ## RPCs
 
-| chain | RPC A | RPC B | eth_getLogs window | windows per check |
-|---|---|---|---|---|
-| ethereum | https://gateway.tenderly.co/public/mainnet | https://rpc.mevblocker.io | undefined blocks | undefined |
-| base-sepolia | https://base-sepolia.gateway.tenderly.co | https://base-sepolia-rpc.publicnode.com | undefined blocks | undefined |
-| base | https://base.gateway.tenderly.co | https://base.rpc.thirdweb.com | undefined blocks | undefined |
+| chain | log RPC A | log RPC B | state RPC A | state RPC B | blocks per check |
+|---|---|---|---|---|---|
+| ethereum | https://gateway.tenderly.co/public/mainnet | https://rpc.mevblocker.io | https://rpc.mevblocker.io | https://eth-mainnet.public.blastapi.io | 80000 |
+| base-sepolia | https://base-sepolia.gateway.tenderly.co | https://base-sepolia-rpc.publicnode.com | https://base-sepolia-rpc.publicnode.com | https://sepolia.base.org | 40000 |
+| base (this machine only) | https://base.gateway.tenderly.co | https://base.rpc.thirdweb.com | https://base.gateway.tenderly.co | https://base.rpc.thirdweb.com | 8000 |
 
-Measured on 2026-11-10 (tools/discover.mjs, tools/discover_base.mjs and scratch probes): of the free public endpoints, these are the pairs from different operators that serve archive state (eth_call at old blocks) **and** filtered eth_getLogs over old blocks. Base mainnet endpoints serve eth_getLogs over at most 1000 blocks (Tenderly, thirdweb; dRPC fewer), so a Base check reads 8000 blocks (about 4.4 hours) and Base replays promise 12 hours. Tenderly and MEV Blocker throttle batched eth_getLogs, so every log window is its own request; state calls are batched by 4 (Ethereum) and 3 (Base). An HTTP 429 or a disagreement is PENDING, never a verdict.
+Measured on 2026-11-10 (tools/discover.mjs, tools/discover_base.mjs and scratch probes): of the free public endpoints, these are the pairs from different operators that serve archive state (eth_call at old blocks) **and** filtered eth_getLogs over old blocks. Base mainnet endpoints serve eth_getLogs over at most 1000 blocks (Tenderly, thirdweb; dRPC fewer), so a Base check from this machine reads 8000 blocks (about 4.4 hours) and Base cases promise 12 hours. Every log window is its own request; state calls are batched. An HTTP 429 or a disagreement is PENDING, never a verdict.
 
 ## What is read, per check (one RPC; the contract does it for both)
 
