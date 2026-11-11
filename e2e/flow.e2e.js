@@ -113,26 +113,29 @@ test("rug check, claim, refusal, create, close on the demo registry", async ({ p
   await shot(page, "04-refused-closed");
   log("refused", { bond: A, what: "claim on a closed bond", status: "claim button disabled: the bond is CLOSED" });
 
-  // 5. create: this wallet bonds HOLDDEMO (a pool that keeps its liquidity) for a few minutes
+  // 5. create: this wallet bonds HOLDDEMO (a pool that keeps its liquidity) for a few minutes (resumable: an e2e bond
+  // this wallet already posted is used, never a second one)
   const hold = evm().HOLDDEMO;
-  const headNow = Number(node("test/demo_evm.mjs", "head"));
-  await go(page, "/team");
-  await page.getByLabel("Name").fill("e2e bond " + headNow);
-  await page.getByLabel("Token").fill(hold.token);
-  await page.getByLabel("V2 pair").fill(hold.pair);
-  await page.getByLabel(/LP holders/).fill(hold.team);
-  await page.getByLabel(/Promised minimum LP/).fill("1");
-  await page.getByLabel("Start block").fill(String(headNow));
-  await page.getByLabel(/Promise length/).fill("0.05");
-  await page.getByLabel(/Claim window/).fill("1");
-  await page.getByLabel("Bond (GEN)").fill("0.5");
-  await page.getByLabel(/Victim fund/).fill(JSON.parse(readFileSync(new URL("test/.accounts.json", root))).victimfund.address);
-  await page.getByRole("button", { name: "Post bond" }).click();
-  await expect(statusText(page)).toContainText(/accepted|finalized/i, { timeout: 20 * 60_000 });
-  await shot(page, "05-created");
-  let mine = { items: [] };
-  for (let i = 0; i < 20 && !mine.items.find((b) => b.name === "e2e bond " + headNow); i++) { mine = await view(page, "bonds_by_team", [address.toLowerCase(), 0, 50, Math.floor(Date.now() / 1000)]); await sleep(5000); }
-  const H = mine.items.find((b) => b.name === "e2e bond " + headNow).bond_id;
+  let mine = await view(page, "bonds_by_team", [address.toLowerCase(), 0, 50, Math.floor(Date.now() / 1000)]);
+  let H = mine.items.find((b) => b.name.startsWith("e2e bond "))?.bond_id;
+  if (!H) {
+    const headNow = Number(node("test/demo_evm.mjs", "head"));
+    await go(page, "/team");
+    await page.getByLabel("Name").fill("e2e bond " + headNow);
+    await page.getByLabel("Token").fill(hold.token);
+    await page.getByLabel("V2 pair").fill(hold.pair);
+    await page.getByLabel(/LP holders/).fill(hold.team);
+    await page.getByLabel(/Promised minimum LP/).fill("1");
+    await page.getByLabel("Start block").fill(String(headNow));
+    await page.getByLabel(/Promise length/).fill("0.05");
+    await page.getByLabel(/Claim window/).fill("1");
+    await page.getByLabel("Bond (GEN)").fill("0.5");
+    await page.getByLabel(/Victim fund/).fill(JSON.parse(readFileSync(new URL("test/.accounts.json", root))).victimfund.address);
+    await page.getByRole("button", { name: "Post bond" }).click();
+    await expect(statusText(page)).toContainText(/accepted|finalized/i, { timeout: 20 * 60_000 });
+    await shot(page, "05-created");
+    for (let i = 0; i < 20 && !H; i++) { mine = await view(page, "bonds_by_team", [address.toLowerCase(), 0, 50, Math.floor(Date.now() / 1000)]); H = mine.items.find((b) => b.name === "e2e bond " + headNow)?.bond_id; if (!H) await sleep(5000); }
+  }
   log("created", { bond: H });
 
   // 6. checks until HELD, then close: settle returns the bond to this wallet
