@@ -567,7 +567,7 @@
    "kind": "SETTLE",
    "bond_id": 5,
    "payee": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
-   "status": "SUBMITTED",
+   "status": "ACCEPTED",
    "attempts": 0,
    "first_seen_at": 1794393961,
    "tx": "0x8a10d4a89ff335b04b973e0877f785c40edf15240caef9c7846e670527273cc2",
@@ -650,7 +650,7 @@
  "contract": "RugBond@0x07ED5695",
  "address": "0x07ED56951513d01B06f350476C4501015256aB2c",
  "keeper": "0xfEC989fC1176c5524C3b20ef2c09bca724d6BD4e",
- "saved_at": "2026-11-11T10:47:12.608Z",
+ "saved_at": "2026-11-11T10:47:28.171Z",
  "totals": {
   "actions": 19,
   "done": 19,
