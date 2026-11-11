@@ -1,20 +1,20 @@
 {
  "keeper": "0xfEC989fC1176c5524C3b20ef2c09bca724d6BD4e",
- "started_at": "2026-11-10T20:01:56.474Z",
+ "started_at": "2026-11-11T00:43:29.983Z",
  "contracts": {
   "RugBond": {
    "address": "0x24ff68A1adc70B9EA9eEE518a5f912ce65eb2CAE",
    "last_run": {
-    "started_at": 1794340916,
-    "finished_at": 1794341200,
+    "started_at": 1794357809,
+    "finished_at": 1794357951,
     "resumed": 0,
     "bonds": 17,
     "pages": 1,
     "pages_failed": 0,
     "heads_failed": 0,
-    "queued": 4,
-    "submitted": 4,
-    "done": 4,
+    "queued": 6,
+    "submitted": 6,
+    "done": 6,
     "already": 0,
     "pending": 0,
     "failed": 0,
@@ -22,8 +22,8 @@
     "errors": []
    },
    "totals": {
-    "actions": 38,
-    "done": 38,
+    "actions": 44,
+    "done": 44,
     "queued": 0,
     "pending": 0,
     "retry": 0,
@@ -32,21 +32,21 @@
      "PENDING": 10,
      "RUGGED": 11,
      "HELD": 6,
-     "CLOSED": 5,
+     "CLOSED": 11,
      "RETURNED": 6
     }
    },
    "bonds": {
     "1": {
-     "status": "ACTIVE",
+     "status": "RUGGED",
      "chain": "ethereum",
      "token": "0xd4f45dd47dd476378ee1b06f6a57be4ebc0f7199",
-     "cursor": 0,
-     "cursor_ts": 0,
-     "n_checks": 2,
+     "cursor": 25723942,
+     "cursor_ts": 1786357031,
+     "n_checks": 3,
      "n_pending": 2,
-     "last_result": "PENDING",
-     "due": "",
+     "last_result": "RUGGED",
+     "due": "VICTIM_FUND",
      "name": "Replay eth-01 0xd4f45d"
     },
     "2": {
@@ -58,19 +58,19 @@
      "n_checks": 2,
      "n_pending": 1,
      "last_result": "RUGGED",
-     "due": "",
+     "due": "VICTIM_FUND",
      "name": "Replay eth-02 0x89d3a8"
     },
     "3": {
-     "status": "ACTIVE",
+     "status": "RUGGED",
      "chain": "ethereum",
      "token": "0xaf95e728195671a8be8da44dcd127f1bca732f8c",
-     "cursor": 0,
-     "cursor_ts": 0,
-     "n_checks": 2,
+     "cursor": 25710973,
+     "cursor_ts": 1786200899,
+     "n_checks": 3,
      "n_pending": 2,
-     "last_result": "PENDING",
-     "due": "",
+     "last_result": "RUGGED",
+     "due": "VICTIM_FUND",
      "name": "Replay eth-03 0xaf95e7"
     },
     "4": {
@@ -214,31 +214,31 @@
      "n_checks": 2,
      "n_pending": 1,
      "last_result": "RUGGED",
-     "due": "",
+     "due": "VICTIM_FUND",
      "name": "Replay eth-21 0x3f287a"
     },
     "16": {
-     "status": "ACTIVE",
+     "status": "RUGGED",
      "chain": "ethereum",
      "token": "0x4e9fccbd1b1e64efca8d0f72521ba065384fead5",
-     "cursor": 0,
-     "cursor_ts": 0,
-     "n_checks": 2,
+     "cursor": 25701193,
+     "cursor_ts": 1786082867,
+     "n_checks": 3,
      "n_pending": 2,
-     "last_result": "PENDING",
-     "due": "",
+     "last_result": "RUGGED",
+     "due": "VICTIM_FUND",
      "name": "Replay eth-22 0x4e9fcc"
     },
     "17": {
-     "status": "ACTIVE",
+     "status": "RUGGED",
      "chain": "ethereum",
      "token": "0xc2742418134519e3b4a66b088e3c398f9f1214eb",
-     "cursor": 0,
-     "cursor_ts": 0,
-     "n_checks": 2,
+     "cursor": 25704885,
+     "cursor_ts": 1786127351,
+     "n_checks": 3,
      "n_pending": 2,
-     "last_result": "PENDING",
-     "due": "",
+     "last_result": "RUGGED",
+     "due": "VICTIM_FUND",
      "name": "Replay eth-23 0xc27424"
     }
    },
@@ -623,14 +623,74 @@
      "tx": "0x83877b74c54d342380d307b6b85cb0f1763e6af66cee6425b77276a3b3638885",
      "attempts": 0,
      "last_error": ""
+    },
+    {
+     "key": "settle:1",
+     "kind": "SETTLE",
+     "bond_id": 1,
+     "status": "DONE",
+     "result": "CLOSED",
+     "tx": "0xd1ba461818b7ed46910425075c5100649ff6060dbf3d30f6dcf0382f35aa2fcf",
+     "attempts": 0,
+     "last_error": ""
+    },
+    {
+     "key": "settle:2",
+     "kind": "SETTLE",
+     "bond_id": 2,
+     "status": "DONE",
+     "result": "CLOSED",
+     "tx": "0x344a4c5421e0df56041832dd3749703e4fb26275e50b0d82b80437ef1c1674c3",
+     "attempts": 0,
+     "last_error": ""
+    },
+    {
+     "key": "settle:3",
+     "kind": "SETTLE",
+     "bond_id": 3,
+     "status": "DONE",
+     "result": "CLOSED",
+     "tx": "0xa8a8902d307cd0d5733c61ad857a1d7a2cc6303c03ab2965547a218c159ccddb",
+     "attempts": 0,
+     "last_error": ""
+    },
+    {
+     "key": "settle:15",
+     "kind": "SETTLE",
+     "bond_id": 15,
+     "status": "DONE",
+     "result": "CLOSED",
+     "tx": "0x8949b6ec452dcc43219c500af8effdbc938c5cf874dbe9a8c6bce1f064e196a0",
+     "attempts": 0,
+     "last_error": ""
+    },
+    {
+     "key": "settle:16",
+     "kind": "SETTLE",
+     "bond_id": 16,
+     "status": "DONE",
+     "result": "CLOSED",
+     "tx": "0xe5ab9c813224df8932af90fd0eb5ef96944b8bd1551a49e109d34dc4bb5c5f22",
+     "attempts": 0,
+     "last_error": ""
+    },
+    {
+     "key": "settle:17",
+     "kind": "SETTLE",
+     "bond_id": 17,
+     "status": "DONE",
+     "result": "CLOSED",
+     "tx": "0x5a6186e4b829a645fb81b452cb10106fd2106580ecd86f6e8b0b8dfd9d7b1b58",
+     "attempts": 0,
+     "last_error": ""
     }
    ]
   },
   "RugBondDemo": {
    "address": "0xbaa8FD3ecdCef962A59cc71a335B81E0Cf9b5016",
    "last_run": {
-    "started_at": 1794341201,
-    "finished_at": 1794341202,
+    "started_at": 1794357952,
+    "finished_at": 1794357952,
     "resumed": 0,
     "bonds": 0,
     "pages": 1,
@@ -659,9 +719,9 @@
    "actions": []
   }
  },
- "finished_at": "2026-11-10T20:06:43.648Z",
+ "finished_at": "2026-11-11T00:45:53.929Z",
  "trigger": "schedule",
- "run_url": "https://github.com/kenil1710/rugbond/actions/runs/42891150774",
+ "run_url": "https://github.com/kenil1710/rugbond/actions/runs/42933563261",
  "history": [
   {
    "started_at": "2026-11-10T12:51:34.472Z",
@@ -712,6 +772,26 @@
     "RugBond": {
      "submitted": 4,
      "done": 4,
+     "pages": 1,
+     "pages_failed": 0
+    },
+    "RugBondDemo": {
+     "submitted": 0,
+     "done": 0,
+     "pages": 1,
+     "pages_failed": 0
+    }
+   }
+  },
+  {
+   "started_at": "2026-11-11T00:43:29.983Z",
+   "finished_at": "2026-11-11T00:45:53.929Z",
+   "trigger": "schedule",
+   "run_url": "https://github.com/kenil1710/rugbond/actions/runs/42933563261",
+   "runs": {
+    "RugBond": {
+     "submitted": 6,
+     "done": 6,
      "pages": 1,
      "pages_failed": 0
     },
