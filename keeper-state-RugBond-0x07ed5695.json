@@ -355,10 +355,14 @@
    "kind": "SETTLE",
    "bond_id": 13,
    "payee": "0x0272651ae66438836a2bbc2e4ef3598831f8ad41",
-   "status": "QUEUED",
+   "status": "SUBMITTED",
    "attempts": 0,
    "first_seen_at": 1794389275,
-   "tx": null
+   "tx": "0x5d2c58c92a6bde3562d1f297be650263a0cc42748b28cc59fcacc76517db5a87",
+   "submitted_at": 1794389777,
+   "tx_history": [
+    "0x5d2c58c92a6bde3562d1f297be650263a0cc42748b28cc59fcacc76517db5a87"
+   ]
   },
   "check:15:0:1": {
    "key": "check:15:0:1",
@@ -384,5 +388,5 @@
  "contract": "RugBond@0x07ED5695",
  "address": "0x07ED56951513d01B06f350476C4501015256aB2c",
  "keeper": "0xfEC989fC1176c5524C3b20ef2c09bca724d6BD4e",
- "saved_at": "2026-11-11T09:36:16.094Z"
+ "saved_at": "2026-11-11T09:36:17.347Z"
 }
