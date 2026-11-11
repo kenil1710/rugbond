@@ -162,8 +162,9 @@ const now = () => Math.floor(Date.now() / 1000);
 // 12
 {
   const r = existsSync(root + "docs/e2e/results.json") ? JSON.parse(rd("docs/e2e/results.json")) : null;
+  const sm = existsSync(root + "docs/e2e/summary.json") ? JSON.parse(rd("docs/e2e/summary.json")) : {};
   const ok = r && r.stats?.expected > 0 && r.stats?.unexpected === 0;
-  add("e2e", !!ok, r ? `Playwright on ${SITE}: ${r.stats.expected} passed, ${r.stats.unexpected} failed (docs/e2e/)` : "docs/e2e/results.json missing");
+  add("e2e", !!ok, r ? `Playwright on ${sm.site ?? SITE} (the site's production build), demo registry ${sm.demo_registry ?? ""}: ${r.stats.expected} passed, ${r.stats.unexpected} failed; steps ${(sm.steps ?? []).map((x) => x.step).filter((x, i, a) => a.indexOf(x) === i).join(", ")} (docs/e2e/)` : "docs/e2e/results.json missing");
 }
 
 const passed = checks.filter((c) => c.ok).length;
