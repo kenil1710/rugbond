@@ -68,7 +68,7 @@ test("rug check, claim, refusal, create, close on the demo registry", async ({ p
   // 1. connect
   await go(page, `/bond/demo-${R}`);
   await page.getByRole("button", { name: "Connect wallet" }).click();
-  await expect(page.getByText(address.slice(0, 6))).toBeVisible();
+  await expect(page.getByText(address.slice(0, 6)).first()).toBeVisible();
   await shot(page, "01-bond-active");
 
   // 2. rug checks from the site until RUGGED
