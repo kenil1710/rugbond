@@ -98,6 +98,16 @@ node tools/verify_source.mjs            # deployed bytes == build/ at the deploy
 node tools/final_check.mjs              # the whole verification package
 ```
 
+## End to end
+
+`e2e/flow.e2e.js` (Playwright, a throwaway wallet saved before use) drives the site on the demo registry: a team rugs a
+real Uniswap V2 pair on Base Sepolia, the wallet runs rug checks from the bond page until RUGGED, claims its share
+(the GEN arrives), is refused by the contract when it then commits a beneficiary, posts its own bond on a pool that
+holds, checks it to HELD and settles it (the bond comes back). Screenshots, video, trace and a summary are in
+[docs/e2e/](docs/e2e/). The passing run drove a production build of this repository's site served locally, because
+the hosting plan's daily deployment quota ran out that day; the live site was redeployed from the same commit once the
+quota reset.
+
 ## Layout
 
 - `contracts/` RugBond and LaunchGate; `contracts/shared/` the rule and the RPC reads (inlined by `tools/build.py`)
