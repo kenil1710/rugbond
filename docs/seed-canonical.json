@@ -40,6 +40,46 @@
    "ok": true,
    "value": "40000000000000000",
    "name": "Replay eth-04 0xc97c6b"
+  },
+  {
+   "case_id": "eth-05",
+   "expect": "RUGGED",
+   "bond_id": 5,
+   "tx": "0xc78b92ecf81236a1ca1893db94eb5290716195b5595babfb0a0ea23266e34fb1",
+   "status": "ACCEPTED",
+   "ok": true,
+   "value": "50000000000000000",
+   "name": "Replay eth-05 0x2c127a"
+  },
+  {
+   "case_id": "eth-06",
+   "expect": "RUGGED",
+   "bond_id": 6,
+   "tx": "0x604e4265004bf763413042d6c4841c6d6c85099b1f8576c12151834687e727ee",
+   "status": "ACCEPTED",
+   "ok": true,
+   "value": "60000000000000000",
+   "name": "Replay eth-06 0xa5084c"
+  },
+  {
+   "case_id": "eth-07",
+   "expect": "RUGGED",
+   "bond_id": 7,
+   "tx": "0xf8bccc438a15876966ba3e365ade422796a95f5611ee0d2f8537f6501abfc3a6",
+   "status": "ACCEPTED",
+   "ok": true,
+   "value": "70000000000000000",
+   "name": "Replay eth-07 0xd95364"
+  },
+  {
+   "case_id": "eth-14",
+   "expect": "HELD",
+   "bond_id": 8,
+   "tx": "0x3b9235e7fb0e04fec6d7476b9c5e6777cd6bbdb864160b9887d4620fdf90708e",
+   "status": "ACCEPTED",
+   "ok": true,
+   "value": "80000000000000000",
+   "name": "Replay eth-14 0x937e98"
   }
  ],
  "previous": "0x07ED56951513d01B06f350476C4501015256aB2c"
