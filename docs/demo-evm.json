@@ -203,6 +203,44 @@
    "tx": "0x06173b03e2b16fe814d96ea6331e43116e18209ef328f5c9c0cbf2a09f5b683d",
    "status": "success",
    "block": 57359554
+  },
+  "deploy_E2EDEMO3": {
+   "tx": "0x7bcf32162a635605d997dbb235f8282a7dc6d2fded7b889d926465c5ac9b2930",
+   "status": "success",
+   "block": 57439152,
+   "address": "0x01fa3387566daf54a8a3e87b1ef5f9a9054c95c7"
+  },
+  "approve_E2EDEMO3": {
+   "tx": "0x4b178fec527d34e8e6fba732f8aa528a08b0c5ddd7f7280aaef88bb6e3a6a069",
+   "status": "success",
+   "block": 57439157
+  },
+  "liquidity_E2EDEMO3": {
+   "tx": "0xa5fe5687e2a2694fd64441447f5d89033c1874492420012a80e3110b612be525",
+   "status": "success",
+   "block": 57439164,
+   "pair": "0x371ef2c8dade924eb743f2a52d08bd09484d969d",
+   "lp": "31622776601683792319"
+  },
+  "send_E2EDEMO3_wallet": {
+   "tx": "0xfac1b0f63a5b61168a13ab404692e1ee9a7c99b673257426deb7abb68b79a704",
+   "status": "success",
+   "block": 57439172
+  },
+  "send_E2EDEMO3_holder1": {
+   "tx": "0x0cf1bb94fe3dcc9f3a0c24ca3954aa62e8bec0dc9e6aed70f3c7a83968a42130",
+   "status": "success",
+   "block": 57439179
+  },
+  "approve_lp_E2EDEMO3": {
+   "tx": "0x47262e93859143b03a21d23ab455e9a9eeaea14854f0571b3dd3558dd8ef4eb0",
+   "status": "success",
+   "block": 57439443
+  },
+  "rug_E2EDEMO3": {
+   "tx": "0x39e812432a1c0f717d27b94b971defe1d62e1d78efa9c412bc86a4ce39da727f",
+   "status": "success",
+   "block": 57439448
   }
  },
  "RUGDEMO": {
@@ -248,5 +286,17 @@
   "bond_tx": "0xbb856ccd2e88be4794de565239b538970052a1a4c7fcab368d1a2701f0418fcf",
   "rug_block": 57359554,
   "rug_tx": "0x06173b03e2b16fe814d96ea6331e43116e18209ef328f5c9c0cbf2a09f5b683d"
+ },
+ "E2EDEMO3": {
+  "token": "0x01fa3387566daf54a8a3e87b1ef5f9a9054c95c7",
+  "pair": "0x371ef2c8dade924eb743f2a52d08bd09484d969d",
+  "team": "0x6365881b460e79216303fc370348ca857d8da9ef",
+  "lp_minted": "31622776601683792319",
+  "wallet": "0x5d47ebf1e127cb4965600878ade4b3a9e2b4a471",
+  "bond_id": 8,
+  "start_block": 57439184,
+  "bond_tx": "0xb5f7a9af01037263187f4ec99dc032da4d91dd28c42110b88cfa6699a05d3e4f",
+  "rug_block": 57439448,
+  "rug_tx": "0x39e812432a1c0f717d27b94b971defe1d62e1d78efa9c412bc86a4ce39da727f"
  }
 }
