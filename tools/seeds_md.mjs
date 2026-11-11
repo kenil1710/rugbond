@@ -55,9 +55,10 @@ async function registry(address, seedFile, label) {
 
 const out = { generated_at: new Date().toISOString(), registries: [] };
 out.registries.push(await registry(dep.contracts.RugBond.address, "docs/seed-canonical.json", "current canonical registry"));
-for (const f of ["docs/seed-canonical-0x24ff68A1.json"]) if (existsSync(new URL(f, root))) {
+for (const [f, label] of [["docs/superseded/seed-canonical-0x24ff68A1.json", "superseded canonical registry (first deployment)"],
+  ["docs/superseded/seed-canonical-0x07ED5695.json", "superseded canonical registry (second deployment)"]]) if (existsSync(new URL(f, root))) {
   const old = JSON.parse(readFileSync(new URL(f, root)));
-  out.registries.push(await registry(old.registry, f, "superseded canonical registry (first deployment)"));
+  out.registries.push(await registry(old.registry, f, label));
 }
 writeFileSync(new URL("docs/seed-verify.json", root), JSON.stringify(out, null, 1) + "\n");
 

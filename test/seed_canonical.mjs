@@ -18,7 +18,7 @@ const out = new URL("docs/seed-canonical.json", root);
 let st = existsSync(out) ? JSON.parse(readFileSync(out, "utf8")) : { registry: dep.RugBond.address, bonds: [] };
 if (st.registry.toLowerCase() !== dep.RugBond.address.toLowerCase()) {
   // a new canonical registry: keep the old record, start a new one (each registry gets each replay once)
-  writeFileSync(new URL(`docs/seed-canonical-${st.registry.slice(0, 10)}.json`, root), JSON.stringify(st, null, 1) + "\n");
+  writeFileSync(new URL(`docs/superseded/seed-canonical-${st.registry.slice(0, 10)}.json`, root), JSON.stringify(st, null, 1) + "\n");
   st = { registry: dep.RugBond.address, bonds: [], previous: st.registry };
 }
 const save = () => writeFileSync(out, JSON.stringify(st, null, 1) + "\n");
