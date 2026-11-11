@@ -30,13 +30,20 @@ async function view(page, fn, args) {
   throw new Error("view " + fn);
 }
 
+/** page.goto, retried: a dropped connection is not a site failure. */
+async function go(page, url) {
+  for (let i = 0; ; i++) {
+    try { return await page.goto(url, { timeout: 120_000 }); } catch (e) { if (i >= 5) throw e; await sleep(20_000 * (i + 1)); }
+  }
+}
+
 /** Click "Run a rug check" on the bond page until the bond leaves ACTIVE. */
 async function checkUntil(page, id, want) {
   const t0 = Date.now();
   while (Date.now() - t0 < 7 * 3600_000) {          // Base Sepolia's finalized head trails the tip by about 4.4 hours
     const b = await view(page, "get_bond", [id, Math.floor(Date.now() / 1000)]);
     if (b.status !== "ACTIVE") return b;
-    await page.goto(`/bond/demo-${id}`);
+    await go(page, `/bond/demo-${id}`);
     await page.getByRole("button", { name: "Run a rug check" }).click();
     await expect(statusText(page)).toContainText(/accepted|finalized|failed|rejected/i, { timeout: 20 * 60_000 });
     const t = await statusText(page).innerText();
@@ -58,7 +65,7 @@ test("rug check, claim, refusal, create, close on the demo registry", async ({ p
   log("setup", { token: evm().E2EDEMO.token, pair: evm().E2EDEMO.pair, bond: R, rug_block: evm().E2EDEMO.rug_block, rug_tx: evm().E2EDEMO.rug_tx });
 
   // 1. connect
-  await page.goto(`/bond/demo-${R}`);
+  await go(page, `/bond/demo-${R}`);
   await page.getByRole("button", { name: "Connect wallet" }).click();
   await expect(page.getByText(address.slice(0, 6))).toBeVisible();
   await shot(page, "01-bond-active");
@@ -67,14 +74,14 @@ test("rug check, claim, refusal, create, close on the demo registry", async ({ p
   const rb = await checkUntil(page, R, "RUGGED");
   expect(rb.status).toBe("RUGGED");
   expect(rb.rug_block).toBe(evm().E2EDEMO.rug_block);
-  await page.goto(`/bond/demo-${R}`);
+  await go(page, `/bond/demo-${R}`);
   await expect(page.getByText("The rug")).toBeVisible();
   await shot(page, "02-rugged-chart");
   log("rugged", { bond: R, rug_block: rb.rug_block, denominator: rb.denominator });
 
   // 3. claim: the share arrives at the wallet
   const before = await balance(address);
-  await page.goto(`/claim?bond=demo-${R}`);
+  await go(page, `/claim?bond=demo-${R}`);
   await page.getByRole("button", { name: "Claim my share" }).click();
   await expect(statusText(page)).toContainText(/accepted|finalized/i, { timeout: 20 * 60_000 });
   let claim = { found: false };
@@ -88,7 +95,7 @@ test("rug check, claim, refusal, create, close on the demo registry", async ({ p
 
   // 4. refusal: a rugged bond this wallet held nothing in (the demo's bond A)
   const A = JSON.parse(readFileSync(new URL("docs/demo-run.json", root))).bonds.A;
-  await page.goto(`/claim?bond=demo-${A}`);
+  await go(page, `/claim?bond=demo-${A}`);
   const btn = page.getByRole("button", { name: "Claim my share" });
   if (await btn.isEnabled()) {
     await btn.click();
@@ -100,7 +107,7 @@ test("rug check, claim, refusal, create, close on the demo registry", async ({ p
   // 5. create: this wallet bonds HOLDDEMO (a pool that keeps its liquidity) for a few minutes
   const hold = evm().HOLDDEMO;
   const headNow = Number(node("test/demo_evm.mjs", "head"));
-  await page.goto("/team");
+  await go(page, "/team");
   await page.getByLabel("Name").fill("e2e bond " + headNow);
   await page.getByLabel("Token").fill(hold.token);
   await page.getByLabel("V2 pair").fill(hold.pair);
@@ -123,7 +130,7 @@ test("rug check, claim, refusal, create, close on the demo registry", async ({ p
   const hb = await checkUntil(page, H, "HELD");
   expect(hb.status).toBe("HELD");
   const b2 = await balance(address);
-  await page.goto(`/bond/demo-${H}`);
+  await go(page, `/bond/demo-${H}`);
   await page.getByRole("button", { name: /Settle/ }).click();
   await expect(statusText(page)).toContainText(/accepted|finalized/i, { timeout: 20 * 60_000 });
   let a2 = await balance(address);

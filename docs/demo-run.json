@@ -539,46 +539,20 @@
    "at": "2026-11-11T09:59:42.211Z"
   },
   {
-   "id": "balance_zero",
-   "what": "the demo registry's balance is 0",
-   "ok": false,
-   "eth_getBalance": "1000000000000000000",
-   "stats": {
-    "balance": "1000000000000000000",
-    "bonds": 4,
-    "checks": 5,
-    "claims_paid_total": "783483678851850549",
-    "counts": {
-     "beneficiaries": 1,
-     "bonds": 4,
-     "checks": 5,
-     "checks_pending": 0,
-     "checks_scanned": 2,
-     "claims": 3,
-     "create_refused": 1,
-     "credit_withdrawals": 1,
-     "held": 1,
-     "rugged": 2,
-     "settles": 3,
-     "sweeps": 0,
-     "void": 0
-    },
-    "credit_owed_total": "0",
-    "credit_paid_total": "10000000000000000",
-    "held": "1000000000000000000",
-    "open_total": "1000000000000000000",
-    "received_total": "4020000000000000000",
-    "returned_total": "1000000000000000000",
-    "stray_swept_total": "0",
-    "victim_total": "1226516321148149451"
-   },
-   "at": "2026-11-11T09:59:43.472Z"
+   "id": "open_D",
+   "what": "team2 opens a second HOLDDEMO bond (ends in about an hour)",
+   "ok": true,
+   "tx": "0xe2fe05f4b53a613fec19dee82ff7c86d764c36fa8576f26dae5ac05499a640ab",
+   "bond_id": 5,
+   "start_block": 57349345,
+   "at": "2026-11-11T10:09:13.641Z"
   }
  ],
  "bonds": {
   "A": 1,
   "B": 2,
-  "C": 3
+  "C": 3,
+  "D": 5
  },
  "start_block": 57328762
 }
