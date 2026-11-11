@@ -6,27 +6,27 @@ The keeper (GitHub Actions) filed every rug check and settled every bond: RUGGED
 
 ## current canonical registry: `0x4D2a5e250a419b1D1798E103F80A23aC5be59a23`
 
-Verdicts as expected: **3/17**. Settled: 0/17. eth_getBalance of the registry now: **1.530000 GEN** (held by open bonds: 1.530000).
+Verdicts as expected: **17/17**. Settled: 17/17. eth_getBalance of the registry now: **0.000000 GEN** (held by open bonds: 0.000000).
 
 | case | bond | expected | status | rug block (rule / feasibility) | checks | settled to | amount | settle tx | delivered |
 |---|---|---|---|---|---|---|---|---|---|
-| eth-01 | 1 | RUGGED | ACTIVE | — | 0 | — | — | — | — |
-| eth-02 | 2 | RUGGED | ACTIVE | — | 0 | — | — | — | — |
-| eth-03 | 3 | RUGGED | ACTIVE | — | 0 | — | — | — | — |
-| eth-04 | 4 | RUGGED | ACTIVE | — | 0 | — | — | — | — |
-| eth-05 | 5 | RUGGED | ACTIVE | — | 0 | — | — | — | — |
-| eth-06 | 6 | RUGGED | ACTIVE | — | 0 | — | — | — | — |
-| eth-07 | 7 | RUGGED | ACTIVE | — | 0 | — | — | — | — |
-| eth-14 | 8 | HELD | ACTIVE | — | 0 | — | — | — | — |
-| eth-15 | 9 | HELD | ACTIVE | — | 0 | — | — | — | — |
-| eth-16 | 10 | HELD | HELD | — | 1 | — | — | — | — |
-| eth-17 | 11 | HELD | HELD | — | 1 | — | — | — | — |
-| eth-18 | 12 | HELD | HELD | — | 1 | — | — | — | — |
-| eth-19 | 13 | HELD | ACTIVE | — | 0 | — | — | — | — |
-| eth-20 | 14 | RUGGED | ACTIVE | — | 0 | — | — | — | — |
-| eth-21 | 15 | RUGGED | ACTIVE | — | 0 | — | — | — | — |
-| eth-22 | 16 | RUGGED | ACTIVE | — | 0 | — | — | — | — |
-| eth-23 | 17 | RUGGED | ACTIVE | — | 0 | — | — | — | — |
+| eth-01 | 1 | RUGGED | CLOSED | 25723942 / 25723942 | 1 | victim fund | 0.010000 | `0x406a97bb41d9…` | yes |
+| eth-02 | 2 | RUGGED | CLOSED | 25707553 / 25707553 | 1 | victim fund | 0.020000 | `0xb41cfddebabc…` | yes |
+| eth-03 | 3 | RUGGED | CLOSED | 25710973 / 25710973 | 1 | victim fund | 0.030000 | `0xdd989b64dc24…` | yes |
+| eth-04 | 4 | RUGGED | CLOSED | 25714292 / 25714292 | 1 | victim fund | 0.040000 | `0x74c33871a389…` | yes |
+| eth-05 | 5 | RUGGED | CLOSED | 25702677 / 25702677 | 1 | victim fund | 0.050000 | `0x31838f0e1298…` | yes |
+| eth-06 | 6 | RUGGED | CLOSED | 25712799 / 25712799 | 1 | victim fund | 0.060000 | `0x398ac68f7e6c…` | yes |
+| eth-07 | 7 | RUGGED | CLOSED | 25707372 / 25707372 | 2 | victim fund | 0.070000 | `0x616589c8f40a…` | yes |
+| eth-14 | 8 | HELD | RETURNED | — | 1 | launchpad | 0.080000 | `0x4db4ea68d302…` | yes |
+| eth-15 | 9 | HELD | RETURNED | — | 1 | launchpad | 0.090000 | `0xcf75bdcf9253…` | yes |
+| eth-16 | 10 | HELD | RETURNED | — | 1 | launchpad | 0.100000 | `0xdc418dda3a86…` | yes |
+| eth-17 | 11 | HELD | RETURNED | — | 1 | launchpad | 0.110000 | `0xe1d0b6a4a2bd…` | yes |
+| eth-18 | 12 | HELD | RETURNED | — | 1 | launchpad | 0.120000 | `0xfed1b4e56850…` | yes |
+| eth-19 | 13 | HELD | RETURNED | — | 1 | launchpad | 0.130000 | `0x532e292448e1…` | yes |
+| eth-20 | 14 | RUGGED | CLOSED | 25700691 / 25700691 | 1 | victim fund | 0.140000 | `0xbc26dabf5b15…` | yes |
+| eth-21 | 15 | RUGGED | CLOSED | 25702916 / 25702916 | 1 | victim fund | 0.150000 | `0xd39ffc263976…` | yes |
+| eth-22 | 16 | RUGGED | CLOSED | 25701193 / 25701193 | 1 | victim fund | 0.160000 | `0x580803f91b90…` | yes |
+| eth-23 | 17 | RUGGED | CLOSED | 25704885 / 25704885 | 2 | victim fund | 0.170000 | `0xc116b89916a1…` | yes |
 
 ## superseded canonical registry (first deployment): `0x24ff68A1adc70B9EA9eEE518a5f912ce65eb2CAE`
 
@@ -54,24 +54,24 @@ Verdicts as expected: **17/17**. Settled: 17/17. eth_getBalance of the registry 
 
 ## superseded canonical registry (second deployment): `0x07ED56951513d01B06f350476C4501015256aB2c`
 
-Verdicts as expected: **10/17**. Settled: 0/17. eth_getBalance of the registry now: **1.530000 GEN** (held by open bonds: 1.530000).
+Verdicts as expected: **17/17**. Settled: 17/17. eth_getBalance of the registry now: **0.000000 GEN** (held by open bonds: 0.000000).
 
 | case | bond | expected | status | rug block (rule / feasibility) | checks | settled to | amount | settle tx | delivered |
 |---|---|---|---|---|---|---|---|---|---|
-| eth-01 | 1 | RUGGED | ACTIVE | — | 1 | — | — | — | — |
-| eth-02 | 2 | RUGGED | ACTIVE | — | 1 | — | — | — | — |
-| eth-03 | 3 | RUGGED | ACTIVE | — | 1 | — | — | — | — |
-| eth-04 | 4 | RUGGED | ACTIVE | — | 1 | — | — | — | — |
-| eth-05 | 5 | RUGGED | ACTIVE | — | 1 | — | — | — | — |
-| eth-06 | 6 | RUGGED | RUGGED | 25712799 / 25712799 | 1 | — | — | — | — |
-| eth-07 | 7 | RUGGED | RUGGED | 25707372 / 25707372 | 1 | — | — | — | — |
-| eth-14 | 8 | HELD | ACTIVE | — | 1 | — | — | — | — |
-| eth-15 | 9 | HELD | HELD | — | 1 | — | — | — | — |
-| eth-16 | 10 | HELD | HELD | — | 1 | — | — | — | — |
-| eth-17 | 11 | HELD | HELD | — | 1 | — | — | — | — |
-| eth-18 | 12 | HELD | HELD | — | 1 | — | — | — | — |
-| eth-19 | 13 | HELD | HELD | — | 1 | — | — | — | — |
-| eth-20 | 14 | RUGGED | RUGGED | 25700691 / 25700691 | 1 | — | — | — | — |
-| eth-21 | 15 | RUGGED | ACTIVE | — | 1 | — | — | — | — |
-| eth-22 | 16 | RUGGED | RUGGED | 25701193 / 25701193 | 1 | — | — | — | — |
-| eth-23 | 17 | RUGGED | RUGGED | 25704885 / 25704885 | 1 | — | — | — | — |
+| eth-01 | 1 | RUGGED | CLOSED | 25723942 / 25723942 | 2 | victim fund | 0.010000 | `0x963bbd38540b…` | yes |
+| eth-02 | 2 | RUGGED | CLOSED | 25707553 / 25707553 | 2 | victim fund | 0.020000 | `0x4150a950d4ae…` | yes |
+| eth-03 | 3 | RUGGED | CLOSED | 25710973 / 25710973 | 2 | victim fund | 0.030000 | `0xc61d925a235f…` | yes |
+| eth-04 | 4 | RUGGED | CLOSED | 25714292 / 25714292 | 3 | victim fund | 0.040000 | `0xa11d1948d9ba…` | yes |
+| eth-05 | 5 | RUGGED | CLOSED | 25702677 / 25702677 | 2 | victim fund | 0.050000 | `0x8a10d4a89ff3…` | yes |
+| eth-06 | 6 | RUGGED | CLOSED | 25712799 / 25712799 | 1 | victim fund | 0.060000 | `0x1ae736acef50…` | yes |
+| eth-07 | 7 | RUGGED | CLOSED | 25707372 / 25707372 | 1 | victim fund | 0.070000 | `0xb6b12ac19069…` | yes |
+| eth-14 | 8 | HELD | RETURNED | — | 2 | launchpad | 0.080000 | `0x8461655b7ca7…` | yes |
+| eth-15 | 9 | HELD | RETURNED | — | 1 | launchpad | 0.090000 | `0xe8697a9d7f6c…` | yes |
+| eth-16 | 10 | HELD | RETURNED | — | 1 | launchpad | 0.100000 | `0xd3369c0096ea…` | yes |
+| eth-17 | 11 | HELD | RETURNED | — | 1 | launchpad | 0.110000 | `0x6073f84fdc0f…` | yes |
+| eth-18 | 12 | HELD | RETURNED | — | 1 | launchpad | 0.120000 | `0x4a502d284a57…` | yes |
+| eth-19 | 13 | HELD | RETURNED | — | 1 | launchpad | 0.130000 | `0x5d2c58c92a6b…` | yes |
+| eth-20 | 14 | RUGGED | CLOSED | 25700691 / 25700691 | 1 | victim fund | 0.140000 | `0x47851a7f352f…` | yes |
+| eth-21 | 15 | RUGGED | CLOSED | 25702916 / 25702916 | 2 | victim fund | 0.150000 | `0x4e2df93a43e4…` | yes |
+| eth-22 | 16 | RUGGED | CLOSED | 25701193 / 25701193 | 1 | victim fund | 0.160000 | `0xaf817b78b88c…` | yes |
+| eth-23 | 17 | RUGGED | CLOSED | 25704885 / 25704885 | 1 | victim fund | 0.170000 | `0x646a2eb23154…` | yes |
