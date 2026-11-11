@@ -319,10 +319,14 @@
    "bond_id": 8,
    "cursor": 0,
    "n_checks_before": 0,
-   "status": "QUEUED",
+   "status": "SUBMITTED",
    "attempts": 0,
    "first_seen_at": 1794387954,
-   "tx": null
+   "tx": "0x1a8e1dc13774990a97a3f777ff2ac66d657be3657891abcd84e85cc1226e4276",
+   "submitted_at": 1794388442,
+   "tx_history": [
+    "0x1a8e1dc13774990a97a3f777ff2ac66d657be3657891abcd84e85cc1226e4276"
+   ]
   },
   "check:9:0:0": {
    "key": "check:9:0:0",
@@ -464,5 +468,5 @@
  "contract": "RugBond@0x07ED5695",
  "address": "0x07ED56951513d01B06f350476C4501015256aB2c",
  "keeper": "0xfEC989fC1176c5524C3b20ef2c09bca724d6BD4e",
- "saved_at": "2026-11-11T09:14:01.547Z"
+ "saved_at": "2026-11-11T09:14:02.792Z"
 }
