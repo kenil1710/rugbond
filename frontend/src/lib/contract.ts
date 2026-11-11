@@ -113,7 +113,9 @@ async function feesFor(wallet: ReturnType<typeof getWalletClient>, address: `0x$
   }
   if (!payee) return est ?? withTimeout(wallet.estimateTransactionFees({}), "fee estimate", 30_000);
   if (est && hasPayout(est, payee)) return est;
-  const price = (BigInt(est?.policy?.receiptGasPrice ?? 300_000_000n) * 12n) / 10n;
+  // never below 360 Mwei per gas: Studio refuses a payout whose budget is under its floor ("fee below_minimum")
+  const quoted = (BigInt(est?.policy?.receiptGasPrice ?? 300_000_000n) * 12n) / 10n;
+  const price = quoted > 360_000_000n ? quoted : 360_000_000n;
   const messageAllocations = [{ messageType: 0, recipient: payee, budget: EXT_GAS * price, onAcceptance: false,
     feeParams: encodeExternalMessageFeeParams({ gasLimit: EXT_GAS, maxGasPrice: price }) }];
   const fees = await withTimeout(wallet.estimateTransactionFees({ messageAllocations } as never), "fee estimate", 30_000);

@@ -193,6 +193,16 @@
    "tx": "0x27d7f96e329d9072116751813023271d395db0c10816a9eebc069e0a2b6f80a4",
    "status": "success",
    "block": 57359275
+  },
+  "approve_lp_E2EDEMO2": {
+   "tx": "0xa012e1f007809d840be2fbd1b41b9e62f50a46aadabca2553af4c60049f91783",
+   "status": "success",
+   "block": 57359543
+  },
+  "rug_E2EDEMO2": {
+   "tx": "0x06173b03e2b16fe814d96ea6331e43116e18209ef328f5c9c0cbf2a09f5b683d",
+   "status": "success",
+   "block": 57359554
   }
  },
  "RUGDEMO": {
@@ -232,6 +242,11 @@
   "pair": "0x68e9d290a8662ecc3b14a991bd4f4d7609640b44",
   "team": "0x6365881b460e79216303fc370348ca857d8da9ef",
   "lp_minted": "31622776601683792319",
-  "wallet": "0x968db00f52479ebaa77065b1a42b82bb1e61eae3"
+  "wallet": "0x968db00f52479ebaa77065b1a42b82bb1e61eae3",
+  "bond_id": 6,
+  "start_block": 57359281,
+  "bond_tx": "0xbb856ccd2e88be4794de565239b538970052a1a4c7fcab368d1a2701f0418fcf",
+  "rug_block": 57359554,
+  "rug_tx": "0x06173b03e2b16fe814d96ea6331e43116e18209ef328f5c9c0cbf2a09f5b683d"
  }
 }
