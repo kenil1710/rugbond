@@ -65,8 +65,28 @@ rejects every older runner hash (`invalid_contract runner malformed`).
 
 ## Addresses (GenLayer Studio Dev, chain 61997)
 
-See [deployments.json](deployments.json); all four contracts are deployed from one commit and `node tools/verify_source.mjs`
-proves the code on chain is byte-identical to `build/`.
+| contract | address |
+|---|---|
+| RugBond (canonical, Ethereum) | `0x4D2a5e250a419b1D1798E103F80A23aC5be59a23` |
+| RugBondDemo (Base Sepolia) | `0x3491AAC81ec96B05B50B25AD9F8b3CAeE7fF51b8` |
+| LaunchGate (on RugBond) | `0x526D2923C56281f0c95ef9A4a02d8a29E2752D28` |
+| LaunchGateDemo (on RugBondDemo) | `0x8317C4e1e8D76335f249d977FA855Cfbb431e5C9` |
+
+All four were deployed from commit `f28753db96904dc172867cced068c641888ce864` ([deployments.json](deployments.json)); `node tools/verify_source.mjs`
+proves the code on chain is byte-identical to `build/` at that commit. Earlier deployments were replaced by later
+fixes; their bonds were still checked and settled by the keeper until each registry's balance was 0
+([docs/SEEDS.md](docs/SEEDS.md)):
+
+| contract | address |
+|---|---|
+| RugBond (superseded: claim rule: min(balance at start, at R-1) and received-from-team exclusion) | `0x24ff68A1adc70B9EA9eEE518a5f912ce65eb2CAE` |
+| RugBondDemo (superseded: claim rule: min(balance at start, at R-1) and received-from-team exclusion) | `0xbaa8FD3ecdCef962A59cc71a335B81E0Cf9b5016` |
+| LaunchGate (superseded: claim rule: min(balance at start, at R-1) and received-from-team exclusion) | `0x58E6D16082fE2Cb0FB38F8e1Ea407e5dc72280FF` |
+| LaunchGateDemo (superseded: claim rule: min(balance at start, at R-1) and received-from-team exclusion) | `0x75089E0b8C9027bf43561431f93E38DeA3D71303` |
+| RugBond (superseded: LaunchGate staleness on the demo chain (6 h)) | `0x07ED56951513d01B06f350476C4501015256aB2c` |
+| RugBondDemo (superseded: LaunchGate staleness on the demo chain (6 h)) | `0x6dfF7cFEb1e4e13b7FAC28e0CDf7807a742b9dA6` |
+| LaunchGate (superseded: LaunchGate staleness on the demo chain (6 h)) | `0x72e4B537b2e6d98745B4b852af9f1e1C388b3804` |
+| LaunchGateDemo (superseded: LaunchGate staleness on the demo chain (6 h)) | `0x87cA26b544Cff0ba752f44EACe31013e55A3f82d` |
 
 ## Verify it yourself
 
