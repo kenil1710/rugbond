@@ -1,0 +1,648 @@
+{
+ "generated_at": "2026-11-11T08:56:18.692Z",
+ "rows": [
+  {
+   "id": "eth-01",
+   "chain": "ethereum",
+   "verdict": "RUGGED",
+   "expect": "RUGGED",
+   "pair": "0x11e50df8622233ea3bf325e4151f70dc1bf9b4d3",
+   "token": "0xd4f45dd47dd476378ee1b06f6a57be4ebc0f7199",
+   "team": "0x966fff671c53bbe0ab04e4143aa0a3de83e81a41",
+   "signals": {
+    "burn_events_in_R": 1,
+    "burn_tx_is_rug_tx": true,
+    "rug_tx_sender": [
+     "0x966fff671c53bbe0ab04e4143aa0a3de83e81a41"
+    ],
+    "sender_is_team": true,
+    "weth_before": "40.4843",
+    "weth_after": "0.0073",
+    "weth_drop_pct": 99.98,
+    "lp_removed": "1843.1720",
+    "lp_left": "0.0000"
+   },
+   "agree": true,
+   "sources": [
+    "https://etherscan.io/address/0x11e50df8622233ea3bf325e4151f70dc1bf9b4d3",
+    "https://etherscan.io/token/0xd4f45dd47dd476378ee1b06f6a57be4ebc0f7199",
+    "https://etherscan.io/tx/0x0ccacd034f3d62b039ecd21a26d7cde6a85a04b16d6baa0455849b577cdbb8b6"
+   ],
+   "note": "the team's own transaction burned the LP in block R and drained the pool's WETH"
+  },
+  {
+   "id": "eth-02",
+   "chain": "ethereum",
+   "verdict": "RUGGED",
+   "expect": "RUGGED",
+   "pair": "0x93b25e4f8b58b6f08ec5513fd788daa83a4f7cb7",
+   "token": "0x89d3a86b3dd25a8d58b8e390abb2a805d0e88dff",
+   "team": "0x55c1eedc859d85b6cba589575981cc22ffd67206",
+   "signals": {
+    "burn_events_in_R": 1,
+    "burn_tx_is_rug_tx": true,
+    "rug_tx_sender": [
+     "0x55c1eedc859d85b6cba589575981cc22ffd67206"
+    ],
+    "sender_is_team": true,
+    "weth_before": "11.8316",
+    "weth_after": "0.0076",
+    "weth_drop_pct": 99.93,
+    "lp_removed": "21213.2034",
+    "lp_left": "0.0000"
+   },
+   "agree": true,
+   "sources": [
+    "https://etherscan.io/address/0x93b25e4f8b58b6f08ec5513fd788daa83a4f7cb7",
+    "https://etherscan.io/token/0x89d3a86b3dd25a8d58b8e390abb2a805d0e88dff",
+    "https://etherscan.io/tx/0xfd44987b9fd7dfd8206347508cda2f1aa98792540533c576c027dc114d916cd0"
+   ],
+   "note": "the team's own transaction burned the LP in block R and drained the pool's WETH"
+  },
+  {
+   "id": "eth-03",
+   "chain": "ethereum",
+   "verdict": "RUGGED",
+   "expect": "RUGGED",
+   "pair": "0xd4667ab61b091f8878b8339b8392cca2274c2b2b",
+   "token": "0xaf95e728195671a8be8da44dcd127f1bca732f8c",
+   "team": "0x798db2a75d2e6874b37528f3abd59c882c3dada0",
+   "signals": {
+    "burn_events_in_R": 1,
+    "burn_tx_is_rug_tx": true,
+    "rug_tx_sender": [
+     "0x798db2a75d2e6874b37528f3abd59c882c3dada0"
+    ],
+    "sender_is_team": true,
+    "weth_before": "8.0886",
+    "weth_after": "0.0093",
+    "weth_drop_pct": 99.88,
+    "lp_removed": "3911.5214",
+    "lp_left": "0.0000"
+   },
+   "agree": true,
+   "sources": [
+    "https://etherscan.io/address/0xd4667ab61b091f8878b8339b8392cca2274c2b2b",
+    "https://etherscan.io/token/0xaf95e728195671a8be8da44dcd127f1bca732f8c",
+    "https://etherscan.io/tx/0x7df1296fcb53e75214edf362e0d85fdb17cd5c39854b195347eb683045a5c5f8"
+   ],
+   "note": "the team's own transaction burned the LP in block R and drained the pool's WETH"
+  },
+  {
+   "id": "eth-04",
+   "chain": "ethereum",
+   "verdict": "RUGGED",
+   "expect": "RUGGED",
+   "pair": "0x42fe3b88964fb8b4e0cef66f0406764f8136b9ec",
+   "token": "0xc97c6be6ee14693b01d79694bd73c26e4d58e31b",
+   "team": "0x292c2062f6bb46380ad132e7582f770ab08c552b",
+   "signals": {
+    "burn_events_in_R": 1,
+    "burn_tx_is_rug_tx": true,
+    "rug_tx_sender": [
+     "0x292c2062f6bb46380ad132e7582f770ab08c552b"
+    ],
+    "sender_is_team": true,
+    "weth_before": "7.7113",
+    "weth_after": "0.0088",
+    "weth_drop_pct": 99.88,
+    "lp_removed": "4242.6407",
+    "lp_left": "0.0000"
+   },
+   "agree": true,
+   "sources": [
+    "https://etherscan.io/address/0x42fe3b88964fb8b4e0cef66f0406764f8136b9ec",
+    "https://etherscan.io/token/0xc97c6be6ee14693b01d79694bd73c26e4d58e31b",
+    "https://etherscan.io/tx/0xa94e67ca9295106b532bac8f8cd3b0f0ecb37448474f5f15377dd7ba75665aaa"
+   ],
+   "note": "the team's own transaction burned the LP in block R and drained the pool's WETH"
+  },
+  {
+   "id": "eth-05",
+   "chain": "ethereum",
+   "verdict": "RUGGED",
+   "expect": "RUGGED",
+   "pair": "0x18d907d9d022ade8507a00d330ef5cf2d58f8577",
+   "token": "0x2c127a4991d0353c1e6e4a70f83892cedb110720",
+   "team": "0x37a56ec3adc45333e52969e39969766182635bdc",
+   "signals": {
+    "burn_events_in_R": 1,
+    "burn_tx_is_rug_tx": true,
+    "rug_tx_sender": [
+     "0x37a56ec3adc45333e52969e39969766182635bdc"
+    ],
+    "sender_is_team": true,
+    "weth_before": "2.9055",
+    "weth_after": "0.0008",
+    "weth_drop_pct": 99.97,
+    "lp_removed": "32087380.6971",
+    "lp_left": "0.0000"
+   },
+   "agree": true,
+   "sources": [
+    "https://etherscan.io/address/0x18d907d9d022ade8507a00d330ef5cf2d58f8577",
+    "https://etherscan.io/token/0x2c127a4991d0353c1e6e4a70f83892cedb110720",
+    "https://etherscan.io/tx/0xa18a8de09abcde1550ae44afab8e2328a1c07aa62c2dfe1fc8a7d2721616af84"
+   ],
+   "note": "the team's own transaction burned the LP in block R and drained the pool's WETH"
+  },
+  {
+   "id": "eth-06",
+   "chain": "ethereum",
+   "verdict": "RUGGED",
+   "expect": "RUGGED",
+   "pair": "0x2767430a66c121a875cf986612a325a8ba409d4f",
+   "token": "0xa5084c8d45c05560aecaf533982bd6e5210bf770",
+   "team": "0x4a651adfd7dd262e327ad54413a348357f330e22",
+   "signals": {
+    "burn_events_in_R": 1,
+    "burn_tx_is_rug_tx": true,
+    "rug_tx_sender": [
+     "0x4a651adfd7dd262e327ad54413a348357f330e22"
+    ],
+    "sender_is_team": true,
+    "weth_before": "2.3337",
+    "weth_after": "0.0004",
+    "weth_drop_pct": 99.98,
+    "lp_removed": "30615355.6243",
+    "lp_left": "0.0000"
+   },
+   "agree": true,
+   "sources": [
+    "https://etherscan.io/address/0x2767430a66c121a875cf986612a325a8ba409d4f",
+    "https://etherscan.io/token/0xa5084c8d45c05560aecaf533982bd6e5210bf770",
+    "https://etherscan.io/tx/0x3d5437bfacc9b085bacf7b44a27c5390b3e73711772a185f8a3040dc09f9ad89"
+   ],
+   "note": "the team's own transaction burned the LP in block R and drained the pool's WETH"
+  },
+  {
+   "id": "eth-07",
+   "chain": "ethereum",
+   "verdict": "RUGGED",
+   "expect": "RUGGED",
+   "pair": "0xfe45f83bb0e111e24d0f3f085185587814ebf019",
+   "token": "0xd9536442ebe8bc674107a0b1383f847a3aaa4d48",
+   "team": "0x651cef9c5b892a5eb70add7ddf6f66612f93d7d4",
+   "signals": {
+    "burn_events_in_R": 1,
+    "burn_tx_is_rug_tx": true,
+    "rug_tx_sender": [
+     "0x651cef9c5b892a5eb70add7ddf6f66612f93d7d4"
+    ],
+    "sender_is_team": true,
+    "weth_before": "3.7534",
+    "weth_after": "0.0001",
+    "weth_drop_pct": 99.99,
+    "lp_removed": "47752486.8462",
+    "lp_left": "0.0000"
+   },
+   "agree": true,
+   "sources": [
+    "https://etherscan.io/address/0xfe45f83bb0e111e24d0f3f085185587814ebf019",
+    "https://etherscan.io/token/0xd9536442ebe8bc674107a0b1383f847a3aaa4d48",
+    "https://etherscan.io/tx/0xe7b97da04d431a61d319c5ed07e42b02498dd0e7adaa435f0625d17c01cd01a9"
+   ],
+   "note": "the team's own transaction burned the LP in block R and drained the pool's WETH"
+  },
+  {
+   "id": "base-08",
+   "chain": "base",
+   "verdict": "RUGGED",
+   "expect": "RUGGED",
+   "pair": "0xcb52cba8d6397500cabce1f45683f173d2d84ac8",
+   "token": "0x4b9b4bbabe9fa75aaba80e28f12f8f4e697645e7",
+   "team": "0xe4fd16c685500c986cea5cdf74865d77deb15796",
+   "signals": {
+    "burn_events_in_R": 1,
+    "burn_tx_is_rug_tx": true,
+    "rug_tx_sender": [
+     "0xe4fd16c685500c986cea5cdf74865d77deb15796"
+    ],
+    "sender_is_team": true,
+    "weth_before": "17.9329",
+    "weth_after": "0.0008",
+    "weth_drop_pct": 99.99,
+    "lp_removed": "284604.9894",
+    "lp_left": "0.0000"
+   },
+   "agree": true,
+   "sources": [
+    "https://basescan.org/address/0xcb52cba8d6397500cabce1f45683f173d2d84ac8",
+    "https://basescan.org/token/0x4b9b4bbabe9fa75aaba80e28f12f8f4e697645e7",
+    "https://basescan.org/tx/0x3949ff3030a9a891eebbe34654009fcf3def90d4221edc36d21533b792bf4a56"
+   ],
+   "note": "the team's own transaction burned the LP in block R and drained the pool's WETH"
+  },
+  {
+   "id": "base-09",
+   "chain": "base",
+   "verdict": "RUGGED",
+   "expect": "RUGGED",
+   "pair": "0xccb5c3e43d240631ef11f096fe1530f93aa1b434",
+   "token": "0x7d927554c5eef785cd1528b0f82a0a794c10597b",
+   "team": "0xf952be5abcf358ce8b85d9bfa87909b5a6b1a0f0",
+   "signals": {
+    "burn_events_in_R": 1,
+    "burn_tx_is_rug_tx": true,
+    "rug_tx_sender": [
+     "0xf952be5abcf358ce8b85d9bfa87909b5a6b1a0f0"
+    ],
+    "sender_is_team": true,
+    "weth_before": "18.1722",
+    "weth_after": "0.0009",
+    "weth_drop_pct": 99.99,
+    "lp_removed": "342052.6275",
+    "lp_left": "0.0000"
+   },
+   "agree": true,
+   "sources": [
+    "https://basescan.org/address/0xccb5c3e43d240631ef11f096fe1530f93aa1b434",
+    "https://basescan.org/token/0x7d927554c5eef785cd1528b0f82a0a794c10597b",
+    "https://basescan.org/tx/0x0266dd0d3a340ee203136261a7db0fd8bb2eb920f7aa7c02a6408a3779e69bea"
+   ],
+   "note": "the team's own transaction burned the LP in block R and drained the pool's WETH"
+  },
+  {
+   "id": "base-10",
+   "chain": "base",
+   "verdict": "RUGGED",
+   "expect": "RUGGED",
+   "pair": "0xc025ca921ddd03a615ebf5c298e3564739d3e11b",
+   "token": "0x856190117a741f30725f28268a14561c2834cc9d",
+   "team": "0xd8dd8cc004c4637de31f5651f166dc9bbe89ceca",
+   "signals": {
+    "burn_events_in_R": 1,
+    "burn_tx_is_rug_tx": true,
+    "rug_tx_sender": [
+     "0xd8dd8cc004c4637de31f5651f166dc9bbe89ceca"
+    ],
+    "sender_is_team": true,
+    "weth_before": "18.0037",
+    "weth_after": "0.0008",
+    "weth_drop_pct": 99.99,
+    "lp_removed": "317017.3497",
+    "lp_left": "0.0000"
+   },
+   "agree": true,
+   "sources": [
+    "https://basescan.org/address/0xc025ca921ddd03a615ebf5c298e3564739d3e11b",
+    "https://basescan.org/token/0x856190117a741f30725f28268a14561c2834cc9d",
+    "https://basescan.org/tx/0xf64404586ad9c2e22b2b1c26820cc31425f31d2f3e1a18d2584fbdea5243ca0b"
+   ],
+   "note": "the team's own transaction burned the LP in block R and drained the pool's WETH"
+  },
+  {
+   "id": "base-11",
+   "chain": "base",
+   "verdict": "RUGGED",
+   "expect": "RUGGED",
+   "pair": "0x07bc2f934b7bbe04dbaaa2325d162b830bd560c9",
+   "token": "0x4f7d70e1636eebcb41d3bff04b2862a08ef0ceb1",
+   "team": "0xcba01f159c6ed6832ca16ecb96c13a466d44bb8f",
+   "signals": {
+    "burn_events_in_R": 1,
+    "burn_tx_is_rug_tx": true,
+    "rug_tx_sender": [
+     "0xcba01f159c6ed6832ca16ecb96c13a466d44bb8f"
+    ],
+    "sender_is_team": true,
+    "weth_before": "18.0580",
+    "weth_after": "0.0008",
+    "weth_drop_pct": 99.99,
+    "lp_removed": "344238.2896",
+    "lp_left": "0.0000"
+   },
+   "agree": true,
+   "sources": [
+    "https://basescan.org/address/0x07bc2f934b7bbe04dbaaa2325d162b830bd560c9",
+    "https://basescan.org/token/0x4f7d70e1636eebcb41d3bff04b2862a08ef0ceb1",
+    "https://basescan.org/tx/0x73aad13d9d526bc5970c078c43bb793cefcc4af5710844d4281aa032e922d1e1"
+   ],
+   "note": "the team's own transaction burned the LP in block R and drained the pool's WETH"
+  },
+  {
+   "id": "base-12",
+   "chain": "base",
+   "verdict": "RUGGED",
+   "expect": "RUGGED",
+   "pair": "0x4a04a00163a374fda00b4bfd5218247c99064745",
+   "token": "0x3e7f526098fb5e14de74a4304bab5f4be3bdb716",
+   "team": "0x3637ee93a4d1254a8778858aec160c38e5e8f13f",
+   "signals": {
+    "burn_events_in_R": 1,
+    "burn_tx_is_rug_tx": true,
+    "rug_tx_sender": [
+     "0x3637ee93a4d1254a8778858aec160c38e5e8f13f"
+    ],
+    "sender_is_team": true,
+    "weth_before": "2.5187",
+    "weth_after": "0.0004",
+    "weth_drop_pct": 99.98,
+    "lp_removed": "91651.5139",
+    "lp_left": "0.0000"
+   },
+   "agree": true,
+   "sources": [
+    "https://basescan.org/address/0x4a04a00163a374fda00b4bfd5218247c99064745",
+    "https://basescan.org/token/0x3e7f526098fb5e14de74a4304bab5f4be3bdb716",
+    "https://basescan.org/tx/0x43f0865f3894789f3bcc5867b84cfe6eb3e876bb2f56a147b171021f1171e5ee"
+   ],
+   "note": "the team's own transaction burned the LP in block R and drained the pool's WETH"
+  },
+  {
+   "id": "base-13",
+   "chain": "base",
+   "verdict": "RUGGED",
+   "expect": "RUGGED",
+   "pair": "0x340481665104e99e2f5c66f7f669b6b6d563426f",
+   "token": "0x969a5c20dcd88d19b3b3d2d7ff00e446f55d00ec",
+   "team": "0x623248b73403e477e8b0731d83a16892a604b944",
+   "signals": {
+    "burn_events_in_R": 1,
+    "burn_tx_is_rug_tx": true,
+    "rug_tx_sender": [
+     "0x623248b73403e477e8b0731d83a16892a604b944"
+    ],
+    "sender_is_team": true,
+    "weth_before": "1.4191",
+    "weth_after": "0.0001",
+    "weth_drop_pct": 99.99,
+    "lp_removed": "81975.6061",
+    "lp_left": "0.0000"
+   },
+   "agree": true,
+   "sources": [
+    "https://basescan.org/address/0x340481665104e99e2f5c66f7f669b6b6d563426f",
+    "https://basescan.org/token/0x969a5c20dcd88d19b3b3d2d7ff00e446f55d00ec",
+    "https://basescan.org/tx/0x29c4abc84dc25296a9f74a94756b477dd989e5891aaab05b6de5bbf2963d57b7"
+   ],
+   "note": "the team's own transaction burned the LP in block R and drained the pool's WETH"
+  },
+  {
+   "id": "eth-14",
+   "chain": "ethereum",
+   "verdict": "HELD",
+   "expect": "HELD",
+   "pair": "0x0597c2b5855f1c464cb989e2abd1b14c8e0eb668",
+   "token": "0x937e98238a40ce221a5bd412578dcb383c9126b6",
+   "team": "0xdc8a1c25081bf3c57f6e7feaea6952a23040be2e",
+   "signals": {
+    "blocks": 79999,
+    "weth_at_start": "2.0000",
+    "weth_at_end": "0.0000",
+    "lp_holders_at_end": "44.7214",
+    "promised_min": "44.7214",
+    "burns_in_period": 0,
+    "burns_by_lp_holders": 0
+   },
+   "agree": true,
+   "sources": [
+    "https://etherscan.io/address/0x0597c2b5855f1c464cb989e2abd1b14c8e0eb668",
+    "https://etherscan.io/token/0x937e98238a40ce221a5bd412578dcb383c9126b6",
+    "https://etherscan.io/token/0x0597c2b5855f1c464cb989e2abd1b14c8e0eb668?a=0xdc8a1c25081bf3c57f6e7feaea6952a23040be2e"
+   ],
+   "note": "the LP holders still held at least the promised LP at the end, and none of them burned LP in the period"
+  },
+  {
+   "id": "eth-15",
+   "chain": "ethereum",
+   "verdict": "HELD",
+   "expect": "HELD",
+   "pair": "0x287c4edf5ce82a545165a987ba5a68b0b5298fa9",
+   "token": "0xa324d9464e8d639ad3579c8f8bb07aec0c0651f6",
+   "team": "0x3df76ed6dc53bc3332637f89f54f31566778cb5a",
+   "signals": {
+    "blocks": 79999,
+    "weth_at_start": "2.0000",
+    "weth_at_end": "0.0000",
+    "lp_holders_at_end": "44.7214",
+    "promised_min": "44.7214",
+    "burns_in_period": 0,
+    "burns_by_lp_holders": 0
+   },
+   "agree": true,
+   "sources": [
+    "https://etherscan.io/address/0x287c4edf5ce82a545165a987ba5a68b0b5298fa9",
+    "https://etherscan.io/token/0xa324d9464e8d639ad3579c8f8bb07aec0c0651f6",
+    "https://etherscan.io/token/0x287c4edf5ce82a545165a987ba5a68b0b5298fa9?a=0x3df76ed6dc53bc3332637f89f54f31566778cb5a"
+   ],
+   "note": "the LP holders still held at least the promised LP at the end, and none of them burned LP in the period"
+  },
+  {
+   "id": "eth-16",
+   "chain": "ethereum",
+   "verdict": "HELD",
+   "expect": "HELD",
+   "pair": "0x4667efacfa2bc9ea474d8e3e9364461485a81ed4",
+   "token": "0x1884daa51e761519d847e19b367ad1ba164370be",
+   "team": "0x248c2fcebac1413fca4da21b675cdaeb4ff20681",
+   "signals": {
+    "blocks": 79999,
+    "weth_at_start": "5.9096",
+    "weth_at_end": "3.8393",
+    "lp_holders_at_end": "43829168.3699",
+    "promised_min": "43829168.3699",
+    "burns_in_period": 0,
+    "burns_by_lp_holders": 0
+   },
+   "agree": true,
+   "sources": [
+    "https://etherscan.io/address/0x4667efacfa2bc9ea474d8e3e9364461485a81ed4",
+    "https://etherscan.io/token/0x1884daa51e761519d847e19b367ad1ba164370be",
+    "https://etherscan.io/token/0x4667efacfa2bc9ea474d8e3e9364461485a81ed4?a=0x663a5c229c09b049e36dcc11a9b0d4a8eb9db214"
+   ],
+   "note": "the LP holders still held at least the promised LP at the end, and none of them burned LP in the period"
+  },
+  {
+   "id": "eth-17",
+   "chain": "ethereum",
+   "verdict": "HELD",
+   "expect": "HELD",
+   "pair": "0x5d5434dfbe84a3416fe0834e91ee558263855ab6",
+   "token": "0xff8691574741b015c2ec31f8752cf22ae611bc38",
+   "team": "0x1c96e29d0102845d886f841f5bafb22ec779eb72",
+   "signals": {
+    "blocks": 79999,
+    "weth_at_start": "1.4675",
+    "weth_at_end": "0.7883",
+    "lp_holders_at_end": "0.2672",
+    "promised_min": "0.2672",
+    "burns_in_period": 0,
+    "burns_by_lp_holders": 0
+   },
+   "agree": true,
+   "sources": [
+    "https://etherscan.io/address/0x5d5434dfbe84a3416fe0834e91ee558263855ab6",
+    "https://etherscan.io/token/0xff8691574741b015c2ec31f8752cf22ae611bc38",
+    "https://etherscan.io/token/0x5d5434dfbe84a3416fe0834e91ee558263855ab6?a=0x1c96e29d0102845d886f841f5bafb22ec779eb72"
+   ],
+   "note": "the LP holders still held at least the promised LP at the end, and none of them burned LP in the period"
+  },
+  {
+   "id": "eth-18",
+   "chain": "ethereum",
+   "verdict": "HELD",
+   "expect": "HELD",
+   "pair": "0x86bc7b7b0f2c030dc4b7a67b3d83440ca6178976",
+   "token": "0xbeec04b78c6795bdb7f92e3f9789591081cbb609",
+   "team": "0x9e4499f83a2dcd768fbb29fc55a7bda1e44d00cc",
+   "signals": {
+    "blocks": 79999,
+    "weth_at_start": "1.2713",
+    "weth_at_end": "0.0000",
+    "lp_holders_at_end": "1.0000",
+    "promised_min": "1.0000",
+    "burns_in_period": 0,
+    "burns_by_lp_holders": 0
+   },
+   "agree": true,
+   "sources": [
+    "https://etherscan.io/address/0x86bc7b7b0f2c030dc4b7a67b3d83440ca6178976",
+    "https://etherscan.io/token/0xbeec04b78c6795bdb7f92e3f9789591081cbb609",
+    "https://etherscan.io/token/0x86bc7b7b0f2c030dc4b7a67b3d83440ca6178976?a=0x000000000000000000000000000000000000dead"
+   ],
+   "note": "the LP holders still held at least the promised LP at the end, and none of them burned LP in the period"
+  },
+  {
+   "id": "eth-19",
+   "chain": "ethereum",
+   "verdict": "HELD",
+   "expect": "HELD",
+   "pair": "0xd2ed05f906b2c9325b6f74a667fc1c6454031b2b",
+   "token": "0x083428b98e3c274ab1194db7ea076d47998ee0c5",
+   "team": "0xfee4b3dc949032f762252f8cc10515d513ce1c7e",
+   "signals": {
+    "blocks": 79999,
+    "weth_at_start": "1.0000",
+    "weth_at_end": "0.0000",
+    "lp_holders_at_end": "1.0000",
+    "promised_min": "1.0000",
+    "burns_in_period": 0,
+    "burns_by_lp_holders": 0
+   },
+   "agree": true,
+   "sources": [
+    "https://etherscan.io/address/0xd2ed05f906b2c9325b6f74a667fc1c6454031b2b",
+    "https://etherscan.io/token/0x083428b98e3c274ab1194db7ea076d47998ee0c5",
+    "https://etherscan.io/token/0xd2ed05f906b2c9325b6f74a667fc1c6454031b2b?a=0x000000000000000000000000000000000000dead"
+   ],
+   "note": "the LP holders still held at least the promised LP at the end, and none of them burned LP in the period"
+  },
+  {
+   "id": "eth-20",
+   "chain": "ethereum",
+   "verdict": "RUGGED",
+   "expect": "RUGGED",
+   "pair": "0xe47418d430a21d7eff1662963e05798bfc91a5c1",
+   "token": "0xf72e876110de094f333241f42c2281baf0a6d923",
+   "team": "0xfe131c156a46e32a9edf30ff2a72e5dd7dc22685",
+   "signals": {
+    "burn_events_in_R": 1,
+    "burn_tx_is_rug_tx": true,
+    "rug_tx_sender": [
+     "0xfe131c156a46e32a9edf30ff2a72e5dd7dc22685"
+    ],
+    "sender_is_team": true,
+    "weth_before": "6.9651",
+    "weth_after": "0.0091",
+    "weth_drop_pct": 99.86,
+    "lp_removed": "116189.5004",
+    "lp_left": "0.0000"
+   },
+   "agree": true,
+   "sources": [
+    "https://etherscan.io/address/0xe47418d430a21d7eff1662963e05798bfc91a5c1",
+    "https://etherscan.io/token/0xf72e876110de094f333241f42c2281baf0a6d923",
+    "https://etherscan.io/tx/0xfa6028f6dc7fa9a5e2e2ca96ef4ea78693186a47319e9d56bdd25fb558e28774"
+   ],
+   "note": "the team's own transaction burned the LP in block R and drained the pool's WETH"
+  },
+  {
+   "id": "eth-21",
+   "chain": "ethereum",
+   "verdict": "RUGGED",
+   "expect": "RUGGED",
+   "pair": "0x871b2e930b6dfa128421ca01281aa2d8dd331e2d",
+   "token": "0x3f287a97fdf77f8ef40ef7440eccac3407810492",
+   "team": "0xee2e1f71ea2ba631e3071a941291c7a51d2b1f81",
+   "signals": {
+    "burn_events_in_R": 1,
+    "burn_tx_is_rug_tx": true,
+    "rug_tx_sender": [
+     "0xee2e1f71ea2ba631e3071a941291c7a51d2b1f81"
+    ],
+    "sender_is_team": true,
+    "weth_before": "6.9905",
+    "weth_after": "0.0091",
+    "weth_drop_pct": 99.86,
+    "lp_removed": "36742.3461",
+    "lp_left": "0.0000"
+   },
+   "agree": true,
+   "sources": [
+    "https://etherscan.io/address/0x871b2e930b6dfa128421ca01281aa2d8dd331e2d",
+    "https://etherscan.io/token/0x3f287a97fdf77f8ef40ef7440eccac3407810492",
+    "https://etherscan.io/tx/0xa36a4c6e57200b68b413ee703ff89408c574aa2198906b67bc7b9495aac0136d"
+   ],
+   "note": "the team's own transaction burned the LP in block R and drained the pool's WETH"
+  },
+  {
+   "id": "eth-22",
+   "chain": "ethereum",
+   "verdict": "RUGGED",
+   "expect": "RUGGED",
+   "pair": "0xc022beb58700a2e1e5814ba6597036694782dbfb",
+   "token": "0x4e9fccbd1b1e64efca8d0f72521ba065384fead5",
+   "team": "0xc5c6eb6822f270a3508da0e9b6b2a3e2ab4e267d",
+   "signals": {
+    "burn_events_in_R": 1,
+    "burn_tx_is_rug_tx": true,
+    "rug_tx_sender": [
+     "0xc5c6eb6822f270a3508da0e9b6b2a3e2ab4e267d"
+    ],
+    "sender_is_team": true,
+    "weth_before": "5.9835",
+    "weth_after": "0.0093",
+    "weth_drop_pct": 99.84,
+    "lp_removed": "30000.0000",
+    "lp_left": "0.0000"
+   },
+   "agree": true,
+   "sources": [
+    "https://etherscan.io/address/0xc022beb58700a2e1e5814ba6597036694782dbfb",
+    "https://etherscan.io/token/0x4e9fccbd1b1e64efca8d0f72521ba065384fead5",
+    "https://etherscan.io/tx/0x87e8be8e88ae633a994a6d9aec562232470c9d75ccf906054ee76051fdaa7cfb"
+   ],
+   "note": "the team's own transaction burned the LP in block R and drained the pool's WETH"
+  },
+  {
+   "id": "eth-23",
+   "chain": "ethereum",
+   "verdict": "RUGGED",
+   "expect": "RUGGED",
+   "pair": "0x1e634e05c3105a46f1d6d61349e46cb9c5a5e7b2",
+   "token": "0xc2742418134519e3b4a66b088e3c398f9f1214eb",
+   "team": "0x3714c3c6edcda3f19e4859b9b457622d86a07b64",
+   "signals": {
+    "burn_events_in_R": 1,
+    "burn_tx_is_rug_tx": true,
+    "rug_tx_sender": [
+     "0x3714c3c6edcda3f19e4859b9b457622d86a07b64"
+    ],
+    "sender_is_team": true,
+    "weth_before": "5.8786",
+    "weth_after": "0.0092",
+    "weth_drop_pct": 99.84,
+    "lp_removed": "30000.0000",
+    "lp_left": "0.0000"
+   },
+   "agree": true,
+   "sources": [
+    "https://etherscan.io/address/0x1e634e05c3105a46f1d6d61349e46cb9c5a5e7b2",
+    "https://etherscan.io/token/0xc2742418134519e3b4a66b088e3c398f9f1214eb",
+    "https://etherscan.io/tx/0xd8dcb64c03bc94f57517cb71da847c5bbb98f1d6812f29f6bf4ee8bde6892e9e"
+   ],
+   "note": "the team's own transaction burned the LP in block R and drained the pool's WETH"
+  }
+ ]
+}

@@ -48,10 +48,31 @@
    "end_time": 1794397925,
    "amount": "2000000000000000000",
    "at": "2026-11-11T08:52:50.851Z"
+  },
+  {
+   "id": "open_B",
+   "what": "open bond HOLDDEMO liquidity bond",
+   "ok": true,
+   "tx": "0x9c638405702496815fd6a34f9131ade8b51fc34d6db62e320796a3139c221be4",
+   "bond_id": 2,
+   "start_block": 57326281,
+   "end_time": 1794388370,
+   "amount": "1000000000000000000",
+   "at": "2026-11-11T08:53:38.472Z"
+  },
+  {
+   "id": "open_copycat",
+   "what": "a stranger bonds RUGDEMO too (copycat)",
+   "ok": true,
+   "tx": "0x5dfae48b8580bb9d292fc15cfcfc46808a6c78391c92762392c9731bc398464d",
+   "bond_id": 3,
+   "at": "2026-11-11T08:53:52.042Z"
   }
  ],
  "bonds": {
-  "A": 1
+  "A": 1,
+  "B": 2,
+  "C": 3
  },
  "start_block": 57326281
 }
