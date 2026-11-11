@@ -23,8 +23,9 @@ export default async function Home() {
         <h1>Pull the liquidity early,<br />the bond pays the holders.</h1>
         <p style={{ maxWidth: 720, fontSize: "1.1rem" }}>
           A token team locks GEN behind a frozen promise: these LP wallets keep at least this much LP until this time.
-          GenLayer validators read the pool from two RPCs. If the LP drops below the floor, every holder at the block before
-          claims a pro-rata share of the bond. If it holds, the team gets its bond back. Code decides; nobody approves.
+          GenLayer validators read the pool from two RPCs. If the LP drops below the floor, everyone who held the token since
+          the promise began claims a pro-rata share of the bond. If it holds, the team gets its bond back. Code decides;
+          nobody approves.
         </p>
         <div className="row"><Link className="btn" href="/owed">Am I owed?</Link><Link className="btn ghost" href="/team">Post a bond</Link><Link className="btn ghost" href="/docs">The rules</Link></div>
       </section>

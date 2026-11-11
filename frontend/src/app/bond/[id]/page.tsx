@@ -45,7 +45,7 @@ export default async function BondPage({ params }: { params: Promise<{ id: strin
       <p className="small"><Link href="/">← board</Link> · {reg === "demo" ? "demo registry" : "canonical registry"} · bond #{n}</p>
       <div className="row" style={{ justifyContent: "space-between" }}>
         <h1 style={{ marginBottom: 0 }}>{b.name}</h1>
-        <StatusPill status={b.status} replay={b.replay} />
+        <StatusPill status={b.status} replay={b.replay} nChecks={b.n_checks} lastResult={b.last_result} />
       </div>
       {b.replay ? <p className="note">Replay: this bond was created after the events it covers (its start block is older than the bond), to show the rule on real history. LaunchGate never answers favorably for a replay.</p> : null}
       <div className="kpis">

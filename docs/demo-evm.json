@@ -107,6 +107,26 @@
    "tx": "0x49c78bbc3def3732fcb35b121e0eaca0e15ccd7adc50e53eccb0b672742951e2",
    "status": "success",
    "block": 57325429
+  },
+  "team_sends_holder5_after_start": {
+   "tx": "0x19bae94ad892a7e81eec3117f694a04ea5c94050489675ec6a01d04c14667cd3",
+   "status": "success",
+   "block": 57329309
+  },
+  "deployer_buys_after_start": {
+   "tx": "0x246597c05d936ceeacabacaa69d3685169e17623091ac50ce225592c1931a431",
+   "status": "success",
+   "block": 57329317
+  },
+  "approve_lp_RUGDEMO": {
+   "tx": "0xfe3a9f5fc3b400a989f913e1d00eedfacbda050a4e9a91c3e2bda9152bb28d89",
+   "status": "success",
+   "block": 57329399
+  },
+  "rug_RUGDEMO": {
+   "tx": "0x9c1e218d6b3e1539588ac3c2a1b142d82fba70d7ed3891c240cd15cae670aa80",
+   "status": "success",
+   "block": 57329406
   }
  },
  "RUGDEMO": {
@@ -114,7 +134,13 @@
   "pair": "0xca34dde3c3eb608b74575c0512ae6666f472abd4",
   "team": "0x6365881b460e79216303fc370348ca857d8da9ef",
   "lp_minted": "38729833462074167851",
-  "liquidity_block": 57325328
+  "liquidity_block": 57325328,
+  "after_start": {
+   "holder5": 57329309,
+   "deployer_buy": 57329317
+  },
+  "rug_block": 57329406,
+  "rug_tx": "0x9c1e218d6b3e1539588ac3c2a1b142d82fba70d7ed3891c240cd15cae670aa80"
  },
  "HOLDDEMO": {
   "token": "0xd4b593691fa189f6beb492e27f57a5fa320aa7e5",

@@ -59,11 +59,49 @@
    "end_time": 1794388869,
    "amount": "1000000000000000000",
    "at": "2026-11-11T09:01:55.661Z"
+  },
+  {
+   "id": "open_copycat",
+   "what": "a stranger bonds RUGDEMO too (copycat)",
+   "ok": true,
+   "tx": "0xcf754f2ad09914ba2d8859692d966d8d0e0a154fcc55bb000647ea233c44dacc",
+   "bond_id": 3,
+   "at": "2026-11-11T09:02:09.087Z"
+  },
+  {
+   "id": "evm_after_start",
+   "what": "Base Sepolia: team -> holder5 transfer and a buy by the deployer, after the start block",
+   "ok": true,
+   "holder5": 57329309,
+   "deployer_buy": 57329317,
+   "at": "2026-11-11T09:02:13.530Z"
+  },
+  {
+   "id": "beneficiary",
+   "what": "holder1 commits a beneficiary (once)",
+   "ok": true,
+   "tx": "0x8673315c070999cdc5deadc8f97efed079ac6498f35d95f58cf8dfdc6a850ebc",
+   "returned": {
+    "beneficiary": "0xd8834fb21396dfcca2d1c317294458e9ab2b69b4",
+    "bond_id": 1,
+    "holder": "0x708119149a9e4915fb918b3aff8052f750aacbba",
+    "ok": true
+   },
+   "at": "2026-11-11T09:02:25.998Z"
+  },
+  {
+   "id": "evm_rug",
+   "what": "Base Sepolia: the team removes RUGDEMO's liquidity (removeLiquidityETH)",
+   "ok": true,
+   "rug_block": 57329406,
+   "rug_tx": "0x9c1e218d6b3e1539588ac3c2a1b142d82fba70d7ed3891c240cd15cae670aa80",
+   "at": "2026-11-11T09:02:31.254Z"
   }
  ],
  "bonds": {
   "A": 1,
-  "B": 2
+  "B": 2,
+  "C": 3
  },
  "start_block": 57328762
 }

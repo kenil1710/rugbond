@@ -119,6 +119,9 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 .prose table { margin: 12px 0; }
 .prose pre { background: var(--bg-2); padding: 12px; border-radius: 12px; overflow-x: auto; }
 @media (max-width: 640px) {
+  .nav { gap: 8px; }
+  .nav nav { order: 3; flex: 1 1 100%; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; }
+  .nav nav a { white-space: nowrap; padding: 6px 10px; }
   .sticker { padding: 16px; }
   .grid > .sticker:nth-child(n) { transform: none; }
   th, td { padding: 8px; }

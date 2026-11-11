@@ -28,7 +28,7 @@ export function BondCard({ b, reg }: { b: Bond; reg: "canonical" | "demo" }) {
     <Link className="card-link sticker" href={`/bond/${reg === "demo" ? "demo-" : ""}${b.bond_id}`} style={{ borderColor: tone === "pink" ? "var(--pink)" : tone === "lime" ? "var(--lime)" : "#000" }}>
       <div className="row" style={{ justifyContent: "space-between" }}>
         <span className="small">#{b.bond_id} · {CHAIN_LABEL[b.chain] ?? b.chain}</span>
-        <StatusPill status={b.status} replay={b.replay} />
+        <StatusPill status={b.status} replay={b.replay} nChecks={b.n_checks} lastResult={b.last_result} />
       </div>
       <h3 style={{ marginTop: 10 }}>{b.name}</h3>
       <div className="small mono">token {short(b.token, 4)} · pair {short(b.pair, 4)}</div>
