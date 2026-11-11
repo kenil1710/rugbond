@@ -119,14 +119,14 @@ async function afterStart() {
 }
 
 /** The e2e run's own token: deployed by the team, liquidity added, tokens sent to the e2e wallet (and holder1) before the bond. */
-async function e2eSetup(wallet) {
-  const d = await step("deploy_E2EDEMO", async () => {
-    const hash = await wal("team").deployContract({ abi: art.abi, bytecode: art.bytecode.object, args: ["RugBond E2E", "E2EDEMO", parseEther("1000000")] });
+async function e2eSetup(wallet, key = "E2EDEMO") {
+  const d = await step(`deploy_${key}`, async () => {
+    const hash = await wal("team").deployContract({ abi: art.abi, bytecode: art.bytecode.object, args: ["RugBond " + key, key, parseEther("1000000")] });
     const r = await sent(hash);
     return { ...r, address: (await pub.getTransactionReceipt({ hash })).contractAddress.toLowerCase() };
   });
-  await step("approve_E2EDEMO", async () => sent(await wal("team").writeContract({ address: d.address, abi: erc20, functionName: "approve", args: [ROUTER, 2n ** 256n - 1n] })));
-  const liq = await step("liquidity_E2EDEMO", async () => {
+  await step(`approve_${key}`, async () => sent(await wal("team").writeContract({ address: d.address, abi: erc20, functionName: "approve", args: [ROUTER, 2n ** 256n - 1n] })));
+  const liq = await step(`liquidity_${key}`, async () => {
     const dl = BigInt(Math.floor(Date.now() / 1000) + 1800);
     const r = await sent(await wal("team").writeContract({ address: ROUTER, abi: router, functionName: "addLiquidityETH",
       args: [d.address, parseEther("500000"), 0n, 0n, A("team").address, dl], value: parseEther("0.002") }));
@@ -134,18 +134,18 @@ async function e2eSetup(wallet) {
     const lp = await pub.readContract({ address: pair, abi: erc20, functionName: "balanceOf", args: [A("team").address], blockNumber: BigInt(r.block) });
     return { ...r, pair, lp: lp.toString() };
   });
-  await step("send_E2EDEMO_wallet", async () => sent(await wal("team").writeContract({ address: d.address, abi: erc20, functionName: "transfer", args: [wallet, parseEther("20000")] })));
-  await step("send_E2EDEMO_holder1", async () => sent(await wal("team").writeContract({ address: d.address, abi: erc20, functionName: "transfer", args: [A("holder1").address, parseEther("30000")] })));
-  st.E2EDEMO = { token: d.address, pair: liq.pair, team: A("team").address.toLowerCase(), lp_minted: liq.lp, wallet: wallet.toLowerCase() };
+  await step(`send_${key}_wallet`, async () => sent(await wal("team").writeContract({ address: d.address, abi: erc20, functionName: "transfer", args: [wallet, parseEther("20000")] })));
+  await step(`send_${key}_holder1`, async () => sent(await wal("team").writeContract({ address: d.address, abi: erc20, functionName: "transfer", args: [A("holder1").address, parseEther("30000")] })));
+  st[key] = { token: d.address, pair: liq.pair, team: A("team").address.toLowerCase(), lp_minted: liq.lp, wallet: wallet.toLowerCase() };
   save();
-  console.log(JSON.stringify(st.E2EDEMO));
+  console.log(JSON.stringify(st[key]));
 }
 
-async function e2eRug() {
-  const s = st.E2EDEMO;
+async function e2eRug(key = "E2EDEMO") {
+  const s = st[key];
   const lp = await pub.readContract({ address: s.pair, abi: erc20, functionName: "balanceOf", args: [s.team] });
-  await step("approve_lp_E2EDEMO", async () => sent(await wal("team").writeContract({ address: s.pair, abi: erc20, functionName: "approve", args: [ROUTER, lp] })));
-  const r = await step("rug_E2EDEMO", async () => {
+  await step(`approve_lp_${key}`, async () => sent(await wal("team").writeContract({ address: s.pair, abi: erc20, functionName: "approve", args: [ROUTER, lp] })));
+  const r = await step(`rug_${key}`, async () => {
     const dl = BigInt(Math.floor(Date.now() / 1000) + 1800);
     return sent(await wal("team").writeContract({ address: ROUTER, abi: router, functionName: "removeLiquidityETH", args: [s.token, lp, 0n, 0n, s.team, dl] }));
   });
@@ -170,6 +170,6 @@ if (cmd === "setup") await setup();
 else if (cmd === "rug") await rug();
 else if (cmd === "after_start") await afterStart();
 else if (cmd === "head") await head();
-else if (cmd === "e2e_setup") await e2eSetup(process.argv[3]);
-else if (cmd === "e2e_rug") await e2eRug();
+else if (cmd === "e2e_setup") await e2eSetup(process.argv[3], process.argv[4]);
+else if (cmd === "e2e_rug") await e2eRug(process.argv[3]);
 else await status();

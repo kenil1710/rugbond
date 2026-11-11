@@ -546,6 +546,82 @@
    "bond_id": 5,
    "start_block": 57349345,
    "at": "2026-11-11T10:09:13.641Z"
+  },
+  {
+   "id": "check_D",
+   "what": "the first check of bond D (SCANNED while the promise runs)",
+   "ok": true,
+   "tx": "0x160aa60aed8d4bb8364e24683b0916472802de0c205b3f993f21b421b17dda7a",
+   "returned": {
+    "check_id": 7,
+    "cursor": 57350456,
+    "cursor_ts": 1794391960,
+    "ok": true,
+    "result": "SCANNED"
+   },
+   "at": "2026-11-11T10:35:38.695Z"
+  },
+  {
+   "id": "gate_active_D",
+   "what": "LaunchGate: check_for(HOLDDEMO, D) is ACTIVE_HELD_SO_FAR and safe; a copycat team and another token are not",
+   "ok": true,
+   "check_for": {
+    "amount": "500000000000000000",
+    "bond_id": 5,
+    "chain": "base-sepolia",
+    "claim_deadline": 0,
+    "cursor_ts": 1794391960,
+    "rug_block": 0,
+    "safe": true,
+    "state": "ACTIVE_HELD_SO_FAR",
+    "status": "ACTIVE",
+    "team": "0xcdb369f092f67edf02fc987394115d6f62b71ce6",
+    "token": "0xd4b593691fa189f6beb492e27f57a5fa320aa7e5",
+    "why": ""
+   },
+   "is_safe_for": {
+    "bonds": [
+     {
+      "bond_id": 2,
+      "state": "HELD_FINAL",
+      "why": ""
+     },
+     {
+      "bond_id": 5,
+      "state": "ACTIVE_HELD_SO_FAR",
+      "why": ""
+     }
+    ],
+    "safe": true,
+    "state": "ACTIVE_HELD_SO_FAR",
+    "team": "0xcdb369f092f67edf02fc987394115d6f62b71ce6",
+    "token": "0xd4b593691fa189f6beb492e27f57a5fa320aa7e5",
+    "why": ""
+   },
+   "wrong_token": {
+    "amount": "500000000000000000",
+    "bond_id": 5,
+    "chain": "base-sepolia",
+    "claim_deadline": 0,
+    "cursor_ts": 1794391960,
+    "rug_block": 0,
+    "safe": false,
+    "state": "NO_BOND",
+    "status": "ACTIVE",
+    "team": "0xcdb369f092f67edf02fc987394115d6f62b71ce6",
+    "token": "0xdc3577153883cdb6ca9885e0a717f938fdbaef2b",
+    "why": "the bond is for another token"
+   },
+   "copycat_team": {
+    "bonds": [],
+    "safe": false,
+    "state": "NO_BOND",
+    "team": "0x0a24216da7e0bbbb224a9f9847f87cf64c18177e",
+    "token": "0xd4b593691fa189f6beb492e27f57a5fa320aa7e5",
+    "why": "no bond of this team for this token"
+   },
+   "attest_tx": "0xaf363024a07c5d9b5cb9f9986fa2f2c53701376e13a5d0d6890a5c1b116a1711",
+   "at": "2026-11-11T10:35:57.686Z"
   }
  ],
  "bonds": {

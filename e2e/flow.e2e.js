@@ -12,6 +12,7 @@ const dep = JSON.parse(readFileSync(new URL("frontend/src/lib/deployments.json",
 const DEMO = dep.registryDemo;
 const SHOTS = new URL("docs/e2e/", root);
 mkdirSync(SHOTS, { recursive: true });
+const KEY = process.env.E2E_KEY ?? "E2EDEMO";
 const node = (script, ...args) => execFileSync("node", [new URL(script, root).pathname, ...args], { cwd: new URL("test/", root).pathname }).toString().trim();
 const evm = () => JSON.parse(readFileSync(new URL("docs/demo-evm.json", root)));
 const summary = { site: "", demo_registry: DEMO, steps: [] };
@@ -59,10 +60,10 @@ test("rug check, claim, refusal, create, close on the demo registry", async ({ p
   log("wallet", { address, note: "throwaway key saved in test/.accounts.json by e2e/prepare.mjs before use; funded from the Studio Dev faucet" });
 
   // 0. the chain side: a token, a real Uniswap V2 pair, tokens to this wallet before the bond; the team's bond; the rug
-  if (!evm().E2EDEMO) node("test/demo_evm.mjs", "e2e_setup", address);
-  const { bond_id: R } = JSON.parse(node("test/e2e_bond.mjs"));
-  if (!evm().E2EDEMO.rug_block) node("test/demo_evm.mjs", "e2e_rug");
-  log("setup", { token: evm().E2EDEMO.token, pair: evm().E2EDEMO.pair, bond: R, rug_block: evm().E2EDEMO.rug_block, rug_tx: evm().E2EDEMO.rug_tx });
+  if (!evm()[KEY]) node("test/demo_evm.mjs", "e2e_setup", address, KEY);
+  const { bond_id: R } = JSON.parse(execFileSync("node", [new URL("test/e2e_bond.mjs", root).pathname], { cwd: new URL("test/", root).pathname, env: { ...process.env, E2E_KEY: KEY } }).toString().trim());
+  if (!evm()[KEY].rug_block) node("test/demo_evm.mjs", "e2e_rug", KEY);
+  log("setup", { token: evm()[KEY].token, pair: evm()[KEY].pair, bond: R, rug_block: evm()[KEY].rug_block, rug_tx: evm()[KEY].rug_tx });
 
   // 1. connect
   await go(page, `/bond/demo-${R}`);
@@ -73,7 +74,7 @@ test("rug check, claim, refusal, create, close on the demo registry", async ({ p
   // 2. rug checks from the site until RUGGED
   const rb = await checkUntil(page, R, "RUGGED");
   expect(rb.status).toBe("RUGGED");
-  expect(rb.rug_block).toBe(evm().E2EDEMO.rug_block);
+  expect(rb.rug_block).toBe(evm()[KEY].rug_block);
   await go(page, `/bond/demo-${R}`);
   await expect(page.getByText("The rug")).toBeVisible();
   await shot(page, "02-rugged-chart");
