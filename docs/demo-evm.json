@@ -127,6 +127,44 @@
    "tx": "0x9c1e218d6b3e1539588ac3c2a1b142d82fba70d7ed3891c240cd15cae670aa80",
    "status": "success",
    "block": 57329406
+  },
+  "deploy_E2EDEMO": {
+   "tx": "0xc9b810b870ecbd1c57cb300024877d01d7a430438e0c4afd742827475aeca966",
+   "status": "success",
+   "block": 57334750,
+   "address": "0xe0ab869ad6a330aa36e95533e934fe110101cd5b"
+  },
+  "approve_E2EDEMO": {
+   "tx": "0x19da6e2368fd2514179436ec39cda351b6a296a38c731cfc71f0efeb38a9ffbb",
+   "status": "success",
+   "block": 57334757
+  },
+  "liquidity_E2EDEMO": {
+   "tx": "0xd14fffb1c1866127d025c1fcbe0bd97aad3989e78dd2706d0a466022f6991cb4",
+   "status": "success",
+   "block": 57334763,
+   "pair": "0x29acd6647bc8b3fe6f61ef604ac842acab908f41",
+   "lp": "31622776601683792319"
+  },
+  "send_E2EDEMO_wallet": {
+   "tx": "0xd3f97112a25a68016eed9c78eb0d2bcb50cd362bfe3a3e92f8076f76499ab639",
+   "status": "success",
+   "block": 57334770
+  },
+  "send_E2EDEMO_holder1": {
+   "tx": "0x60a0701e826f79ef76a32f1eee4c2d8c4317b37c31cd42637db5a3a55225410a",
+   "status": "success",
+   "block": 57334777
+  },
+  "approve_lp_E2EDEMO": {
+   "tx": "0x99efa6c707c7db1c0959180d011dce2a7eac39febd1433399b1680eb89c92459",
+   "status": "success",
+   "block": 57335051
+  },
+  "rug_E2EDEMO": {
+   "tx": "0x4520d523010fd3547b5ec209565d239c8b92f0700847d1eb5c2fca66666d61d6",
+   "status": "success",
+   "block": 57335056
   }
  },
  "RUGDEMO": {
@@ -148,5 +186,17 @@
   "team": "0xcdb369f092f67edf02fc987394115d6f62b71ce6",
   "lp_minted": "38729833462074167851",
   "liquidity_block": 57325392
+ },
+ "E2EDEMO": {
+  "token": "0xe0ab869ad6a330aa36e95533e934fe110101cd5b",
+  "pair": "0x29acd6647bc8b3fe6f61ef604ac842acab908f41",
+  "team": "0x6365881b460e79216303fc370348ca857d8da9ef",
+  "lp_minted": "31622776601683792319",
+  "wallet": "0xcc957213c5dbd085f371c4226f199a968e0a4033",
+  "bond_id": 4,
+  "start_block": 57334788,
+  "bond_tx": "0xf8b55a5a2a8fcc5b3d8545de81212eb954b4ed44ec4b755733686c08c012dbd0",
+  "rug_block": 57335056,
+  "rug_tx": "0x4520d523010fd3547b5ec209565d239c8b92f0700847d1eb5c2fca66666d61d6"
  }
 }

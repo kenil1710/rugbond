@@ -96,6 +96,268 @@
    "rug_block": 57329406,
    "rug_tx": "0x9c1e218d6b3e1539588ac3c2a1b142d82fba70d7ed3891c240cd15cae670aa80",
    "at": "2026-11-11T09:02:31.254Z"
+  },
+  {
+   "id": "first_check_A",
+   "what": "the first rug check of bond A reads the start block",
+   "ok": true,
+   "check": {
+    "a": 57328762,
+    "at": 1794389137,
+    "b": 57329406,
+    "bond_id": 1,
+    "by": "0xfec989fc1176c5524c3b20ef2c09bca724d6bd4e",
+    "check_id": 1,
+    "detail": "",
+    "found": true,
+    "logs": [
+     [
+      57329406,
+      0,
+      "0x9c1e218d6b3e1539588ac3c2a1b142d82fba70d7ed3891c240cd15cae670aa80",
+      "0x6365881b460e79216303fc370348ca857d8da9ef",
+      "0xca34dde3c3eb608b74575c0512ae6666f472abd4",
+      "38729833462074167851"
+     ]
+    ],
+    "n_logs": 1,
+    "probes": [
+     [
+      57328762,
+      "38729833462074167851"
+     ],
+     [
+      57329406,
+      "0"
+     ]
+    ],
+    "reason": "",
+    "result": "RUGGED"
+   },
+   "status": "RUGGED",
+   "at": "2026-11-11T09:27:48.252Z"
+  },
+  {
+   "id": "rugged_A",
+   "what": "rug checks on bond A until RUGGED at the rug block",
+   "ok": true,
+   "status": "RUGGED",
+   "checks": [],
+   "rug_block": 57329406,
+   "cursor": 57329406,
+   "rug_txs": [
+    "0x9c1e218d6b3e1539588ac3c2a1b142d82fba70d7ed3891c240cd15cae670aa80"
+   ],
+   "denominator": "153162092892417328249046",
+   "claim_deadline": 1794389737,
+   "at": "2026-11-11T09:27:49.803Z"
+  },
+  {
+   "id": "gate_rugged",
+   "what": "LaunchGate: RUGGED_PAYING",
+   "ok": true,
+   "check_for": {
+    "amount": "2000000000000000000",
+    "bond_id": 1,
+    "chain": "base-sepolia",
+    "claim_deadline": 1794389737,
+    "cursor_ts": 1794387750,
+    "rug_block": 57329406,
+    "safe": false,
+    "state": "RUGGED_PAYING",
+    "status": "RUGGED",
+    "team": "0x6365881b460e79216303fc370348ca857d8da9ef",
+    "token": "0xdc3577153883cdb6ca9885e0a717f938fdbaef2b",
+    "why": ""
+   },
+   "at": "2026-11-11T09:27:51.329Z"
+  },
+  {
+   "id": "claim_holder1",
+   "what": "holder1 claims; paid to its committed beneficiary",
+   "ok": true,
+   "tx": "0x8ac3272a2b8929156e9effc68ae9d3bd5e27941b3c69e122bfcecd34b975de94",
+   "status": "FINALIZED",
+   "returned": {
+    "balance": "10000000000000000000000",
+    "bond_id": 1,
+    "denominator": "153162092892417328249046",
+    "holder": "0x708119149a9e4915fb918b3aff8052f750aacbba",
+    "ok": true,
+    "payee": "0xd8834fb21396dfcca2d1c317294458e9ab2b69b4",
+    "r_balance": "10000000000000000000000",
+    "share": "130580613141975091",
+    "start_balance": "10000000000000000000000"
+   },
+   "payout": {
+    "to": "0xd8834fb21396dfcca2d1c317294458e9ab2b69b4",
+    "amount": "130580613141975091",
+    "delivered": true,
+    "why": "",
+    "recipient_delta": "130580613141975091",
+    "contract_delta": "-130580613141975091",
+    "self_paid": false,
+    "fee": "126620750000823",
+    "arrived": true
+   },
+   "at": "2026-11-11T09:28:36.386Z"
+  },
+  {
+   "id": "claim_holder2",
+   "what": "holder2 claims",
+   "ok": true,
+   "tx": "0x4124cdfba9920d608d7e0a673d80b1bc9d423785a5cc1e932fdea6abfbf66308",
+   "status": "FINALIZED",
+   "returned": {
+    "balance": "20000000000000000000000",
+    "bond_id": 1,
+    "denominator": "153162092892417328249046",
+    "holder": "0x3d8481f9393f8909166206d9ff3b6063b0b7cb74",
+    "ok": true,
+    "payee": "0x3d8481f9393f8909166206d9ff3b6063b0b7cb74",
+    "r_balance": "20000000000000000000000",
+    "share": "261161226283950183",
+    "start_balance": "20000000000000000000000"
+   },
+   "payout": {
+    "to": "0x3d8481f9393f8909166206d9ff3b6063b0b7cb74",
+    "amount": "261161226283950183",
+    "delivered": true,
+    "why": "",
+    "recipient_delta": "261034598033949360",
+    "contract_delta": "-261161226283950183",
+    "self_paid": true,
+    "fee": "126628250000823",
+    "arrived": true
+   },
+   "at": "2026-11-11T09:30:46.225Z"
+  },
+  {
+   "id": "claim_holder3",
+   "what": "holder3 claims",
+   "ok": true,
+   "tx": "0xce921803a2ea36e75b839ba76a03a0df88ea26f00ca52dd3cdaa41278bb6e217",
+   "status": "FINALIZED",
+   "returned": {
+    "balance": "30000000000000000000000",
+    "bond_id": 1,
+    "denominator": "153162092892417328249046",
+    "holder": "0x22d1455fd917f494b847b6fdabe78258b84d3a3c",
+    "ok": true,
+    "payee": "0x22d1455fd917f494b847b6fdabe78258b84d3a3c",
+    "r_balance": "30000000000000000000000",
+    "share": "391741839425925275",
+    "start_balance": "30000000000000000000000"
+   },
+   "payout": {
+    "to": "0x22d1455fd917f494b847b6fdabe78258b84d3a3c",
+    "amount": "391741839425925275",
+    "delivered": true,
+    "why": "",
+    "recipient_delta": "391615210675924452",
+    "contract_delta": "-391741839425925275",
+    "self_paid": true,
+    "fee": "126628750000823",
+    "arrived": true
+   },
+   "at": "2026-11-11T09:33:00.649Z"
+  },
+  {
+   "id": "refuse_double",
+   "what": "holder2 claims again: ALREADY_CLAIMED",
+   "ok": true,
+   "tx": "0xf6b5e09d648f29342ad4016882ce3fa765e388be6c8e0a088e050e424b76d764",
+   "status": "ACCEPTED",
+   "reason": "REFUSED: ALREADY_CLAIMED",
+   "at": "2026-11-11T09:33:13.525Z"
+  },
+  {
+   "id": "refuse_excluded",
+   "what": "the excluded stranger: EXCLUDED_ADDRESS",
+   "ok": true,
+   "tx": "0x1e7d7c49ac44b3ef1bb3bcebfefa0a303acaf963774806782b6742e61a9ee00a",
+   "status": "ACCEPTED",
+   "reason": "REFUSED: EXCLUDED_ADDRESS",
+   "at": "2026-11-11T09:33:25.568Z"
+  },
+  {
+   "id": "refuse_team_funded",
+   "what": "holder5 got tokens from the team after the start: RECEIVED_FROM_EXCLUDED_ADDRESS",
+   "ok": true,
+   "tx": "0x4366e3992f7d1f40958be2baeab1bebad1f8360f176f5f7bae69fa0dbdf32047",
+   "status": "ACCEPTED",
+   "reason": "REFUSED: RECEIVED_FROM_EXCLUDED_ADDRESS",
+   "at": "2026-11-11T09:33:37.609Z"
+  },
+  {
+   "id": "refuse_bought_after_start",
+   "what": "the deployer bought after the start: NO_BALANCE_AT_START_AND_R_MINUS_1",
+   "ok": true,
+   "tx": "0x83c2000cf878a6c223e7b14adcd57d186d2ce66486bfd7fda9a3e769256da8f2",
+   "status": "ACCEPTED",
+   "reason": "REFUSED: NO_BALANCE_AT_START_AND_R_MINUS_1",
+   "at": "2026-11-11T09:33:50.547Z"
+  },
+  {
+   "id": "refuse_team",
+   "what": "the team: EXCLUDED_ADDRESS",
+   "ok": true,
+   "tx": "0x9da22a7ac2e68a238c30094ce096b7f4ed49f07a093a3979e16b67fc6f8d14a0",
+   "status": "ACCEPTED",
+   "reason": "REFUSED: EXCLUDED_ADDRESS",
+   "at": "2026-11-11T09:34:10.550Z"
+  },
+  {
+   "id": "refuse_wrong_bond",
+   "what": "holder1 claims on bond B (not rugged): BOND_IS_ACTIVE",
+   "ok": true,
+   "tx": "0xc90c63c553e76c4d1564670a9a3fb21dfb5a00b525a8519c05c4f9d6baced766",
+   "status": "ACCEPTED",
+   "reason": "REFUSED: BOND_IS_ACTIVE",
+   "at": "2026-11-11T09:34:30.234Z"
+  },
+  {
+   "id": "refuse_beneficiary_twice",
+   "what": "holder1 commits a second beneficiary: refused",
+   "ok": true,
+   "tx": "0xe717cc57aaf228c38076fa3c9434a1323da6ed2ae7d8015637974859292d94e9",
+   "status": "ACCEPTED",
+   "reason": "REFUSED: BENEFICIARY_ALREADY_COMMITTED",
+   "at": "2026-11-11T09:34:48.412Z"
+  },
+  {
+   "id": "gate_active",
+   "what": "LaunchGate before the rug is read: ACTIVE_HELD_SO_FAR (or RUGGED_PAYING if the first read already reached the rug)",
+   "ok": true,
+   "check_for": {
+    "amount": "2000000000000000000",
+    "bond_id": 1,
+    "chain": "base-sepolia",
+    "claim_deadline": 1794389737,
+    "cursor_ts": 1794387750,
+    "rug_block": 57329406,
+    "safe": false,
+    "state": "RUGGED_PAYING",
+    "status": "RUGGED",
+    "team": "0x6365881b460e79216303fc370348ca857d8da9ef",
+    "token": "0xdc3577153883cdb6ca9885e0a717f938fdbaef2b",
+    "why": ""
+   },
+   "note": "the first read already reached the rug block",
+   "at": "2026-11-11T09:34:49.930Z"
+  },
+  {
+   "id": "gate_attest",
+   "what": "LaunchGate: attest(RUGDEMO, A) stored on chain",
+   "ok": true,
+   "tx": "0x165812f043dd6614ef126de9ec1725a4bcfefdbd1cae60604f1c0f8d942ccd8f",
+   "returned": {
+    "attestation_id": 1,
+    "ok": true,
+    "safe": false,
+    "state": "RUGGED_PAYING"
+   },
+   "at": "2026-11-11T09:35:13.707Z"
   }
  ],
  "bonds": {

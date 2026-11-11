@@ -156,34 +156,25 @@ await step("evm_rug", "Base Sepolia: the team removes RUGDEMO's liquidity (remov
 await step("first_check_A", "the first rug check of bond A reads the start block", async () => {
   const k = cl("keeper");
   for (let i = 0; i < 400; i++) {                 // Base Sepolia's finalized head trails the tip by about 4.4 hours
+    const cur = await k.view("get_bond", [A, now()]);
+    if (cur.n_checks > 0) {
+      const c1 = await k.view("get_check", [1]);
+      return { ok: ["SCANNED", "HELD", "RUGGED"].includes(c1.result), check: c1, status: cur.status };
+    }
     const w = await k.write("check", [A]);
-    if (w.ok) return { ok: ["SCANNED", "HELD"].includes(w.returned?.result), tx: w.hash, returned: w.returned };
+    if (w.ok) return { ok: ["SCANNED", "HELD", "RUGGED"].includes(w.returned?.result), tx: w.hash, returned: w.returned };
     console.log("   ", (w.reason ?? "").slice(0, 60), "- waiting for finality");
     await sleep(90000);
   }
   return { ok: false };
 });
-const g = cl("stranger", GATE);
-await step("gate_active", "LaunchGate before the rug is read: ACTIVE_HELD_SO_FAR (or RUGGED_PAYING if the first read already reached the rug)", async () => {
-  const a = await g.view("check_for", [RUG.token, A]);
-  if (a.state === "RUGGED_PAYING") return { ok: true, check_for: a, note: "the first read already reached the rug block" };
-  const t = await g.view("is_safe_for", [RUG.token, ad("team")]);
-  const wrong = await g.view("check_for", [HOLD.token, A]);
-  const cop = await g.view("is_safe_for", [RUG.token, ad("stranger")]);
-  return { ok: a.state === "ACTIVE_HELD_SO_FAR" && a.safe === true && t.safe === true && wrong.state === "NO_BOND" && cop.safe === false,
-    check_for: a, is_safe_for: t, wrong_token: wrong, copycat_team: cop };
-});
-await step("gate_attest", "LaunchGate: attest(RUGDEMO, A) stored on chain", async () => {
-  const w = await g.write("attest", [RUG.token, A]);
-  return { ok: w.ok && ["ACTIVE_HELD_SO_FAR", "RUGGED_PAYING"].includes(w.returned?.state), tx: w.hash, returned: w.returned };
-});
-
 // 5. rug checks until RUGGED
 await step("rugged_A", "rug checks on bond A until RUGGED at the rug block", async () => {
   const r = await checkUntil(A, ["RUGGED"]);
   const b = await team.view("get_bond", [A, now()]);
   return { ...r, ok: r.ok && b.rug_block === evm().RUGDEMO.rug_block, rug_block: b.rug_block, rug_txs: b.rug?.txs, denominator: b.denominator, claim_deadline: b.claim_deadline };
 });
+const g = cl("stranger", GATE);
 await step("gate_rugged", "LaunchGate: RUGGED_PAYING", async () => {
   const a = await g.view("check_for", [RUG.token, A]);
   return { ok: a.state === "RUGGED_PAYING" && a.safe === false, check_for: a };
@@ -202,6 +193,20 @@ await step("refuse_bought_after_start", "the deployer bought after the start: NO
 await step("refuse_team", "the team: EXCLUDED_ADDRESS", () => refused(team, "claim", [A], "EXCLUDED_ADDRESS", ad("team")));
 await step("refuse_wrong_bond", "holder1 claims on bond B (not rugged): BOND_IS_ACTIVE", () => refused(cl("holder1"), "claim", [B], "BOND_IS_", ad("holder1")));
 await step("refuse_beneficiary_twice", "holder1 commits a second beneficiary: refused", () => refused(cl("holder1"), "commit_beneficiary", [A, ad("holder1")], "REFUSED"));
+
+await step("gate_active", "LaunchGate before the rug is read: ACTIVE_HELD_SO_FAR (or RUGGED_PAYING if the first read already reached the rug)", async () => {
+  const a = await g.view("check_for", [RUG.token, A]);
+  if (a.state === "RUGGED_PAYING") return { ok: true, check_for: a, note: "the first read already reached the rug block" };
+  const t = await g.view("is_safe_for", [RUG.token, ad("team")]);
+  const wrong = await g.view("check_for", [HOLD.token, A]);
+  const cop = await g.view("is_safe_for", [RUG.token, ad("stranger")]);
+  return { ok: a.state === "ACTIVE_HELD_SO_FAR" && a.safe === true && t.safe === true && wrong.state === "NO_BOND" && cop.safe === false,
+    check_for: a, is_safe_for: t, wrong_token: wrong, copycat_team: cop };
+});
+await step("gate_attest", "LaunchGate: attest(RUGDEMO, A) stored on chain", async () => {
+  const w = await g.write("attest", [RUG.token, A]);
+  return { ok: w.ok && ["ACTIVE_HELD_SO_FAR", "RUGGED_PAYING"].includes(w.returned?.state), tx: w.hash, returned: w.returned };
+});
 
 // 7. bond B holds: checks until HELD, settle returns the bond to team2
 await step("held_B", "rug checks on bond B until HELD", () => checkUntil(B, ["HELD"]));
@@ -235,6 +240,37 @@ await step("copycat_done", "the copycat bond is checked to a verdict and settled
   const p = await paying(cl("keeper"), "settle", [C], payee, (x) => x?.amount);
   return { ok: r.ok && p.ok, status: r.status, settle: p };
 });
+
+// 10. a live promise read recently: LaunchGate's ACTIVE_HELD_SO_FAR, then held and settled
+await step("open_D", "team2 opens a second HOLDDEMO bond (ends in about an hour)", async () => {
+  const head = Number(runEvm("head").trim());
+  const name = "HOLDDEMO short bond " + head;
+  const w = await team2.write("create_bond", [name, "base-sepolia", HOLD.token, HOLD.pair, JSON.stringify([HOLD.team]), HOLD.lp_minted, head, now() + 3600, 600,
+    ad("victimfund"), JSON.stringify([ad("stranger"), ROUTER_BSEP]), "0"], { value: GEN / 2n });
+  const pg = await team2.view("bonds_by_team", [team2.me, 0, 50, now()]);
+  doc.bonds.D = pg.items.find((x) => x.name === name)?.bond_id; save();
+  return { ok: w.ok && !!doc.bonds.D, tx: w.hash, bond_id: doc.bonds.D, start_block: head };
+});
+await step("check_D", "the first check of bond D (SCANNED while the promise runs)", async () => {
+  const k = cl("keeper");
+  for (let i = 0; i < 400; i++) {
+    const w = await k.write("check", [doc.bonds.D]);
+    if (w.ok) return { ok: w.returned?.result === "SCANNED", tx: w.hash, returned: w.returned };
+    await sleep(90000);
+  }
+  return { ok: false };
+});
+await step("gate_active_D", "LaunchGate: check_for(HOLDDEMO, D) is ACTIVE_HELD_SO_FAR and safe; a copycat team and another token are not", async () => {
+  const a = await g.view("check_for", [HOLD.token, doc.bonds.D]);
+  const t = await g.view("is_safe_for", [HOLD.token, ad("team2")]);
+  const wrong = await g.view("check_for", [RUG.token, doc.bonds.D]);
+  const cop = await g.view("is_safe_for", [HOLD.token, ad("stranger")]);
+  const w = await g.write("attest", [HOLD.token, doc.bonds.D]);
+  return { ok: a.state === "ACTIVE_HELD_SO_FAR" && a.safe === true && t.safe === true && wrong.state === "NO_BOND" && cop.safe === false && w.returned?.state === "ACTIVE_HELD_SO_FAR",
+    check_for: a, is_safe_for: t, wrong_token: wrong, copycat_team: cop, attest_tx: w.hash };
+});
+await step("held_D", "rug checks on bond D until HELD", () => checkUntil(doc.bonds.D, ["HELD"]));
+await step("settle_D", "settle D: the bond back to team2", () => paying(cl("keeper"), "settle", [doc.bonds.D], ad("team2"), (r) => r?.amount));
 
 await step("balance_zero", "the demo registry's balance is 0", async () => {
   const bal = await balanceOf(ADDR);
