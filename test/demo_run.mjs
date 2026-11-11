@@ -294,6 +294,13 @@ await step("balance_zero_end", "the demo registry's balance is 0 at the end (aft
   }
   const bal = await balanceOf(ADDR);
   const stats = await team.view("get_stats", []);
-  return { ok: bal === 0n && stats.held === "0" && leftovers.every((x) => x.ok), eth_getBalance: String(bal), stats, leftovers };
+  const all = [];
+  for (let off = 0; off >= 0;) {
+    const pg = await team.view("list_bonds", [off, 50, now()]);
+    for (const b of pg.items) all.push({ bond_id: b.bond_id, name: b.name, team: b.team, status: b.status, amount: b.amount, paid: b.paid, settled_to: b.settled_to, settled_amount: b.settled_amount, rug_block: b.rug_block });
+    off = pg.next_offset;
+  }
+  return { ok: bal === 0n && stats.held === "0" && leftovers.every((x) => x.ok) && all.every((b) => ["CLOSED", "RETURNED", "UNRESOLVED"].includes(b.status)),
+    eth_getBalance: String(bal), stats, leftovers, bonds: all };
 });
 console.log("\ndemo done:", doc.steps.filter((s) => s.ok).length, "steps");

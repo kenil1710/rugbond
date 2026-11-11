@@ -671,6 +671,122 @@
     "arrived": true
    },
    "at": "2026-11-11T11:33:21.691Z"
+  },
+  {
+   "id": "balance_zero_end",
+   "what": "the demo registry's balance is 0 at the end (after the e2e run's bonds settle too)",
+   "ok": true,
+   "eth_getBalance": "0",
+   "stats": {
+    "balance": "0",
+    "bonds": 7,
+    "checks": 12,
+    "claims_paid_total": "1183483678851850549",
+    "counts": {
+     "beneficiaries": 1,
+     "bonds": 7,
+     "checks": 12,
+     "checks_pending": 0,
+     "checks_scanned": 5,
+     "claims": 4,
+     "create_refused": 1,
+     "credit_withdrawals": 1,
+     "held": 3,
+     "rugged": 4,
+     "settles": 7,
+     "sweeps": 0,
+     "void": 0
+    },
+    "credit_owed_total": "0",
+    "credit_paid_total": "10000000000000000",
+    "held": "0",
+    "open_total": "0",
+    "received_total": "6020000000000000000",
+    "returned_total": "2000000000000000000",
+    "stray_swept_total": "0",
+    "victim_total": "2826516321148149451"
+   },
+   "leftovers": [],
+   "bonds": [
+    {
+     "bond_id": 1,
+     "name": "RUGDEMO liquidity bond",
+     "team": "0x6365881b460e79216303fc370348ca857d8da9ef",
+     "status": "CLOSED",
+     "amount": "2000000000000000000",
+     "paid": "783483678851850549",
+     "settled_to": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
+     "settled_amount": "1216516321148149451",
+     "rug_block": 57329406
+    },
+    {
+     "bond_id": 2,
+     "name": "HOLDDEMO liquidity bond",
+     "team": "0xcdb369f092f67edf02fc987394115d6f62b71ce6",
+     "status": "RETURNED",
+     "amount": "1000000000000000000",
+     "paid": "0",
+     "settled_to": "0xcdb369f092f67edf02fc987394115d6f62b71ce6",
+     "settled_amount": "1000000000000000000",
+     "rug_block": 0
+    },
+    {
+     "bond_id": 3,
+     "name": "RUGDEMO copycat",
+     "team": "0x0a24216da7e0bbbb224a9f9847f87cf64c18177e",
+     "status": "CLOSED",
+     "amount": "10000000000000000",
+     "paid": "0",
+     "settled_to": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
+     "settled_amount": "10000000000000000",
+     "rug_block": 57329406
+    },
+    {
+     "bond_id": 4,
+     "name": "E2EDEMO liquidity bond 57334788",
+     "team": "0x6365881b460e79216303fc370348ca857d8da9ef",
+     "status": "CLOSED",
+     "amount": "1000000000000000000",
+     "paid": "0",
+     "settled_to": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
+     "settled_amount": "1000000000000000000",
+     "rug_block": 57335056
+    },
+    {
+     "bond_id": 5,
+     "name": "HOLDDEMO short bond 57349345",
+     "team": "0xcdb369f092f67edf02fc987394115d6f62b71ce6",
+     "status": "RETURNED",
+     "amount": "500000000000000000",
+     "paid": "0",
+     "settled_to": "0xcdb369f092f67edf02fc987394115d6f62b71ce6",
+     "settled_amount": "500000000000000000",
+     "rug_block": 0
+    },
+    {
+     "bond_id": 6,
+     "name": "E2EDEMO2 liquidity bond 57359281",
+     "team": "0x6365881b460e79216303fc370348ca857d8da9ef",
+     "status": "CLOSED",
+     "amount": "1000000000000000000",
+     "paid": "400000000000000000",
+     "settled_to": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
+     "settled_amount": "600000000000000000",
+     "rug_block": 57359554
+    },
+    {
+     "bond_id": 7,
+     "name": "e2e bond 57381407",
+     "team": "0x968db00f52479ebaa77065b1a42b82bb1e61eae3",
+     "status": "RETURNED",
+     "amount": "500000000000000000",
+     "paid": "0",
+     "settled_to": "0x968db00f52479ebaa77065b1a42b82bb1e61eae3",
+     "settled_amount": "500000000000000000",
+     "rug_block": 0
+    }
+   ],
+   "at": "2026-11-11T13:12:32.371Z"
   }
  ],
  "bonds": {
