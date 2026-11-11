@@ -776,10 +776,14 @@
    "kind": "SETTLE",
    "bond_id": 7,
    "payee": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
-   "status": "QUEUED",
+   "status": "SUBMITTED",
    "attempts": 0,
    "first_seen_at": 1794402780,
-   "tx": null
+   "tx": "0x616589c8f40a0cb359b4b132e718bbeef36e7298b3a53d9175027b6d820c4bb9",
+   "submitted_at": 1794402798,
+   "tx_history": [
+    "0x616589c8f40a0cb359b4b132e718bbeef36e7298b3a53d9175027b6d820c4bb9"
+   ]
   },
   "settle:17": {
    "key": "settle:17",
@@ -872,7 +876,7 @@
  "contract": "RugBond",
  "address": "0x4D2a5e250a419b1D1798E103F80A23aC5be59a23",
  "keeper": "0xfEC989fC1176c5524C3b20ef2c09bca724d6BD4e",
- "saved_at": "2026-11-11T13:13:17.197Z",
+ "saved_at": "2026-11-11T13:13:18.828Z",
  "totals": {
   "actions": 34,
   "done": 34,
