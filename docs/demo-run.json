@@ -48,10 +48,22 @@
    "end_time": 1794423621,
    "amount": "2000000000000000000",
    "at": "2026-11-11T09:01:09.538Z"
+  },
+  {
+   "id": "open_B",
+   "what": "open bond HOLDDEMO liquidity bond",
+   "ok": true,
+   "tx": "0x4885bd489c4af2b736e754375478976355d6db0a2530822c0f69557fe812e71b",
+   "bond_id": 2,
+   "start_block": 57328762,
+   "end_time": 1794388869,
+   "amount": "1000000000000000000",
+   "at": "2026-11-11T09:01:55.661Z"
   }
  ],
  "bonds": {
-  "A": 1
+  "A": 1,
+  "B": 2
  },
  "start_block": 57328762
 }
