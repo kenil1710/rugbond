@@ -3,7 +3,7 @@
  "bonds_offset": 0,
  "bonds": {
   "1": {
-   "status": "RUGGED",
+   "status": "CLOSED",
    "chain": "ethereum",
    "token": "0xd4f45dd47dd476378ee1b06f6a57be4ebc0f7199",
    "cursor": 25723942,
@@ -11,11 +11,11 @@
    "n_checks": 3,
    "n_pending": 2,
    "last_result": "RUGGED",
-   "due": "VICTIM_FUND",
+   "due": "",
    "name": "Replay eth-01 0xd4f45d"
   },
   "2": {
-   "status": "RUGGED",
+   "status": "CLOSED",
    "chain": "ethereum",
    "token": "0x89d3a86b3dd25a8d58b8e390abb2a805d0e88dff",
    "cursor": 25707553,
@@ -23,11 +23,11 @@
    "n_checks": 2,
    "n_pending": 1,
    "last_result": "RUGGED",
-   "due": "VICTIM_FUND",
+   "due": "",
    "name": "Replay eth-02 0x89d3a8"
   },
   "3": {
-   "status": "RUGGED",
+   "status": "CLOSED",
    "chain": "ethereum",
    "token": "0xaf95e728195671a8be8da44dcd127f1bca732f8c",
    "cursor": 25710973,
@@ -35,7 +35,7 @@
    "n_checks": 3,
    "n_pending": 2,
    "last_result": "RUGGED",
-   "due": "VICTIM_FUND",
+   "due": "",
    "name": "Replay eth-03 0xaf95e7"
   },
   "4": {
@@ -171,7 +171,7 @@
    "name": "Replay eth-20 0xf72e87"
   },
   "15": {
-   "status": "RUGGED",
+   "status": "CLOSED",
    "chain": "ethereum",
    "token": "0x3f287a97fdf77f8ef40ef7440eccac3407810492",
    "cursor": 25702916,
@@ -179,11 +179,11 @@
    "n_checks": 2,
    "n_pending": 1,
    "last_result": "RUGGED",
-   "due": "VICTIM_FUND",
+   "due": "",
    "name": "Replay eth-21 0x3f287a"
   },
   "16": {
-   "status": "RUGGED",
+   "status": "CLOSED",
    "chain": "ethereum",
    "token": "0x4e9fccbd1b1e64efca8d0f72521ba065384fead5",
    "cursor": 25701193,
@@ -191,11 +191,11 @@
    "n_checks": 3,
    "n_pending": 2,
    "last_result": "RUGGED",
-   "due": "VICTIM_FUND",
+   "due": "",
    "name": "Replay eth-22 0x4e9fcc"
   },
   "17": {
-   "status": "RUGGED",
+   "status": "CLOSED",
    "chain": "ethereum",
    "token": "0xc2742418134519e3b4a66b088e3c398f9f1214eb",
    "cursor": 25704885,
@@ -203,7 +203,7 @@
    "n_checks": 3,
    "n_pending": 2,
    "last_result": "RUGGED",
-   "due": "VICTIM_FUND",
+   "due": "",
    "name": "Replay eth-23 0xc27424"
   }
  },
@@ -1033,7 +1033,7 @@
  "contract": "RugBond",
  "address": "0x24ff68A1adc70B9EA9eEE518a5f912ce65eb2CAE",
  "keeper": "0xfEC989fC1176c5524C3b20ef2c09bca724d6BD4e",
- "saved_at": "2026-11-11T07:11:04.872Z",
+ "saved_at": "2026-11-11T07:11:06.015Z",
  "totals": {
   "actions": 44,
   "done": 44,
