@@ -27,9 +27,13 @@ const root = new URL("..", import.meta.url).pathname;
 const dir = argOf("state", root + "state").replace(/\/$/, "");
 const push = process.argv.includes("--push");
 mkdirSync(dir, { recursive: true });
-const dep = JSON.parse(readFileSync(root + "deployments.json", "utf8")).contracts;
+const depAll = JSON.parse(readFileSync(root + "deployments.json", "utf8"));
+const dep = depAll.contracts;
 const only = argOf("contracts", "");
-const names = ["RugBond", "RugBondDemo"].filter((n) => dep[n] && (!only || only.split(",").includes(n)));
+// the current registries, and every superseded registry (its bonds still get checked and settled until every GEN is out)
+const targets = ["RugBond", "RugBondDemo"].filter((n) => dep[n]).map((n) => ({ name: n, address: dep[n].address }))
+  .concat((depAll.superseded ?? []).filter((x) => x.name.startsWith("RugBond")).map((x) => ({ name: `${x.name}@${x.address.slice(0, 10)}`, address: x.address })))
+  .filter((x) => !only || only.split(",").includes(x.name.split("@")[0]));
 
 const key = accounts().keeper?.key;
 if (!key) { console.error("no keeper key (RUGBOND_KEEPER_KEY or test/.accounts.json)"); process.exit(1); }
@@ -94,8 +98,7 @@ function regFor(address) {
 let prev = {};
 try { prev = JSON.parse(readFileSync(`${dir}/status.json`, "utf8")).contracts ?? {}; } catch { /* first run */ }
 const status = { keeper: account.address, started_at: new Date().toISOString(), contracts: { ...prev } };
-for (const name of names) {
-  const address = dep[name].address;
+for (const { name, address } of targets) {
   const file = `${dir}/keeper-state-${name}.json`;
   const store = {
     async load() { return existsSync(file) ? JSON.parse(readFileSync(file, "utf8")) : emptyState(); },
