@@ -36,6 +36,11 @@
    "bond": 1,
    "status": "claim button disabled: the bond is no longer open for claims",
    "at": "2026-11-11T11:55:49.367Z"
+  },
+  {
+   "step": "created",
+   "bond": 7,
+   "at": "2026-11-11T11:56:14.634Z"
   }
  ]
 }

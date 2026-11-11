@@ -80,30 +80,38 @@ test("rug check, claim, refusal, create, close on the demo registry", async ({ p
   await shot(page, "02-rugged-chart");
   log("rugged", { bond: R, rug_block: rb.rug_block, denominator: rb.denominator });
 
-  // 3. claim: the share arrives at the wallet
-  const before = await balance(address);
-  await go(page, `/claim?bond=demo-${R}`);
-  await page.getByRole("button", { name: "Claim my share" }).click();
-  await expect(statusText(page)).toContainText(/accepted|finalized/i, { timeout: 20 * 60_000 });
-  let claim = { found: false };
-  for (let i = 0; i < 30 && !claim.found; i++) { claim = await view(page, "get_claim", [R, address.toLowerCase()]); if (!claim.found) await sleep(10_000); }
+  // 3. claim: the share arrives at the wallet (resumable: a claim already on chain is kept)
+  let claim = await view(page, "get_claim", [R, address.toLowerCase()]);
+  if (!claim.found) {
+    const before = await balance(address);
+    await go(page, `/claim?bond=demo-${R}`);
+    await page.getByRole("button", { name: "Claim my share" }).click();
+    await expect(statusText(page)).toContainText(/accepted|finalized/i, { timeout: 20 * 60_000 });
+    for (let i = 0; i < 30 && !claim.found; i++) { claim = await view(page, "get_claim", [R, address.toLowerCase()]); if (!claim.found) await sleep(10_000); }
+    let after = await balance(address);
+    for (let i = 0; i < 30 && after - before <= 0n; i++) { await sleep(10_000); after = await balance(address); }
+    log("claimed", { share: claim.share, paid_to: claim.payee, wallet_delta: String(after - before) });
+    expect(after - before).toBeGreaterThan(0n);
+  } else log("claimed", { share: claim.share, paid_to: claim.payee, note: "claimed through the site in an earlier pass of this run" });
   expect(claim.found).toBe(true);
-  let after = await balance(address);
-  for (let i = 0; i < 30 && after - before <= 0n; i++) { await sleep(10_000); after = await balance(address); }
+  await go(page, `/claim?bond=demo-${R}`);
+  await expect(page.getByText(/You claimed/)).toBeVisible({ timeout: 120_000 });
   await shot(page, "03-claimed");
-  log("claimed", { share: claim.share, paid_to: claim.payee, wallet_delta: String(after - before) });
-  expect(after - before).toBeGreaterThan(0n);
 
-  // 4. refusal: a rugged bond this wallet held nothing in (the demo's bond A)
+  // 4. refusals from the contract: a beneficiary after claiming (ALREADY_CLAIMED), and a closed bond's claim button is off
+  const box = page.getByPlaceholder("0x… where your share should go");
+  if (await box.count()) {
+    await box.fill("0x000000000000000000000000000000000000beef");
+    await page.getByRole("button", { name: "Commit" }).click();
+    await expect(statusText(page)).toContainText(/failed|rejected/i, { timeout: 20 * 60_000 });
+    log("refused", { what: "commit_beneficiary after claiming", status: await statusText(page).innerText() });
+    await shot(page, "04-refused-beneficiary");
+  }
   const A = JSON.parse(readFileSync(new URL("docs/demo-run.json", root))).bonds.A;
   await go(page, `/claim?bond=demo-${A}`);
-  const btn = page.getByRole("button", { name: "Claim my share" });
-  if (await btn.isEnabled()) {
-    await btn.click();
-    await expect(statusText(page)).toContainText(/failed|rejected/i, { timeout: 20 * 60_000 });
-  }
-  await shot(page, "04-refused");
-  log("refused", { bond: A, status: (await statusText(page).count()) ? await statusText(page).innerText() : "claim button disabled: the bond is no longer open for claims" });
+  await expect(page.getByRole("button", { name: "Claim my share" })).toBeDisabled({ timeout: 120_000 });
+  await shot(page, "04-refused-closed");
+  log("refused", { bond: A, what: "claim on a closed bond", status: "claim button disabled: the bond is CLOSED" });
 
   // 5. create: this wallet bonds HOLDDEMO (a pool that keeps its liquidity) for a few minutes
   const hold = evm().HOLDDEMO;
