@@ -1,12 +1,12 @@
 {
- "site": "https://rugbond.vercel.app",
+ "site": "http://localhost:3100",
  "demo_registry": "0x3491AAC81ec96B05B50B25AD9F8b3CAeE7fF51b8",
  "steps": [
   {
    "step": "wallet",
    "address": "0x968dB00f52479EbAA77065B1A42b82BB1e61eAe3",
    "note": "throwaway key saved in test/.accounts.json by e2e/prepare.mjs before use; funded from the Studio Dev faucet",
-   "at": "2026-11-11T11:31:46.685Z"
+   "at": "2026-11-11T11:54:33.745Z"
   },
   {
    "step": "setup",
@@ -15,14 +15,27 @@
    "bond": 6,
    "rug_block": 57359554,
    "rug_tx": "0x06173b03e2b16fe814d96ea6331e43116e18209ef328f5c9c0cbf2a09f5b683d",
-   "at": "2026-11-11T11:31:47.470Z"
+   "at": "2026-11-11T11:54:34.182Z"
   },
   {
    "step": "rugged",
    "bond": 6,
    "rug_block": 57359554,
    "denominator": "50000000000000000000000",
-   "at": "2026-11-11T11:31:52.306Z"
+   "at": "2026-11-11T11:54:59.811Z"
+  },
+  {
+   "step": "claimed",
+   "share": "400000000000000000",
+   "paid_to": "0x968db00f52479ebaa77065b1a42b82bb1e61eae3",
+   "wallet_delta": "399873370999999177",
+   "at": "2026-11-11T11:55:49.186Z"
+  },
+  {
+   "step": "refused",
+   "bond": 1,
+   "status": "claim button disabled: the bond is no longer open for claims",
+   "at": "2026-11-11T11:55:49.367Z"
   }
  ]
 }
