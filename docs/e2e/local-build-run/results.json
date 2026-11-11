@@ -1,0 +1,160 @@
+{
+  "config": {
+    "configFile": "/Users/kenilvakariya/dev/rugbond/e2e/playwright.config.js",
+    "rootDir": "/Users/kenilvakariya/dev/rugbond/e2e",
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "../docs/e2e/results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "quiet": false,
+    "projects": [
+      {
+        "outputDir": "/Users/kenilvakariya/dev/rugbond/docs/e2e/artifacts",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "",
+        "name": "",
+        "testDir": "/Users/kenilvakariya/dev/rugbond/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "/.*\\.e2e\\.js/"
+        ],
+        "timeout": 57600000
+      }
+    ],
+    "shard": null,
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.56.1",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "flow.e2e.js",
+      "file": "flow.e2e.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "rug check, claim, refusal, create, close on the demo registry",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 57600000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 110534,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "wallet {\"address\":\"0x968dB00f52479EbAA77065B1A42b82BB1e61eAe3\",\"note\":\"throwaway key saved in test/.accounts.json by e2e/prepare.mjs before use; funded from the Studio Dev faucet\"}\n"
+                    },
+                    {
+                      "text": "setup {\"token\":\"0xe76ae2a66e9e9f1bfdcf1fb1cdaf9c333406dd99\",\"pair\":\"0x68e9d290a8662ecc3b14a991bd4f4d7609640b44\",\"bond\":6,\"rug_block\":57359554,\"rug_tx\":\"0x06173b03e2b16fe814d96ea6331e43116e18209ef328f5c9c0cbf2a09f5b683d\"}\n"
+                    },
+                    {
+                      "text": "rugged {\"bond\":6,\"rug_block\":57359554,\"denominator\":\"50000000000000000000000\"}\n"
+                    },
+                    {
+                      "text": "claimed {\"share\":\"400000000000000000\",\"paid_to\":\"0x968db00f52479ebaa77065b1a42b82bb1e61eae3\",\"note\":\"claimed through the site in an earlier pass of this run\"}\n"
+                    },
+                    {
+                      "text": "refused {\"what\":\"commit_beneficiary after claiming\",\"status\":\"failed · REFUSED: ALREADY_CLAIMED\"}\n"
+                    },
+                    {
+                      "text": "refused {\"bond\":1,\"what\":\"claim on a closed bond\",\"status\":\"claim button disabled: the bond is CLOSED\"}\n"
+                    },
+                    {
+                      "text": "created {\"bond\":7}\n"
+                    },
+                    {
+                      "text": "rug_check_click {\"bond\":7,\"status\":\"accepted · Accepted. Re-reading the contract to confirm. · tx 0xea876946…\"}\n"
+                    },
+                    {
+                      "text": "closed {\"bond\":7,\"status\":\"RETURNED\",\"settled_to\":\"0x968db00f52479ebaa77065b1a42b82bb1e61eae3\",\"amount\":\"500000000000000000\",\"wallet_delta\":\"178074200008706\"}\n"
+                    }
+                  ],
+                  "stderr": [
+                    {
+                      "buffer": ""
+                    }
+                  ],
+                  "retry": 0,
+                  "startTime": "2026-11-11T12:30:09.585Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/kenilvakariya/dev/rugbond/docs/e2e/artifacts/flow.e2e.js-rug-check-clai-ce939--close-on-the-demo-registry/test-finished-1.png"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/Users/kenilvakariya/dev/rugbond/docs/e2e/artifacts/flow.e2e.js-rug-check-clai-ce939--close-on-the-demo-registry/video.webm"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/kenilvakariya/dev/rugbond/docs/e2e/artifacts/flow.e2e.js-rug-check-clai-ce939--close-on-the-demo-registry/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "1a3332c7a31688a65eeb-228210e35f4a91ba3453",
+          "file": "flow.e2e.js",
+          "line": 59,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-11T12:30:09.053Z",
+    "duration": 113128.732,
+    "expected": 1,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}
