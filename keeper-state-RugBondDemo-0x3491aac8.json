@@ -93,7 +93,7 @@
    "name": "e2e bond 57381407"
   },
   "8": {
-   "status": "RUGGED",
+   "status": "CLOSED",
    "chain": "base-sepolia",
    "token": "0x01fa3387566daf54a8a3e87b1ef5f9a9054c95c7",
    "cursor": 57439448,
@@ -101,7 +101,7 @@
    "n_checks": 1,
    "n_pending": 0,
    "last_result": "RUGGED",
-   "due": "VICTIM_FUND",
+   "due": "",
    "name": "E2EDEMO3 liquidity bond 57439184",
    "claims_paid": "400000000000000000",
    "claims_offset": 1,
@@ -214,7 +214,7 @@
  "contract": "RugBondDemo",
  "address": "0x3491AAC81ec96B05B50B25AD9F8b3CAeE7fF51b8",
  "keeper": "0xfEC989fC1176c5524C3b20ef2c09bca724d6BD4e",
- "saved_at": "2026-11-11T17:15:34.456Z",
+ "saved_at": "2026-11-11T17:15:34.471Z",
  "totals": {
   "actions": 1,
   "done": 1,
