@@ -758,14 +758,16 @@
    "kind": "SETTLE",
    "bond_id": 16,
    "payee": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
-   "status": "ACCEPTED",
+   "status": "DONE",
    "attempts": 0,
    "first_seen_at": 1794393761,
    "tx": "0x580803f91b909f5be26e386827973aad441790d672f936899e6f95da0fbd9fa3",
    "submitted_at": 1794393815,
    "tx_history": [
     "0x580803f91b909f5be26e386827973aad441790d672f936899e6f95da0fbd9fa3"
-   ]
+   ],
+   "verified_at": 1794393940,
+   "result": "CLOSED"
   }
  },
  "runs": [
@@ -827,7 +829,7 @@
  "contract": "RugBond",
  "address": "0x4D2a5e250a419b1D1798E103F80A23aC5be59a23",
  "keeper": "0xfEC989fC1176c5524C3b20ef2c09bca724d6BD4e",
- "saved_at": "2026-11-11T10:45:40.483Z",
+ "saved_at": "2026-11-11T10:45:41.396Z",
  "totals": {
   "actions": 25,
   "done": 25,
