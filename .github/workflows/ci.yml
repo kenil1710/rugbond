@@ -49,7 +49,7 @@ jobs:
         working-directory: frontend
       - run: npx tsc --noEmit -p .
         working-directory: frontend
-      - name: next build (retried once: the build downloads its Google fonts)
+      - name: "next build, retried once (the build downloads its Google fonts)"
         run: npx next build || (sleep 30 && npx next build)
         working-directory: frontend
   deployed-source:
