@@ -3,15 +3,15 @@
  "bonds_offset": 0,
  "bonds": {
   "1": {
-   "status": "ACTIVE",
+   "status": "RUGGED",
    "chain": "ethereum",
    "token": "0xd4f45dd47dd476378ee1b06f6a57be4ebc0f7199",
-   "cursor": 0,
-   "cursor_ts": 0,
-   "n_checks": 2,
+   "cursor": 25723942,
+   "cursor_ts": 1786357031,
+   "n_checks": 3,
    "n_pending": 2,
-   "last_result": "PENDING",
-   "due": "",
+   "last_result": "RUGGED",
+   "due": "VICTIM_FUND",
    "name": "Replay eth-01 0xd4f45d"
   },
   "2": {
@@ -23,19 +23,19 @@
    "n_checks": 2,
    "n_pending": 1,
    "last_result": "RUGGED",
-   "due": "",
+   "due": "VICTIM_FUND",
    "name": "Replay eth-02 0x89d3a8"
   },
   "3": {
-   "status": "ACTIVE",
+   "status": "RUGGED",
    "chain": "ethereum",
    "token": "0xaf95e728195671a8be8da44dcd127f1bca732f8c",
-   "cursor": 0,
-   "cursor_ts": 0,
-   "n_checks": 2,
+   "cursor": 25710973,
+   "cursor_ts": 1786200899,
+   "n_checks": 3,
    "n_pending": 2,
-   "last_result": "PENDING",
-   "due": "",
+   "last_result": "RUGGED",
+   "due": "VICTIM_FUND",
    "name": "Replay eth-03 0xaf95e7"
   },
   "4": {
@@ -179,31 +179,31 @@
    "n_checks": 2,
    "n_pending": 1,
    "last_result": "RUGGED",
-   "due": "",
+   "due": "VICTIM_FUND",
    "name": "Replay eth-21 0x3f287a"
   },
   "16": {
-   "status": "ACTIVE",
+   "status": "RUGGED",
    "chain": "ethereum",
    "token": "0x4e9fccbd1b1e64efca8d0f72521ba065384fead5",
-   "cursor": 0,
-   "cursor_ts": 0,
-   "n_checks": 2,
+   "cursor": 25701193,
+   "cursor_ts": 1786082867,
+   "n_checks": 3,
    "n_pending": 2,
-   "last_result": "PENDING",
-   "due": "",
+   "last_result": "RUGGED",
+   "due": "VICTIM_FUND",
    "name": "Replay eth-22 0x4e9fcc"
   },
   "17": {
-   "status": "ACTIVE",
+   "status": "RUGGED",
    "chain": "ethereum",
    "token": "0xc2742418134519e3b4a66b088e3c398f9f1214eb",
-   "cursor": 0,
-   "cursor_ts": 0,
-   "n_checks": 2,
+   "cursor": 25704885,
+   "cursor_ts": 1786127351,
+   "n_checks": 3,
    "n_pending": 2,
-   "last_result": "PENDING",
-   "due": "",
+   "last_result": "RUGGED",
+   "due": "VICTIM_FUND",
    "name": "Replay eth-23 0xc27424"
   }
  },
@@ -842,6 +842,66 @@
    ],
    "verified_at": 1794341182,
    "result": "RUGGED"
+  },
+  "settle:1": {
+   "key": "settle:1",
+   "kind": "SETTLE",
+   "bond_id": 1,
+   "payee": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
+   "status": "QUEUED",
+   "attempts": 0,
+   "first_seen_at": 1794357812,
+   "tx": null
+  },
+  "settle:2": {
+   "key": "settle:2",
+   "kind": "SETTLE",
+   "bond_id": 2,
+   "payee": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
+   "status": "QUEUED",
+   "attempts": 0,
+   "first_seen_at": 1794357812,
+   "tx": null
+  },
+  "settle:3": {
+   "key": "settle:3",
+   "kind": "SETTLE",
+   "bond_id": 3,
+   "payee": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
+   "status": "QUEUED",
+   "attempts": 0,
+   "first_seen_at": 1794357812,
+   "tx": null
+  },
+  "settle:15": {
+   "key": "settle:15",
+   "kind": "SETTLE",
+   "bond_id": 15,
+   "payee": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
+   "status": "QUEUED",
+   "attempts": 0,
+   "first_seen_at": 1794357812,
+   "tx": null
+  },
+  "settle:16": {
+   "key": "settle:16",
+   "kind": "SETTLE",
+   "bond_id": 16,
+   "payee": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
+   "status": "QUEUED",
+   "attempts": 0,
+   "first_seen_at": 1794357812,
+   "tx": null
+  },
+  "settle:17": {
+   "key": "settle:17",
+   "kind": "SETTLE",
+   "bond_id": 17,
+   "payee": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
+   "status": "QUEUED",
+   "attempts": 0,
+   "first_seen_at": 1794357812,
+   "tx": null
   }
  },
  "runs": [
@@ -920,7 +980,7 @@
  "contract": "RugBond",
  "address": "0x24ff68A1adc70B9EA9eEE518a5f912ce65eb2CAE",
  "keeper": "0xfEC989fC1176c5524C3b20ef2c09bca724d6BD4e",
- "saved_at": "2026-11-11T00:43:31.399Z",
+ "saved_at": "2026-11-11T00:43:32.499Z",
  "totals": {
   "actions": 38,
   "done": 38,
