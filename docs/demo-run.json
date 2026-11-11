@@ -37,8 +37,21 @@
     "arrived": true
    },
    "at": "2026-11-11T09:00:20.383Z"
+  },
+  {
+   "id": "open_A",
+   "what": "open bond RUGDEMO liquidity bond",
+   "ok": true,
+   "tx": "0xfc37b8d3aca9cf3224b4146bcc4e6c75457a86de0a859ceefd23cdcb8609e7c9",
+   "bond_id": 1,
+   "start_block": 57328762,
+   "end_time": 1794423621,
+   "amount": "2000000000000000000",
+   "at": "2026-11-11T09:01:09.538Z"
   }
  ],
- "bonds": {},
+ "bonds": {
+  "A": 1
+ },
  "start_block": 57328762
 }
