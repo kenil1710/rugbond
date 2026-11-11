@@ -622,6 +622,55 @@
    },
    "attest_tx": "0xaf363024a07c5d9b5cb9f9986fa2f2c53701376e13a5d0d6890a5c1b116a1711",
    "at": "2026-11-11T10:35:57.686Z"
+  },
+  {
+   "id": "held_D",
+   "what": "rug checks on bond D until HELD",
+   "ok": true,
+   "status": "HELD",
+   "checks": [
+    {
+     "tx": "0xaa4fd8df3d505caffd047fe57b6c04d9c4c50dd187771f71351275c33414074b",
+     "ok": true,
+     "reason": ".\bcheck_idQ\u0006cursor����\u0001\tcursor_ts��5\u0002ok\u0010\u0006result<SCANNED",
+     "result": "SCANNED"
+    },
+    {
+     "tx": "0xed0cdbf235eccb2cc8339889d788f03c788c16ce3a764e902f1ecda32ebbff04",
+     "ok": true,
+     "reason": ".\bcheck_idY\u0006cursor����\u0001\tcursor_ts�؉�5\u0002ok\u0010\u0006result$HELD",
+     "result": "HELD"
+    }
+   ],
+   "rug_block": 0,
+   "cursor": 57368315,
+   "at": "2026-11-11T11:32:34.416Z"
+  },
+  {
+   "id": "settle_D",
+   "what": "settle D: the bond back to team2",
+   "ok": true,
+   "tx": "0x256e27633cf59e80386724166a6ea878d795cdad06e62379a8ccdcd682500c2f",
+   "status": "FINALIZED",
+   "returned": {
+    "amount": "500000000000000000",
+    "bond_id": 5,
+    "ok": true,
+    "status": "RETURNED",
+    "to": "0xcdb369f092f67edf02fc987394115d6f62b71ce6"
+   },
+   "payout": {
+    "to": "0xcdb369f092f67edf02fc987394115d6f62b71ce6",
+    "amount": "500000000000000000",
+    "delivered": true,
+    "why": "",
+    "recipient_delta": "500000000000000000",
+    "contract_delta": "-500000000000000000",
+    "self_paid": false,
+    "fee": "126307500000823",
+    "arrived": true
+   },
+   "at": "2026-11-11T11:33:21.691Z"
   }
  ],
  "bonds": {

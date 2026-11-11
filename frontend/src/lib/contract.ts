@@ -105,11 +105,15 @@ const CLOCK_ONLY = /CLAIM_WINDOW_OPEN_UNTIL|SENDS_MAY_BE_PENDING|CLAIM_WINDOW_OV
 
 async function feesFor(wallet: ReturnType<typeof getWalletClient>, address: `0x${string}`, fn: string, args: CalldataEncodable[], value: bigint, payee: string | null) {
   let est: Awaited<ReturnType<typeof wallet.estimateTransactionFeesForWrite>> | null = null;
-  try {
-    est = await withTimeout(wallet.estimateTransactionFeesForWrite({ address, functionName: fn, args, value }), "fee estimate", 30_000);
-  } catch (e) {
-    const refusal = contractRefusal(e);
-    if (refusal && !CLOCK_ONLY.test(refusal)) throw new Error(refusal);
+  // a call that pays someone (claim, settle, withdraw_credit) reads the chain or the clock: its fee is built by hand,
+  // never simulated (Studio simulates with a fixed 2024 clock and refuses the simulation's own budget)
+  if (!payee) {
+    try {
+      est = await withTimeout(wallet.estimateTransactionFeesForWrite({ address, functionName: fn, args, value }), "fee estimate", 30_000);
+    } catch (e) {
+      const refusal = contractRefusal(e);
+      if (refusal && !CLOCK_ONLY.test(refusal) && !/below_minimum/.test(refusal)) throw new Error(refusal);
+    }
   }
   if (!payee) return est ?? withTimeout(wallet.estimateTransactionFees({}), "fee estimate", 30_000);
   if (est && hasPayout(est, payee)) return est;

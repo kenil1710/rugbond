@@ -6,7 +6,7 @@
    "step": "wallet",
    "address": "0x968dB00f52479EbAA77065B1A42b82BB1e61eAe3",
    "note": "throwaway key saved in test/.accounts.json by e2e/prepare.mjs before use; funded from the Studio Dev faucet",
-   "at": "2026-11-11T11:31:04.060Z"
+   "at": "2026-11-11T11:31:46.685Z"
   },
   {
    "step": "setup",
@@ -15,7 +15,14 @@
    "bond": 6,
    "rug_block": 57359554,
    "rug_tx": "0x06173b03e2b16fe814d96ea6331e43116e18209ef328f5c9c0cbf2a09f5b683d",
-   "at": "2026-11-11T11:31:04.604Z"
+   "at": "2026-11-11T11:31:47.470Z"
+  },
+  {
+   "step": "rugged",
+   "bond": 6,
+   "rug_block": 57359554,
+   "denominator": "50000000000000000000000",
+   "at": "2026-11-11T11:31:52.306Z"
   }
  ]
 }
