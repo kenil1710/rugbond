@@ -31,7 +31,7 @@ class Shares(unittest.TestCase):
 
     def test_share_formula(self):
         def setup(s):
-            s.tok(1200, TEAM, HOLDERS[7], 30_000 * GEN)
+            s.buy(s.start, HOLDERS[7], 30_000 * GEN)
         w, reg, s, bid = rugged(setup=setup)
         b = get(w, reg, bid)
         self.assertEqual(b["denominator"], str(80_000 * GEN))
@@ -51,15 +51,33 @@ class Shares(unittest.TestCase):
         tot = sum(int(w.call(reg, "claim", bid, sender=h)["share"]) for h in HOLDERS[:7])
         self.assertLessEqual(tot, 7 * GEN + 3)
 
-    def test_balance_read_at_r_minus_1(self):
+    def test_bought_after_start_earns_nothing(self):
         def setup(s):
-            s.tok(1499, TEAM, HOLDERS[9], 10_000 * GEN)    # bought one block before R
+            s.buy(1499, HOLDERS[9], 10_000 * GEN)       # bought one block before R
         w, reg, s, bid = rugged(setup=setup)
-        self.assertEqual(int(w.call(reg, "claim", bid, sender=HOLDERS[9])["balance"]), 10_000 * GEN)
+        with self.assertRaises(Reverted) as e:
+            w.call(reg, "claim", bid, sender=HOLDERS[9])
+        self.assertIn("NO_BALANCE_AT_START_AND_R_MINUS_1", e.exception.msg)
+
+    def test_paid_on_the_lower_of_start_and_r_minus_1(self):
+        def setup(s):
+            s.tok(1300, HOLDERS[0], s.pair, 4_000 * GEN)   # sold some after the start
+            s.buy(1300, HOLDERS[1], 7_000 * GEN)           # bought more after the start
+        w, reg, s, bid = rugged(setup=setup)
+        self.assertEqual(w.call(reg, "claim", bid, sender=HOLDERS[0])["balance"], str(6_000 * GEN))
+        r = w.call(reg, "claim", bid, sender=HOLDERS[1])
+        self.assertEqual((r["balance"], r["start_balance"], r["r_balance"]), (str(10_000 * GEN), str(10_000 * GEN), str(17_000 * GEN)))
+
+    def test_held_at_start_sold_all_before_r_earns_nothing(self):
+        def setup(s):
+            s.tok(1300, HOLDERS[0], s.pair, 10_000 * GEN)
+        w, reg, s, bid = rugged(setup=setup)
+        with self.assertRaises(Reverted):
+            w.call(reg, "claim", bid, sender=HOLDERS[0])
 
     def test_bought_in_block_r_gets_nothing(self):
         def setup(s):
-            s.tok(1500, TEAM, HOLDERS[9], 10_000 * GEN)
+            s.buy(1500, HOLDERS[9], 10_000 * GEN)
         w, reg, s, bid = rugged(setup=setup)
         with self.assertRaises(Reverted) as e:
             w.call(reg, "claim", bid, sender=HOLDERS[9])
@@ -146,11 +164,13 @@ class Refusals(unittest.TestCase):
             w.call(reg, "claim", bid, sender=TEAM2)
         self.assertEqual(get(w, reg, bid)["denominator"], str(50_000 * GEN))
 
-    def test_fresh_team_wallet_not_excluded_can_claim(self):
+    def test_fresh_team_wallet_funded_after_start_refused(self):
         def setup(s):
             s.tok(1200, TEAM, TEAM2, 10_000 * GEN)
         w, reg, s, bid = rugged(setup=setup)
-        self.assertEqual(int(w.call(reg, "claim", bid, sender=TEAM2)["share"]), GEN // 6)
+        with self.assertRaises(Reverted) as e:
+            w.call(reg, "claim", bid, sender=TEAM2)
+        self.assertIn("RECEIVED_FROM_EXCLUDED_ADDRESS", e.exception.msg)
 
     def test_claim_after_window(self):
         w, reg, s, bid = rugged(window=600)
@@ -205,7 +225,7 @@ class Refusals(unittest.TestCase):
 
     def test_zero_share_refused_without_dust_floor(self):
         def setup(s):
-            s.tok(1200, TEAM, HOLDERS[11], 1)
+            s.buy(s.start, HOLDERS[11], 1)
         w, reg, s, bid = rugged(setup=setup, value=10 ** 15)
         with self.assertRaises(Reverted):
             w.call(reg, "claim", bid, sender=HOLDERS[11])

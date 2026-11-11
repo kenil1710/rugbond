@@ -55,7 +55,7 @@ class Chain:
         self.set(TOKEN, PAIR, START, 500_000 * GEN)
         self.set(TOKEN, TEAM, START, 460_000 * GEN)
         for h in HOLDERS:
-            self.set(TOKEN, h, START + 1, 10_000 * GEN)
+            self.set(TOKEN, h, START, 10_000 * GEN)
         t0, t1 = sorted([TOKEN, WETH])
         self.calls = {(PAIR, "0x0dfe1681"): T(t0), (PAIR, "0xd21220a7"): T(t1), (PAIR, "0xc45a0155"): T(FACTORY),
                       (FACTORY, "0xe6a43905" + "0" * 24 + t0[2:] + "0" * 24 + t1[2:]): T(PAIR)}
@@ -77,6 +77,13 @@ class Chain:
                           "blockNumber": hex(blk), "logIndex": hex(self.n), "removed": False,
                           "transactionHash": "0x" + hashlib.sha256(b"rug%d" % blk).hexdigest()})
 
+    def token_transfer(self, blk, frm, to, amount):
+        """A token Transfer log (the balances are set separately)."""
+        self.n += 1
+        self.logs.append({"address": TOKEN, "topics": [TRANSFER, T(frm), T(to)], "data": W(amount),
+                          "blockNumber": hex(blk), "logIndex": hex(self.n), "removed": False,
+                          "transactionHash": "0x" + hashlib.sha256(b"tt%d" % self.n).hexdigest()})
+
     def ts(self, n):
         return NOW_TS - (self.fin - n) * 2
 
@@ -94,9 +101,9 @@ class Chain:
             f = p[0]
             lo = int(f["fromBlock"], 16)
             hi = self.fin if f["toBlock"] == "finalized" else int(f["toBlock"], 16)
-            want = f["topics"][1]
+            tp = f["topics"]
             r = [l for l in self.logs if lo <= int(l["blockNumber"], 16) <= hi and l["address"] == f["address"]
-                 and l["topics"][1] in want]
+                 and l["topics"][1] in tp[1] and (len(tp) < 3 or l["topics"][2] == tp[2])]
         elif m == "eth_call":
             to, data = p[0]["to"], p[0]["data"]
             n = self.fin if p[1] == "latest" else int(p[1], 16)

@@ -20,27 +20,29 @@ def rugged_with(setup, **o):
 
 
 class Attacks(unittest.TestCase):
-    def test_a01_flash_buy_at_r_minus_1_gets_pro_rata_only(self):
-        # a holder buys in R-1: it is a holder at R-1 and is paid pro rata, no more; documented
-        w, reg, s, bid = rugged_with(lambda s: s.tok(1499, TEAM, HOLDERS[10], 40_000 * GEN))
-        self.assertEqual(int(w.call(reg, "claim", bid, sender=HOLDERS[10])["share"]), GEN * 40_000 // 80_000)
+    def test_a01_buy_at_r_minus_1_earns_nothing(self):
+        # bought after the bond opened: min(balance at start, balance at R-1) = 0
+        w, reg, s, bid = rugged_with(lambda s: s.buy(1499, HOLDERS[10], 40_000 * GEN))
+        with self.assertRaises(Reverted) as e:
+            w.call(reg, "claim", bid, sender=HOLDERS[10])
+        self.assertIn("NO_BALANCE_AT_START_AND_R_MINUS_1", e.exception.msg)
 
     def test_a02_flash_loan_inside_block_r_minus_1_returned_same_block(self):
         # borrow and return within R-1: end-of-block balance is what counts
         def setup(s):
-            s.tok(1499, TEAM, HOLDERS[10], 40_000 * GEN)
+            s.buy(s.start, HOLDERS[10], 40_000 * GEN)
             s.tok(1499, HOLDERS[10], TEAM, 40_000 * GEN)
         w, reg, s, bid = rugged_with(setup)
         with self.assertRaises(Reverted):
             w.call(reg, "claim", bid, sender=HOLDERS[10])
 
     def test_a03_sybil_split_gains_nothing(self):
-        w1, r1, s1, b1 = rugged_with(lambda s: s.tok(1200, TEAM, HOLDERS[10], 40_000 * GEN))
+        w1, r1, s1, b1 = rugged_with(lambda s: s.buy(s.start, HOLDERS[10], 40_000 * GEN))
         one = int(w1.call(r1, "claim", b1, sender=HOLDERS[10])["share"])
 
         def split(s):
             for i in range(4):
-                s.tok(1200 + i, TEAM, HOLDERS[10 + i], 10_000 * GEN)
+                s.buy(s.start, HOLDERS[10 + i], 10_000 * GEN)
         w2, r2, s2, b2 = rugged_with(split)
         many = sum(int(w2.call(r2, "claim", b2, sender=HOLDERS[10 + i])["share"]) for i in range(4))
         self.assertLessEqual(many, one)
@@ -49,18 +51,94 @@ class Attacks(unittest.TestCase):
     def test_a04_sybil_dust_splitting_blocked_by_dust_floor(self):
         def setup(s):
             for i in range(5):
-                s.tok(1200 + i, TEAM, HOLDERS[10 + i], 10 ** 6)
+                s.buy(s.start, HOLDERS[10 + i], 10 ** 6)
         w, reg, s, bid = rugged_with(setup, dust_floor=10 ** 12)
         for i in range(5):
             with self.assertRaises(Reverted):
                 w.call(reg, "claim", bid, sender=HOLDERS[10 + i])
 
-    def test_a05_team_fresh_wallet_bought_before_r_can_claim_unless_excluded(self):
+    def test_a05_team_funds_fresh_wallet_after_start_refused(self):
+        # the team sends tokens to a fresh wallet after the bond opened: RECEIVED_FROM_EXCLUDED_ADDRESS
         w, reg, s, bid = rugged_with(lambda s: s.tok(1200, TEAM, TEAM2, 40_000 * GEN))
+        with self.assertRaises(Reverted) as e:
+            w.call(reg, "claim", bid, sender=TEAM2)
+        self.assertIn("RECEIVED_FROM_EXCLUDED_ADDRESS", e.exception.msg)
+
+    def test_a05b_team_buys_supply_before_rug_earns_nothing(self):
+        # the attack: buy most of the float from the pool (the ETH comes back with the LP), rug, claim
+        def setup(s):
+            for i in range(4):
+                s.buy(1400 + i, A(600 + i), 100_000 * GEN)
+        w, reg, s, bid = rugged_with(setup)
+        for i in range(4):
+            with self.assertRaises(Reverted):
+                w.call(reg, "claim", bid, sender=A(600 + i))
+        # the honest holders who held at the start are paid
+        self.assertEqual(int(w.call(reg, "claim", bid, sender=HOLDERS[0])["share"]), GEN * 10_000 // 440_000)
+
+    def test_a05c_team_funds_wallet_before_start_allowed_unless_excluded(self):
+        # funded before the promise began: a holder at the start block, as the rule says; list it to exclude it
+        def build(extra):
+            w, reg = fresh()
+            s = Sim().launch(holders=HOLDERS[:4])
+            s.tok(1050, TEAM, TEAM2, 40_000 * GEN)
+            s.rug(1500)
+            s.install()
+            bid = bond(w, reg, s, start_block=1100, excluded=extra)
+            until_verdict(w, reg, bid)
+            return w, reg, bid
+        w, reg, bid = build([ROUTER])
         self.assertGreater(int(w.call(reg, "claim", bid, sender=TEAM2)["share"]), 0)
-        w2, reg2, s2, bid2 = rugged_with(lambda s: s.tok(1200, TEAM, TEAM2, 40_000 * GEN), excluded=[TEAM2])
+        w, reg, bid = build([ROUTER, TEAM2])
         with self.assertRaises(Reverted):
-            w2.call(reg2, "claim", bid2, sender=TEAM2)
+            w.call(reg, "claim", bid, sender=TEAM2)
+
+    def test_a05d_received_from_lp_holder_or_token_contract_refused(self):
+        for sender in (LOCKER, "token"):
+            def setup(s, sender=sender):
+                frm = s.token if sender == "token" else LOCKER
+                s.buy(s.start, HOLDERS[11], 5_000 * GEN)
+                s.tok(1100, TEAM, frm, 50_000 * GEN)
+                s.tok(1200, frm, HOLDERS[11], 1_000 * GEN)
+            w, reg, s, bid = rugged_with(setup, lp_holders=[TEAM, LOCKER])
+            with self.assertRaises(Reverted) as e:
+                w.call(reg, "claim", bid, sender=HOLDERS[11])
+            self.assertIn("RECEIVED_FROM_EXCLUDED_ADDRESS", e.exception.msg, sender)
+
+    def test_a05e_received_via_router_is_a_buy(self):
+        def setup(s):
+            r = module("RugBond").ROUTERS["base-sepolia"][0]
+            s.buy(s.start, r, 1_000 * GEN)
+            s.buy(s.start, HOLDERS[12], 5_000 * GEN)
+            s.tok(1200, r, HOLDERS[12], 1_000 * GEN)
+        w, reg, s, bid = rugged_with(setup, excluded=[module("RugBond").ROUTERS["base-sepolia"][0]])
+        self.assertEqual(int(w.call(reg, "claim", bid, sender=HOLDERS[12])["balance"]), 5_000 * GEN)
+
+    def test_a05f_transfer_from_team_after_r_does_not_count(self):
+        def setup(s):
+            s.buy(s.start, HOLDERS[13], 5_000 * GEN)
+            s.tok(1600, TEAM, HOLDERS[13], 1 * GEN)
+        w, reg, s, bid = rugged_with(setup)
+        self.assertGreater(int(w.call(reg, "claim", bid, sender=HOLDERS[13])["share"]), 0)
+
+    def test_a05g_transfer_from_team_in_block_r_counts(self):
+        def setup(s):
+            s.buy(s.start, HOLDERS[13], 5_000 * GEN)
+            s.tok(1500, TEAM, HOLDERS[13], 1 * GEN)
+        w, reg, s, bid = rugged_with(setup)
+        with self.assertRaises(Reverted):
+            w.call(reg, "claim", bid, sender=HOLDERS[13])
+
+    def test_a05h_transfer_logs_disagree_is_pending(self):
+        def setup(s):
+            s.buy(s.start, HOLDERS[13], 5_000 * GEN)
+        w, reg, s, bid = rugged_with(setup)
+        s.rpcs[1].logs.append({"address": s.token, "topics": ["0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+                               T(TEAM), T(HOLDERS[13])], "data": W(GEN), "blockNumber": hex(1300), "logIndex": "0x9",
+                               "transactionHash": "0x" + "cd" * 32, "removed": False})
+        with self.assertRaises(Reverted) as e:
+            w.call(reg, "claim", bid, sender=HOLDERS[13])
+        self.assertIn("RPC_DISAGREE", e.exception.msg)
 
     def test_a06_team_wallet_cannot_add_itself_to_exclusions_later(self):
         rb = module("RugBond").RugBond
@@ -118,11 +196,12 @@ class Attacks(unittest.TestCase):
             s.c.supply[s.token].append((1400, 1_000_000 * GEN + 10_000 * GEN))
         w, reg, s, bid = rugged_with(setup)
         self.assertEqual(get(w, reg, bid)["denominator"], str(50_000 * GEN))
-        self.assertEqual(int(w.call(reg, "claim", bid, sender=HOLDERS[0])["share"]), GEN * 20_000 // 50_000)
+        # a rebase up after the start does not raise the claim: min(start, R-1)
+        self.assertEqual(int(w.call(reg, "claim", bid, sender=HOLDERS[0])["share"]), GEN * 10_000 // 50_000)
 
     def test_a13_fee_on_transfer_token_balances_are_what_holders_hold(self):
         def setup(s):
-            s.tok(1200, TEAM, HOLDERS[10], 9_000 * GEN)       # 10% fee: the holder ends with 9000
+            s.buy(s.start, HOLDERS[10], 9_000 * GEN)       # 10% fee: the holder ends with 9000
             s.tok(1200, TEAM, s.token, 1_000 * GEN)           # fee to the token contract (excluded)
         w, reg, s, bid = rugged_with(setup)
         self.assertEqual(get(w, reg, bid)["denominator"], str(49_000 * GEN))

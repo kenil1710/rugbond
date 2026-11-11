@@ -66,7 +66,7 @@ export default async function BondPage({ params }: { params: Promise<{ id: strin
             <p>At block <b><a href={scan(b.chain, "block", b.rug_block)}>{b.rug_block}</a></b> ({when(b.rug_ts)}) the LP holders&apos; summed LP fell from <b>{units(r.lp_before, 18, 6)}</b> to <b>{units(r.lp_after, 18, 6)}</b>, below the promised {units(b.min_lp, 18, 6)}.</p>
             <p>LP transfer{r.txs.length > 1 ? "s" : ""} out in that block: {r.txs.map((t) => <a key={t} className="mono" href={scan(b.chain, "tx", t)} style={{ display: "block" }}>{t}</a>)}</p>
             <p>Snapshot at block {b.rug_block - 1}: total supply {units(r.supply, 18, 6)}, excluded balances {units(String(BigInt(r.supply ?? "0") - BigInt(r.denom ?? "0")), 18, 6)} → claimable supply <b>{units(r.denom, 18, 6)}</b>.</p>
-            <p>Share = bond × balance at block {b.rug_block - 1} ÷ {units(r.denom, 18, 6)}. Claim window until <b>{when(b.claim_deadline)}</b> ({ago(b.claim_deadline)}). <Link href={`/claim?bond=${id}`}>Claim →</Link></p>
+            <p>Share = bond × min(balance at the start block {b.start_block}, balance at block {b.rug_block - 1}) ÷ {units(r.denom, 18, 6)}; tokens received directly from the team after the start do not count. Claim window until <b>{when(b.claim_deadline)}</b> ({ago(b.claim_deadline)}). <Link href={`/claim?bond=${id}`}>Claim →</Link></p>
           </div>
         </>
       ) : null}
@@ -82,7 +82,7 @@ export default async function BondPage({ params }: { params: Promise<{ id: strin
       <h2>Holder claims ({claims.length})</h2>
       {claims.length ? (
         <div className="table-wrap"><table>
-          <thead><tr><th>#</th><th>holder</th><th>paid to</th><th className="num">balance at R-1</th><th className="num">share (GEN)</th><th>when</th></tr></thead>
+          <thead><tr><th>#</th><th>holder</th><th>paid to</th><th className="num">paid on (min of start, R-1)</th><th className="num">share (GEN)</th><th>when</th></tr></thead>
           <tbody>{claims.map((c) => <tr key={c.holder}><td>{c.claim_no + 1}</td><td className="mono">{short(c.holder)}</td><td className="mono">{c.payee === c.holder ? "itself" : short(c.payee)}</td>
             <td className="num">{units(c.balance, 18, 6)}</td><td className="num">{gen(c.share)}</td><td className="small">{when(c.claimed_at)}</td></tr>)}</tbody>
         </table></div>

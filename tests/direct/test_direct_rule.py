@@ -4,7 +4,7 @@ Covers RUGGED and HELD verdicts, claims, validator agreement and disagreement,
 forged leader results, RPC failures and disagreement between the RPCs."""
 import json
 
-from conftest import GEN, HOLDERS, PAIR, RPC_A, RPC_B, RPC_C, START, TEAM, Chain, warp
+from conftest import GEN, HOLDERS, PAIR, RPC_A, RPC_B, RPC_C, START, TEAM, TOKEN, Chain, warp
 
 
 def test_rug_is_detected_at_the_first_block(direct_vm, net, contract, bond):
@@ -128,3 +128,21 @@ def test_settle_after_window_to_victim_fund(direct_vm, net, contract, bond):
     warp(direct_vm, "2026-10-03T04:11:00Z")
     r = contract.settle(bond)
     assert r["status"] == "CLOSED" and r["amount"] == str(GEN), r
+
+
+def test_claim_refused_when_the_team_sent_tokens_after_start(direct_vm, net, contract, bond):
+    net.a.rug(START + 300)
+    net.a.token_transfer(START + 100, TEAM, HOLDERS[3], GEN)
+    contract.check(bond)
+    direct_vm.sender = bytes.fromhex(HOLDERS[3][2:])
+    with direct_vm.expect_revert("RECEIVED_FROM_EXCLUDED_ADDRESS"):
+        contract.claim(bond)
+
+
+def test_claim_paid_on_the_lower_balance(direct_vm, net, contract, bond):
+    net.a.rug(START + 300)
+    net.a.set(TOKEN, HOLDERS[0], START + 50, 4_000 * GEN)        # sold 6000 after the start
+    contract.check(bond)
+    direct_vm.sender = bytes.fromhex(HOLDERS[0][2:])
+    r = contract.claim(bond)
+    assert r["balance"] == str(4_000 * GEN) and r["start_balance"] == str(10_000 * GEN), r

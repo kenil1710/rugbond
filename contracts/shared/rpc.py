@@ -373,24 +373,65 @@ def read_check(chain: str, t: dict, cursor: int, first: bool, b_fixed: int) -> d
     return {"facts": views[0], "range": rng}
 
 
-def read_holder(chain: str, token: str, holder: str, rug_block: int) -> dict:
-    """A claimant's token balance at R-1 and whether it has code now, from BOTH
-    state RPCs -> {"balance": n, "code": bool} or {"reason": ..., "detail": ...}."""
+def read_claim(chain: str, t: dict, holder: str, rug_block: int) -> dict:
+    """What a claim needs, as two views (log RPC n + state RPC n) that must be
+    identical -> {"start_balance", "balance", "code", "delegated", "from_team"}
+    or {"reason": ..., "detail": ...}.
+      start_balance  balanceOf(holder) at the end of the start block
+      balance        balanceOf(holder) at R-1
+      code           the address has code now (an EIP-7702 delegation is not code)
+      from_team      Transfer logs of the token TO the holder FROM a team sender
+                     (team_senders) in [start block, R]: [block, tx, from], up to 5"""
     ch = CHAINS[chain]
+    start = int(t["start_block"])
+    senders = team_senders(t)
     views = []
     try:
-        for url in ch[3]:
-            a = rpc_send(url, [["eth_chainId", []], _bal_call(token, holder, rug_block - 1),
-                               ["eth_getCode", [holder, "latest"]]], RPC_LIMITS[url][1])
-            if _hex_int(a[0]) != ch[0]:
+        for n in range(2):
+            url = ch[1][n]
+            surl = ch[3][n]
+            st = rpc_send(surl, [["eth_chainId", []], _bal_call(t["token"], holder, start),
+                                 _bal_call(t["token"], holder, rug_block - 1), ["eth_getCode", [holder, "latest"]]],
+                          RPC_LIMITS[surl][1])
+            if _hex_int(st[0]) != ch[0]:
                 raise ReadFailed("wrong chain id")
-            code = str(a[2]).strip().lower()
+            code = str(st[3]).strip().lower()
             if not code.startswith("0x"):
                 raise ReadFailed("code")
-            # EIP-7702: an EOA delegating to a contract carries 0xef0100 + address (23 bytes);
-            # it still has its own key and can sign, so it is not a contract here.
             delegated = len(code) == 48 and code.startswith("0xef0100")
-            views.append({"balance": _uint(a[1]), "code": len(code) > 2 and not delegated, "delegated": delegated})
+            hits = []
+            if len(senders) > 0:
+                calls = []
+                w = start
+                span = RPC_LIMITS[url][0]
+                while w <= rug_block:
+                    z = w + span - 1
+                    if z > rug_block:
+                        z = rug_block
+                    calls.append(["eth_getLogs", [{"address": t["token"], "topics": [TRANSFER, [_pad(x) for x in senders],
+                                                                                    _pad(holder)],
+                                                   "fromBlock": hex(w), "toBlock": hex(z)}]])
+                    w = z + 1
+                parts = rpc_send(url, calls, 1)
+                for part in parts:
+                    if not isinstance(part, list):
+                        raise ReadFailed("logs")
+                    for lg in part:
+                        if not isinstance(lg, dict) or lg.get("removed") is True:
+                            raise ReadFailed("log")
+                        tp = lg.get("topics", [])
+                        if _addr(lg.get("address", "")) != t["token"] or not isinstance(tp, list) or len(tp) != 3 \
+                                or str(tp[0]).lower() != TRANSFER:
+                            continue
+                        frm = _word_addr(tp[1])
+                        blk = _hex_int(lg.get("blockNumber"))
+                        txh = _hash32(lg.get("transactionHash", ""))
+                        if frm not in senders or _word_addr(tp[2]) != holder or blk < start or blk > rug_block or txh == "":
+                            raise ReadFailed("log fields")
+                        hits.append([blk, txh, frm])
+            hits = sorted(hits, key=lambda x: (x[0], x[1], x[2]))
+            views.append({"start_balance": _uint(st[1]), "balance": _uint(st[2]), "code": len(code) > 2 and not delegated,
+                          "delegated": delegated, "from_team": hits[0:5]})
     except ReadFailed as e:
         return {"reason": "RPC_UNREADABLE", "detail": str(e)[:60]}
     except Exception:

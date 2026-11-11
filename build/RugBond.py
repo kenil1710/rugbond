@@ -34,10 +34,13 @@ import typing
 # After RUGGED each token holder claims once, as msg.sender (the same key on
 # both chains), optionally paying a beneficiary it committed on chain:
 #
-#   share = bond * balanceOf(holder, R-1) // (totalSupply(R-1) - excluded balances at R-1)
+#   share = bond * min(balanceOf(holder, start block), balanceOf(holder, R-1))
+#                // (totalSupply(R-1) - excluded balances at R-1)
 #
-# read from two archive RPCs that must agree. Contracts (code at the address)
-# and excluded addresses cannot claim; a share below the dust floor is refused.
+# read from two archive RPCs that must agree. Contracts (code at the address),
+# excluded addresses, and addresses that received the token directly from a
+# team sender (an excluded address other than the pair and the routers) between
+# the start block and R cannot claim; a share below the dust floor is refused.
 # After the claim window anyone settles: what nobody claimed goes to the victim
 # fund. HELD (or VOID): the bond goes back to the team. A bond still unread at
 # its recovery deadline (fixed at creation: max(end time, creation) + recovery
@@ -118,6 +121,14 @@ RPC_LIMITS = {
     "https://base-sepolia.gateway.tenderly.co": (40000, 3, False),
     "https://base-sepolia-rpc.publicnode.com": (40000, 12, False),
     "https://sepolia.base.org": (200, 6, False),
+}
+# Swap routers per chain: tokens a buyer receives from a router came from the pair,
+# so a router is never a "team" sender for the received-from-excluded rule (they
+# stay excluded from claiming and from the snapshot when a bond lists them).
+ROUTERS = {
+    "ethereum": ("0x7a250d5630b4cf539739df2c5dacb4c659f2488d", "0xd9e1ce17f2641f24ae83637ab66a2cca9c378b9f",
+                 "0x3fc91a3afd70395cd496c647d5a6cc9d4b2b7fad", "0x66a9893cc07d91d95644aedd05d03f95e1dba8af"),
+    "base-sepolia": ("0x1689e7b1f10000ae47ebfe339a4f69decd19f602", "0x492e6456d9528771018deb9e87ef7750ef184104"),
 }
 TRANSFER = "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"
 ZERO = "0x" + "0" * 40
@@ -328,6 +339,25 @@ def share_of(bond_amount: int, balance: int, denom: int) -> int:
         return 0
     s = (bond_amount * balance) // denom
     return s if s < bond_amount else bond_amount
+
+
+def team_senders(t: dict) -> list:
+    """The addresses whose DIRECT token transfers to a claimant between the start
+    block and R disqualify it: every excluded address except the pair (buys come
+    from the pair), 0x0 (mints), 0x...dEaD and the chain's swap routers."""
+    out = []
+    for a in t["excluded_all"]:
+        if a == t["pair"] or a == ZERO or a == DEAD or a in ROUTERS.get(t["chain"], ()):
+            continue
+        out.append(a)
+    return sorted(out)
+
+
+def claim_balance(start_balance: int, r_balance: int) -> int:
+    """The balance a claim is paid on: the smaller of the holder's balance at the
+    end of the bond's start block and at R-1. Tokens bought after the bond
+    opened earn nothing."""
+    return start_balance if start_balance < r_balance else r_balance
 
 
 def snapshot_denominator(supply: int, excluded: list) -> int:
@@ -711,24 +741,65 @@ def read_check(chain: str, t: dict, cursor: int, first: bool, b_fixed: int) -> d
     return {"facts": views[0], "range": rng}
 
 
-def read_holder(chain: str, token: str, holder: str, rug_block: int) -> dict:
-    """A claimant's token balance at R-1 and whether it has code now, from BOTH
-    state RPCs -> {"balance": n, "code": bool} or {"reason": ..., "detail": ...}."""
+def read_claim(chain: str, t: dict, holder: str, rug_block: int) -> dict:
+    """What a claim needs, as two views (log RPC n + state RPC n) that must be
+    identical -> {"start_balance", "balance", "code", "delegated", "from_team"}
+    or {"reason": ..., "detail": ...}.
+      start_balance  balanceOf(holder) at the end of the start block
+      balance        balanceOf(holder) at R-1
+      code           the address has code now (an EIP-7702 delegation is not code)
+      from_team      Transfer logs of the token TO the holder FROM a team sender
+                     (team_senders) in [start block, R]: [block, tx, from], up to 5"""
     ch = CHAINS[chain]
+    start = int(t["start_block"])
+    senders = team_senders(t)
     views = []
     try:
-        for url in ch[3]:
-            a = rpc_send(url, [["eth_chainId", []], _bal_call(token, holder, rug_block - 1),
-                               ["eth_getCode", [holder, "latest"]]], RPC_LIMITS[url][1])
-            if _hex_int(a[0]) != ch[0]:
+        for n in range(2):
+            url = ch[1][n]
+            surl = ch[3][n]
+            st = rpc_send(surl, [["eth_chainId", []], _bal_call(t["token"], holder, start),
+                                 _bal_call(t["token"], holder, rug_block - 1), ["eth_getCode", [holder, "latest"]]],
+                          RPC_LIMITS[surl][1])
+            if _hex_int(st[0]) != ch[0]:
                 raise ReadFailed("wrong chain id")
-            code = str(a[2]).strip().lower()
+            code = str(st[3]).strip().lower()
             if not code.startswith("0x"):
                 raise ReadFailed("code")
-            # EIP-7702: an EOA delegating to a contract carries 0xef0100 + address (23 bytes);
-            # it still has its own key and can sign, so it is not a contract here.
             delegated = len(code) == 48 and code.startswith("0xef0100")
-            views.append({"balance": _uint(a[1]), "code": len(code) > 2 and not delegated, "delegated": delegated})
+            hits = []
+            if len(senders) > 0:
+                calls = []
+                w = start
+                span = RPC_LIMITS[url][0]
+                while w <= rug_block:
+                    z = w + span - 1
+                    if z > rug_block:
+                        z = rug_block
+                    calls.append(["eth_getLogs", [{"address": t["token"], "topics": [TRANSFER, [_pad(x) for x in senders],
+                                                                                    _pad(holder)],
+                                                   "fromBlock": hex(w), "toBlock": hex(z)}]])
+                    w = z + 1
+                parts = rpc_send(url, calls, 1)
+                for part in parts:
+                    if not isinstance(part, list):
+                        raise ReadFailed("logs")
+                    for lg in part:
+                        if not isinstance(lg, dict) or lg.get("removed") is True:
+                            raise ReadFailed("log")
+                        tp = lg.get("topics", [])
+                        if _addr(lg.get("address", "")) != t["token"] or not isinstance(tp, list) or len(tp) != 3 \
+                                or str(tp[0]).lower() != TRANSFER:
+                            continue
+                        frm = _word_addr(tp[1])
+                        blk = _hex_int(lg.get("blockNumber"))
+                        txh = _hash32(lg.get("transactionHash", ""))
+                        if frm not in senders or _word_addr(tp[2]) != holder or blk < start or blk > rug_block or txh == "":
+                            raise ReadFailed("log fields")
+                        hits.append([blk, txh, frm])
+            hits = sorted(hits, key=lambda x: (x[0], x[1], x[2]))
+            views.append({"start_balance": _uint(st[1]), "balance": _uint(st[2]), "code": len(code) > 2 and not delegated,
+                          "delegated": delegated, "from_team": hits[0:5]})
     except ReadFailed as e:
         return {"reason": "RPC_UNREADABLE", "detail": str(e)[:60]}
     except Exception:
@@ -1185,17 +1256,15 @@ class RugBond(gl.contract.Contract):
             raise gl.vm.UserError("REFUSED: ALREADY_CLAIMED")
         if int(b.denom) <= 0:
             raise gl.vm.UserError("REFUSED: NO_CLAIMABLE_SUPPLY")
-        ch = t["chain"]
-        tok = t["token"]
         rb = int(b.rug_block)
 
         def leader() -> dict:
-            return read_holder(ch, tok, who, rb)
+            return read_claim(t["chain"], t, who, rb)
 
         def validator(res: gl.vm.Result) -> bool:
             if not isinstance(res, gl.vm.Return) or not isinstance(res.calldata, dict):
                 return False
-            mine = read_holder(ch, tok, who, rb)
+            mine = read_claim(t["chain"], t, who, rb)
             if "reason" in res.calldata:
                 return "reason" in mine
             return _canon(mine) == _canon(res.calldata)
@@ -1206,9 +1275,11 @@ class RugBond(gl.contract.Contract):
             raise gl.vm.UserError("PENDING: " + why + "_TRY_AGAIN")
         if r.get("code") is not False:
             raise gl.vm.UserError("REFUSED: CONTRACT_HOLDER")
-        bal = int(r["balance"])
+        if len(r.get("from_team", [])) > 0:
+            raise gl.vm.UserError("REFUSED: RECEIVED_FROM_EXCLUDED_ADDRESS")
+        bal = claim_balance(int(r["start_balance"]), int(r["balance"]))
         if bal <= 0:
-            raise gl.vm.UserError("REFUSED: NO_BALANCE_AT_R_MINUS_1")
+            raise gl.vm.UserError("REFUSED: NO_BALANCE_AT_START_AND_R_MINUS_1")
         share = share_of(int(b.amount), bal, int(b.denom))
         dust = int(t["dust_floor"])
         if share <= 0 or share < dust:
@@ -1238,6 +1309,7 @@ class RugBond(gl.contract.Contract):
         self._bump("claims")
         self._send(payee, share)
         return {"ok": True, "bond_id": int(b.bond_id), "holder": who, "payee": payee, "balance": str(bal),
+                "start_balance": str(int(r["start_balance"])), "r_balance": str(int(r["balance"])),
                 "share": str(share), "denominator": str(int(b.denom))}
 
     def _due(self, b: Bond, now: int) -> str:

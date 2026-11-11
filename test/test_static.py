@@ -67,7 +67,7 @@ class Money(unittest.TestCase):
 
     def test_writes_after_checks(self):
         s = (ROOT / "build" / "RugBond.py").read_text()
-        for fn in ("def claim", "def settle", "def check", "def withdraw_credit", "def sweep_stray"):
+        for fn in ("    def claim(", "    def settle(", "    def check(", "    def withdraw_credit(", "    def sweep_stray("):
             body = s[s.index(fn):]
             body = body[:body.index("\n    @gl.public")]
             self.assertIn("# --- writes", body, fn)

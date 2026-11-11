@@ -85,7 +85,10 @@ class DocsMatchCode(unittest.TestCase):
         self.assertIn("Uniswap V2 and SushiSwap on Ethereum, the official Uniswap V2 factory on Base Sepolia", " ".join(RULES.split()))
 
     def test_share_formula(self):
-        self.assertIn("share = bond * balanceOf(holder, R-1) // (totalSupply(R-1) - sum of excluded balances at R-1)", RULES)
+        self.assertIn("share = bond * min(balanceOf(holder, start block), balanceOf(holder, R-1))", RULES)
+        self.assertIn("// (totalSupply(R-1) - sum of excluded balances at R-1)", RULES)
+        self.assertEqual(RB.claim_balance(5, 3), 3)
+        self.assertEqual(RB.claim_balance(2, 9), 2)
         self.assertEqual(RB.share_of(10, 1, 3), 3)
         self.assertEqual(RB.share_of(10, 5, 3), 10)
         self.assertEqual(RB.share_of(10, 1, 0), 0)
@@ -134,3 +137,11 @@ class NeverFavorable(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class RoutersDocumented(unittest.TestCase):
+    def test_routers_and_team_senders(self):
+        self.assertEqual(set(RB.ROUTERS), set(RB.CHAINS))
+        self.assertIn("Team senders", RULES)
+        t = {"chain": "ethereum", "pair": A(1), "excluded_all": sorted([A(1), A(2), "0x" + "0" * 40, RB.DEAD, RB.ROUTERS["ethereum"][0]])}
+        self.assertEqual(RB.team_senders(t), [A(2)])

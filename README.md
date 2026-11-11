@@ -32,8 +32,10 @@ payout follows from arithmetic.
    time); **HELD** once the reads pass the end time without one. A read error or a disagreement is **PENDING**: never a
    verdict, retried by anyone, bounded by a recovery deadline fixed at creation.
 3. **Holders claim themselves.** After RUGGED each holder claims once, with the same key that holds the tokens:
-   `share = bond × balanceOf(holder, R-1) ÷ (totalSupply(R-1) − excluded balances)`, read from two RPCs. Contracts and
-   excluded addresses cannot claim; a beneficiary can be committed once.
+   `share = bond × min(balance at the start block, balance at R-1) ÷ (totalSupply(R-1) − excluded balances)`, read from
+   two RPCs, so supply bought after the bond opened earns nothing. Contracts, excluded addresses, and addresses that
+   received the token directly from the team (or another excluded address) after the bond opened cannot claim; a
+   beneficiary can be committed once.
 4. **Every GEN has an exit.** After the claim window the rest goes to the victim fund; HELD returns the bond to the
    team; a bond never read to a verdict by its recovery deadline goes to the victim fund.
 5. **LaunchGate** answers other contracts per bond: NO_BOND, ACTIVE_HELD_SO_FAR, HELD_FINAL, RUGGED_PAYING,

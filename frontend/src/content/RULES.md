@@ -67,14 +67,27 @@ ACTIVE. A bond whose start block's timestamp is more than 3600 s older than its 
 ## 3. Claims
 
 After RUGGED, each token holder calls `claim(bond_id)` itself: the claimant is `msg.sender`, the same key that holds
-the tokens on the bond's chain. Validators read, from both RPCs, the claimant's `balanceOf` at R-1 and its code now.
+the tokens on the bond's chain. Validators read, from both log RPCs and both state RPCs, the claimant's `balanceOf` at
+the end of the bond's start block and at R-1, its code now, and every token Transfer **to** it **from** a team sender
+between the start block and R (inclusive).
 
-    share = bond * balanceOf(holder, R-1) // (totalSupply(R-1) - sum of excluded balances at R-1)
+    share = bond * min(balanceOf(holder, start block), balanceOf(holder, R-1))
+                 // (totalSupply(R-1) - sum of excluded balances at R-1)
 
-Integer math, rounded down; never more than what is left. Refused: `EXCLUDED_ADDRESS`, `CONTRACT_HOLDER` (code at the
-address; an EIP-7702 delegation `0xef0100` + address is an EOA and may claim), `NO_BALANCE_AT_R_MINUS_1`,
-`SHARE_BELOW_DUST_FLOOR` (also a zero share), `ALREADY_CLAIMED`, `CLAIM_WINDOW_OVER`, `BOND_IS_<status>`,
-`NO_CLAIMABLE_SUPPLY`. A read failure or disagreement is refused as `PENDING: ..._TRY_AGAIN` and nothing is recorded.
+Integer math, rounded down; never more than what is left. Tokens bought after the bond opened earn nothing, and a
+holder that sold part of its position before R is paid on what it kept.
+
+**Team senders** are every excluded address except the pair (buys come from the pair), 0x0 (mints), 0x...dEaD and the
+chain's swap routers (Ethereum: Uniswap V2 Router02, SushiSwap router, Uniswap Universal Routers; Base Sepolia: Uniswap
+V2 router and Universal Router). An address that received the token directly from a team sender between the start
+block and R cannot claim (`RECEIVED_FROM_EXCLUDED_ADDRESS`): the team cannot hand supply to fresh wallets and claim
+its own bond back. A wallet the team funded before the start block holds at the start like anyone else; a launchpad
+that knows such wallets lists them as excluded.
+
+Refused: `EXCLUDED_ADDRESS`, `CONTRACT_HOLDER` (code at the address; an EIP-7702 delegation `0xef0100` + address is an
+EOA and may claim), `RECEIVED_FROM_EXCLUDED_ADDRESS`, `NO_BALANCE_AT_START_AND_R_MINUS_1`, `SHARE_BELOW_DUST_FLOOR` (also
+a zero share), `ALREADY_CLAIMED`, `CLAIM_WINDOW_OVER`, `BOND_IS_<status>`, `NO_CLAIMABLE_SUPPLY`. A read failure or
+disagreement is refused as `PENDING: ..._TRY_AGAIN` and nothing is recorded.
 
 The claim window opens when the RUGGED check is recorded and lasts the bond's claim window.
 

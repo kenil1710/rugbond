@@ -34,10 +34,13 @@ import typing
 # After RUGGED each token holder claims once, as msg.sender (the same key on
 # both chains), optionally paying a beneficiary it committed on chain:
 #
-#   share = bond * balanceOf(holder, R-1) // (totalSupply(R-1) - excluded balances at R-1)
+#   share = bond * min(balanceOf(holder, start block), balanceOf(holder, R-1))
+#                // (totalSupply(R-1) - excluded balances at R-1)
 #
-# read from two archive RPCs that must agree. Contracts (code at the address)
-# and excluded addresses cannot claim; a share below the dust floor is refused.
+# read from two archive RPCs that must agree. Contracts (code at the address),
+# excluded addresses, and addresses that received the token directly from a
+# team sender (an excluded address other than the pair and the routers) between
+# the start block and R cannot claim; a share below the dust floor is refused.
 # After the claim window anyone settles: what nobody claimed goes to the victim
 # fund. HELD (or VOID): the bond goes back to the team. A bond still unread at
 # its recovery deadline (fixed at creation: max(end time, creation) + recovery
@@ -541,17 +544,15 @@ class RugBond(gl.contract.Contract):
             raise gl.vm.UserError("REFUSED: ALREADY_CLAIMED")
         if int(b.denom) <= 0:
             raise gl.vm.UserError("REFUSED: NO_CLAIMABLE_SUPPLY")
-        ch = t["chain"]
-        tok = t["token"]
         rb = int(b.rug_block)
 
         def leader() -> dict:
-            return read_holder(ch, tok, who, rb)
+            return read_claim(t["chain"], t, who, rb)
 
         def validator(res: gl.vm.Result) -> bool:
             if not isinstance(res, gl.vm.Return) or not isinstance(res.calldata, dict):
                 return False
-            mine = read_holder(ch, tok, who, rb)
+            mine = read_claim(t["chain"], t, who, rb)
             if "reason" in res.calldata:
                 return "reason" in mine
             return _canon(mine) == _canon(res.calldata)
@@ -562,9 +563,11 @@ class RugBond(gl.contract.Contract):
             raise gl.vm.UserError("PENDING: " + why + "_TRY_AGAIN")
         if r.get("code") is not False:
             raise gl.vm.UserError("REFUSED: CONTRACT_HOLDER")
-        bal = int(r["balance"])
+        if len(r.get("from_team", [])) > 0:
+            raise gl.vm.UserError("REFUSED: RECEIVED_FROM_EXCLUDED_ADDRESS")
+        bal = claim_balance(int(r["start_balance"]), int(r["balance"]))
         if bal <= 0:
-            raise gl.vm.UserError("REFUSED: NO_BALANCE_AT_R_MINUS_1")
+            raise gl.vm.UserError("REFUSED: NO_BALANCE_AT_START_AND_R_MINUS_1")
         share = share_of(int(b.amount), bal, int(b.denom))
         dust = int(t["dust_floor"])
         if share <= 0 or share < dust:
@@ -594,6 +597,7 @@ class RugBond(gl.contract.Contract):
         self._bump("claims")
         self._send(payee, share)
         return {"ok": True, "bond_id": int(b.bond_id), "holder": who, "payee": payee, "balance": str(bal),
+                "start_balance": str(int(r["start_balance"])), "r_balance": str(int(r["balance"])),
                 "share": str(share), "denominator": str(int(b.denom))}
 
     def _due(self, b: Bond, now: int) -> str:

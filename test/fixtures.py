@@ -130,9 +130,14 @@ class Sim:
         self.lp(b, ZERO, team, lp)
         self.tok(b, ZERO, self.pair, supply // 2)
         self.tok(b, ZERO, team, supply // 2)
-        for i, h in enumerate(holders if holders is not None else HOLDERS[:5]):
-            self.tok(b + 1 + i, team, h, holder_amount)
+        # the pair's tokens back the buys below (its balance is not the pool's reserve here)
+        for h in (holders if holders is not None else HOLDERS[:5]):
+            self.buy(b, h, holder_amount)            # holders buy from the pair in the start block
         return self
+
+    def buy(self, block, who, amount):
+        """A swap: the pair sends tokens to the buyer."""
+        return self.tok(block, self.pair, who, amount)
 
     def rug(self, block, frm=TEAM, amount=None):
         """removeLiquidity: the LP goes to the pair and is burned there."""

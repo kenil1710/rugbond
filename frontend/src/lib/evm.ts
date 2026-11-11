@@ -80,13 +80,29 @@ export async function lpSeries(b: Bond): Promise<{ points: Point[]; to: number }
   }
 }
 
-/** A holder's token balance at R-1 and whether it has code (EIP-7702 delegations count as EOAs). */
-export async function holderAt(chain: string, token: string, holder: string, rugBlock: number): Promise<{ balance: string; contract: boolean } | null> {
+const ROUTERS: Record<string, string[]> = {
+  ethereum: ["0x7a250d5630b4cf539739df2c5dacb4c659f2488d", "0xd9e1ce17f2641f24ae83637ab66a2cca9c378b9f", "0x3fc91a3afd70395cd496c647d5a6cc9d4b2b7fad", "0x66a9893cc07d91d95644aedd05d03f95e1dba8af"],
+  "base-sepolia": ["0x1689e7b1f10000ae47ebfe339a4f69decd19f602", "0x492e6456d9528771018deb9e87ef7750ef184104"],
+};
+const SPAN: Record<string, number> = { ethereum: 80000, "base-sepolia": 40000 };
+const pad = (a: string) => "0x" + "0".repeat(24) + a.slice(2).toLowerCase();
+const TRANSFER = "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
+
+/** What the contract reads for a claim, previewed from one RPC: balances at the start block and R-1, code,
+ *  and direct transfers from a team sender in [start, R]. */
+export async function claimPreview(b: Bond, holder: string): Promise<{ start: string; atR: string; balance: string; contract: boolean; fromTeam: number } | null> {
+  const h = holder.toLowerCase();
+  const senders = b.excluded_all.filter((a) => a !== b.pair && a !== "0x0000000000000000000000000000000000000000" && a !== "0x000000000000000000000000000000000000dead" && !(ROUTERS[b.chain] ?? []).includes(a));
   try {
-    const [b, code] = await rpc(chain, [bal(token, holder, rugBlock - 1), ["eth_getCode", [holder, "latest"]]], 60_000);
-    const c = String(code ?? "0x").toLowerCase();
+    const calls: [string, unknown[]][] = [bal(b.token, h, b.start_block), bal(b.token, h, b.rug_block - 1), ["eth_getCode", [h, "latest"]]];
+    for (let w = b.start_block; w <= b.rug_block;) { const z = Math.min(w + SPAN[b.chain] - 1, b.rug_block);
+      calls.push(["eth_getLogs", [{ address: b.token, topics: [TRANSFER, senders.map(pad), pad(h)], fromBlock: hex(w), toBlock: hex(z) }]]); w = z + 1; }
+    const r = await rpc(b.chain, calls, 60_000);
+    const start = BigInt((r[0] as string) || "0x0"), atR = BigInt((r[1] as string) || "0x0");
+    const c = String(r[2] ?? "0x").toLowerCase();
     const delegated = c.length === 48 && c.startsWith("0xef0100");
-    return { balance: BigInt((b as string) || "0x0").toString(), contract: c.length > 2 && !delegated };
+    const fromTeam = r.slice(3).reduce((n: number, x) => n + (Array.isArray(x) ? x.length : 0), 0);
+    return { start: start.toString(), atR: atR.toString(), balance: (start < atR ? start : atR).toString(), contract: c.length > 2 && !delegated, fromTeam };
   } catch {
     return null;
   }

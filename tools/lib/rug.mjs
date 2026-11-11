@@ -236,6 +236,51 @@ export async function readCheck(chain, t, cursor, first, bFixed = -1) {
   return { facts: views[0], range: rng };
 }
 
+export const ROUTERS = {
+  ethereum: ["0x7a250d5630b4cf539739df2c5dacb4c659f2488d", "0xd9e1ce17f2641f24ae83637ab66a2cca9c378b9f", "0x3fc91a3afd70395cd496c647d5a6cc9d4b2b7fad", "0x66a9893cc07d91d95644aedd05d03f95e1dba8af"],
+  "base-sepolia": ["0x1689e7b1f10000ae47ebfe339a4f69decd19f602", "0x492e6456d9528771018deb9e87ef7750ef184104"],
+};
+const ZERO = "0x0000000000000000000000000000000000000000", DEAD = "0x000000000000000000000000000000000000dead";
+export const teamSenders = (t) => t.excluded_all.filter((a) => a !== t.pair && a !== ZERO && a !== DEAD && !(ROUTERS[t.chain] ?? []).includes(a)).sort();
+export const claimBalance = (start, r) => (BigInt(start) < BigInt(r) ? BigInt(start) : BigInt(r));
+
+/** read_claim: both views (log RPC n + state RPC n), compared. */
+export async function readClaim(chain, t, holder, rugBlock) {
+  const ch = CHAINS[chain], start = Number(t.start_block), senders = teamSenders(t);
+  const views = [];
+  try {
+    for (let n = 0; n < 2; n++) {
+      const url = ch.rpcs[n], surl = ch.state[n];
+      const st = await rpcSend(surl, [["eth_chainId", []], balCall(t.token, holder, start), balCall(t.token, holder, rugBlock - 1), ["eth_getCode", [holder, "latest"]]], LIMITS[surl].batch);
+      if (hexInt(st[0]) !== ch.id) throw new ReadFailed("wrong chain id");
+      const code = String(st[3]).trim().toLowerCase();
+      if (!code.startsWith("0x")) throw new ReadFailed("code");
+      const delegated = code.length === 48 && code.startsWith("0xef0100");
+      let hits = [];
+      if (senders.length) {
+        const calls = [];
+        for (let w = start; w <= rugBlock;) { const z = Math.min(w + LIMITS[url].span - 1, rugBlock); calls.push(["eth_getLogs", [{ address: t.token, topics: [TRANSFER, senders.map(pad), pad(holder)], fromBlock: hex(w), toBlock: hex(z) }]]); w = z + 1; }
+        for (const part of await rpcSend(url, calls, 1)) {
+          if (!Array.isArray(part)) throw new ReadFailed("logs");
+          for (const lg of part) {
+            if (!lg || lg.removed === true) throw new ReadFailed("log");
+            const tp = lg.topics ?? [];
+            if (addr(lg.address) !== t.token || tp.length !== 3 || String(tp[0]).toLowerCase() !== TRANSFER) continue;
+            const frm = wordAddr(tp[1]), blk = hexInt(lg.blockNumber), txh = hash32(lg.transactionHash);
+            if (!senders.includes(frm) || wordAddr(tp[2]) !== holder || blk < start || blk > rugBlock || !txh) throw new ReadFailed("log fields");
+            hits.push([blk, txh, frm]);
+          }
+        }
+      }
+      hits.sort((x, y) => x[0] - y[0] || (x[1] < y[1] ? -1 : x[1] > y[1] ? 1 : 0) || (x[2] < y[2] ? -1 : 1));
+      views.push({ start_balance: uint(st[1]), balance: uint(st[2]), code: code.length > 2 && !delegated, delegated, from_team: hits.slice(0, 5) });
+    }
+  } catch (e) { return { reason: "RPC_UNREADABLE", detail: String(e.message ?? e).slice(0, 60) }; }
+  if (canon(views[0]) !== canon(views[1])) return { reason: "RPC_DISAGREE", detail: "the two RPCs answer differently" };
+  return views[0];
+}
+
+/** Feasibility only: a holder's balance at R-1 and code (the study's holder table). */
 export async function readHolder(chain, token, holder, rugBlock) {
   const ch = CHAINS[chain];
   const views = [];

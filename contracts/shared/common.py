@@ -26,6 +26,14 @@ RPC_LIMITS = {
     "https://base-sepolia-rpc.publicnode.com": (40000, 12, False),
     "https://sepolia.base.org": (200, 6, False),
 }
+# Swap routers per chain: tokens a buyer receives from a router came from the pair,
+# so a router is never a "team" sender for the received-from-excluded rule (they
+# stay excluded from claiming and from the snapshot when a bond lists them).
+ROUTERS = {
+    "ethereum": ("0x7a250d5630b4cf539739df2c5dacb4c659f2488d", "0xd9e1ce17f2641f24ae83637ab66a2cca9c378b9f",
+                 "0x3fc91a3afd70395cd496c647d5a6cc9d4b2b7fad", "0x66a9893cc07d91d95644aedd05d03f95e1dba8af"),
+    "base-sepolia": ("0x1689e7b1f10000ae47ebfe339a4f69decd19f602", "0x492e6456d9528771018deb9e87ef7750ef184104"),
+}
 TRANSFER = "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"
 ZERO = "0x" + "0" * 40
 DEAD = "0x000000000000000000000000000000000000dead"
@@ -235,6 +243,25 @@ def share_of(bond_amount: int, balance: int, denom: int) -> int:
         return 0
     s = (bond_amount * balance) // denom
     return s if s < bond_amount else bond_amount
+
+
+def team_senders(t: dict) -> list:
+    """The addresses whose DIRECT token transfers to a claimant between the start
+    block and R disqualify it: every excluded address except the pair (buys come
+    from the pair), 0x0 (mints), 0x...dEaD and the chain's swap routers."""
+    out = []
+    for a in t["excluded_all"]:
+        if a == t["pair"] or a == ZERO or a == DEAD or a in ROUTERS.get(t["chain"], ()):
+            continue
+        out.append(a)
+    return sorted(out)
+
+
+def claim_balance(start_balance: int, r_balance: int) -> int:
+    """The balance a claim is paid on: the smaller of the holder's balance at the
+    end of the bond's start block and at R-1. Tokens bought after the bond
+    opened earn nothing."""
+    return start_balance if start_balance < r_balance else r_balance
 
 
 def snapshot_denominator(supply: int, excluded: list) -> int:
