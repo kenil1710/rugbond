@@ -5,7 +5,9 @@
  *
  *   node demo_evm.mjs setup     fund the teams, deploy RUGDEMO (team) and HOLDDEMO (team2),
  *                               add liquidity on Uniswap V2 (LP to the team), send tokens to holders
+ *   node demo_evm.mjs after_start  the team sends tokens to a fresh wallet; the deployer buys on the pool
  *   node demo_evm.mjs rug       the team pulls RUGDEMO's liquidity (removeLiquidityETH)
+ *   node demo_evm.mjs head      the latest block number
  *   node demo_evm.mjs status    balances and LP
  *
  * Keys come from test/.accounts.json (throwaway); only addresses are printed.
@@ -99,9 +101,24 @@ async function rug() {
   });
   s.rug_block = r.block; s.rug_tx = r.tx;
   save();
-  // a holder that buys only in the rug block or after holds nothing at R-1: holder5 receives tokens now
-  await step("send_RUGDEMO_holder5_after_rug", async () => sent(await wal("team").writeContract({ address: s.token, abi: erc20, functionName: "transfer", args: [A("holder5").address, parseEther("10000")] })));
 }
+
+/** After the bond's start block: the team hands tokens to a fresh wallet (holder5), and the deployer buys on the pool. */
+async function afterStart() {
+  const s = st.RUGDEMO;
+  const r1 = await step("team_sends_holder5_after_start", async () => sent(await wal("team").writeContract({ address: s.token, abi: erc20, functionName: "transfer",
+    args: [A("holder5").address, parseEther("15000")] })));
+  const swap = parseAbi(["function swapExactETHForTokens(uint256,address[],address,uint256) payable returns (uint256[])"]);
+  const r2 = await step("deployer_buys_after_start", async () => {
+    const dl = BigInt(Math.floor(Date.now() / 1000) + 1800);
+    return sent(await wal("deployer").writeContract({ address: ROUTER, abi: swap, functionName: "swapExactETHForTokens",
+      args: [0n, [WETH, s.token], A("deployer").address, dl], value: parseEther("0.0002") }));
+  });
+  s.after_start = { holder5: r1.block, deployer_buy: r2.block };
+  save();
+}
+
+async function head() { console.log(String(await pub.getBlockNumber())); }
 
 async function status() {
   for (const sym of ["RUGDEMO", "HOLDDEMO"]) {
@@ -115,4 +132,6 @@ async function status() {
 const cmd = process.argv[2] ?? "status";
 if (cmd === "setup") await setup();
 else if (cmd === "rug") await rug();
+else if (cmd === "after_start") await afterStart();
+else if (cmd === "head") await head();
 else await status();

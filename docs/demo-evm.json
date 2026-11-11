@@ -1,0 +1,126 @@
+{
+ "chain": "base-sepolia",
+ "router": "0x1689E7B1F10000AE47eBfE339a4f69dECd19F602",
+ "factory": "0x7Ae58f10f7849cA6F5fB71b7f45CB416c9204b1e",
+ "steps": {
+  "fund_team": {
+   "tx": "0x7dc06f87586d7becbae61ece7fa4a9d5608af7e7075d5ba6635a964eff3ae7aa",
+   "status": "success",
+   "block": 57325299
+  },
+  "fund_team2": {
+   "tx": "0x076fb2a883e66528518ebf6b74a02c804c990fb81482916155d799db39a888e0",
+   "status": "success",
+   "block": 57325306
+  },
+  "deploy_RUGDEMO": {
+   "tx": "0xc27b62a3ccaeac982923fca9f9274bb48c3e1a4a654b95321ea25e856f794ea1",
+   "status": "success",
+   "block": 57325317,
+   "address": "0xdc3577153883cdb6ca9885e0a717f938fdbaef2b",
+   "team": "0x6365881b460e79216303fc370348ca857d8da9ef",
+   "symbol": "RUGDEMO"
+  },
+  "approve_RUGDEMO": {
+   "tx": "0xb1f8af87ad467f898e10bcb5fe6726d38caa1b1344368ede81dac43b5a7dbc65",
+   "status": "success",
+   "block": 57325324
+  },
+  "liquidity_RUGDEMO": {
+   "tx": "0xdcf76260e6c4f1a703669eac14b131578d41af3c7d57140d8ec0327dd762abe9",
+   "status": "success",
+   "block": 57325328,
+   "pair": "0xca34dde3c3eb608b74575c0512ae6666f472abd4",
+   "lp": "38729833462074167851"
+  },
+  "send_RUGDEMO_holder1": {
+   "tx": "0x5659eda9e7ff48613d6d4bf3152211defa6e9df06bf565cde9bcdbd9e17ab083",
+   "status": "success",
+   "block": 57325337
+  },
+  "send_RUGDEMO_holder2": {
+   "tx": "0x2c3e9117c6c3cb5fcdc9487f85e874c2d31dc8bb6dfcd3d880db42b1ca71b3e5",
+   "status": "success",
+   "block": 57325344
+  },
+  "send_RUGDEMO_holder3": {
+   "tx": "0x671a93425d6d6a065c169291ffc22500f255aff27701cb427e22de9287d062a8",
+   "status": "success",
+   "block": 57325352
+  },
+  "send_RUGDEMO_holder4": {
+   "tx": "0x6dd2481255313bb8cc82845366c35a53f65e8b7f8acb351e912381accfef52d0",
+   "status": "success",
+   "block": 57325359
+  },
+  "send_RUGDEMO_stranger": {
+   "tx": "0x6a7b545db2944348c2d17efd5d52fbebeb1704a086afc2056545545b57dc3176",
+   "status": "success",
+   "block": 57325366
+  },
+  "deploy_HOLDDEMO": {
+   "tx": "0xfc2e0272fed9eb2500c00895951db4f17e254f3fb379a950a52dd248edc83d1e",
+   "status": "success",
+   "block": 57325377,
+   "address": "0xd4b593691fa189f6beb492e27f57a5fa320aa7e5",
+   "team": "0xcdb369f092f67edf02fc987394115d6f62b71ce6",
+   "symbol": "HOLDDEMO"
+  },
+  "approve_HOLDDEMO": {
+   "tx": "0x438db7850fd1330d660f2bc843ae90c223e91daaacede62049fa99065cad0ea6",
+   "status": "success",
+   "block": 57325385
+  },
+  "liquidity_HOLDDEMO": {
+   "tx": "0x623ca8d28b0fd0a43d75b1b23ca9f128b0290e85f0457fb6e442590fdb524d7e",
+   "status": "success",
+   "block": 57325392,
+   "pair": "0x604cd44f6a56751181d7f6b3e65404ee3388606a",
+   "lp": "38729833462074167851"
+  },
+  "send_HOLDDEMO_holder1": {
+   "tx": "0x8728386dd17093fd752520399ebad896eaefbd0b5757e8469740ac2eec7a8f86",
+   "status": "success",
+   "block": 57325401
+  },
+  "send_HOLDDEMO_holder2": {
+   "tx": "0x7f34e9dad239bc5f4bc53b47a0939fc3389b2742ed5b5027e8afa6a8e5a889e5",
+   "status": "success",
+   "block": 57325407
+  },
+  "send_HOLDDEMO_holder3": {
+   "tx": "0x31b330e1ff673263b64374fb71141ea37fa79691aea5bf91bfdc3d5ef88d3540",
+   "status": "success",
+   "block": 57325412
+  },
+  "send_HOLDDEMO_holder4": {
+   "tx": "0x9b571eff9c165d6a811d4746e683968e7b84d492e3fc45106672dada338c30b1",
+   "status": "success",
+   "block": 57325418
+  },
+  "send_HOLDDEMO_stranger": {
+   "tx": "0x090ed849968e0266046f6c44a7e82f024ca3237def4f199f8fb6cc2b12c1d49d",
+   "status": "success",
+   "block": 57325422
+  },
+  "send_RUGDEMO_contract_holder": {
+   "tx": "0x49c78bbc3def3732fcb35b121e0eaca0e15ccd7adc50e53eccb0b672742951e2",
+   "status": "success",
+   "block": 57325429
+  }
+ },
+ "RUGDEMO": {
+  "token": "0xdc3577153883cdb6ca9885e0a717f938fdbaef2b",
+  "pair": "0xca34dde3c3eb608b74575c0512ae6666f472abd4",
+  "team": "0x6365881b460e79216303fc370348ca857d8da9ef",
+  "lp_minted": "38729833462074167851",
+  "liquidity_block": 57325328
+ },
+ "HOLDDEMO": {
+  "token": "0xd4b593691fa189f6beb492e27f57a5fa320aa7e5",
+  "pair": "0x604cd44f6a56751181d7f6b3e65404ee3388606a",
+  "team": "0xcdb369f092f67edf02fc987394115d6f62b71ce6",
+  "lp_minted": "38729833462074167851",
+  "liquidity_block": 57325392
+ }
+}
