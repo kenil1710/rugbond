@@ -79,25 +79,25 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "failed",
-                  "duration": 1617333,
+                  "duration": 318846,
                   "error": {
-                    "message": "Error: view get_bond",
-                    "stack": "Error: view get_bond\n    at view (/Users/kenilvakariya/dev/rugbond/e2e/flow.e2e.js:31:9)\n    at checkUntil (/Users/kenilvakariya/dev/rugbond/e2e/flow.e2e.js:45:15)\n    at /Users/kenilvakariya/dev/rugbond/e2e/flow.e2e.js:142:14",
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"\u001b[7mRUGG\u001b[27mED\"\u001b[39m\nReceived: \u001b[31m\"\u001b[7mCLOS\u001b[27mED\"\u001b[39m",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"\u001b[7mRUGG\u001b[27mED\"\u001b[39m\nReceived: \u001b[31m\"\u001b[7mCLOS\u001b[27mED\"\u001b[39m\n    at /Users/kenilvakariya/dev/rugbond/e2e/flow.e2e.js:78:21",
                     "location": {
                       "file": "/Users/kenilvakariya/dev/rugbond/e2e/flow.e2e.js",
-                      "column": 9,
-                      "line": 31
+                      "column": 21,
+                      "line": 78
                     },
-                    "snippet": "  29 |     await sleep(5000 * (i + 1));\n  30 |   }\n> 31 |   throw new Error(\"view \" + fn);\n     |         ^\n  32 | }\n  33 |\n  34 | /** page.goto, retried: a dropped connection is not a site failure. */"
+                    "snippet": "  76 |   // 2. rug checks from the site until RUGGED\n  77 |   const rb = await checkUntil(page, R, \"RUGGED\");\n> 78 |   expect(rb.status).toBe(\"RUGGED\");\n     |                     ^\n  79 |   expect(rb.rug_block).toBe(evm()[KEY].rug_block);\n  80 |   await go(page, `/bond/demo-${R}`);\n  81 |   await expect(page.getByText(\"The rug\")).toBeVisible();"
                   },
                   "errors": [
                     {
                       "location": {
                         "file": "/Users/kenilvakariya/dev/rugbond/e2e/flow.e2e.js",
-                        "column": 9,
-                        "line": 31
+                        "column": 21,
+                        "line": 78
                       },
-                      "message": "Error: view get_bond\n\n  29 |     await sleep(5000 * (i + 1));\n  30 |   }\n> 31 |   throw new Error(\"view \" + fn);\n     |         ^\n  32 | }\n  33 |\n  34 | /** page.goto, retried: a dropped connection is not a site failure. */\n    at view (/Users/kenilvakariya/dev/rugbond/e2e/flow.e2e.js:31:9)\n    at checkUntil (/Users/kenilvakariya/dev/rugbond/e2e/flow.e2e.js:45:15)\n    at /Users/kenilvakariya/dev/rugbond/e2e/flow.e2e.js:142:14"
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"\u001b[7mRUGG\u001b[27mED\"\u001b[39m\nReceived: \u001b[31m\"\u001b[7mCLOS\u001b[27mED\"\u001b[39m\n\n  76 |   // 2. rug checks from the site until RUGGED\n  77 |   const rb = await checkUntil(page, R, \"RUGGED\");\n> 78 |   expect(rb.status).toBe(\"RUGGED\");\n     |                     ^\n  79 |   expect(rb.rug_block).toBe(evm()[KEY].rug_block);\n  80 |   await go(page, `/bond/demo-${R}`);\n  81 |   await expect(page.getByText(\"The rug\")).toBeVisible();\n    at /Users/kenilvakariya/dev/rugbond/e2e/flow.e2e.js:78:21"
                     }
                   ],
                   "stdout": [
@@ -106,201 +106,6 @@
                     },
                     {
                       "text": "setup {\"token\":\"0xe76ae2a66e9e9f1bfdcf1fb1cdaf9c333406dd99\",\"pair\":\"0x68e9d290a8662ecc3b14a991bd4f4d7609640b44\",\"bond\":6,\"rug_block\":57359554,\"rug_tx\":\"0x06173b03e2b16fe814d96ea6331e43116e18209ef328f5c9c0cbf2a09f5b683d\"}\n"
-                    },
-                    {
-                      "text": "rugged {\"bond\":6,\"rug_block\":57359554,\"denominator\":\"50000000000000000000000\"}\n"
-                    },
-                    {
-                      "text": "claimed {\"share\":\"400000000000000000\",\"paid_to\":\"0x968db00f52479ebaa77065b1a42b82bb1e61eae3\",\"note\":\"claimed through the site in an earlier pass of this run\"}\n"
-                    },
-                    {
-                      "text": "refused {\"what\":\"commit_beneficiary after claiming\",\"status\":\"failed · REFUSED: ALREADY_CLAIMED\"}\n"
-                    },
-                    {
-                      "text": "refused {\"bond\":1,\"what\":\"claim on a closed bond\",\"status\":\"claim button disabled: the bond is CLOSED\"}\n"
-                    },
-                    {
-                      "text": "created {\"bond\":7}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x1388e925…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xb23c9cf6…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x1279554d…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x57ae6958…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xf1863fa2…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x819787e9…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x2011f850…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xfcf6c59c…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xccd9b447…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xbb30cdee…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x04265755…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x25d2a409…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x8b7db714…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x2c84e2bd…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x04f5b244…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xff85e68d…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x77903f4c…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x8dd382d2…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xf50b6979…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x5ba5b3b3…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x86560707…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xf08c1036…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x4a18d588…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x8903ec04…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x51f7d4d8…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x66599f2a…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xa13bc252…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xb5387034…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x171ff74b…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x2454542c…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x2be206ee…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x50d647fb…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xfcc36534…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x4f2068fb…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x43e6c858…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x1fa47488…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xc0a30ceb…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x7c1f085c…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x9b1a7ec7…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x5c7171c1…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xfb9acd57…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x5e32eea0…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xfba20905…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xdc111ce8…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x16c1d1e2…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x4037d26f…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xbbd4822d…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xfaf2ccb7…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xda4218ce…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x48fecfa3…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x0800d1eb…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x1eaed831…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xae6176ac…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x4959809e…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x779cda36…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x2846ea90…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xf6fc2bfb…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xce066c9d…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x6790cedf…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x15739c77…\"}\n"
                     }
                   ],
                   "stderr": [
@@ -309,7 +114,7 @@
                     }
                   ],
                   "retry": 0,
-                  "startTime": "2026-11-11T11:56:45.772Z",
+                  "startTime": "2026-11-11T12:24:12.780Z",
                   "annotations": [],
                   "attachments": [
                     {
@@ -335,8 +140,8 @@
                   ],
                   "errorLocation": {
                     "file": "/Users/kenilvakariya/dev/rugbond/e2e/flow.e2e.js",
-                    "column": 9,
-                    "line": 31
+                    "column": 21,
+                    "line": 78
                   }
                 }
               ],
@@ -345,7 +150,7 @@
           ],
           "id": "1a3332c7a31688a65eeb-228210e35f4a91ba3453",
           "file": "flow.e2e.js",
-          "line": 57,
+          "line": 59,
           "column": 1
         }
       ]
@@ -353,8 +158,8 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-11-11T11:56:45.246Z",
-    "duration": 1621775.7510000002,
+    "startTime": "2026-11-11T12:24:12.252Z",
+    "duration": 322131.795,
     "expected": 0,
     "skipped": 0,
     "unexpected": 1,
