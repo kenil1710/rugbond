@@ -14,7 +14,44 @@
    },
    "credit": "10000000000000000",
    "at": "2026-11-11T08:51:18.470Z"
+  },
+  {
+   "id": "withdraw_credit",
+   "what": "withdraw_credit pays the credited GEN back to the team",
+   "ok": true,
+   "tx": "0xdd721e2bbc5886802c032964fc247bfaf290233bfea0611c527e3846371be1f0",
+   "status": "FINALIZED",
+   "returned": {
+    "ok": true,
+    "withdrawn": "10000000000000000"
+   },
+   "payout": {
+    "to": "0x6365881b460e79216303Fc370348Ca857d8Da9EF",
+    "amount": "10000000000000000",
+    "delivered": true,
+    "why": "",
+    "recipient_delta": "10173565550008706",
+    "contract_delta": "-10000000000000000",
+    "self_paid": true,
+    "fee": "126306500000823",
+    "arrived": true
+   },
+   "at": "2026-11-11T08:52:04.157Z"
+  },
+  {
+   "id": "open_A",
+   "what": "open bond RUGDEMO liquidity bond",
+   "ok": true,
+   "tx": "0x16a93f0fc8d3cb29d3d9450d43a0390cea8dd37636370e122393fddc30d42a88",
+   "bond_id": 1,
+   "start_block": 57326281,
+   "end_time": 1794397925,
+   "amount": "2000000000000000000",
+   "at": "2026-11-11T08:52:50.851Z"
   }
  ],
- "bonds": {}
+ "bonds": {
+  "A": 1
+ },
+ "start_block": 57326281
 }

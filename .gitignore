@@ -22,3 +22,4 @@ e2e/node_modules/
 demo/out/
 demo/cache/
 .venv-gl/
+docs/e2e/artifacts/
