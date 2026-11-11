@@ -1,12 +1,12 @@
 {
  "keeper": "0xfEC989fC1176c5524C3b20ef2c09bca724d6BD4e",
- "started_at": "2026-11-11T17:01:26.959Z",
+ "started_at": "2026-11-11T17:15:30.759Z",
  "contracts": {
   "RugBond": {
    "address": "0x4D2a5e250a419b1D1798E103F80A23aC5be59a23",
    "last_run": {
-    "started_at": 1794416486,
-    "finished_at": 1794416489,
+    "started_at": 1794417330,
+    "finished_at": 1794417332,
     "resumed": 0,
     "bonds": 17,
     "pages": 1,
@@ -609,16 +609,16 @@
   "RugBondDemo": {
    "address": "0x3491AAC81ec96B05B50B25AD9F8b3CAeE7fF51b8",
    "last_run": {
-    "started_at": 1794416491,
-    "finished_at": 1794416540,
+    "started_at": 1794417333,
+    "finished_at": 1794417334,
     "resumed": 0,
     "bonds": 9,
-    "pages": 2,
+    "pages": 1,
     "pages_failed": 0,
     "heads_failed": 0,
-    "queued": 1,
-    "submitted": 1,
-    "done": 1,
+    "queued": 0,
+    "submitted": 0,
+    "done": 0,
     "already": 0,
     "pending": 0,
     "failed": 0,
@@ -728,7 +728,7 @@
      "name": "e2e bond 57381407"
     },
     "8": {
-     "status": "RUGGED",
+     "status": "CLOSED",
      "chain": "base-sepolia",
      "token": "0x01fa3387566daf54a8a3e87b1ef5f9a9054c95c7",
      "cursor": 57439448,
@@ -736,7 +736,7 @@
      "n_checks": 1,
      "n_pending": 0,
      "last_result": "RUGGED",
-     "due": "VICTIM_FUND",
+     "due": "",
      "name": "E2EDEMO3 liquidity bond 57439184",
      "claims_paid": "400000000000000000",
      "claims_offset": 1,
@@ -772,8 +772,8 @@
   "RugBond@0x24ff68A1": {
    "address": "0x24ff68A1adc70B9EA9eEE518a5f912ce65eb2CAE",
    "last_run": {
-    "started_at": 1794416541,
-    "finished_at": 1794416542,
+    "started_at": 1794417335,
+    "finished_at": 1794417336,
     "resumed": 0,
     "bonds": 17,
     "pages": 1,
@@ -1009,8 +1009,8 @@
   "RugBond@0x07ED5695": {
    "address": "0x07ED56951513d01B06f350476C4501015256aB2c",
    "last_run": {
-    "started_at": 1794416545,
-    "finished_at": 1794416545,
+    "started_at": 1794417338,
+    "finished_at": 1794417339,
     "resumed": 0,
     "bonds": 17,
     "pages": 1,
@@ -1503,8 +1503,8 @@
   "RugBondDemo@0xbaa8FD3e": {
    "address": "0xbaa8FD3ecdCef962A59cc71a335B81E0Cf9b5016",
    "last_run": {
-    "started_at": 1794416543,
-    "finished_at": 1794416544,
+    "started_at": 1794417337,
+    "finished_at": 1794417337,
     "resumed": 0,
     "bonds": 0,
     "pages": 1,
@@ -1535,8 +1535,8 @@
   "RugBondDemo@0x6dfF7cFE": {
    "address": "0x6dfF7cFEb1e4e13b7FAC28e0CDf7807a742b9dA6",
    "last_run": {
-    "started_at": 1794416546,
-    "finished_at": 1794416547,
+    "started_at": 1794417340,
+    "finished_at": 1794417341,
     "resumed": 0,
     "bonds": 3,
     "pages": 1,
@@ -1635,9 +1635,9 @@
    ]
   }
  },
- "finished_at": "2026-11-11T17:02:29.518Z",
- "trigger": "workflow_dispatch",
- "run_url": "https://github.com/kenil1710/rugbond/actions/runs/43064008463",
+ "finished_at": "2026-11-11T17:15:42.215Z",
+ "trigger": "schedule",
+ "run_url": "https://github.com/kenil1710/rugbond/actions/runs/43066340494",
  "history": [
   {
    "started_at": "2026-11-10T12:51:34.472Z",
@@ -2017,6 +2017,50 @@
      "submitted": 1,
      "done": 1,
      "pages": 2,
+     "pages_failed": 0
+    },
+    "RugBond@0x24ff68A1": {
+     "submitted": 0,
+     "done": 0,
+     "pages": 1,
+     "pages_failed": 0
+    },
+    "RugBond@0x07ED5695": {
+     "submitted": 0,
+     "done": 0,
+     "pages": 1,
+     "pages_failed": 0
+    },
+    "RugBondDemo@0xbaa8FD3e": {
+     "submitted": 0,
+     "done": 0,
+     "pages": 1,
+     "pages_failed": 0
+    },
+    "RugBondDemo@0x6dfF7cFE": {
+     "submitted": 0,
+     "done": 0,
+     "pages": 1,
+     "pages_failed": 0
+    }
+   }
+  },
+  {
+   "started_at": "2026-11-11T17:15:30.759Z",
+   "finished_at": "2026-11-11T17:15:42.215Z",
+   "trigger": "schedule",
+   "run_url": "https://github.com/kenil1710/rugbond/actions/runs/43066340494",
+   "runs": {
+    "RugBond": {
+     "submitted": 0,
+     "done": 0,
+     "pages": 1,
+     "pages_failed": 0
+    },
+    "RugBondDemo": {
+     "submitted": 0,
+     "done": 0,
+     "pages": 1,
      "pages_failed": 0
     },
     "RugBond@0x24ff68A1": {
