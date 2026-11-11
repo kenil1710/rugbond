@@ -32,7 +32,8 @@ async function view(page, fn, args) {
 
 /** Click "Run a rug check" on the bond page until the bond leaves ACTIVE. */
 async function checkUntil(page, id, want) {
-  for (let i = 0; i < 40; i++) {
+  const t0 = Date.now();
+  while (Date.now() - t0 < 7 * 3600_000) {          // Base Sepolia's finalized head trails the tip by about 4.4 hours
     const b = await view(page, "get_bond", [id, Math.floor(Date.now() / 1000)]);
     if (b.status !== "ACTIVE") return b;
     await page.goto(`/bond/demo-${id}`);
@@ -40,7 +41,7 @@ async function checkUntil(page, id, want) {
     await expect(statusText(page)).toContainText(/accepted|finalized|failed|rejected/i, { timeout: 20 * 60_000 });
     const t = await statusText(page).innerText();
     log("rug_check_click", { bond: id, status: t.slice(0, 160) });
-    if (!/accepted|finalized/i.test(t)) await sleep(90_000);
+    if (!/accepted|finalized/i.test(t)) await sleep(240_000);
   }
   throw new Error(`bond ${id} never reached ${want}`);
 }

@@ -77,7 +77,7 @@ async function refused(c, fn, args, why, payee = null) {
   return { ok: !w.ok && reason.includes(why) && JSON.stringify(before.counts) === JSON.stringify(after.counts), tx: w.hash, status: w.status, reason };
 }
 
-async function checkUntil(bid, want, maxMin = 90) {
+async function checkUntil(bid, want, maxMin = 420) {
   const k = cl("keeper");
   const t0 = Date.now();
   const checks = [];
@@ -88,7 +88,7 @@ async function checkUntil(bid, want, maxMin = 90) {
     checks.push({ tx: w.hash, ok: w.ok, reason: (w.reason ?? "").slice(0, 80), result: w.returned?.result ?? "" });
     console.log("   check", bid, w.ok ? w.returned?.result ?? "ok" : "refused " + (w.reason ?? "").slice(0, 60));
     if (Date.now() - t0 > maxMin * 60000) return { ok: false, status: b.status, checks };
-    if (!w.ok || w.returned?.result === "SCANNED" || w.returned?.result === "PENDING") await sleep(60000);
+    if (!w.ok || w.returned?.result === "SCANNED" || w.returned?.result === "PENDING") await sleep(w.ok ? 60000 : 180000);
   }
 }
 
@@ -138,11 +138,11 @@ await step("open_copycat", "a stranger bonds RUGDEMO too (copycat)", async () =>
 // 3. the first check of A: the start block read, the pair checked (wait for the start block to be finalized)
 await step("first_check_A", "the first rug check of bond A reads the start block", async () => {
   const k = cl("keeper");
-  for (let i = 0; i < 60; i++) {
+  for (let i = 0; i < 400; i++) {                 // Base Sepolia's finalized head trails the tip by about 4.4 hours
     const w = await k.write("check", [A]);
     if (w.ok) return { ok: ["SCANNED", "HELD"].includes(w.returned?.result), tx: w.hash, returned: w.returned };
     console.log("   ", (w.reason ?? "").slice(0, 60), "- waiting for finality");
-    await sleep(60000);
+    await sleep(90000);
   }
   return { ok: false };
 });
@@ -201,7 +201,7 @@ await step("refuse_wrong_bond", "holder1 claims on bond B (not rugged): BOND_IS_
 await step("refuse_beneficiary_twice", "holder1 commits a second beneficiary: refused", () => refused(cl("holder1"), "commit_beneficiary", [A, ad("holder1")], "REFUSED"));
 
 // 7. bond B holds: checks until HELD, settle returns the bond to team2
-await step("held_B", "rug checks on bond B until HELD", () => checkUntil(B, ["HELD"], 120));
+await step("held_B", "rug checks on bond B until HELD", () => checkUntil(B, ["HELD"]));
 await step("gate_held", "LaunchGate: HELD_FINAL", async () => {
   const a = await g.view("check_for", [HOLD.token, B]);
   return { ok: a.state === "HELD_FINAL", check_for: a };
@@ -224,7 +224,7 @@ await step("gate_closed", "LaunchGate: RUGGED_CLOSED", async () => {
 // 9. the copycat: never read for the real team; it holds or is settled like any bond
 await step("copycat_done", "the copycat bond is checked to a verdict and settled", async () => {
   const C = doc.bonds.C;
-  const r = await checkUntil(C, ["HELD", "RUGGED"], 120);
+  const r = await checkUntil(C, ["HELD", "RUGGED"]);
   const b = await team.view("get_bond", [C, now()]);
   if (b.status === "RUGGED") while (now() <= b.claim_deadline + 30) await sleep(20000);
   const due = (await team.view("get_bond", [C, now()]));
