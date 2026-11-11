@@ -62,7 +62,7 @@ add("J", "keeper", C("keeper").ok, `${C("keeper").detail}; keeper tests: ${(rd("
 add("M", "verification package", fc.passed === fc.total, `tools/final_check.mjs ${fc.passed}/${fc.total}; tools/verify_source.mjs; docs/FEASIBILITY.md, SEEDS.md, DEMO.md, REAL_WORLD_CHECK.md, ATTACK_REPORT.md`);
 {
   const d = existsSync(root + "docs/demo-run.json") ? JSON.parse(rd("docs/demo-run.json")) : { steps: [] };
-  const z = d.steps.find((s) => s.id === "balance_zero");
+  const z = [...d.steps].reverse().find((s) => s.id.startsWith("balance_zero"));
   add("N", "demo", d.steps.length > 0 && d.steps.every((s) => s.ok) && !!z?.ok, `${d.steps.filter((s) => s.ok).length}/${d.steps.length} demo steps ok on Base Sepolia (rug, claims, refusals, held, copycat, gate); payouts verified; demo registry eth_getBalance ${z?.eth_getBalance ?? "?"} wei`);
 }
 const ok = rows.filter((r) => r.ok).length;

@@ -21,7 +21,7 @@ for (const s of run.steps) {
   const pay = s.payout ? `${gen(s.payout.amount)} GEN to \`${s.payout.to.slice(0, 10)}…\`: delivered ${s.payout.delivered}, recipient balance +${gen(s.payout.recipient_delta)}${s.payout.self_paid ? " (it also paid the fee)" : ""}, registry ${gen(s.payout.contract_delta)}` : "";
   L.push(`| ${s.id} | ${s.what} | ${s.ok ? "✓" : "✗"} ${res} | ${gl(s.tx)} | ${pay} |`);
 }
-const last = run.steps.find((s) => s.id === "balance_zero");
+const last = [...run.steps].reverse().find((s) => s.id.startsWith("balance_zero"));
 L.push("", last ? `The demo registry's eth_getBalance at the end: **${last.eth_getBalance} wei**.` : "", "",
   "A contract holder (the HOLDDEMO contract holds RUGDEMO tokens) cannot sign a GenLayer transaction, so its refusal (`CONTRACT_HOLDER`) cannot be produced by a real claim; it is pinned by the offline and Direct Mode tests and shown by the site's \"Am I owed?\" page.", "");
 writeFileSync(new URL("docs/DEMO.md", root), L.join("\n"));

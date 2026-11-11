@@ -226,6 +226,12 @@
    "bond": 4,
    "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xa2dab415…",
    "at": "2026-11-11T09:37:01.340Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x7b2f9024…",
+   "at": "2026-11-11T09:37:16.804Z"
   }
  ]
 }

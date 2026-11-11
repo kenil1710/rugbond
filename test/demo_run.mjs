@@ -272,7 +272,7 @@ await step("gate_active_D", "LaunchGate: check_for(HOLDDEMO, D) is ACTIVE_HELD_S
 await step("held_D", "rug checks on bond D until HELD", () => checkUntil(doc.bonds.D, ["HELD"]));
 await step("settle_D", "settle D: the bond back to team2", () => paying(cl("keeper"), "settle", [doc.bonds.D], ad("team2"), (r) => r?.amount));
 
-await step("balance_zero", "the demo registry's balance is 0", async () => {
+await step("balance_zero_end", "the demo registry's balance is 0 at the end", async () => {
   const bal = await balanceOf(ADDR);
   const stats = await team.view("get_stats", []);
   return { ok: bal === 0n && stats.held === "0", eth_getBalance: String(bal), stats };
