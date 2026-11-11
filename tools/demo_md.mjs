@@ -19,7 +19,18 @@ L.push("## On GenLayer", "", "| step | what | result | transaction | payout |", 
 for (const s of run.steps) {
   const res = s.reason ? s.reason.replace(/\|/g, "/").slice(0, 80) : s.returned?.result ?? s.returned?.state ?? s.status ?? (s.check_for?.state ?? (s.ok ? "ok" : ""));
   const pay = s.payout ? `${gen(s.payout.amount)} GEN to \`${s.payout.to.slice(0, 10)}…\`: delivered ${s.payout.delivered}, recipient balance +${gen(s.payout.recipient_delta)}${s.payout.self_paid ? " (it also paid the fee)" : ""}, registry ${gen(s.payout.contract_delta)}` : "";
-  L.push(`| ${s.id} | ${s.what} | ${s.ok ? "✓" : "✗"} ${res} | ${gl(s.tx)} | ${pay} |`);
+  // every transaction of the step: its own, the rug checks it filed, its settle, or the Base Sepolia transactions it stands on;
+  // a step that only reads (a view, a wait, a balance) says so
+  const txs = [];
+  if (s.tx) txs.push(gl(s.tx));
+  if (s.attest_tx) txs.push(gl(s.attest_tx));
+  if (s.check_tx) txs.push(gl(s.check_tx));
+  const filed = (s.checks ?? []).filter((c) => c.tx && c.ok);
+  for (const c of filed) txs.push(gl(c.tx));
+  if (s.settle?.tx) txs.push(gl(s.settle.tx));
+  if (s.id === "evm_rug" && s.rug_tx) txs.push(bs("tx", s.rug_tx));
+  if (s.id === "evm_after_start") for (const k of ["team_sends_holder5_after_start", "deployer_buys_after_start"]) if (evm.steps[k]?.tx) txs.push(bs("tx", evm.steps[k].tx));
+  L.push(`| ${s.id} | ${s.what} | ${s.ok ? "✓" : "✗"} ${res} | ${txs.length ? [...new Set(txs)].join(" ") : "read only (no transaction)"} | ${pay} |`);
 }
 const last = [...run.steps].reverse().find((s) => s.id.startsWith("balance_zero"));
 L.push("", last ? `The demo registry's eth_getBalance at the end: **${last.eth_getBalance} wei**.` : "", "",

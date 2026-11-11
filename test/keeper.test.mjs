@@ -3,7 +3,7 @@
 // hashes, retry queue, nothing silently skipped.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { runKeeper, emptyState, checkKey, settleKey, STALE_S, MAX_ATTEMPTS } from "../tools/lib/keeper_core.mjs";
+import { runKeeper, emptyState, checkKey, settleKey, STALE_S, MAX_ATTEMPTS, FAILED_RETRY_S, backoffS } from "../tools/lib/keeper_core.mjs";
 
 /** A fake registry with the contract's semantics, and transactions that finalize when told to. */
 function world({ nBonds = 3, head = 10_000, claims = 0 } = {}) {
@@ -203,10 +203,27 @@ test("undetermined tx goes to the retry queue with backoff", async () => {
 test("submit failures retried, then FAILED after MAX_ATTEMPTS and listed", async () => {
   const x = world({ nBonds: 1, head: 1200 });
   x.w.submitFail = 100;
-  for (let i = 0; i < MAX_ATTEMPTS + 2; i++) { await go(x); x.w.advance(7 * 3600); }
+  for (let i = 0; i < MAX_ATTEMPTS; i++) { await go(x); x.w.advance(backoffS(i + 1) + 1); }
   const a = Object.values(x.state.actions)[0];
   assert.equal(a.status, "FAILED");
   assert.ok(x.state.unprocessed.some((u) => u.key === a.key && u.why.startsWith("FAILED")));
+});
+
+test("FAILED is queued again after the cool-down and finishes once Studio answers", async () => {
+  const x = world({ nBonds: 1, head: 1200 });
+  x.w.submitFail = MAX_ATTEMPTS;
+  for (let i = 0; i < MAX_ATTEMPTS; i++) { await go(x); x.w.advance(backoffS(i + 1) + 1); }
+  const key = Object.values(x.state.actions)[0].key;
+  assert.equal(x.state.actions[key].status, "FAILED");
+  await go(x);                                    // inside the cool-down: still FAILED, still listed, nothing submitted
+  assert.equal(x.state.actions[key].status, "FAILED");
+  assert.equal(x.w.calls.check, 0);
+  x.w.advance(FAILED_RETRY_S);
+  const r = await go(x);
+  assert.equal(r.run.requeued, 1);
+  assert.equal(x.state.actions[key].status, "DONE");
+  assert.equal(x.w.calls.check, 1);
+  assert.equal(x.w.bonds[0].n_checks, 1);
 });
 
 test("PENDING check result: done, and a new check is queued", async () => {

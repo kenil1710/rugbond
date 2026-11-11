@@ -1,6 +1,6 @@
 {
- "at": "2026-11-11T17:06:29.458Z",
- "head": "ad49601727be6758bb20afde7f992cb69099d5a2",
+ "at": "2026-11-11T21:29:06.165Z",
+ "head": "c5517bd9ce6ad0e804a50066983550e87b745394",
  "passed": 12,
  "total": 12,
  "checks": [
@@ -22,7 +22,7 @@
   {
    "name": "links",
    "ok": true,
-   "detail": "236 distinct links, 19 checked (one per page shape): 17 answered 200; 2 explorer pages that serve browsers only (sepolia.basescan.org (403))"
+   "detail": "253 distinct links, 20 checked (one per page shape): 18 answered 200; 2 explorer pages that serve browsers only (sepolia.basescan.org (403))"
   },
   {
    "name": "canonical replays decided and settled",
@@ -42,17 +42,17 @@
   {
    "name": "keeper",
    "ok": true,
-   "detail": "last run finished 0.1 h ago (workflow_dispatch); 0 failed actions; latest successful scheduled run: https://github.com/kenil1710/rugbond/actions/runs/42982369018"
+   "detail": "last run finished 1.6 h ago (schedule); 0 failed actions; latest successful scheduled run: https://github.com/kenil1710/rugbond/actions/runs/43091284627"
   },
   {
    "name": "tests",
    "ok": true,
-   "detail": "offline contract suite 347 tests, keeper suite 20 tests, Direct Mode 18 tests; all pass: true"
+   "detail": "offline contract suite 347 tests, keeper suite 21 tests, Direct Mode 18 tests; all pass: true"
   },
   {
    "name": "docs language",
    "ok": true,
-   "detail": "9 documents: no placeholders, no \"known limitations\", no tool-vendor mentions"
+   "detail": "9 documents: no placeholders, no limitation or risk disclaimers, no tool-vendor mentions"
   },
   {
    "name": "live site",

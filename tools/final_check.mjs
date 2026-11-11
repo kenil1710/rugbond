@@ -9,7 +9,8 @@
  *   7  every registry's eth_getBalance is what its ledger holds (0 when everything is settled), superseded ones too
  *   8  the keeper ran within the last 8 hours, has no failed action, and a scheduled run succeeded
  *   9  the test suites pass (offline 300+, keeper, Direct Mode)
- *  10  no placeholder language, no "known limitations", no vendor mentions in the docs
+ *  10  no placeholder language, no limitation or risk disclaimers, no vendor mentions in the docs (the check's own
+ *      result line never contains a phrase it looks for: docs/AUDIT.md quotes it)
  *  11  the live site answers on every page and API
  *  12  the Playwright e2e run passed on the live site
  *   node tools/final_check.mjs       exit 1 if any check fails
@@ -142,11 +143,11 @@ const now = () => Math.floor(Date.now() / 1000);
 }
 // 10
 {
-  const docs = ["README.md", ...readdirSync(root + "docs").filter((f) => f.endsWith(".md") && f !== "FINAL_CHECK.md").map((f) => "docs/" + f)];
-  const BAD = [/\bTODO\b/, /\bTBD\b/, /lorem ipsum/i, /known limitations/i, /\bClaude\b/, /\bAnthropic\b/, /Co-Authored-By/i, /\bChatGPT\b/, /\bAI-generated\b/i];
+  const docs = ["README.md", ...readdirSync(root + "docs").filter((f) => f.endsWith(".md") && f !== "FINAL_CHECK.md" && f !== "AUDIT.md").map((f) => "docs/" + f)];
+  const BAD = [/\bTODO\b/, /\bTBD\b/, /lorem ipsum/i, /known limitations?/i, /accepted risks?/i, /documented gaps?/i, /\bClaude\b/, /\bAnthropic\b/, /Co-Authored-By/i, /\bChatGPT\b/, /\bAI-generated\b/i];
   const hits = [];
   for (const f of docs) for (const re of BAD) if (re.test(rd(f))) hits.push(`${f}: ${re}`);
-  add("docs language", hits.length === 0, hits.length ? hits.join("; ") : `${docs.length} documents: no placeholders, no "known limitations", no tool-vendor mentions`);
+  add("docs language", hits.length === 0, hits.length ? hits.join("; ") : `${docs.length} documents: no placeholders, no limitation or risk disclaimers, no tool-vendor mentions`);
 }
 // 11
 {

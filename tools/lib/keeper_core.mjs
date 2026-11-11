@@ -25,10 +25,14 @@
 // successfully, and a read of the bond shows the effect (more checks recorded,
 // or the bond settled). Everything not finished this run is listed in
 // state.unprocessed with the reason; nothing is skipped silently.
+// FAILED is not the end: an action that used up its attempts (a long Studio
+// outage or rate limit) is queued again FAILED_RETRY_S later, with its attempts
+// reset, for as long as the bond still needs it.
 export const VERSION = 1;
 export const MAX_ATTEMPTS = 8;
 export const BOND_PAGE = 50;
 export const STALE_S = 6 * 3600;
+export const FAILED_RETRY_S = 6 * 3600;
 const TERMINAL_BAD = ["UNDETERMINED", "CANCELED", "LEADER_TIMEOUT", "VALIDATORS_TIMEOUT"];
 const SETTLED = ["CLOSED", "RETURNED", "UNRESOLVED"];
 
@@ -51,7 +55,7 @@ export const payeeOf = (b) => (b.due === "RETURN" ? b.team : b.victim_fund);
 export async function runKeeper({ chain, reg, store, log = () => {}, maxActions = 25, waitMs = 0, settleMs = 0, maxChecksPerBond = 3 }) {
   const state = (await store.load()) ?? emptyState();
   const run = { started_at: reg.now(), finished_at: null, resumed: 0, bonds: 0, pages: 0, pages_failed: 0, heads_failed: 0,
-    queued: 0, submitted: 0, done: 0, already: 0, pending: 0, failed: 0, retry: 0, errors: [] };
+    queued: 0, requeued: 0, submitted: 0, done: 0, already: 0, pending: 0, failed: 0, retry: 0, errors: [] };
   const unprocessed = new Map();
   const note = (key, why) => unprocessed.set(key, { key, why });
   const save = async (why) => { await store.save(state, why); };
@@ -89,9 +93,17 @@ export async function runKeeper({ chain, reg, store, log = () => {}, maxActions 
     if (final) { a.status = "FINAL_UNVERIFIED"; run.pending++; note(a.key, "finalized, waiting for the read to show it"); return; }
     a.attempts++; a.last_error = `tx ${a.tx} ${tx?.statusName ?? "not found"}${tx && !tx.ok ? " (reverted: " + (tx.reason ?? "") + ")" : ""}`;
     a.tx = null;
-    if (a.attempts >= MAX_ATTEMPTS) { a.status = "FAILED"; run.failed++; note(a.key, `gave up after ${a.attempts} attempts: ${a.last_error}`); }
+    if (a.attempts >= MAX_ATTEMPTS) { a.status = "FAILED"; a.failed_at = now; run.failed++; note(a.key, `gave up after ${a.attempts} attempts: ${a.last_error}`); }
     else { a.status = "RETRY"; a.next_try_at = now + backoffS(a.attempts); run.retry++; note(a.key, `retry ${a.attempts} after ${a.next_try_at}: ${a.last_error}`); }
     log(`RETRY ${a.key}: ${a.last_error}`);
+  }
+
+  // 0. FAILED actions come back after the cool-down (the act step re-reads the bond first)
+  for (const a of Object.values(state.actions)) {
+    if (a.status !== "FAILED" || a.last_error === "no such bond") continue;
+    if (reg.now() - (a.failed_at ?? a.first_seen_at ?? 0) < FAILED_RETRY_S) continue;
+    a.status = "RETRY"; a.attempts = 0; a.next_try_at = reg.now(); a.requeued = (a.requeued ?? 0) + 1;
+    run.requeued++; log(`REQUEUE ${a.key} (failed before: ${a.last_error ?? ""})`);
   }
 
   // 1. resume
@@ -199,7 +211,7 @@ export async function runKeeper({ chain, reg, store, log = () => {}, maxActions 
     let v;
     try { v = await verify(a); } catch (e) { note(a.key, "pre-read failed: " + e.message); continue; }
     if (v.done) { a.status = "DONE"; a.result = a.kind === "SETTLE" ? v.b.status : (v.b.last_result || v.b.status); a.done_by_other = !(a.tx_history?.length); a.verified_at = reg.now(); run.already++; run.done++; await save("already " + a.key); continue; }
-    if (!v.b) { a.status = "FAILED"; a.last_error = "no such bond"; run.failed++; note(a.key, a.last_error); continue; }
+    if (!v.b) { a.status = "FAILED"; a.failed_at = reg.now(); a.last_error = "no such bond"; run.failed++; note(a.key, a.last_error); continue; }
     if (a.kind === "CHECK" && (!v.b.checkable || v.b.cursor !== a.cursor)) {
       a.status = "DONE"; a.result = "SUPERSEDED"; a.verified_at = reg.now(); run.already++; run.done++; await save("superseded " + a.key); continue;
     }
@@ -208,7 +220,7 @@ export async function runKeeper({ chain, reg, store, log = () => {}, maxActions 
     try { a.tx = a.kind === "CHECK" ? await reg.check(a.bond_id) : await reg.settle(a.bond_id, payeeOf(v.b)); } catch (e) {
       a.attempts++; a.last_error = "submit failed: " + String(e.message).slice(0, 160);
       a.status = a.attempts >= MAX_ATTEMPTS ? "FAILED" : "RETRY"; a.next_try_at = reg.now() + backoffS(a.attempts);
-      if (a.status === "FAILED") run.failed++; else run.retry++;
+      if (a.status === "FAILED") { a.failed_at = reg.now(); run.failed++; } else run.retry++;
       note(a.key, a.last_error); await save("submit failed " + a.key); continue;
     }
     a.status = "SUBMITTED"; a.submitted_at = reg.now(); (a.tx_history ??= []).push(a.tx);
@@ -238,7 +250,7 @@ export async function runKeeper({ chain, reg, store, log = () => {}, maxActions 
     }
   }
 
-  for (const a of Object.values(state.actions)) if (a.status === "FAILED") note(a.key, "FAILED: " + (a.last_error ?? ""));
+  for (const a of Object.values(state.actions)) if (a.status === "FAILED") note(a.key, "FAILED: " + (a.last_error ?? "") + (a.last_error === "no such bond" ? "" : `; queued again after ${(a.failed_at ?? 0) + FAILED_RETRY_S}`));
   run.finished_at = reg.now();
   state.unprocessed = [...unprocessed.values()];
   state.last_run = run;

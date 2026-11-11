@@ -37,7 +37,7 @@ jobs:
       - run: genvm-lint lint build/RugBond.py && genvm-lint lint build/LaunchGate.py
       - run: python -m pytest tests/direct -v
   frontend:
-    name: site lint, typecheck and build
+    name: site typecheck and build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

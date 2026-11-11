@@ -23,7 +23,7 @@ Open https://rugbond.vercel.app/verify (on-chain code = build/ at one commit). R
 - real cases: 23 (17 rugs: 11 Ethereum, 6 Base; 6 held), all verdicts as expected
 - GenVM reads identical to this machine's: 39/39, claim reads 2/2
 - real-world check: 23/23
-- tests: offline 347, keeper 20, Direct Mode 18, Playwright e2e on the live site
+- tests: offline 347, keeper 21, Direct Mode 18, Playwright e2e on the live site
 - canonical replay bonds: 17, settled 17
 - final check 12/12, audit 14/14
 

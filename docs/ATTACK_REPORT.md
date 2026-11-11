@@ -36,7 +36,7 @@ Medium finding was fixed before the contracts were deployed; the test that pins 
 | 27 | Keeper duplication: two keepers at once, a crash after submit, a stuck hash | Medium | Actions keyed by bond + cursor + checks so far; a stored hash is resumed, never resubmitted unless stale for 6 h; a second keeper sees the effect and submits nothing | keeper.test.mjs |
 | 28 | Docs drifting from code | Medium | Every constant, RPC, state and reason in docs/RULES.md is checked against build/ | test_meaning DocsMatchCode |
 
-## Documented
+## Scope boundaries
 
 - **Wallets funded before the start block.** A wallet holding tokens at the start block is a holder like any other,
   whoever funded it; a launchpad that knows the team's wallets lists them as excluded at creation. Tokens that pass

@@ -1,5 +1,5 @@
 {
- "at": "2026-11-11T17:06:30.845Z",
+ "at": "2026-11-11T21:29:07.529Z",
  "ok": 14,
  "total": 14,
  "rows": [
@@ -43,7 +43,7 @@
    "id": "G",
    "name": "coverage",
    "ok": true,
-   "detail": "offline contract suite 347 tests, keeper suite 20 tests, Direct Mode 18 tests; all pass: true; Playwright on https://rugbond.vercel.app (the site's production build), demo registry 0x3491AAC81ec96B05B50B25AD9F8b3CAeE7fF51b8: 1 passed, 0 failed; steps wallet, setup, rug_check_click, rugged, claimed, refused, created, closed (docs/e2e/)"
+   "detail": "offline contract suite 347 tests, keeper suite 21 tests, Direct Mode 18 tests; all pass: true; Playwright on https://rugbond.vercel.app (the site's production build), demo registry 0x3491AAC81ec96B05B50B25AD9F8b3CAeE7fF51b8: 1 passed, 0 failed; steps wallet, setup, rug_check_click, rugged, claimed, refused, created, closed (docs/e2e/)"
   },
   {
    "id": "H",
@@ -61,7 +61,7 @@
    "id": "J",
    "name": "keeper",
    "ok": true,
-   "detail": "last run finished 0.1 h ago (workflow_dispatch); 0 failed actions; latest successful scheduled run: https://github.com/kenil1710/rugbond/actions/runs/42982369018; keeper tests: 20"
+   "detail": "last run finished 1.6 h ago (schedule); 0 failed actions; latest successful scheduled run: https://github.com/kenil1710/rugbond/actions/runs/43091284627; keeper tests: 21"
   },
   {
    "id": "K",
@@ -73,7 +73,7 @@
    "id": "L",
    "name": "docs truth",
    "ok": true,
-   "detail": "every constant, RPC, state and reason in docs/RULES.md checked against build/ (14 tests); the site's /docs is that file; 9 documents: no placeholders, no \"known limitations\", no tool-vendor mentions"
+   "detail": "every constant, RPC, state and reason in docs/RULES.md checked against build/ (14 tests); the site's /docs is that file; 9 documents: no placeholders, no limitation or risk disclaimers, no tool-vendor mentions"
   },
   {
    "id": "M",

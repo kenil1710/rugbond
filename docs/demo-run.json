@@ -135,7 +135,9 @@
     "result": "RUGGED"
    },
    "status": "RUGGED",
-   "at": "2026-11-11T09:27:48.252Z"
+   "at": "2026-11-11T09:27:48.252Z",
+   "check_tx": "0x2cf0f548eed782d00320eb25597327879a97307993ccc946d017297cfde89fc6",
+   "check_tx_from": "sim_getTransactionsForAddress on the demo registry (the runner was resumed after this check was filed, so its hash was read back from Studio)"
   },
   {
    "id": "rugged_A",
@@ -150,7 +152,9 @@
    ],
    "denominator": "153162092892417328249046",
    "claim_deadline": 1794389737,
-   "at": "2026-11-11T09:27:49.803Z"
+   "at": "2026-11-11T09:27:49.803Z",
+   "check_tx": "0x2cf0f548eed782d00320eb25597327879a97307993ccc946d017297cfde89fc6",
+   "check_tx_from": "sim_getTransactionsForAddress on the demo registry (the runner was resumed after this check was filed, so its hash was read back from Studio)"
   },
   {
    "id": "gate_rugged",
@@ -368,13 +372,13 @@
     {
      "tx": "0x38711fb3f8dc0fa3c4eee8e820d93ff125f8c119c4a0c817a473bddf52bba87e",
      "ok": true,
-     "reason": ".\bcheck_id\u0011\u0006cursor����\u0001\tcursor_ts����5\u0002ok\u0010\u0006result<SCANNED",
+     "reason": ".\bcheck_id\u0011\u0006cursor\ufffd\ufffd\ufffd\ufffd\u0001\tcursor_ts\ufffd\ufffd\ufffd\ufffd5\u0002ok\u0010\u0006result<SCANNED",
      "result": "SCANNED"
     },
     {
      "tx": "0x6305fb4e900d817775d0f13908ff9c3b339b1cbd84a73a531a29e4c749b4a958",
      "ok": true,
-     "reason": ".\bcheck_id\u0019\u0006cursor���\u0001\tcursor_tsᬆ�5\u0002ok\u0010\u0006result<SCANNED",
+     "reason": ".\bcheck_id\u0019\u0006cursor\ufffd\ufffd\ufffd\u0001\tcursor_ts\u1b06\ufffd5\u0002ok\u0010\u0006result<SCANNED",
      "result": "SCANNED"
     },
     {
@@ -392,7 +396,7 @@
     {
      "tx": "0xe6028998020a33ed76619359453e5dbf832f807d8bb2e427b091813a8b2fa9fc",
      "ok": true,
-     "reason": ".\bcheck_id!\u0006cursor����\u0001\tcursor_ts����5\u0002ok\u0010\u0006result$HELD",
+     "reason": ".\bcheck_id!\u0006cursor\ufffd\ufffd\ufffd\ufffd\u0001\tcursor_ts\ufffd\ufffd\ufffd\ufffd5\u0002ok\u0010\u0006result$HELD",
      "result": "HELD"
     }
    ],
@@ -536,7 +540,9 @@
      "arrived": true
     }
    },
-   "at": "2026-11-11T09:59:42.211Z"
+   "at": "2026-11-11T09:59:42.211Z",
+   "check_tx": "0xe411c1b8b038c120af64ad79aa23e5a1fbea49a7905ceec45247da3f89e29204",
+   "check_tx_from": "sim_getTransactionsForAddress on the demo registry (the runner was resumed after this check was filed, so its hash was read back from Studio)"
   },
   {
    "id": "open_D",
@@ -632,13 +638,13 @@
     {
      "tx": "0xaa4fd8df3d505caffd047fe57b6c04d9c4c50dd187771f71351275c33414074b",
      "ok": true,
-     "reason": ".\bcheck_idQ\u0006cursor����\u0001\tcursor_ts��5\u0002ok\u0010\u0006result<SCANNED",
+     "reason": ".\bcheck_idQ\u0006cursor\ufffd\ufffd\ufffd\ufffd\u0001\tcursor_ts\ufffd\u0089\ufffd5\u0002ok\u0010\u0006result<SCANNED",
      "result": "SCANNED"
     },
     {
      "tx": "0xed0cdbf235eccb2cc8339889d788f03c788c16ce3a764e902f1ecda32ebbff04",
      "ok": true,
-     "reason": ".\bcheck_idY\u0006cursor����\u0001\tcursor_ts�؉�5\u0002ok\u0010\u0006result$HELD",
+     "reason": ".\bcheck_idY\u0006cursor\ufffd\ufffd\ufffd\ufffd\u0001\tcursor_ts\ufffd\u0609\ufffd5\u0002ok\u0010\u0006result$HELD",
      "result": "HELD"
     }
    ],

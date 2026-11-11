@@ -49,6 +49,13 @@ RugBondDemo `0x3491AAC81ec96B05B50B25AD9F8b3CAeE7fF51b8` and LaunchGateDemo `0x8
 | send_E2EDEMO2_holder1 | [0x27d7f96e32…](https://sepolia.basescan.org/tx/0x27d7f96e329d9072116751813023271d395db0c10816a9eebc069e0a2b6f80a4) | 57359275 |
 | approve_lp_E2EDEMO2 | [0xa012e1f007…](https://sepolia.basescan.org/tx/0xa012e1f007809d840be2fbd1b41b9e62f50a46aadabca2553af4c60049f91783) | 57359543 |
 | rug_E2EDEMO2 | [0x06173b03e2…](https://sepolia.basescan.org/tx/0x06173b03e2b16fe814d96ea6331e43116e18209ef328f5c9c0cbf2a09f5b683d) | 57359554 |
+| deploy_E2EDEMO3 | [0x7bcf32162a…](https://sepolia.basescan.org/tx/0x7bcf32162a635605d997dbb235f8282a7dc6d2fded7b889d926465c5ac9b2930) | 57439152 |
+| approve_E2EDEMO3 | [0x4b178fec52…](https://sepolia.basescan.org/tx/0x4b178fec527d34e8e6fba732f8aa528a08b0c5ddd7f7280aaef88bb6e3a6a069) | 57439157 |
+| liquidity_E2EDEMO3 | [0xa5fe5687e2…](https://sepolia.basescan.org/tx/0xa5fe5687e2a2694fd64441447f5d89033c1874492420012a80e3110b612be525) | 57439164 |
+| send_E2EDEMO3_wallet | [0xfac1b0f63a…](https://sepolia.basescan.org/tx/0xfac1b0f63a5b61168a13ab404692e1ee9a7c99b673257426deb7abb68b79a704) | 57439172 |
+| send_E2EDEMO3_holder1 | [0x0cf1bb94fe…](https://sepolia.basescan.org/tx/0x0cf1bb94fe3dcc9f3a0c24ca3954aa62e8bec0dc9e6aed70f3c7a83968a42130) | 57439179 |
+| approve_lp_E2EDEMO3 | [0x47262e9385…](https://sepolia.basescan.org/tx/0x47262e93859143b03a21d23ab455e9a9eeaea14854f0571b3dd3558dd8ef4eb0) | 57439443 |
+| rug_E2EDEMO3 | [0x39e812432a…](https://sepolia.basescan.org/tx/0x39e812432a1c0f717d27b94b971defe1d62e1d78efa9c412bc86a4ce39da727f) | 57439448 |
 
 The bonds start at block 57328762, after the tokens were distributed; the team then sent tokens to a fresh wallet (holder5) and the deployer bought on the pool, both after the start; the team then removed RUGDEMO's liquidity (removeLiquidityETH, [0x9c1e218d6b…](https://sepolia.basescan.org/tx/0x9c1e218d6b3e1539588ac3c2a1b142d82fba70d7ed3891c240cd15cae670aa80), block 57329406).
 
@@ -61,12 +68,12 @@ The bonds start at block 57328762, after the tokens were distributed; the team t
 | open_A | open bond RUGDEMO liquidity bond | ✓ ok | [`0xfc37b8d3ac…`](https://explorer-studio-dev.genlayer.com/tx/0xfc37b8d3aca9cf3224b4146bcc4e6c75457a86de0a859ceefd23cdcb8609e7c9) |  |
 | open_B | open bond HOLDDEMO liquidity bond | ✓ ok | [`0x4885bd489c…`](https://explorer-studio-dev.genlayer.com/tx/0x4885bd489c4af2b736e754375478976355d6db0a2530822c0f69557fe812e71b) |  |
 | open_copycat | a stranger bonds RUGDEMO too (copycat) | ✓ ok | [`0xcf754f2ad0…`](https://explorer-studio-dev.genlayer.com/tx/0xcf754f2ad09914ba2d8859692d966d8d0e0a154fcc55bb000647ea233c44dacc) |  |
-| evm_after_start | Base Sepolia: team -> holder5 transfer and a buy by the deployer, after the start block | ✓ ok |  |  |
+| evm_after_start | Base Sepolia: team -> holder5 transfer and a buy by the deployer, after the start block | ✓ ok | [0x19bae94ad8…](https://sepolia.basescan.org/tx/0x19bae94ad892a7e81eec3117f694a04ea5c94050489675ec6a01d04c14667cd3) [0x246597c05d…](https://sepolia.basescan.org/tx/0x246597c05d936ceeacabacaa69d3685169e17623091ac50ce225592c1931a431) |  |
 | beneficiary | holder1 commits a beneficiary (once) | ✓ ok | [`0x8673315c07…`](https://explorer-studio-dev.genlayer.com/tx/0x8673315c070999cdc5deadc8f97efed079ac6498f35d95f58cf8dfdc6a850ebc) |  |
-| evm_rug | Base Sepolia: the team removes RUGDEMO's liquidity (removeLiquidityETH) | ✓ ok |  |  |
-| first_check_A | the first rug check of bond A reads the start block | ✓ RUGGED |  |  |
-| rugged_A | rug checks on bond A until RUGGED at the rug block | ✓ RUGGED |  |  |
-| gate_rugged | LaunchGate: RUGGED_PAYING | ✓ RUGGED_PAYING |  |  |
+| evm_rug | Base Sepolia: the team removes RUGDEMO's liquidity (removeLiquidityETH) | ✓ ok | [0x9c1e218d6b…](https://sepolia.basescan.org/tx/0x9c1e218d6b3e1539588ac3c2a1b142d82fba70d7ed3891c240cd15cae670aa80) |  |
+| first_check_A | the first rug check of bond A reads the start block | ✓ RUGGED | [`0x2cf0f548ee…`](https://explorer-studio-dev.genlayer.com/tx/0x2cf0f548eed782d00320eb25597327879a97307993ccc946d017297cfde89fc6) |  |
+| rugged_A | rug checks on bond A until RUGGED at the rug block | ✓ RUGGED | [`0x2cf0f548ee…`](https://explorer-studio-dev.genlayer.com/tx/0x2cf0f548eed782d00320eb25597327879a97307993ccc946d017297cfde89fc6) |  |
+| gate_rugged | LaunchGate: RUGGED_PAYING | ✓ RUGGED_PAYING | read only (no transaction) |  |
 | claim_holder1 | holder1 claims; paid to its committed beneficiary | ✓ FINALIZED | [`0x8ac3272a2b…`](https://explorer-studio-dev.genlayer.com/tx/0x8ac3272a2b8929156e9effc68ae9d3bd5e27941b3c69e122bfcecd34b975de94) | 0.130581 GEN to `0xd8834fb2…`: delivered true, recipient balance +0.130581, registry -0.130581 |
 | claim_holder2 | holder2 claims | ✓ FINALIZED | [`0x4124cdfba9…`](https://explorer-studio-dev.genlayer.com/tx/0x4124cdfba9920d608d7e0a673d80b1bc9d423785a5cc1e932fdea6abfbf66308) | 0.261161 GEN to `0x3d8481f9…`: delivered true, recipient balance +0.261035 (it also paid the fee), registry -0.261161 |
 | claim_holder3 | holder3 claims | ✓ FINALIZED | [`0xce921803a2…`](https://explorer-studio-dev.genlayer.com/tx/0xce921803a2ea36e75b839ba76a03a0df88ea26f00ca52dd3cdaa41278bb6e217) | 0.391742 GEN to `0x22d1455f…`: delivered true, recipient balance +0.391615 (it also paid the fee), registry -0.391742 |
@@ -77,22 +84,22 @@ The bonds start at block 57328762, after the tokens were distributed; the team t
 | refuse_team | the team: EXCLUDED_ADDRESS | ✓ REFUSED: EXCLUDED_ADDRESS | [`0x9da22a7ac2…`](https://explorer-studio-dev.genlayer.com/tx/0x9da22a7ac2e68a238c30094ce096b7f4ed49f07a093a3979e16b67fc6f8d14a0) |  |
 | refuse_wrong_bond | holder1 claims on bond B (not rugged): BOND_IS_ACTIVE | ✓ REFUSED: BOND_IS_ACTIVE | [`0xc90c63c553…`](https://explorer-studio-dev.genlayer.com/tx/0xc90c63c553e76c4d1564670a9a3fb21dfb5a00b525a8519c05c4f9d6baced766) |  |
 | refuse_beneficiary_twice | holder1 commits a second beneficiary: refused | ✓ REFUSED: BENEFICIARY_ALREADY_COMMITTED | [`0xe717cc57aa…`](https://explorer-studio-dev.genlayer.com/tx/0xe717cc57aaf228c38076fa3c9434a1323da6ed2ae7d8015637974859292d94e9) |  |
-| gate_active | LaunchGate before the rug is read: ACTIVE_HELD_SO_FAR (or RUGGED_PAYING if the first read already reached the rug) | ✓ RUGGED_PAYING |  |  |
+| gate_active | LaunchGate before the rug is read: ACTIVE_HELD_SO_FAR (or RUGGED_PAYING if the first read already reached the rug) | ✓ RUGGED_PAYING | read only (no transaction) |  |
 | gate_attest | LaunchGate: attest(RUGDEMO, A) stored on chain | ✓ RUGGED_PAYING | [`0x165812f043…`](https://explorer-studio-dev.genlayer.com/tx/0x165812f043dd6614ef126de9ec1725a4bcfefdbd1cae60604f1c0f8d942ccd8f) |  |
-| held_B | rug checks on bond B until HELD | ✓ HELD |  |  |
-| gate_held | LaunchGate: HELD_FINAL | ✓ HELD_FINAL |  |  |
+| held_B | rug checks on bond B until HELD | ✓ HELD | [`0x38711fb3f8…`](https://explorer-studio-dev.genlayer.com/tx/0x38711fb3f8dc0fa3c4eee8e820d93ff125f8c119c4a0c817a473bddf52bba87e) [`0x6305fb4e90…`](https://explorer-studio-dev.genlayer.com/tx/0x6305fb4e900d817775d0f13908ff9c3b339b1cbd84a73a531a29e4c749b4a958) [`0xe602899802…`](https://explorer-studio-dev.genlayer.com/tx/0xe6028998020a33ed76619359453e5dbf832f807d8bb2e427b091813a8b2fa9fc) |  |
+| gate_held | LaunchGate: HELD_FINAL | ✓ HELD_FINAL | read only (no transaction) |  |
 | settle_B | settle B: the bond back to team2 | ✓ FINALIZED | [`0xe454c93878…`](https://explorer-studio-dev.genlayer.com/tx/0xe454c93878da92e87a06afe558bd4ca06d7f23b81c79fabe2f06d65b53269205) | 1.000000 GEN to `0xcdb369f0…`: delivered true, recipient balance +1.000000, registry -1.000000 |
-| wait_window_A | wait for bond A's claim window to end | ✓ ok |  |  |
+| wait_window_A | wait for bond A's claim window to end | ✓ ok | read only (no transaction) |  |
 | refuse_late | holder4 claims after the window: CLAIM_WINDOW_OVER | ✓ REFUSED: CLAIM_WINDOW_OVER | [`0x136ca82336…`](https://explorer-studio-dev.genlayer.com/tx/0x136ca8233667073af36ad88c68b393f7fa8ac5ca2872ca029089a8a41c5760fd) |  |
 | settle_A | settle A: what holders did not claim to the victim fund | ✓ FINALIZED | [`0x14f9d88e04…`](https://explorer-studio-dev.genlayer.com/tx/0x14f9d88e047a7910430c3ec21c40b9eb9a64a6626546056c76c77d18c0868c7e) | 1.216516 GEN to `0xd3e687d4…`: delivered true, recipient balance +1.216516, registry -1.216516 |
-| gate_closed | LaunchGate: RUGGED_CLOSED | ✓ RUGGED_CLOSED |  |  |
-| copycat_done | the copycat bond is checked to a verdict and settled | ✓ RUGGED |  |  |
+| gate_closed | LaunchGate: RUGGED_CLOSED | ✓ RUGGED_CLOSED | read only (no transaction) |  |
+| copycat_done | the copycat bond is checked to a verdict and settled | ✓ RUGGED | [`0xe411c1b8b0…`](https://explorer-studio-dev.genlayer.com/tx/0xe411c1b8b038c120af64ad79aa23e5a1fbea49a7905ceec45247da3f89e29204) [`0xf2c7a25701…`](https://explorer-studio-dev.genlayer.com/tx/0xf2c7a2570131b900ca45db5b3f8e0a6b792fe30d25ca9f9bb33216981a5fa813) |  |
 | open_D | team2 opens a second HOLDDEMO bond (ends in about an hour) | ✓ ok | [`0xe2fe05f4b5…`](https://explorer-studio-dev.genlayer.com/tx/0xe2fe05f4b53a613fec19dee82ff7c86d764c36fa8576f26dae5ac05499a640ab) |  |
 | check_D | the first check of bond D (SCANNED while the promise runs) | ✓ SCANNED | [`0x160aa60aed…`](https://explorer-studio-dev.genlayer.com/tx/0x160aa60aed8d4bb8364e24683b0916472802de0c205b3f993f21b421b17dda7a) |  |
-| gate_active_D | LaunchGate: check_for(HOLDDEMO, D) is ACTIVE_HELD_SO_FAR and safe; a copycat team and another token are not | ✓ ACTIVE_HELD_SO_FAR |  |  |
-| held_D | rug checks on bond D until HELD | ✓ HELD |  |  |
+| gate_active_D | LaunchGate: check_for(HOLDDEMO, D) is ACTIVE_HELD_SO_FAR and safe; a copycat team and another token are not | ✓ ACTIVE_HELD_SO_FAR | [`0xaf363024a0…`](https://explorer-studio-dev.genlayer.com/tx/0xaf363024a07c5d9b5cb9f9986fa2f2c53701376e13a5d0d6890a5c1b116a1711) |  |
+| held_D | rug checks on bond D until HELD | ✓ HELD | [`0xaa4fd8df3d…`](https://explorer-studio-dev.genlayer.com/tx/0xaa4fd8df3d505caffd047fe57b6c04d9c4c50dd187771f71351275c33414074b) [`0xed0cdbf235…`](https://explorer-studio-dev.genlayer.com/tx/0xed0cdbf235eccb2cc8339889d788f03c788c16ce3a764e902f1ecda32ebbff04) |  |
 | settle_D | settle D: the bond back to team2 | ✓ FINALIZED | [`0x256e27633c…`](https://explorer-studio-dev.genlayer.com/tx/0x256e27633cf59e80386724166a6ea878d795cdad06e62379a8ccdcd682500c2f) | 0.500000 GEN to `0xcdb369f0…`: delivered true, recipient balance +0.500000, registry -0.500000 |
-| balance_zero_end | the demo registry's balance is 0 at the end (after the e2e run's bonds settle too) | ✓ ok |  |  |
+| balance_zero_end | the demo registry's balance is 0 at the end (after the e2e run's bonds settle too) | ✓ ok | read only (no transaction) |  |
 
 The demo registry's eth_getBalance at the end: **0 wei**.
 
