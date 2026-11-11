@@ -17,6 +17,7 @@
 import { readFileSync, writeFileSync, readdirSync, existsSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { createRequire } from "node:module";
+import { retry } from "../test/harness.mjs";
 import { deployments, balanceOf, payoutDelivered, plain } from "./lib/rb.mjs";
 import { CHAINS } from "./lib/chains.mjs";
 
@@ -29,7 +30,7 @@ const REPO = "kenil1710/rugbond";
 const { createClient } = createRequire(new URL("../test/package.json", import.meta.url))("genlayer-js");
 const { studioDevnet } = createRequire(new URL("../test/package.json", import.meta.url))("genlayer-js/chains");
 const read = createClient({ chain: studioDevnet });
-const view = async (a, fn, args) => { const v = await read.readContract({ address: a, functionName: fn, args }); return plain(typeof v === "string" ? JSON.parse(v) : v); };
+const view = async (a, fn, args) => { const v = await retry(() => read.readContract({ address: a, functionName: fn, args }), { label: fn }); return plain(typeof v === "string" ? JSON.parse(v) : v); };
 const checks = [];
 const add = (name, ok, detail) => { checks.push({ name, ok, detail }); console.log(`${ok ? "PASS" : "FAIL"}  ${name}: ${detail}`); };
 const sh = (cmd, args, opts = {}) => spawnSync(cmd, args, { cwd: root, encoding: "utf8", maxBuffer: 64 << 20, ...opts });
@@ -102,7 +103,7 @@ const now = () => Math.floor(Date.now() / 1000);
   if (existsSync(root + "docs/demo-run.json")) {
     const demo = JSON.parse(rd("docs/demo-run.json"));
     for (const st of demo.steps.filter((x) => x.payout)) {
-      const tx = plain(await read.getTransaction({ hash: st.tx }));
+      const tx = plain(await retry(() => read.getTransaction({ hash: st.tx }), { label: "tx" }));
       const d = payoutDelivered(tx, st.payout.to, st.payout.amount);
       if (!d.ok || !st.payout.arrived) bad.push(`demo ${st.id}: ${d.why || "balance did not move by the amount"}`); else dn++;
     }

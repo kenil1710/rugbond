@@ -6,6 +6,7 @@
 //   node tools/seeds_md.mjs
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { createRequire } from "node:module";
+import { retry } from "../test/harness.mjs";
 import { balanceOf, payoutDelivered, plain, gen } from "./lib/rb.mjs";
 
 const root = new URL("../", import.meta.url);
@@ -16,7 +17,7 @@ const dep = JSON.parse(readFileSync(new URL("deployments.json", root)));
 const feas = JSON.parse(readFileSync(new URL("docs/feasibility.json", root)));
 const now = () => Math.floor(Date.now() / 1000);
 const asObj = (v) => plain(typeof v === "string" ? JSON.parse(v) : v);
-const view = async (address, fn, args) => asObj(await read.readContract({ address, functionName: fn, args }));
+const view = async (address, fn, args) => asObj(await retry(() => read.readContract({ address, functionName: fn, args }), { label: fn }));
 
 async function keeperActions() {
   try {
@@ -26,6 +27,26 @@ async function keeperActions() {
   } catch { return {}; }
 }
 const ks = await keeperActions();
+// every SETTLE action the keeper ever recorded, from the keeper-state branch's history (state files are per
+// registry; a registry's actions survive in the commits that wrote them)
+import { execFileSync } from "node:child_process";
+const settles = new Map();      // `${address}:${bond}` -> tx
+try {
+  const git = (...a) => execFileSync("git", ["-C", new URL("..", import.meta.url).pathname, ...a], { maxBuffer: 256 << 20 }).toString();
+  git("fetch", "-q", "origin", "keeper-state");
+  const commits = git("log", "--format=%H", "FETCH_HEAD").trim().split("\n").slice(0, 2000);
+  for (const c of commits) {
+    const files = git("ls-tree", "--name-only", c).trim().split("\n").filter((f) => f.startsWith("keeper-state-"));
+    for (const f of files) {
+      let st;
+      try { st = JSON.parse(git("show", `${c}:${f}`)); } catch { continue; }
+      for (const a of Object.values(st.actions ?? {})) {
+        const tx = a.tx ?? a.tx_history?.at(-1);
+        if (a.kind === "SETTLE" && a.status === "DONE" && tx) { const k = `${String(st.address).toLowerCase()}:${a.bond_id}`; if (!settles.has(k)) settles.set(k, tx); }
+      }
+    }
+  }
+} catch (e) { console.log("keeper-state history unreadable: " + String(e.message).slice(0, 120)); }
 
 async function registry(address, seedFile, label) {
   const seeds = JSON.parse(readFileSync(new URL(seedFile, root)));
@@ -35,10 +56,11 @@ async function registry(address, seedFile, label) {
   for (const s of seeds.bonds) {
     const b = await view(address, "get_bond", [s.bond_id, now()]);
     const f = feas.cases.find((c) => c.id === s.case_id);
-    const settle = acts.find((a) => a.kind === "SETTLE" && a.bond_id === s.bond_id && a.status === "DONE");
+    const sTx = acts.find((a) => a.kind === "SETTLE" && a.bond_id === s.bond_id && a.status === "DONE")?.tx ?? settles.get(`${address.toLowerCase()}:${s.bond_id}`);
+    const settle = sTx ? { tx: sTx } : null;
     let proof = null;
     if (b.settled_at && settle?.tx && BigInt(b.settled_amount) > 0n) {
-      const tx = plain(await read.getTransaction({ hash: settle.tx }));
+      const tx = plain(await retry(() => read.getTransaction({ hash: settle.tx }), { label: "tx" }));
       const d = payoutDelivered(tx, b.settled_to, b.settled_amount);
       proof = { tx: settle.tx, status: tx.statusName, delivered: d.ok, why: d.why };
     }
