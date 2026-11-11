@@ -1,0 +1,20 @@
+{
+ "contract": "0x3491AAC81ec96B05B50B25AD9F8b3CAeE7fF51b8",
+ "gate": "0x8317C4e1e8D76335f249d977FA855Cfbb431e5C9",
+ "steps": [
+  {
+   "id": "refused_create",
+   "what": "create_bond naming the team as victim fund is refused and credited",
+   "ok": true,
+   "tx": "0xcab2ce3bced634cc5976dfed01594a8560ea44bb8b268c87720ec8537a5c5f57",
+   "returned": {
+    "credited": "10000000000000000",
+    "ok": false,
+    "reason": "VICTIM_FUND_IS_TEAM"
+   },
+   "credit": "10000000000000000",
+   "at": "2026-11-11T08:59:32.977Z"
+  }
+ ],
+ "bonds": {}
+}
