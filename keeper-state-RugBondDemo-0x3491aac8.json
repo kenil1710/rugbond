@@ -16,6 +16,69 @@
    "claims_paid": "783483678851850549",
    "claims_offset": 3,
    "claims_seen": 3
+  },
+  "2": {
+   "status": "RETURNED",
+   "chain": "base-sepolia",
+   "token": "0xd4b593691fa189f6beb492e27f57a5fa320aa7e5",
+   "cursor": 57335611,
+   "cursor_ts": 1794388991,
+   "n_checks": 3,
+   "n_pending": 0,
+   "last_result": "HELD",
+   "due": "",
+   "name": "HOLDDEMO liquidity bond"
+  },
+  "3": {
+   "status": "CLOSED",
+   "chain": "base-sepolia",
+   "token": "0xdc3577153883cdb6ca9885e0a717f938fdbaef2b",
+   "cursor": 57329406,
+   "cursor_ts": 1794387750,
+   "n_checks": 1,
+   "n_pending": 0,
+   "last_result": "RUGGED",
+   "due": "",
+   "name": "RUGDEMO copycat"
+  },
+  "4": {
+   "status": "CLOSED",
+   "chain": "base-sepolia",
+   "token": "0xe0ab869ad6a330aa36e95533e934fe110101cd5b",
+   "cursor": 57335056,
+   "cursor_ts": 1794388880,
+   "n_checks": 1,
+   "n_pending": 0,
+   "last_result": "RUGGED",
+   "due": "",
+   "name": "E2EDEMO liquidity bond 57334788"
+  },
+  "5": {
+   "status": "RETURNED",
+   "chain": "base-sepolia",
+   "token": "0xd4b593691fa189f6beb492e27f57a5fa320aa7e5",
+   "cursor": 57368315,
+   "cursor_ts": 1794395531,
+   "n_checks": 4,
+   "n_pending": 0,
+   "last_result": "HELD",
+   "due": "",
+   "name": "HOLDDEMO short bond 57349345"
+  },
+  "6": {
+   "status": "CLOSED",
+   "chain": "base-sepolia",
+   "token": "0xe76ae2a66e9e9f1bfdcf1fb1cdaf9c333406dd99",
+   "cursor": 57359554,
+   "cursor_ts": 1794393779,
+   "n_checks": 1,
+   "n_pending": 0,
+   "last_result": "RUGGED",
+   "due": "",
+   "name": "E2EDEMO2 liquidity bond 57359281",
+   "claims_paid": "400000000000000000",
+   "claims_offset": 1,
+   "claims_seen": 1
   }
  },
  "actions": {},
@@ -27,5 +90,5 @@
  "contract": "RugBondDemo",
  "address": "0x3491AAC81ec96B05B50B25AD9F8b3CAeE7fF51b8",
  "keeper": "0xfEC989fC1176c5524C3b20ef2c09bca724d6BD4e",
- "saved_at": "2026-11-11T13:14:10.291Z"
+ "saved_at": "2026-11-11T13:14:10.625Z"
 }
