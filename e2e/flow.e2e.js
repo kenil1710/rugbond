@@ -23,10 +23,12 @@ const statusText = (page) => page.getByRole("status").last();
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 async function view(page, fn, args) {
-  for (let i = 0; i < 6; i++) {
-    const r = await page.request.get(`/api/view?a=${DEMO}&f=${fn}&args=${encodeURIComponent(JSON.stringify(args))}&fresh=${Date.now()}`);
-    if (r.ok()) return (await r.json()).value;
-    await sleep(5000 * (i + 1));
+  for (let i = 0; i < 20; i++) {          // Studio meters reads per IP per minute: wait the minute out
+    try {
+      const r = await page.request.get(`/api/view?a=${DEMO}&f=${fn}&args=${encodeURIComponent(JSON.stringify(args))}&fresh=${Date.now()}`, { timeout: 120_000 });
+      if (r.ok()) return (await r.json()).value;
+    } catch { /* retried */ }
+    await sleep(Math.min(15000 * (i + 1), 90000));
   }
   throw new Error("view " + fn);
 }

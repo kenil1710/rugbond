@@ -6,7 +6,7 @@
    "step": "wallet",
    "address": "0x968dB00f52479EbAA77065B1A42b82BB1e61eAe3",
    "note": "throwaway key saved in test/.accounts.json by e2e/prepare.mjs before use; funded from the Studio Dev faucet",
-   "at": "2026-11-11T11:56:31.672Z"
+   "at": "2026-11-11T11:56:47.200Z"
   },
   {
    "step": "setup",
@@ -15,27 +15,399 @@
    "bond": 6,
    "rug_block": 57359554,
    "rug_tx": "0x06173b03e2b16fe814d96ea6331e43116e18209ef328f5c9c0cbf2a09f5b683d",
-   "at": "2026-11-11T11:56:32.147Z"
+   "at": "2026-11-11T11:56:47.663Z"
   },
   {
    "step": "rugged",
    "bond": 6,
    "rug_block": 57359554,
    "denominator": "50000000000000000000000",
-   "at": "2026-11-11T11:56:37.601Z"
+   "at": "2026-11-11T11:56:53.431Z"
   },
   {
    "step": "claimed",
    "share": "400000000000000000",
    "paid_to": "0x968db00f52479ebaa77065b1a42b82bb1e61eae3",
    "note": "claimed through the site in an earlier pass of this run",
-   "at": "2026-11-11T11:56:38.576Z"
+   "at": "2026-11-11T11:56:53.436Z"
   },
   {
    "step": "refused",
    "what": "commit_beneficiary after claiming",
    "status": "failed · REFUSED: ALREADY_CLAIMED",
-   "at": "2026-11-11T11:56:41.579Z"
+   "at": "2026-11-11T11:57:12.531Z"
+  },
+  {
+   "step": "refused",
+   "bond": 1,
+   "what": "claim on a closed bond",
+   "status": "claim button disabled: the bond is CLOSED",
+   "at": "2026-11-11T11:57:12.761Z"
+  },
+  {
+   "step": "created",
+   "bond": 7,
+   "at": "2026-11-11T11:57:26.554Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x1388e925…",
+   "at": "2026-11-11T11:57:57.797Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xb23c9cf6…",
+   "at": "2026-11-11T11:58:18.957Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x1279554d…",
+   "at": "2026-11-11T11:58:34.346Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x57ae6958…",
+   "at": "2026-11-11T11:58:49.141Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xf1863fa2…",
+   "at": "2026-11-11T11:59:02.748Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x819787e9…",
+   "at": "2026-11-11T11:59:21.574Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x2011f850…",
+   "at": "2026-11-11T11:59:40.993Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xfcf6c59c…",
+   "at": "2026-11-11T12:00:01.151Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xccd9b447…",
+   "at": "2026-11-11T12:00:20.698Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xbb30cdee…",
+   "at": "2026-11-11T12:00:35.521Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x04265755…",
+   "at": "2026-11-11T12:00:48.278Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x25d2a409…",
+   "at": "2026-11-11T12:01:04.915Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x8b7db714…",
+   "at": "2026-11-11T12:01:21.894Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x2c84e2bd…",
+   "at": "2026-11-11T12:01:43.054Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x04f5b244…",
+   "at": "2026-11-11T12:02:03.766Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xff85e68d…",
+   "at": "2026-11-11T12:02:21.405Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x77903f4c…",
+   "at": "2026-11-11T12:02:36.199Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x8dd382d2…",
+   "at": "2026-11-11T12:02:54.613Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xf50b6979…",
+   "at": "2026-11-11T12:03:09.687Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x5ba5b3b3…",
+   "at": "2026-11-11T12:03:31.623Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x86560707…",
+   "at": "2026-11-11T12:03:54.068Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xf08c1036…",
+   "at": "2026-11-11T12:04:12.568Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x4a18d588…",
+   "at": "2026-11-11T12:04:30.124Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x8903ec04…",
+   "at": "2026-11-11T12:04:52.139Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x51f7d4d8…",
+   "at": "2026-11-11T12:05:14.531Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x66599f2a…",
+   "at": "2026-11-11T12:05:31.153Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xa13bc252…",
+   "at": "2026-11-11T12:05:48.428Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xb5387034…",
+   "at": "2026-11-11T12:06:02.931Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x171ff74b…",
+   "at": "2026-11-11T12:06:19.367Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x2454542c…",
+   "at": "2026-11-11T12:06:39.878Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x2be206ee…",
+   "at": "2026-11-11T12:06:57.518Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x50d647fb…",
+   "at": "2026-11-11T12:07:13.578Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xfcc36534…",
+   "at": "2026-11-11T12:07:33.104Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x4f2068fb…",
+   "at": "2026-11-11T12:07:54.081Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x43e6c858…",
+   "at": "2026-11-11T12:08:14.624Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x1fa47488…",
+   "at": "2026-11-11T12:08:36.272Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xc0a30ceb…",
+   "at": "2026-11-11T12:08:55.018Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x7c1f085c…",
+   "at": "2026-11-11T12:09:09.702Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x9b1a7ec7…",
+   "at": "2026-11-11T12:09:30.585Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x5c7171c1…",
+   "at": "2026-11-11T12:09:54.800Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xfb9acd57…",
+   "at": "2026-11-11T12:10:11.595Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x5e32eea0…",
+   "at": "2026-11-11T12:10:28.894Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xfba20905…",
+   "at": "2026-11-11T12:10:49.475Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xdc111ce8…",
+   "at": "2026-11-11T12:11:04.881Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x16c1d1e2…",
+   "at": "2026-11-11T12:11:25.733Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x4037d26f…",
+   "at": "2026-11-11T12:11:41.853Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xbbd4822d…",
+   "at": "2026-11-11T12:12:01.585Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xfaf2ccb7…",
+   "at": "2026-11-11T12:12:22.392Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xda4218ce…",
+   "at": "2026-11-11T12:12:43.181Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x48fecfa3…",
+   "at": "2026-11-11T12:13:04.266Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x0800d1eb…",
+   "at": "2026-11-11T12:13:25.144Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x1eaed831…",
+   "at": "2026-11-11T12:13:45.917Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xae6176ac…",
+   "at": "2026-11-11T12:14:07.966Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x4959809e…",
+   "at": "2026-11-11T12:14:29.120Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x779cda36…",
+   "at": "2026-11-11T12:14:44.004Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x2846ea90…",
+   "at": "2026-11-11T12:14:59.091Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xf6fc2bfb…",
+   "at": "2026-11-11T12:15:16.609Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xce066c9d…",
+   "at": "2026-11-11T12:15:31.014Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x6790cedf…",
+   "at": "2026-11-11T12:15:47.315Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 7,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x15739c77…",
+   "at": "2026-11-11T12:16:08.097Z"
   }
  ]
 }
