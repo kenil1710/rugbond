@@ -291,3 +291,14 @@ test("FINAL_UNVERIFIED when the read lags, verified next run", async () => {
   await go(x);
   assert.equal(Object.values(x.state.actions)[0].status, "DONE");
 });
+
+test("a state saved for another registry address is not reused", async () => {
+  // tools/keeper.mjs binds each state file to its registry address; the core treats a fresh state as no actions
+  const x = world({ nBonds: 2, head: 1200 });
+  await go(x);
+  const c = x.w.calls.check;
+  x.state = emptyState();             // what load() returns for a different address
+  for (const b of x.w.bonds) { b.cursor = 0; b.n_checks = 0; b.status = "ACTIVE"; b.checkable = true; b.due = ""; }
+  await go(x);
+  assert.equal(x.w.calls.check, c + 2);
+});

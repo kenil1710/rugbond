@@ -99,9 +99,14 @@ let prev = {};
 try { prev = JSON.parse(readFileSync(`${dir}/status.json`, "utf8")).contracts ?? {}; } catch { /* first run */ }
 const status = { keeper: account.address, started_at: new Date().toISOString(), contracts: { ...prev } };
 for (const { name, address } of targets) {
-  const file = `${dir}/keeper-state-${name}.json`;
+  // state is bound to the registry's address: a redeployed registry starts from an empty state (its bond ids restart at 1)
+  const file = `${dir}/keeper-state-${name.split("@")[0]}-${address.slice(0, 10).toLowerCase()}.json`;
   const store = {
-    async load() { return existsSync(file) ? JSON.parse(readFileSync(file, "utf8")) : emptyState(); },
+    async load() {
+      if (!existsSync(file)) return emptyState();
+      const s = JSON.parse(readFileSync(file, "utf8"));
+      return s.address && s.address.toLowerCase() !== address.toLowerCase() ? emptyState() : s;
+    },
     async save(state, why) {
       state.contract = name; state.address = address; state.keeper = account.address; state.saved_at = new Date().toISOString();
       writeFileSync(file, JSON.stringify(state, null, 1) + "\n");
