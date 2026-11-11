@@ -20,6 +20,8 @@ const dep = deployments().contracts;
 const ADDR = dep.RugBondDemo.address, GATE = dep.LaunchGateDemo.address;
 const doc = existsSync(OUT) ? JSON.parse(readFileSync(OUT)) : { contract: ADDR, gate: GATE, steps: [], bonds: {} };
 if (doc.contract !== ADDR) throw new Error("docs/demo-run.json belongs to another demo registry; move it aside first");
+// the first pass checked the balance before the e2e run's bonds were settled; the final check is balance_zero_end
+doc.steps = doc.steps.filter((s) => s.id !== "balance_zero");
 const save = () => writeFileSync(OUT, JSON.stringify(doc, (k, v) => (typeof v === "bigint" ? v.toString() : v), 1) + "\n");
 const acc = accounts();
 const ad = (r) => acc[r].address.toLowerCase();
@@ -272,7 +274,13 @@ await step("gate_active_D", "LaunchGate: check_for(HOLDDEMO, D) is ACTIVE_HELD_S
 await step("held_D", "rug checks on bond D until HELD", () => checkUntil(doc.bonds.D, ["HELD"]));
 await step("settle_D", "settle D: the bond back to team2", () => paying(cl("keeper"), "settle", [doc.bonds.D], ad("team2"), (r) => r?.amount));
 
-await step("balance_zero_end", "the demo registry's balance is 0 at the end", async () => {
+await step("balance_zero_end", "the demo registry's balance is 0 at the end (after the e2e run's bonds settle too)", async () => {
+  for (let i = 0; i < 720; i++) {
+    const st = await team.view("get_stats", []);
+    if (st.held === "0") break;
+    if (i % 10 === 0) console.log("   waiting for open bonds to settle; held", st.held);
+    await sleep(60000);
+  }
   const bal = await balanceOf(ADDR);
   const stats = await team.view("get_stats", []);
   return { ok: bal === 0n && stats.held === "0", eth_getBalance: String(bal), stats };

@@ -358,6 +358,221 @@
     "state": "RUGGED_PAYING"
    },
    "at": "2026-11-11T09:35:13.707Z"
+  },
+  {
+   "id": "held_B",
+   "what": "rug checks on bond B until HELD",
+   "ok": true,
+   "status": "HELD",
+   "checks": [
+    {
+     "tx": "0x38711fb3f8dc0fa3c4eee8e820d93ff125f8c119c4a0c817a473bddf52bba87e",
+     "ok": true,
+     "reason": ".\bcheck_id\u0011\u0006cursor����\u0001\tcursor_ts����5\u0002ok\u0010\u0006result<SCANNED",
+     "result": "SCANNED"
+    },
+    {
+     "tx": "0x6305fb4e900d817775d0f13908ff9c3b339b1cbd84a73a531a29e4c749b4a958",
+     "ok": true,
+     "reason": ".\bcheck_id\u0019\u0006cursor���\u0001\tcursor_tsᬆ�5\u0002ok\u0010\u0006result<SCANNED",
+     "result": "SCANNED"
+    },
+    {
+     "tx": "0x742c86f480a3ccddecad5e205ba6aa44262687294d8821155544c3f1d5c3c407",
+     "ok": false,
+     "reason": "REFUSED: NOTHING_NEW_FINALIZED",
+     "result": ""
+    },
+    {
+     "tx": "0x9eb48293531e8ca67e30decb9242f8f2776a0011db0a869ad54f17fe451e0377",
+     "ok": false,
+     "reason": "REFUSED: NOTHING_NEW_FINALIZED",
+     "result": ""
+    },
+    {
+     "tx": "0xe6028998020a33ed76619359453e5dbf832f807d8bb2e427b091813a8b2fa9fc",
+     "ok": true,
+     "reason": ".\bcheck_id!\u0006cursor����\u0001\tcursor_ts����5\u0002ok\u0010\u0006result$HELD",
+     "result": "HELD"
+    }
+   ],
+   "rug_block": 0,
+   "cursor": 57335611,
+   "at": "2026-11-11T09:46:24.330Z"
+  },
+  {
+   "id": "gate_held",
+   "what": "LaunchGate: HELD_FINAL",
+   "ok": true,
+   "check_for": {
+    "amount": "1000000000000000000",
+    "bond_id": 2,
+    "chain": "base-sepolia",
+    "claim_deadline": 0,
+    "cursor_ts": 1794388991,
+    "rug_block": 0,
+    "safe": false,
+    "state": "HELD_FINAL",
+    "status": "HELD",
+    "team": "0xcdb369f092f67edf02fc987394115d6f62b71ce6",
+    "token": "0xd4b593691fa189f6beb492e27f57a5fa320aa7e5",
+    "why": ""
+   },
+   "at": "2026-11-11T09:46:25.233Z"
+  },
+  {
+   "id": "settle_B",
+   "what": "settle B: the bond back to team2",
+   "ok": true,
+   "tx": "0xe454c93878da92e87a06afe558bd4ca06d7f23b81c79fabe2f06d65b53269205",
+   "status": "FINALIZED",
+   "returned": {
+    "amount": "1000000000000000000",
+    "bond_id": 2,
+    "ok": true,
+    "status": "RETURNED",
+    "to": "0xcdb369f092f67edf02fc987394115d6f62b71ce6"
+   },
+   "payout": {
+    "to": "0xcdb369f092f67edf02fc987394115d6f62b71ce6",
+    "amount": "1000000000000000000",
+    "delivered": true,
+    "why": "",
+    "recipient_delta": "1000000000000000000",
+    "contract_delta": "-1000000000000000000",
+    "self_paid": false,
+    "fee": "126308750000823",
+    "arrived": true
+   },
+   "at": "2026-11-11T09:47:11.316Z"
+  },
+  {
+   "id": "wait_window_A",
+   "what": "wait for bond A's claim window to end",
+   "ok": true,
+   "claim_deadline": 1794389737,
+   "at": "2026-11-11T09:47:11.950Z"
+  },
+  {
+   "id": "refuse_late",
+   "what": "holder4 claims after the window: CLAIM_WINDOW_OVER",
+   "ok": true,
+   "tx": "0x136ca8233667073af36ad88c68b393f7fa8ac5ca2872ca029089a8a41c5760fd",
+   "status": "ACCEPTED",
+   "reason": "REFUSED: CLAIM_WINDOW_OVER",
+   "at": "2026-11-11T09:47:25.770Z"
+  },
+  {
+   "id": "settle_A",
+   "what": "settle A: what holders did not claim to the victim fund",
+   "ok": true,
+   "tx": "0x14f9d88e047a7910430c3ec21c40b9eb9a64a6626546056c76c77d18c0868c7e",
+   "status": "FINALIZED",
+   "returned": {
+    "amount": "1216516321148149451",
+    "bond_id": 1,
+    "ok": true,
+    "status": "CLOSED",
+    "to": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a"
+   },
+   "payout": {
+    "to": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
+    "amount": "1216516321148149451",
+    "delivered": true,
+    "why": "",
+    "recipient_delta": "1216516321148149451",
+    "contract_delta": "-1216516321148149451",
+    "self_paid": false,
+    "fee": "126307500000823",
+    "arrived": true
+   },
+   "at": "2026-11-11T09:48:12.747Z"
+  },
+  {
+   "id": "gate_closed",
+   "what": "LaunchGate: RUGGED_CLOSED",
+   "ok": true,
+   "check_for": {
+    "amount": "2000000000000000000",
+    "bond_id": 1,
+    "chain": "base-sepolia",
+    "claim_deadline": 1794389737,
+    "cursor_ts": 1794387750,
+    "rug_block": 57329406,
+    "safe": false,
+    "state": "RUGGED_CLOSED",
+    "status": "CLOSED",
+    "team": "0x6365881b460e79216303fc370348ca857d8da9ef",
+    "token": "0xdc3577153883cdb6ca9885e0a717f938fdbaef2b",
+    "why": ""
+   },
+   "at": "2026-11-11T09:48:13.655Z"
+  },
+  {
+   "id": "copycat_done",
+   "what": "the copycat bond is checked to a verdict and settled",
+   "ok": true,
+   "status": "RUGGED",
+   "settle": {
+    "ok": true,
+    "tx": "0xf2c7a2570131b900ca45db5b3f8e0a6b792fe30d25ca9f9bb33216981a5fa813",
+    "status": "FINALIZED",
+    "returned": {
+     "amount": "10000000000000000",
+     "bond_id": 3,
+     "ok": true,
+     "status": "CLOSED",
+     "to": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a"
+    },
+    "payout": {
+     "to": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
+     "amount": "10000000000000000",
+     "delivered": true,
+     "why": "",
+     "recipient_delta": "10000000000000000",
+     "contract_delta": "-10000000000000000",
+     "self_paid": false,
+     "fee": "126307500000823",
+     "arrived": true
+    }
+   },
+   "at": "2026-11-11T09:59:42.211Z"
+  },
+  {
+   "id": "balance_zero",
+   "what": "the demo registry's balance is 0",
+   "ok": false,
+   "eth_getBalance": "1000000000000000000",
+   "stats": {
+    "balance": "1000000000000000000",
+    "bonds": 4,
+    "checks": 5,
+    "claims_paid_total": "783483678851850549",
+    "counts": {
+     "beneficiaries": 1,
+     "bonds": 4,
+     "checks": 5,
+     "checks_pending": 0,
+     "checks_scanned": 2,
+     "claims": 3,
+     "create_refused": 1,
+     "credit_withdrawals": 1,
+     "held": 1,
+     "rugged": 2,
+     "settles": 3,
+     "sweeps": 0,
+     "void": 0
+    },
+    "credit_owed_total": "0",
+    "credit_paid_total": "10000000000000000",
+    "held": "1000000000000000000",
+    "open_total": "1000000000000000000",
+    "received_total": "4020000000000000000",
+    "returned_total": "1000000000000000000",
+    "stray_swept_total": "0",
+    "victim_total": "1226516321148149451"
+   },
+   "at": "2026-11-11T09:59:43.472Z"
   }
  ],
  "bonds": {

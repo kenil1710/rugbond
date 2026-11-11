@@ -232,6 +232,42 @@
    "bond": 4,
    "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x7b2f9024…",
    "at": "2026-11-11T09:37:16.804Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x31c2adba…",
+   "at": "2026-11-11T09:37:29.561Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x8bab5d65…",
+   "at": "2026-11-11T09:37:42.081Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x67259810…",
+   "at": "2026-11-11T09:37:59.880Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xfacd110f…",
+   "at": "2026-11-11T09:38:16.360Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xcaa1de49…",
+   "at": "2026-11-11T09:38:33.673Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x56ae8b57…",
+   "at": "2026-11-11T09:38:54.880Z"
   }
  ]
 }

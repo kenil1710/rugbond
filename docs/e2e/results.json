@@ -79,28 +79,202 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "failed",
-                  "duration": 631,
+                  "duration": 1172427,
                   "error": {
-                    "message": "Error: browserContext.newPage: Executable doesn't exist at /Users/kenilvakariya/Library/Caches/ms-playwright/ffmpeg-1011/ffmpeg-mac\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝",
-                    "stack": "Error: browserContext.newPage: Executable doesn't exist at /Users/kenilvakariya/Library/Caches/ms-playwright/ffmpeg-1011/ffmpeg-mac\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                    "message": "Error: page.goto: net::ERR_TIMED_OUT at https://rugbond.vercel.app/bond/demo-4\nCall log:\n\u001b[2m  - navigating to \"https://rugbond.vercel.app/bond/demo-4\", waiting until \"load\"\u001b[22m\n",
+                    "stack": "Error: page.goto: net::ERR_TIMED_OUT at https://rugbond.vercel.app/bond/demo-4\nCall log:\n\u001b[2m  - navigating to \"https://rugbond.vercel.app/bond/demo-4\", waiting until \"load\"\u001b[22m\n\n    at checkUntil (/Users/kenilvakariya/dev/rugbond/e2e/flow.e2e.js:39:16)\n    at /Users/kenilvakariya/dev/rugbond/e2e/flow.e2e.js:67:14",
+                    "location": {
+                      "file": "/Users/kenilvakariya/dev/rugbond/e2e/flow.e2e.js",
+                      "column": 16,
+                      "line": 39
+                    },
+                    "snippet": "  37 |     const b = await view(page, \"get_bond\", [id, Math.floor(Date.now() / 1000)]);\n  38 |     if (b.status !== \"ACTIVE\") return b;\n> 39 |     await page.goto(`/bond/demo-${id}`);\n     |                ^\n  40 |     await page.getByRole(\"button\", { name: \"Run a rug check\" }).click();\n  41 |     await expect(statusText(page)).toContainText(/accepted|finalized|failed|rejected/i, { timeout: 20 * 60_000 });\n  42 |     const t = await statusText(page).innerText();"
                   },
                   "errors": [
                     {
-                      "message": "Error: browserContext.newPage: Executable doesn't exist at /Users/kenilvakariya/Library/Caches/ms-playwright/ffmpeg-1011/ffmpeg-mac\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                      "location": {
+                        "file": "/Users/kenilvakariya/dev/rugbond/e2e/flow.e2e.js",
+                        "column": 16,
+                        "line": 39
+                      },
+                      "message": "Error: page.goto: net::ERR_TIMED_OUT at https://rugbond.vercel.app/bond/demo-4\nCall log:\n\u001b[2m  - navigating to \"https://rugbond.vercel.app/bond/demo-4\", waiting until \"load\"\u001b[22m\n\n\n  37 |     const b = await view(page, \"get_bond\", [id, Math.floor(Date.now() / 1000)]);\n  38 |     if (b.status !== \"ACTIVE\") return b;\n> 39 |     await page.goto(`/bond/demo-${id}`);\n     |                ^\n  40 |     await page.getByRole(\"button\", { name: \"Run a rug check\" }).click();\n  41 |     await expect(statusText(page)).toContainText(/accepted|finalized|failed|rejected/i, { timeout: 20 * 60_000 });\n  42 |     const t = await statusText(page).innerText();\n    at checkUntil (/Users/kenilvakariya/dev/rugbond/e2e/flow.e2e.js:39:16)\n    at /Users/kenilvakariya/dev/rugbond/e2e/flow.e2e.js:67:14"
                     }
                   ],
-                  "stdout": [],
-                  "stderr": [],
+                  "stdout": [
+                    {
+                      "text": "wallet {\"address\":\"0xCc957213c5DBd085F371C4226F199a968E0A4033\",\"note\":\"throwaway key saved in test/.accounts.json by e2e/prepare.mjs before use; funded from the Studio Dev faucet\"}\n"
+                    },
+                    {
+                      "text": "setup {\"token\":\"0xe0ab869ad6a330aa36e95533e934fe110101cd5b\",\"pair\":\"0x29acd6647bc8b3fe6f61ef604ac842acab908f41\",\"bond\":4,\"rug_block\":57335056,\"rug_tx\":\"0x4520d523010fd3547b5ec209565d239c8b92f0700847d1eb5c2fca66666d61d6\"}\n"
+                    },
+                    {
+                      "text": "rug_check_click {\"bond\":4,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x3c4b0a89…\"}\n"
+                    },
+                    {
+                      "text": "rug_check_click {\"bond\":4,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x6570a49c…\"}\n"
+                    },
+                    {
+                      "text": "rug_check_click {\"bond\":4,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x34d85f0e…\"}\n"
+                    },
+                    {
+                      "text": "rug_check_click {\"bond\":4,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xa633a31c…\"}\n"
+                    },
+                    {
+                      "text": "rug_check_click {\"bond\":4,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x72f8153e…\"}\n"
+                    },
+                    {
+                      "text": "rug_check_click {\"bond\":4,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xa292782a…\"}\n"
+                    },
+                    {
+                      "text": "rug_check_click {\"bond\":4,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x3b110b77…\"}\n"
+                    },
+                    {
+                      "text": "rug_check_click {\"bond\":4,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x56fbf7bc…\"}\n"
+                    },
+                    {
+                      "text": "rug_check_click {\"bond\":4,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x4c3496aa…\"}\n"
+                    },
+                    {
+                      "text": "rug_check_click {\"bond\":4,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x87994f91…\"}\n"
+                    },
+                    {
+                      "text": "rug_check_click {\"bond\":4,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xb290e623…\"}\n"
+                    },
+                    {
+                      "text": "rug_check_click {\"bond\":4,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x103c4e13…\"}\n"
+                    },
+                    {
+                      "text": "rug_check_click {\"bond\":4,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xe0f1714b…\"}\n"
+                    },
+                    {
+                      "text": "rug_check_click {\"bond\":4,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x658e0298…\"}\n"
+                    },
+                    {
+                      "text": "rug_check_click {\"bond\":4,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x8c85a5d2…\"}\n"
+                    },
+                    {
+                      "text": "rug_check_click {\"bond\":4,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x2f36c4f5…\"}\n"
+                    },
+                    {
+                      "text": "rug_check_click {\"bond\":4,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xf1cbe5f5…\"}\n"
+                    },
+                    {
+                      "text": "rug_check_click {\"bond\":4,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xb4878353…\"}\n"
+                    },
+                    {
+                      "text": "rug_check_click {\"bond\":4,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xa5cf9164…\"}\n"
+                    },
+                    {
+                      "text": "rug_check_click {\"bond\":4,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x70e5b41e…\"}\n"
+                    },
+                    {
+                      "text": "rug_check_click {\"bond\":4,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xb49e06fd…\"}\n"
+                    },
+                    {
+                      "text": "rug_check_click {\"bond\":4,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xa50e1754…\"}\n"
+                    },
+                    {
+                      "text": "rug_check_click {\"bond\":4,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xd0492695…\"}\n"
+                    },
+                    {
+                      "text": "rug_check_click {\"bond\":4,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x8a45f3d7…\"}\n"
+                    },
+                    {
+                      "text": "rug_check_click {\"bond\":4,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xe82bb393…\"}\n"
+                    },
+                    {
+                      "text": "rug_check_click {\"bond\":4,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x8386ddb2…\"}\n"
+                    },
+                    {
+                      "text": "rug_check_click {\"bond\":4,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x1c458c10…\"}\n"
+                    },
+                    {
+                      "text": "rug_check_click {\"bond\":4,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x29c2950b…\"}\n"
+                    },
+                    {
+                      "text": "rug_check_click {\"bond\":4,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xb19837cf…\"}\n"
+                    },
+                    {
+                      "text": "rug_check_click {\"bond\":4,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xe2cf0267…\"}\n"
+                    },
+                    {
+                      "text": "rug_check_click {\"bond\":4,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x4d9d9f92…\"}\n"
+                    },
+                    {
+                      "text": "rug_check_click {\"bond\":4,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xc9676043…\"}\n"
+                    },
+                    {
+                      "text": "rug_check_click {\"bond\":4,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xd05b0e4b…\"}\n"
+                    },
+                    {
+                      "text": "rug_check_click {\"bond\":4,\"status\":\"failed · The transaction was canceled. · tx 0x3696732e…\"}\n"
+                    },
+                    {
+                      "text": "rug_check_click {\"bond\":4,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xa2dab415…\"}\n"
+                    },
+                    {
+                      "text": "rug_check_click {\"bond\":4,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x7b2f9024…\"}\n"
+                    },
+                    {
+                      "text": "rug_check_click {\"bond\":4,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x31c2adba…\"}\n"
+                    },
+                    {
+                      "text": "rug_check_click {\"bond\":4,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x8bab5d65…\"}\n"
+                    },
+                    {
+                      "text": "rug_check_click {\"bond\":4,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x67259810…\"}\n"
+                    },
+                    {
+                      "text": "rug_check_click {\"bond\":4,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xfacd110f…\"}\n"
+                    },
+                    {
+                      "text": "rug_check_click {\"bond\":4,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xcaa1de49…\"}\n"
+                    },
+                    {
+                      "text": "rug_check_click {\"bond\":4,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x56ae8b57…\"}\n"
+                    }
+                  ],
+                  "stderr": [
+                    {
+                      "buffer": ""
+                    },
+                    {
+                      "buffer": ""
+                    },
+                    {
+                      "buffer": ""
+                    }
+                  ],
                   "retry": 0,
-                  "startTime": "2026-11-11T09:05:30.053Z",
+                  "startTime": "2026-11-11T09:20:14.309Z",
                   "annotations": [],
                   "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/kenilvakariya/dev/rugbond/docs/e2e/artifacts/flow.e2e.js-rug-check-clai-ce939--close-on-the-demo-registry/test-failed-1.png"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "/Users/kenilvakariya/dev/rugbond/docs/e2e/artifacts/flow.e2e.js-rug-check-clai-ce939--close-on-the-demo-registry/video.webm"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/Users/kenilvakariya/dev/rugbond/docs/e2e/artifacts/flow.e2e.js-rug-check-clai-ce939--close-on-the-demo-registry/error-context.md"
+                    },
                     {
                       "name": "trace",
                       "contentType": "application/zip",
                       "path": "/Users/kenilvakariya/dev/rugbond/docs/e2e/artifacts/flow.e2e.js-rug-check-clai-ce939--close-on-the-demo-registry/trace.zip"
                     }
-                  ]
+                  ],
+                  "errorLocation": {
+                    "file": "/Users/kenilvakariya/dev/rugbond/e2e/flow.e2e.js",
+                    "column": 16,
+                    "line": 39
+                  }
                 }
               ],
               "status": "unexpected"
@@ -116,8 +290,8 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-11-11T09:05:29.576Z",
-    "duration": 3441.3379999999997,
+    "startTime": "2026-11-11T09:20:13.893Z",
+    "duration": 1176755.298,
     "expected": 0,
     "skipped": 0,
     "unexpected": 1,
