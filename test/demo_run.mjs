@@ -275,14 +275,25 @@ await step("held_D", "rug checks on bond D until HELD", () => checkUntil(doc.bon
 await step("settle_D", "settle D: the bond back to team2", () => paying(cl("keeper"), "settle", [doc.bonds.D], ad("team2"), (r) => r?.amount));
 
 await step("balance_zero_end", "the demo registry's balance is 0 at the end (after the e2e run's bonds settle too)", async () => {
+  const leftovers = [];
   for (let i = 0; i < 720; i++) {
     const st = await team.view("get_stats", []);
     if (st.held === "0") break;
+    // the e2e run's rugged bonds (posted by `team`) are settled here once due; the e2e settles its own held bond
+    for (let off = 0; off >= 0;) {
+      const pg = await team.view("bonds_by_team", [ad("team"), off, 50, now()]);
+      for (const b of pg.items) if (b.due && !leftovers.find((x) => x.bond_id === b.bond_id)) {
+        const p = await paying(cl("keeper"), "settle", [b.bond_id], b.due === "RETURN" ? b.team : b.victim_fund, (r) => r?.amount);
+        leftovers.push({ bond_id: b.bond_id, name: b.name, ...p });
+        console.log("   settled leftover bond", b.bond_id, p.ok);
+      }
+      off = pg.next_offset;
+    }
     if (i % 10 === 0) console.log("   waiting for open bonds to settle; held", st.held);
     await sleep(60000);
   }
   const bal = await balanceOf(ADDR);
   const stats = await team.view("get_stats", []);
-  return { ok: bal === 0n && stats.held === "0", eth_getBalance: String(bal), stats };
+  return { ok: bal === 0n && stats.held === "0" && leftovers.every((x) => x.ok), eth_getBalance: String(bal), stats, leftovers };
 });
 console.log("\ndemo done:", doc.steps.filter((s) => s.ok).length, "steps");

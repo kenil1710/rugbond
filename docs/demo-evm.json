@@ -165,6 +165,34 @@
    "tx": "0x4520d523010fd3547b5ec209565d239c8b92f0700847d1eb5c2fca66666d61d6",
    "status": "success",
    "block": 57335056
+  },
+  "deploy_E2EDEMO2": {
+   "tx": "0x14f5bf3aeaa711b18e0dc11164d77bb9ec82a77b97a0608c10812815d661b312",
+   "status": "success",
+   "block": 57359248,
+   "address": "0xe76ae2a66e9e9f1bfdcf1fb1cdaf9c333406dd99"
+  },
+  "approve_E2EDEMO2": {
+   "tx": "0xc870aeedc90b01f02a458826fdb7e35b02361328e13f13e506d4ed028f092551",
+   "status": "success",
+   "block": 57359255
+  },
+  "liquidity_E2EDEMO2": {
+   "tx": "0x63d2be8a487d5565309f7f5b06b83e525ec389cfc12488fbacee47890c515681",
+   "status": "success",
+   "block": 57359260,
+   "pair": "0x68e9d290a8662ecc3b14a991bd4f4d7609640b44",
+   "lp": "31622776601683792319"
+  },
+  "send_E2EDEMO2_wallet": {
+   "tx": "0x7db31723f4e3bcb8a6d3339e32ceb57f5d629895e8f615e5c45c10b86cf9dea2",
+   "status": "success",
+   "block": 57359269
+  },
+  "send_E2EDEMO2_holder1": {
+   "tx": "0x27d7f96e329d9072116751813023271d395db0c10816a9eebc069e0a2b6f80a4",
+   "status": "success",
+   "block": 57359275
   }
  },
  "RUGDEMO": {
@@ -198,5 +226,12 @@
   "bond_tx": "0xf8b55a5a2a8fcc5b3d8545de81212eb954b4ed44ec4b755733686c08c012dbd0",
   "rug_block": 57335056,
   "rug_tx": "0x4520d523010fd3547b5ec209565d239c8b92f0700847d1eb5c2fca66666d61d6"
+ },
+ "E2EDEMO2": {
+  "token": "0xe76ae2a66e9e9f1bfdcf1fb1cdaf9c333406dd99",
+  "pair": "0x68e9d290a8662ecc3b14a991bd4f4d7609640b44",
+  "team": "0x6365881b460e79216303fc370348ca857d8da9ef",
+  "lp_minted": "31622776601683792319",
+  "wallet": "0x968db00f52479ebaa77065b1a42b82bb1e61eae3"
  }
 }
