@@ -79,11 +79,12 @@ COUNT_KEYS = ("bonds", "create_refused", "checks", "checks_scanned", "checks_pen
 #                       run before the bond is UNRESOLVED; fixed at creation, so
 #                       PENDING checks cannot extend it
 #   stale_s             LaunchGate: an ACTIVE bond whose last read block is older
-#                       than this is PENDING, never "held so far"
+#                       than this is PENDING, never "held so far" (Base Sepolia's
+#                       finalized head trails its tip by about 4.4 hours)
 #   sweep_delay_s       sweep_stray waits this long after the last send
 MODES = {
     "CANONICAL": (("ethereum",), 3600, 7 * 86400, 6 * 3600, 172800),
-    "DEMO": (("base-sepolia",), 60, 3600, 1800, 3600),
+    "DEMO": (("base-sepolia",), 60, 3600, 6 * 3600, 3600),
 }
 MAX_PERIOD_S = 366 * 86400      # end time at most this far after creation
 MAX_CLAIM_WINDOW_S = 180 * 86400

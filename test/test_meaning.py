@@ -33,8 +33,8 @@ class DocsMatchCode(unittest.TestCase):
         self.assertIn("max(end time, creation time) + 7 days (canonical) or 1 hour (demo)", RULES)
 
     def test_stale(self):
-        self.assertEqual((RB.MODES["CANONICAL"][3], RB.MODES["DEMO"][3]), (6 * 3600, 1800))
-        self.assertIn("at most 6 h (canonical) / 30 min (demo) old", RULES)
+        self.assertEqual((RB.MODES["CANONICAL"][3], RB.MODES["DEMO"][3]), (6 * 3600, 6 * 3600))
+        self.assertIn("the last block read at most 6 h old", RULES)
 
     def test_sweep_delay(self):
         self.assertEqual((RB.MODES["CANONICAL"][4], RB.MODES["DEMO"][4]), (48 * 3600, 3600))

@@ -119,7 +119,7 @@ bonds that `team` itself posted for that token (the worst state wins). `safe` is
 | state | when |
 |---|---|
 | NO_BOND | no such bond, another token, a VOID bond, or a replay that did not rug |
-| ACTIVE_HELD_SO_FAR | ACTIVE, at least one agreed read, the last check not PENDING, the last block read at most 6 h (canonical) / 30 min (demo) old |
+| ACTIVE_HELD_SO_FAR | ACTIVE, at least one agreed read, the last check not PENDING, the last block read at most 6 h old (Base Sepolia's finalized head trails its tip by about 4.4 h) |
 | HELD_FINAL | HELD or RETURNED |
 | RUGGED_PAYING | RUGGED and the claim window open |
 | RUGGED_CLOSED | RUGGED after the claim window, or CLOSED |

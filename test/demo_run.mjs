@@ -121,7 +121,7 @@ async function open(key, c, name, t, endIn, value, extra) {
     return { ok: w.ok && tx?.statusName === "FINALIZED" && !!b, tx: w.hash, bond_id: b?.bond_id, start_block: start, end_time: b?.end_time, amount: b?.amount };
   });
 }
-await open("A", team, "RUGDEMO liquidity bond", RUG, 3 * 3600, 2n * GEN, [ad("stranger"), ROUTER_BSEP]);
+await open("A", team, "RUGDEMO liquidity bond", RUG, 10 * 3600, 2n * GEN, [ad("stranger"), ROUTER_BSEP]);
 await open("B", team2, "HOLDDEMO liquidity bond", HOLD, 20 * 60, GEN, [ad("stranger"), ROUTER_BSEP]);
 const A = doc.bonds.A, B = doc.bonds.B;
 
@@ -133,31 +133,6 @@ await step("open_copycat", "a stranger bonds RUGDEMO too (copycat)", async () =>
   const pg = await s.view("bonds_by_team", [s.me, 0, 50, now()]);
   doc.bonds.C = pg.items.find((x) => x.name === "RUGDEMO copycat")?.bond_id; save();
   return { ok: w.ok && !!doc.bonds.C, tx: w.hash, bond_id: doc.bonds.C };
-});
-
-// 3. the first check of A: the start block read, the pair checked (wait for the start block to be finalized)
-await step("first_check_A", "the first rug check of bond A reads the start block", async () => {
-  const k = cl("keeper");
-  for (let i = 0; i < 400; i++) {                 // Base Sepolia's finalized head trails the tip by about 4.4 hours
-    const w = await k.write("check", [A]);
-    if (w.ok) return { ok: ["SCANNED", "HELD"].includes(w.returned?.result), tx: w.hash, returned: w.returned };
-    console.log("   ", (w.reason ?? "").slice(0, 60), "- waiting for finality");
-    await sleep(90000);
-  }
-  return { ok: false };
-});
-const g = cl("stranger", GATE);
-await step("gate_active", "LaunchGate: check_for(RUGDEMO, A) is ACTIVE_HELD_SO_FAR; is_safe_for(RUGDEMO, team) safe", async () => {
-  const a = await g.view("check_for", [RUG.token, A]);
-  const t = await g.view("is_safe_for", [RUG.token, ad("team")]);
-  const wrong = await g.view("check_for", [HOLD.token, A]);
-  const cop = await g.view("is_safe_for", [RUG.token, ad("stranger")]);
-  return { ok: a.state === "ACTIVE_HELD_SO_FAR" && a.safe === true && t.safe === true && wrong.state === "NO_BOND" && cop.safe === false,
-    check_for: a, is_safe_for: t, wrong_token: wrong, copycat_team: cop };
-});
-await step("gate_attest", "LaunchGate: attest(RUGDEMO, A) stored on chain", async () => {
-  const w = await g.write("attest", [RUG.token, A]);
-  return { ok: w.ok && w.returned?.state === "ACTIVE_HELD_SO_FAR", tx: w.hash, returned: w.returned };
 });
 
 // 4. on Base Sepolia: after the start, the team hands tokens to a fresh wallet and the deployer buys; then the rug
@@ -173,6 +148,34 @@ await step("evm_rug", "Base Sepolia: the team removes RUGDEMO's liquidity (remov
   runEvm("rug");
   const r = evm().RUGDEMO;
   return { ok: !!r.rug_block, rug_block: r.rug_block, rug_tx: r.rug_tx };
+});
+
+// 5a. the first check of A: the start block read, the pair checked. Base Sepolia's finalized head trails its tip
+// by about 4.4 hours, so this waits; the rug (minutes after the start) is usually still past the finalized head,
+// and LaunchGate then answers ACTIVE_HELD_SO_FAR from that read
+await step("first_check_A", "the first rug check of bond A reads the start block", async () => {
+  const k = cl("keeper");
+  for (let i = 0; i < 400; i++) {                 // Base Sepolia's finalized head trails the tip by about 4.4 hours
+    const w = await k.write("check", [A]);
+    if (w.ok) return { ok: ["SCANNED", "HELD"].includes(w.returned?.result), tx: w.hash, returned: w.returned };
+    console.log("   ", (w.reason ?? "").slice(0, 60), "- waiting for finality");
+    await sleep(90000);
+  }
+  return { ok: false };
+});
+const g = cl("stranger", GATE);
+await step("gate_active", "LaunchGate before the rug is read: ACTIVE_HELD_SO_FAR (or RUGGED_PAYING if the first read already reached the rug)", async () => {
+  const a = await g.view("check_for", [RUG.token, A]);
+  if (a.state === "RUGGED_PAYING") return { ok: true, check_for: a, note: "the first read already reached the rug block" };
+  const t = await g.view("is_safe_for", [RUG.token, ad("team")]);
+  const wrong = await g.view("check_for", [HOLD.token, A]);
+  const cop = await g.view("is_safe_for", [RUG.token, ad("stranger")]);
+  return { ok: a.state === "ACTIVE_HELD_SO_FAR" && a.safe === true && t.safe === true && wrong.state === "NO_BOND" && cop.safe === false,
+    check_for: a, is_safe_for: t, wrong_token: wrong, copycat_team: cop };
+});
+await step("gate_attest", "LaunchGate: attest(RUGDEMO, A) stored on chain", async () => {
+  const w = await g.write("attest", [RUG.token, A]);
+  return { ok: w.ok && ["ACTIVE_HELD_SO_FAR", "RUGGED_PAYING"].includes(w.returned?.state), tx: w.hash, returned: w.returned };
 });
 
 // 5. rug checks until RUGGED

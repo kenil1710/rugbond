@@ -38,7 +38,7 @@ class CheckFor(unittest.TestCase):
     def test_stale_read_pending(self):
         w, reg, gate, s, bid = setup()
         check(w, reg, bid)
-        w.advance(1801 + 3600)
+        w.advance(6 * 3600 + 3601)
         r = cf(w, gate, s.token, bid)
         self.assertEqual(r["state"], "PENDING")
         self.assertIn("stale", r["why"])
@@ -47,9 +47,9 @@ class CheckFor(unittest.TestCase):
         w, reg, gate, s, bid = setup()
         check(w, reg, bid)
         cts = get(w, reg, bid)["cursor_ts"]
-        w.set_time(cts + 1800)
+        w.set_time(cts + 6 * 3600)
         self.assertEqual(cf(w, gate, s.token, bid)["state"], "ACTIVE_HELD_SO_FAR")
-        w.set_time(cts + 1801)
+        w.set_time(cts + 6 * 3600 + 1)
         self.assertEqual(cf(w, gate, s.token, bid)["state"], "PENDING")
 
     def test_last_check_pending_is_pending(self):
