@@ -5,6 +5,69 @@
   "explorer": "https://explorer-studio-dev.genlayer.com/",
   "contracts": {
     "RugBond": {
+      "address": "0x07ED56951513d01B06f350476C4501015256aB2c",
+      "deploy_tx": "0x00b750da0f9623eeb0635d39c09868746c00b92ee945cd846d3f8b2bebf420bc",
+      "file": "build/RugBond.py",
+      "source": "contracts/RugBond.py",
+      "commit": "0c24fde411e074477c967603c7b6ff7e46cf5773",
+      "bytes": 68669,
+      "sha256": "992bd10c4b662ba6008f285292b9fbe4a461d5e5cd625866dd2c72879ba27c38",
+      "constructor_args": [
+        "CANONICAL"
+      ],
+      "deployer": "0xDd4B5DeFd7198C5A4597655323b851967d7a814F",
+      "deployed_at": "2026-11-11T08:48:03.041Z",
+      "mode": "CANONICAL"
+    },
+    "RugBondDemo": {
+      "address": "0x6dfF7cFEb1e4e13b7FAC28e0CDf7807a742b9dA6",
+      "deploy_tx": "0xc4b237a79c7c10e1a2d96fdd809dcf6244a5f3d88a4f55c1c7e69ae48a1f4ca5",
+      "file": "build/RugBond.py",
+      "source": "contracts/RugBond.py",
+      "commit": "0c24fde411e074477c967603c7b6ff7e46cf5773",
+      "bytes": 68669,
+      "sha256": "992bd10c4b662ba6008f285292b9fbe4a461d5e5cd625866dd2c72879ba27c38",
+      "constructor_args": [
+        "DEMO"
+      ],
+      "deployer": "0xDd4B5DeFd7198C5A4597655323b851967d7a814F",
+      "deployed_at": "2026-11-11T08:48:09.693Z",
+      "mode": "DEMO"
+    },
+    "LaunchGate": {
+      "address": "0x72e4B537b2e6d98745B4b852af9f1e1C388b3804",
+      "deploy_tx": "0x02a42123eb258e719b5587cb1101351fb855e8b3d25f010708d345207d8341c0",
+      "file": "build/LaunchGate.py",
+      "source": "contracts/LaunchGate.py",
+      "commit": "0c24fde411e074477c967603c7b6ff7e46cf5773",
+      "bytes": 23371,
+      "sha256": "4fbb1978fd475172c7ec48b841151a25dd19df7fb037710fbec74a5cf0f07288",
+      "constructor_args": [
+        "0x07ED56951513d01B06f350476C4501015256aB2c"
+      ],
+      "deployer": "0xDd4B5DeFd7198C5A4597655323b851967d7a814F",
+      "deployed_at": "2026-11-11T08:48:15.491Z",
+      "mode": "CANONICAL"
+    },
+    "LaunchGateDemo": {
+      "address": "0x87cA26b544Cff0ba752f44EACe31013e55A3f82d",
+      "deploy_tx": "0x36cc119078d1280126182c8a48938fb828b7bfa5dfe0ad26a1f674662b3ec005",
+      "file": "build/LaunchGate.py",
+      "source": "contracts/LaunchGate.py",
+      "commit": "0c24fde411e074477c967603c7b6ff7e46cf5773",
+      "bytes": 23371,
+      "sha256": "4fbb1978fd475172c7ec48b841151a25dd19df7fb037710fbec74a5cf0f07288",
+      "constructor_args": [
+        "0x6dfF7cFEb1e4e13b7FAC28e0CDf7807a742b9dA6"
+      ],
+      "deployer": "0xDd4B5DeFd7198C5A4597655323b851967d7a814F",
+      "deployed_at": "2026-11-11T08:48:21.265Z",
+      "mode": "DEMO"
+    }
+  },
+  "superseded": [
+    {
+      "name": "RugBond",
       "address": "0x24ff68A1adc70B9EA9eEE518a5f912ce65eb2CAE",
       "deploy_tx": "0x0a33e388f8586872225b035ec4117f738120ef29ee24e2ba835a6f2353056de5",
       "file": "build/RugBond.py",
@@ -17,9 +80,12 @@
       ],
       "deployer": "0xDd4B5DeFd7198C5A4597655323b851967d7a814F",
       "deployed_at": "2026-11-10T12:46:32.142Z",
-      "mode": "CANONICAL"
+      "mode": "CANONICAL",
+      "superseded_by": "0x07ED56951513d01B06f350476C4501015256aB2c",
+      "why": "claim rule: min(balance at start, at R-1) and received-from-team exclusion"
     },
-    "RugBondDemo": {
+    {
+      "name": "RugBondDemo",
       "address": "0xbaa8FD3ecdCef962A59cc71a335B81E0Cf9b5016",
       "deploy_tx": "0xe49d37d86db8ad97e1209a1bf89be453cad43353e8af42ceb84a7b970ec488d6",
       "file": "build/RugBond.py",
@@ -32,9 +98,12 @@
       ],
       "deployer": "0xDd4B5DeFd7198C5A4597655323b851967d7a814F",
       "deployed_at": "2026-11-10T12:46:45.093Z",
-      "mode": "DEMO"
+      "mode": "DEMO",
+      "superseded_by": "0x6dfF7cFEb1e4e13b7FAC28e0CDf7807a742b9dA6",
+      "why": "claim rule: min(balance at start, at R-1) and received-from-team exclusion"
     },
-    "LaunchGate": {
+    {
+      "name": "LaunchGate",
       "address": "0x58E6D16082fE2Cb0FB38F8e1Ea407e5dc72280FF",
       "deploy_tx": "0xf66ca2694baaa6a2557213e7c13d1de403c7746e6eb050f8ae8dff32ce33cd0e",
       "file": "build/LaunchGate.py",
@@ -47,9 +116,12 @@
       ],
       "deployer": "0xDd4B5DeFd7198C5A4597655323b851967d7a814F",
       "deployed_at": "2026-11-10T12:46:50.960Z",
-      "mode": "CANONICAL"
+      "mode": "CANONICAL",
+      "superseded_by": "0x72e4B537b2e6d98745B4b852af9f1e1C388b3804",
+      "why": "claim rule: min(balance at start, at R-1) and received-from-team exclusion"
     },
-    "LaunchGateDemo": {
+    {
+      "name": "LaunchGateDemo",
       "address": "0x75089E0b8C9027bf43561431f93E38DeA3D71303",
       "deploy_tx": "0xd9d0c0e645d1bfd8eece73b860d124eb11066d87aeb08cd577f62e3cc39676c7",
       "file": "build/LaunchGate.py",
@@ -62,7 +134,9 @@
       ],
       "deployer": "0xDd4B5DeFd7198C5A4597655323b851967d7a814F",
       "deployed_at": "2026-11-10T12:47:01.098Z",
-      "mode": "DEMO"
+      "mode": "DEMO",
+      "superseded_by": "0x87cA26b544Cff0ba752f44EACe31013e55A3f82d",
+      "why": "claim rule: min(balance at start, at R-1) and received-from-team exclusion"
     }
-  }
+  ]
 }

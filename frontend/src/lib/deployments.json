@@ -1,55 +1,55 @@
 {
-  "commit": "ede6ade9a488bf42a30f1c3fd65345cd3de6bdeb",
+  "commit": "0c24fde411e074477c967603c7b6ff7e46cf5773",
   "network": "studiodev",
   "chain_id": 61997,
   "explorer": "https://explorer-studio-dev.genlayer.com/",
-  "registry": "0x24ff68A1adc70B9EA9eEE518a5f912ce65eb2CAE",
-  "registryDemo": "0xbaa8FD3ecdCef962A59cc71a335B81E0Cf9b5016",
-  "gate": "0x58E6D16082fE2Cb0FB38F8e1Ea407e5dc72280FF",
-  "gateDemo": "0x75089E0b8C9027bf43561431f93E38DeA3D71303",
+  "registry": "0x07ED56951513d01B06f350476C4501015256aB2c",
+  "registryDemo": "0x6dfF7cFEb1e4e13b7FAC28e0CDf7807a742b9dA6",
+  "gate": "0x72e4B537b2e6d98745B4b852af9f1e1C388b3804",
+  "gateDemo": "0x87cA26b544Cff0ba752f44EACe31013e55A3f82d",
   "contracts": {
     "RugBond": {
-      "address": "0x24ff68A1adc70B9EA9eEE518a5f912ce65eb2CAE",
+      "address": "0x07ED56951513d01B06f350476C4501015256aB2c",
       "file": "build/RugBond.py",
-      "sha256": "188d9135b632689c1d1ff24a014bcaad28aeecec08142bf6045c7c1b1309c541",
-      "bytes": 64597,
-      "commit": "ede6ade9a488bf42a30f1c3fd65345cd3de6bdeb",
-      "deploy_tx": "0x0a33e388f8586872225b035ec4117f738120ef29ee24e2ba835a6f2353056de5",
+      "sha256": "992bd10c4b662ba6008f285292b9fbe4a461d5e5cd625866dd2c72879ba27c38",
+      "bytes": 68669,
+      "commit": "0c24fde411e074477c967603c7b6ff7e46cf5773",
+      "deploy_tx": "0x00b750da0f9623eeb0635d39c09868746c00b92ee945cd846d3f8b2bebf420bc",
       "constructor_args": [
         "CANONICAL"
       ]
     },
     "RugBondDemo": {
-      "address": "0xbaa8FD3ecdCef962A59cc71a335B81E0Cf9b5016",
+      "address": "0x6dfF7cFEb1e4e13b7FAC28e0CDf7807a742b9dA6",
       "file": "build/RugBond.py",
-      "sha256": "188d9135b632689c1d1ff24a014bcaad28aeecec08142bf6045c7c1b1309c541",
-      "bytes": 64597,
-      "commit": "ede6ade9a488bf42a30f1c3fd65345cd3de6bdeb",
-      "deploy_tx": "0xe49d37d86db8ad97e1209a1bf89be453cad43353e8af42ceb84a7b970ec488d6",
+      "sha256": "992bd10c4b662ba6008f285292b9fbe4a461d5e5cd625866dd2c72879ba27c38",
+      "bytes": 68669,
+      "commit": "0c24fde411e074477c967603c7b6ff7e46cf5773",
+      "deploy_tx": "0xc4b237a79c7c10e1a2d96fdd809dcf6244a5f3d88a4f55c1c7e69ae48a1f4ca5",
       "constructor_args": [
         "DEMO"
       ]
     },
     "LaunchGate": {
-      "address": "0x58E6D16082fE2Cb0FB38F8e1Ea407e5dc72280FF",
+      "address": "0x72e4B537b2e6d98745B4b852af9f1e1C388b3804",
       "file": "build/LaunchGate.py",
-      "sha256": "8d832d46aa1f3e3aaeb539c17c46bc837cc7eba01db43a2b05fa09686fa142a2",
-      "bytes": 21988,
-      "commit": "ede6ade9a488bf42a30f1c3fd65345cd3de6bdeb",
-      "deploy_tx": "0xf66ca2694baaa6a2557213e7c13d1de403c7746e6eb050f8ae8dff32ce33cd0e",
+      "sha256": "4fbb1978fd475172c7ec48b841151a25dd19df7fb037710fbec74a5cf0f07288",
+      "bytes": 23371,
+      "commit": "0c24fde411e074477c967603c7b6ff7e46cf5773",
+      "deploy_tx": "0x02a42123eb258e719b5587cb1101351fb855e8b3d25f010708d345207d8341c0",
       "constructor_args": [
-        "0x24ff68A1adc70B9EA9eEE518a5f912ce65eb2CAE"
+        "0x07ED56951513d01B06f350476C4501015256aB2c"
       ]
     },
     "LaunchGateDemo": {
-      "address": "0x75089E0b8C9027bf43561431f93E38DeA3D71303",
+      "address": "0x87cA26b544Cff0ba752f44EACe31013e55A3f82d",
       "file": "build/LaunchGate.py",
-      "sha256": "8d832d46aa1f3e3aaeb539c17c46bc837cc7eba01db43a2b05fa09686fa142a2",
-      "bytes": 21988,
-      "commit": "ede6ade9a488bf42a30f1c3fd65345cd3de6bdeb",
-      "deploy_tx": "0xd9d0c0e645d1bfd8eece73b860d124eb11066d87aeb08cd577f62e3cc39676c7",
+      "sha256": "4fbb1978fd475172c7ec48b841151a25dd19df7fb037710fbec74a5cf0f07288",
+      "bytes": 23371,
+      "commit": "0c24fde411e074477c967603c7b6ff7e46cf5773",
+      "deploy_tx": "0x36cc119078d1280126182c8a48938fb828b7bfa5dfe0ad26a1f674662b3ec005",
       "constructor_args": [
-        "0xbaa8FD3ecdCef962A59cc71a335B81E0Cf9b5016"
+        "0x6dfF7cFEb1e4e13b7FAC28e0CDf7807a742b9dA6"
       ]
     }
   }
