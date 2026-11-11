@@ -58,6 +58,18 @@ for (const c of held) {
   L.push(`| ${c.id} | ${al(c.chain, c.token)} | ${al(c.chain, c.pair)} | ${c.lp_holders.map((h) => al(c.chain, h)).join(" ")} | ${cc.locker ?? "team-held"} | ${eth(c.min_lp)} | ${bl(c.chain, c.start_block)} | ${iso(c.end_time)} | ${bl(c.chain, c.end_block)} (${iso(c.end_ts)}) | ${genvm(c.id)} |`);
 }
 L.push("", "Public source: the LP holder's balance of the pair token on Etherscan; for the locked one, the UNCX locker (0x663a5c229c09b049e36dcc11a9b0d4a8eb9db214) holds it.", "");
+L.push("## GenVM: endpoints from Studio's validators", "");
+L.push("One batch per endpoint (finalized head, archive eth_call, filtered eth_getLogs over 1000 Base or 9999 Ethereum blocks) sent from inside GenVM by the probe:", "");
+L.push("| chain | endpoint | result |", "|---|---|---|");
+for (const e of G.endpoints ?? []) L.push(`| ${e.chain} | ${e.url} | ${e.result.join(" · ")} |`);
+L.push("", "Only Tenderly answers Base mainnet eth_getLogs from Studio (thirdweb refuses Studio's address, mainnet.base.org disables logs, dRPC and Blast API cap the range), so Base mainnet cannot meet the two-source rule inside GenVM; its rugs above were read from this machine. Under consensus (every validator reading at once) Tenderly's public gateway answers about one request per validator, so it serves only the log windows on Ethereum; MEV Blocker and Blast API serve the state reads.", "");
+const bs = existsSync(new URL("docs/feasibility_base_sepolia_genvm.json", root)) ? JSON.parse(readFileSync(new URL("docs/feasibility_base_sepolia_genvm.json", root))) : null;
+if (bs) L.push(`Base Sepolia (the demo chain): a full check of the real Uniswap V2 pair ${bs.pair}, blocks ${bs.range[0]}-${bs.range[1]}, read inside GenVM (transaction \`${bs.tx}\`): identical to this machine's read.`, "");
+if (G.claim_reads) {
+  L.push("Claim reads (balance at the start block and at R-1, code, transfers from team senders), inside GenVM:", "");
+  for (const r of G.claim_reads.rows) L.push(`- ${r.key}: ${r.identical ? "identical" : "DIFFERENT"} (transaction \`${r.tx}\`)`);
+  L.push("");
+}
 L.push("## GenVM reads", "");
 L.push("| key | transaction | result | identical to the Mac |", "|---|---|---|---|");
 for (const r of G.rows) L.push(`| ${r.key} | ${r.tx ? "`" + r.tx.slice(0, 18) + "..`" : ""} | ${r.kind === "check" ? (r.genvm?.rug ? "R " + r.genvm.rug : "b " + (r.genvm?.b ?? "")) : "balance " + (r.genvm?.balance ?? JSON.stringify(r.genvm))} | ${r.identical ? "yes" : "NO"} |`);

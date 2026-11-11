@@ -812,5 +812,36 @@
    "mac_reason": "",
    "sha_genvm": 543
   }
- ]
+ ],
+ "claim_reads": {
+  "probe": "0x4fF586D794BD58a222d81356d27d4Ac9B4AF6434",
+  "rows": [
+   {
+    "key": "claim:eth-02:0x8c8723ab182b1dffe08391e5062efd020cc576b0",
+    "tx": "0xbf8014668671be83e3078e5961b6379e7a82eaa1b8d6d9334f0ed6c736f45805",
+    "status": "ACCEPTED",
+    "genvm": {
+     "balance": "6058089165307452392862894",
+     "code": false,
+     "delegated": true,
+     "from_team": [],
+     "start_balance": 0
+    },
+    "identical": true
+   },
+   {
+    "key": "claim:eth-21:0x8c8723ab182b1dffe08391e5062efd020cc576b0",
+    "tx": "0xe2d120792b144646010c3b659ab8e94c5de355a34507c0949501149c712a4759",
+    "status": "ACCEPTED",
+    "genvm": {
+     "balance": "148235024636444734083678063",
+     "code": false,
+     "delegated": true,
+     "from_team": [],
+     "start_balance": 0
+    },
+    "identical": true
+   }
+  ]
+ }
 }
