@@ -1,0 +1,30 @@
+{
+ "note": "Settles sent by a keeper pass run by hand (node tools/keeper.mjs, the same code and keeper account as the scheduled workflow) on 2026-11-12; its state file was local, so the transactions are recorded here.",
+ "keeper": "0xfEC989fC1176c5524C3b20ef2c09bca724d6BD4e",
+ "settles": [
+  {
+   "address": "0x42f22d3C3d782E678C0561217276be836cba93fb",
+   "bond_id": 7,
+   "tx": "0xdbccc168adc0e8da44cb295647fd7296471f057f2aed4325e0a609ff12177f2c",
+   "payee": "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7",
+   "submitted_at": 1794480624,
+   "result": "CLOSED"
+  },
+  {
+   "address": "0x42f22d3C3d782E678C0561217276be836cba93fb",
+   "bond_id": 8,
+   "tx": "0x5bc70bb6d8df1359fc9ac90eb54f1fa42e1d6acf168db09ee310b2de78880f2c",
+   "payee": "0x0272651ae66438836a2bbc2e4ef3598831f8ad41",
+   "submitted_at": 1794480646,
+   "result": "RETURNED"
+  },
+  {
+   "address": "0x42f22d3C3d782E678C0561217276be836cba93fb",
+   "bond_id": 14,
+   "tx": "0x9bbf3de792d5df3e6e0f95f3adf924fe3c67bfbf826a3c5b5b198b3c7d4ff958",
+   "payee": "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7",
+   "submitted_at": 1794480704,
+   "result": "CLOSED"
+  }
+ ]
+}

@@ -49,6 +49,8 @@ try {
     }
   }
 } catch (e) { console.log("keeper-state history unreadable: " + String(e.message).slice(0, 120)); }
+// settles from a keeper pass run by hand, whose state file never reached the branch
+try { for (const x of JSON.parse(readFileSync(new URL("../docs/keeper-hand-run.json", import.meta.url))).settles) { const k = `${String(x.address).toLowerCase()}:${x.bond_id}`; if (!settles.has(k)) settles.set(k, x.tx); } } catch { /* none */ }
 
 /** Every agreed check GenVM stored for this bond, re-read from this machine with the same cursor, span and bound. */
 async function sameReads(address, b) {

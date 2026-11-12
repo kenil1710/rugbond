@@ -16,14 +16,14 @@ Verdicts as expected: **17/17**. Settled: 17/17. eth_getBalance of the registry 
 | eth-04 | 4 | RUGGED | CLOSED | 25714292 / 25714292 | 1 | fund | 0.040000 | `0xc5f98f8b1344…` | yes |
 | eth-05 | 5 | RUGGED | CLOSED | 25702677 / 25702677 | 1 | fund | 0.050000 | `0x2851213c082e…` | yes |
 | eth-06 | 6 | RUGGED | CLOSED | 25712799 / 25712799 | 1 | fund | 0.060000 | `0xb187f7cd59d0…` | yes |
-| eth-07 | 7 | RUGGED | CLOSED | 25707372 / 25707372 | 2 | fund | 0.070000 | — | — |
-| eth-14 | 8 | HELD | RETURNED | — | 3 | launchpad | 0.080000 | — | — |
+| eth-07 | 7 | RUGGED | CLOSED | 25707372 / 25707372 | 2 | fund | 0.070000 | `0xdbccc168adc0…` | yes |
+| eth-14 | 8 | HELD | RETURNED | — | 3 | launchpad | 0.080000 | `0x5bc70bb6d8df…` | yes |
 | eth-15 | 9 | HELD | RETURNED | — | 3 | launchpad | 0.090000 | `0xfb4f9f32029a…` | yes |
 | eth-16 | 10 | HELD | RETURNED | — | 1 | launchpad | 0.100000 | `0xab68b39f918d…` | yes |
 | eth-17 | 11 | HELD | RETURNED | — | 1 | launchpad | 0.110000 | `0xf6526c1b09aa…` | yes |
 | eth-18 | 12 | HELD | RETURNED | — | 1 | launchpad | 0.120000 | `0xd7f4aa0a8d95…` | yes |
 | eth-19 | 13 | HELD | RETURNED | — | 1 | launchpad | 0.130000 | `0x17a5a5c95aad…` | yes |
-| eth-20 | 14 | RUGGED | CLOSED | 25700691 / 25700691 | 2 | fund | 0.140000 | — | — |
+| eth-20 | 14 | RUGGED | CLOSED | 25700691 / 25700691 | 2 | fund | 0.140000 | `0x9bbf3de792d5…` | yes |
 | eth-21 | 15 | RUGGED | CLOSED | 25702916 / 25702916 | 1 | fund | 0.150000 | `0x0ce9a72aced9…` | yes |
 | eth-22 | 16 | RUGGED | CLOSED | 25701193 / 25701193 | 1 | fund | 0.160000 | `0xa4c251a3510c…` | yes |
 | eth-23 | 17 | RUGGED | CLOSED | 25704885 / 25704885 | 1 | fund | 0.170000 | `0x1d918ccfcdf7…` | yes |

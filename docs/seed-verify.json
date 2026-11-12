@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-12T11:45:44.504Z",
+ "generated_at": "2026-11-12T11:59:47.807Z",
  "registries": [
   {
    "label": "current canonical registry",
@@ -223,7 +223,12 @@
      "settled_at": 1794480624,
      "to_fund": true,
      "to_launchpad": false,
-     "settle_proof": null,
+     "settle_proof": {
+      "tx": "0xdbccc168adc0e8da44cb295647fd7296471f057f2aed4325e0a609ff12177f2c",
+      "status": "FINALIZED",
+      "delivered": true,
+      "why": ""
+     },
      "reads": {
       "checks": 1,
       "identical": 1,
@@ -251,7 +256,12 @@
      "settled_at": 1794480646,
      "to_fund": false,
      "to_launchpad": true,
-     "settle_proof": null,
+     "settle_proof": {
+      "tx": "0x5bc70bb6d8df1359fc9ac90eb54f1fa42e1d6acf168db09ee310b2de78880f2c",
+      "status": "FINALIZED",
+      "delivered": true,
+      "why": ""
+     },
      "reads": {
       "checks": 2,
       "identical": 2,
@@ -444,7 +454,12 @@
      "settled_at": 1794480703,
      "to_fund": true,
      "to_launchpad": false,
-     "settle_proof": null,
+     "settle_proof": {
+      "tx": "0x9bbf3de792d5df3e6e0f95f3adf924fe3c67bfbf826a3c5b5b198b3c7d4ff958",
+      "status": "FINALIZED",
+      "delivered": true,
+      "why": ""
+     },
      "reads": {
       "checks": 1,
       "identical": 1,

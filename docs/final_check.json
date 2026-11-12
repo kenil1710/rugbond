@@ -1,7 +1,7 @@
 {
- "at": "2026-11-11T21:29:06.165Z",
- "head": "c5517bd9ce6ad0e804a50066983550e87b745394",
- "passed": 12,
+ "at": "2026-11-12T11:58:10.352Z",
+ "head": "4acea25277284edaaa66309b552113ffb9758847",
+ "passed": 10,
  "total": 12,
  "checks": [
   {
@@ -12,42 +12,42 @@
   {
    "name": "source match",
    "ok": true,
-   "detail": "4/4 contracts read back from Studio Dev are byte-identical to build/ at f28753d and HEAD; all from one commit: true"
+   "detail": "4/4 contracts read back from Studio Dev are byte-identical to build/ at 9c8495e and HEAD; all from one commit: true"
   },
   {
    "name": "addresses consistent",
-   "ok": true,
-   "detail": "the four deployed addresses appear in README.md, docs/SUBMISSION.md, docs/SEEDS.md, docs/DEMO.md, frontend/src/lib/deployments.json"
+   "ok": false,
+   "detail": "docs/SUBMISSION.md lacks 0x42f22d3c3d782e678c0561217276be836cba93fb; docs/SUBMISSION.md lacks 0x40ab41033194dfa35aef2e7b295efe3af6ab5715; docs/SUBMISSION.md lacks 0xf079a5119a0997e9d6b47b83e52ef6f3eff03821; docs/SUBMISSION.md lacks 0xf851bc4dd469cccdb384bcdb2a480eb1255e312b"
   },
   {
    "name": "links",
    "ok": true,
-   "detail": "253 distinct links, 20 checked (one per page shape): 18 answered 200; 2 explorer pages that serve browsers only (sepolia.basescan.org (403))"
+   "detail": "251 distinct links, 20 checked (one per page shape): 13 answered 200; 7 explorer pages that serve browsers only (sepolia.basescan.org (403), basescan.org (403))"
   },
   {
    "name": "canonical replays decided and settled",
    "ok": true,
-   "detail": "17 replay bonds on 0x4D2a5e250a419b1D1798E103F80A23aC5be59a23: 17 at the expected verdict and rug block; 17 settled (11 to the victim fund after the claim window, 6 back to the launchpad)"
+   "detail": "17 replay bonds on 0x42f22d3C3d782E678C0561217276be836cba93fb: 17 at the expected verdict and rug block; 17 settled (11 to the registry's fund after a claim window in which nobody claimed, 6 back to the launchpad); 19/19 checks stored by GenVM read identically from this machine"
   },
   {
    "name": "payouts arrived",
-   "ok": true,
-   "detail": "51 canonical settle payouts finalized and delivered to their recipients; 7 demo payouts finalized, delivered and matched by the recipient's balance delta"
+   "ok": false,
+   "detail": "65 canonical settle payouts finalized and delivered to their recipients; 13 demo payouts finalized, delivered and matched by the recipient's balance delta; 0x42f22d3C bond 7: no settle transaction found; 0x42f22d3C bond 8: no settle transaction found; 0x42f22d3C bond 14: no settle transaction found"
   },
   {
    "name": "balances match ledgers",
    "ok": true,
-   "detail": "RugBond 0x4D2a5e25: eth_getBalance 0 wei, ledger holds 0; RugBondDemo 0x3491AAC8: eth_getBalance 0 wei, ledger holds 0; RugBond (superseded) 0x24ff68A1: eth_getBalance 0 wei, ledger holds 0; RugBondDemo (superseded) 0xbaa8FD3e: eth_getBalance 0 wei, ledger holds 0; RugBond (superseded) 0x07ED5695: eth_getBalance 0 wei, ledger holds 0; RugBondDemo (superseded) 0x6dfF7cFE: eth_getBalance 0 wei, ledger holds 0; the current registries are at 0"
+   "detail": "RugBond 0x42f22d3C: eth_getBalance 0 wei, ledger holds 0; RugBondDemo 0x40aB4103: eth_getBalance 0 wei, ledger holds 0; RugBond (superseded) 0x24ff68A1: eth_getBalance 0 wei, ledger holds 0; RugBondDemo (superseded) 0xbaa8FD3e: eth_getBalance 0 wei, ledger holds 0; RugBond (superseded) 0x07ED5695: eth_getBalance 0 wei, ledger holds 0; RugBondDemo (superseded) 0x6dfF7cFE: eth_getBalance 0 wei, ledger holds 0; RugBond (superseded) 0x4D2a5e25: eth_getBalance 0 wei, ledger holds 0; RugBondDemo (superseded) 0x3491AAC8: eth_getBalance 0 wei, ledger holds 0; the current registries are at 0"
   },
   {
    "name": "keeper",
    "ok": true,
-   "detail": "last run finished 1.6 h ago (schedule); 0 failed actions; latest successful scheduled run: https://github.com/kenil1710/rugbond/actions/runs/43091284627"
+   "detail": "last run finished 0.2 h ago (workflow_dispatch); 0 failed actions; latest successful scheduled run since the deployment (2026-11-12T04:53:01.073Z): https://github.com/kenil1710/rugbond/actions/runs/43177480645"
   },
   {
    "name": "tests",
    "ok": true,
-   "detail": "offline contract suite 347 tests, keeper suite 21 tests, Direct Mode 18 tests; all pass: true"
+   "detail": "offline contract suite 406 tests, keeper suite 26 tests, Direct Mode 24 tests; all pass: true"
   },
   {
    "name": "docs language",
@@ -62,7 +62,7 @@
   {
    "name": "e2e",
    "ok": true,
-   "detail": "Playwright on https://rugbond.vercel.app (the site's production build), demo registry 0x3491AAC81ec96B05B50B25AD9F8b3CAeE7fF51b8: 1 passed, 0 failed; steps wallet, setup, rug_check_click, rugged, claimed, refused, created, closed (docs/e2e/)"
+   "detail": "Playwright on https://rugbond.vercel.app (the site's production build), demo registry 0x40aB41033194DFA35aeF2e7b295eFe3AF6ab5715: 1 passed, 0 failed; steps wallet, setup, rug_check_click, rugged, claimed, refused, created, closed (docs/e2e/)"
   }
  ]
 }
