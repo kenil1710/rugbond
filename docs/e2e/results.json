@@ -65,7 +65,7 @@
       "specs": [
         {
           "title": "rug check, claim, refusal, create, close on the demo registry",
-          "ok": false,
+          "ok": true,
           "tags": [],
           "tests": [
             {
@@ -78,361 +78,30 @@
                 {
                   "workerIndex": 0,
                   "parallelIndex": 0,
-                  "status": "failed",
-                  "duration": 5031355,
-                  "error": {
-                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('status').last()\nExpected pattern: \u001b[32m/accepted|finalized/i\u001b[39m\nReceived string:  \u001b[31m\"failed · The transaction was canceled. · tx 0x998a739c…\"\u001b[39m\nTimeout: 1200000ms\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" with timeout 1200000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('status').last()\u001b[22m\n\u001b[2m    8 × locator resolved to <p class=\"note\" role=\"status\" aria-live=\"polite\">…</p>\u001b[22m\n\u001b[2m      - unexpected value \"signing · Waiting for your wallet to sign.\"\u001b[22m\n\u001b[2m    75 × locator resolved to <p class=\"note\" role=\"status\" aria-live=\"polite\">…</p>\u001b[22m\n\u001b[2m       - unexpected value \"submitted · Submitted. Validators are processing it; every validator reads the chain from two RPCs, which takes a minute or two. · tx 0x998a739c…\"\u001b[22m\n\u001b[2m    1114 × locator resolved to <p role=\"status\" class=\"note warn\" aria-live=\"polite\">…</p>\u001b[22m\n\u001b[2m         - unexpected value \"failed · The transaction was canceled. · tx 0x998a739c…\"\u001b[22m\n",
-                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('status').last()\nExpected pattern: \u001b[32m/accepted|finalized/i\u001b[39m\nReceived string:  \u001b[31m\"failed · The transaction was canceled. · tx 0x998a739c…\"\u001b[39m\nTimeout: 1200000ms\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" with timeout 1200000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('status').last()\u001b[22m\n\u001b[2m    8 × locator resolved to <p class=\"note\" role=\"status\" aria-live=\"polite\">…</p>\u001b[22m\n\u001b[2m      - unexpected value \"signing · Waiting for your wallet to sign.\"\u001b[22m\n\u001b[2m    75 × locator resolved to <p class=\"note\" role=\"status\" aria-live=\"polite\">…</p>\u001b[22m\n\u001b[2m       - unexpected value \"submitted · Submitted. Validators are processing it; every validator reads the chain from two RPCs, which takes a minute or two. · tx 0x998a739c…\"\u001b[22m\n\u001b[2m    1114 × locator resolved to <p role=\"status\" class=\"note warn\" aria-live=\"polite\">…</p>\u001b[22m\n\u001b[2m         - unexpected value \"failed · The transaction was canceled. · tx 0x998a739c…\"\u001b[22m\n\n    at /Users/kenilvakariya/dev/rugbond/e2e/flow.e2e.js:148:34",
-                    "location": {
-                      "file": "/Users/kenilvakariya/dev/rugbond/e2e/flow.e2e.js",
-                      "column": 34,
-                      "line": 148
-                    },
-                    "snippet": "  146 |   await go(page, `/bond/demo-${H}`);\n  147 |   await page.getByRole(\"button\", { name: /Settle/ }).click();\n> 148 |   await expect(statusText(page)).toContainText(/accepted|finalized/i, { timeout: 20 * 60_000 });\n      |                                  ^\n  149 |   let a2 = await balance(address);\n  150 |   for (let i = 0; i < 30 && a2 - b2 <= 0n; i++) { await sleep(10_000); a2 = await balance(address); }\n  151 |   const fin = await view(page, \"get_bond\", [H, Math.floor(Date.now() / 1000)]);"
-                  },
-                  "errors": [
-                    {
-                      "location": {
-                        "file": "/Users/kenilvakariya/dev/rugbond/e2e/flow.e2e.js",
-                        "column": 34,
-                        "line": 148
-                      },
-                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('status').last()\nExpected pattern: \u001b[32m/accepted|finalized/i\u001b[39m\nReceived string:  \u001b[31m\"failed · The transaction was canceled. · tx 0x998a739c…\"\u001b[39m\nTimeout: 1200000ms\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" with timeout 1200000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('status').last()\u001b[22m\n\u001b[2m    8 × locator resolved to <p class=\"note\" role=\"status\" aria-live=\"polite\">…</p>\u001b[22m\n\u001b[2m      - unexpected value \"signing · Waiting for your wallet to sign.\"\u001b[22m\n\u001b[2m    75 × locator resolved to <p class=\"note\" role=\"status\" aria-live=\"polite\">…</p>\u001b[22m\n\u001b[2m       - unexpected value \"submitted · Submitted. Validators are processing it; every validator reads the chain from two RPCs, which takes a minute or two. · tx 0x998a739c…\"\u001b[22m\n\u001b[2m    1114 × locator resolved to <p role=\"status\" class=\"note warn\" aria-live=\"polite\">…</p>\u001b[22m\n\u001b[2m         - unexpected value \"failed · The transaction was canceled. · tx 0x998a739c…\"\u001b[22m\n\n\n  146 |   await go(page, `/bond/demo-${H}`);\n  147 |   await page.getByRole(\"button\", { name: /Settle/ }).click();\n> 148 |   await expect(statusText(page)).toContainText(/accepted|finalized/i, { timeout: 20 * 60_000 });\n      |                                  ^\n  149 |   let a2 = await balance(address);\n  150 |   for (let i = 0; i < 30 && a2 - b2 <= 0n; i++) { await sleep(10_000); a2 = await balance(address); }\n  151 |   const fin = await view(page, \"get_bond\", [H, Math.floor(Date.now() / 1000)]);\n    at /Users/kenilvakariya/dev/rugbond/e2e/flow.e2e.js:148:34"
-                    }
-                  ],
+                  "status": "passed",
+                  "duration": 80869,
+                  "errors": [],
                   "stdout": [
                     {
-                      "text": "wallet {\"address\":\"0xCa0881c0403e080e7099A4351710eeD0F22fB991\",\"note\":\"throwaway key saved in test/.accounts.json by e2e/prepare.mjs before use; funded from the Studio Dev faucet\"}\n"
+                      "text": "created {\"bond\":8}\n"
                     },
                     {
-                      "text": "setup {\"token\":\"0xa9acd221a0c809a1eb2ce829ff07e5b0e493ee4a\",\"pair\":\"0xcb440a697bc21d0796698f1d4b7da19bdf0217f9\",\"bond\":5,\"rug_block\":57765384,\"rug_tx\":\"0x860a51247e74ab5b1c085d8c16a137c112654a16a90cf7e876341fe2713d8f7b\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":5,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x793de9d9…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":5,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xbd02f278…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":5,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xc65f3fea…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":5,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x9d1b89e7…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":5,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x98d49143…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":5,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xac6ffb6c…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":5,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xaae74bb8…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":5,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x568eedc1…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":5,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xd636bc96…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":5,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xb87fb9ab…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":5,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xe59f0cb6…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":5,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x3381cc4e…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":5,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xbd518d6e…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":5,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x9529cef2…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":5,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x8531ea87…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":5,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x354e3bac…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":5,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x220be836…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":5,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x6797cf0e…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":5,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x3be33ad8…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":5,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xc5dd0ff8…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":5,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xeebe6272…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":5,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x75f9af29…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":5,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x0b0ba4b6…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":5,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xae42f12d…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":5,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x2d01cf34…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":5,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x6d734c01…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":5,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x85ed67da…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":5,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x955a3833…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":5,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xd25d4f2b…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":5,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x5b49069e…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":5,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xf1d04cd7…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":5,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x13795620…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":5,\"status\":\"failed · The transaction was canceled. · tx 0x2647327a…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":5,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x47107f17…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":5,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xe652a9e2…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":5,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xd5cf7aa9…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":5,\"status\":\"failed · The transaction was canceled. · tx 0x32b8f12b…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":5,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xe7ba2941…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":5,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x79514ce7…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":5,\"status\":\"accepted · Accepted. Re-reading the contract to confirm. · tx 0xae012f5c…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":5,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x463d3c3b…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":5,\"status\":\"failed · The transaction was canceled. · tx 0x9a7cfaff…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":5,\"status\":\"accepted · Accepted and confirmed in contract state. Payouts arrive when the transaction finalizes. · tx 0x771155de…\"}\n"
-                    },
-                    {
-                      "text": "rugged {\"bond\":5,\"rug_block\":57765384,\"denominator\":\"50000000000000000000000\"}\n"
-                    },
-                    {
-                      "text": "claimed {\"share\":\"400000000000000000\",\"paid_to\":\"0xca0881c0403e080e7099a4351710eed0f22fb991\",\"wallet_delta\":\"400185891350008706\"}\n"
-                    },
-                    {
-                      "text": "refused {\"what\":\"commit_beneficiary after claiming\",\"status\":\"failed · REFUSED: ALREADY_CLAIMED\"}\n"
-                    },
-                    {
-                      "text": "refused {\"bond\":1,\"what\":\"claim on a closed bond\",\"status\":\"claim button disabled: the bond is CLOSED\"}\n"
-                    },
-                    {
-                      "text": "created {\"bond\":7}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xe9b4996e…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x0c8a29b8…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x726f3f66…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xa9c3057d…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xbf211804…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x34457049…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xc5c41a46…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x93aec283…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · The transaction was canceled. · tx 0x2d7f2cff…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x635fc9b3…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xf11824c4…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x94b28166…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xb8e7635d…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x15cb55e0…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x84c4db63…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x825064f5…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x15de9611…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x992f26e9…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xd5e0bfba…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xf0d4aa45…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xaf587886…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xf77eba91…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x08cf0531…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x6d412097…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x209651ce…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xd27798d8…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x5fd9753b…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x55bbf4ca…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x797bced7…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xebc9af2e…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x0330fd6c…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x6094498c…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x754a5e85…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x1b4a3962…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x59a99cda…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x2f4c39c8…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xfd83abfd…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xf4f157ac…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xf167d897…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x9290ca39…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xffc945fc…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xb4ded0b5…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xda1e4d67…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · The transaction was canceled. · tx 0xbf37b617…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"accepted · Accepted. Re-reading the contract to confirm. · tx 0xbee702a7…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x65d0493e…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x56ae9ced…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xb4888ef2…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x0c3bedd1…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x371bc8dc…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xe1f1c579…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"failed · The transaction was canceled. · tx 0xd534e1ee…\"}\n"
-                    },
-                    {
-                      "text": "rug_check_click {\"bond\":7,\"status\":\"accepted · Accepted. Re-reading the contract to confirm. · tx 0x8ef69843…\"}\n"
+                      "text": "closed {\"bond\":8,\"status\":\"RETURNED\",\"settled_to\":\"0xca0881c0403e080e7099a4351710eed0f22fb991\",\"amount\":\"500000000000000000\",\"wallet_delta\":\"499873692499999177\"}\n"
                     }
                   ],
                   "stderr": [
                     {
                       "buffer": ""
-                    },
-                    {
-                      "buffer": ""
-                    },
-                    {
-                      "buffer": ""
-                    },
-                    {
-                      "buffer": ""
                     }
                   ],
                   "retry": 0,
-                  "startTime": "2026-11-12T09:14:34.886Z",
+                  "startTime": "2026-11-12T11:41:05.305Z",
                   "annotations": [],
                   "attachments": [
                     {
                       "name": "screenshot",
                       "contentType": "image/png",
-                      "path": "/Users/kenilvakariya/dev/rugbond/docs/e2e/artifacts/flow.e2e.js-rug-check-clai-ce939--close-on-the-demo-registry/test-failed-1.png"
+                      "path": "/Users/kenilvakariya/dev/rugbond/docs/e2e/artifacts/flow.e2e.js-rug-check-clai-ce939--close-on-the-demo-registry/test-finished-1.png"
                     },
                     {
                       "name": "video",
@@ -440,29 +109,19 @@
                       "path": "/Users/kenilvakariya/dev/rugbond/docs/e2e/artifacts/flow.e2e.js-rug-check-clai-ce939--close-on-the-demo-registry/video.webm"
                     },
                     {
-                      "name": "error-context",
-                      "contentType": "text/markdown",
-                      "path": "/Users/kenilvakariya/dev/rugbond/docs/e2e/artifacts/flow.e2e.js-rug-check-clai-ce939--close-on-the-demo-registry/error-context.md"
-                    },
-                    {
                       "name": "trace",
                       "contentType": "application/zip",
                       "path": "/Users/kenilvakariya/dev/rugbond/docs/e2e/artifacts/flow.e2e.js-rug-check-clai-ce939--close-on-the-demo-registry/trace.zip"
                     }
-                  ],
-                  "errorLocation": {
-                    "file": "/Users/kenilvakariya/dev/rugbond/e2e/flow.e2e.js",
-                    "column": 34,
-                    "line": 148
-                  }
+                  ]
                 }
               ],
-              "status": "unexpected"
+              "status": "expected"
             }
           ],
           "id": "1a3332c7a31688a65eeb-228210e35f4a91ba3453",
           "file": "flow.e2e.js",
-          "line": 59,
+          "line": 61,
           "column": 1
         }
       ]
@@ -470,11 +129,11 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-11-12T09:14:33.949Z",
-    "duration": 5047843.843,
-    "expected": 0,
+    "startTime": "2026-11-12T11:41:04.718Z",
+    "duration": 83843.66100000001,
+    "expected": 1,
     "skipped": 0,
-    "unexpected": 1,
+    "unexpected": 0,
     "flaky": 0
   }
 }

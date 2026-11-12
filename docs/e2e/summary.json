@@ -624,6 +624,349 @@
    "bond": 7,
    "status": "accepted · Accepted. Re-reading the contract to confirm. · tx 0x8ef69843…",
    "at": "2026-11-12T10:18:00.103Z"
+  },
+  {
+   "step": "created",
+   "bond": 8,
+   "at": "2026-11-12T10:50:52.736Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xad388ce6…",
+   "at": "2026-11-12T10:51:08.886Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x798dbb7b…",
+   "at": "2026-11-12T10:51:26.196Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x6ae0384e…",
+   "at": "2026-11-12T10:51:45.842Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x3e3c2d88…",
+   "at": "2026-11-12T10:52:47.878Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x8b0b30db…",
+   "at": "2026-11-12T10:53:01.508Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x1319f873…",
+   "at": "2026-11-12T10:53:14.172Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xf8e23103…",
+   "at": "2026-11-12T10:53:31.917Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xb2de7622…",
+   "at": "2026-11-12T10:53:49.329Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xb84ad067…",
+   "at": "2026-11-12T10:54:26.874Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x8abb1b4d…",
+   "at": "2026-11-12T10:54:39.916Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x92558365…",
+   "at": "2026-11-12T10:54:57.928Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x6182936c…",
+   "at": "2026-11-12T10:55:20.087Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x751f5f6b…",
+   "at": "2026-11-12T10:55:37.214Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x1072049d…",
+   "at": "2026-11-12T10:55:55.681Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed · fee estimate timed out after 30s",
+   "at": "2026-11-12T10:56:30.501Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xd7f430d6…",
+   "at": "2026-11-12T11:01:15.327Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x3a3e638b…",
+   "at": "2026-11-12T11:01:32.646Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xf8614a02…",
+   "at": "2026-11-12T11:01:45.324Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xf3e9efe3…",
+   "at": "2026-11-12T11:02:25.992Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x90a71ce5…",
+   "at": "2026-11-12T11:02:42.257Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x9ef23380…",
+   "at": "2026-11-12T11:03:04.459Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x6e337360…",
+   "at": "2026-11-12T11:03:20.686Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xdad882a5…",
+   "at": "2026-11-12T11:03:36.918Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x63b058b5…",
+   "at": "2026-11-12T11:03:52.896Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xdd07d522…",
+   "at": "2026-11-12T11:04:09.117Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x1cf545bf…",
+   "at": "2026-11-12T11:04:46.294Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x23f0f310…",
+   "at": "2026-11-12T11:05:02.743Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x6f311a8c…",
+   "at": "2026-11-12T11:05:58.437Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xb0033c49…",
+   "at": "2026-11-12T11:06:16.154Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed · An unknown RPC error occurred. Details: Failed to fetch Version: viem@2.57.7",
+   "at": "2026-11-12T11:06:49.378Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xf5b88b4e…",
+   "at": "2026-11-12T11:11:09.023Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xe8e45d83…",
+   "at": "2026-11-12T11:11:27.150Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xcd2812e8…",
+   "at": "2026-11-12T11:11:38.996Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x140348c6…",
+   "at": "2026-11-12T11:11:50.322Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x9749e8f2…",
+   "at": "2026-11-12T11:12:05.769Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x1bb66913…",
+   "at": "2026-11-12T11:12:23.188Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xe79893a1…",
+   "at": "2026-11-12T11:12:40.533Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xb732597f…",
+   "at": "2026-11-12T11:12:52.974Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "accepted · Accepted. Re-reading the contract to confirm. · tx 0x895d2ca3…",
+   "at": "2026-11-12T11:13:14.280Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x9c28e93d…",
+   "at": "2026-11-12T11:13:56.964Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x94d9b8df…",
+   "at": "2026-11-12T11:14:13.775Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xfacb7283…",
+   "at": "2026-11-12T11:14:31.204Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xcac27abd…",
+   "at": "2026-11-12T11:15:34.044Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x2c9709e0…",
+   "at": "2026-11-12T11:15:50.381Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x3a895e28…",
+   "at": "2026-11-12T11:16:02.587Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xfaf3c2c2…",
+   "at": "2026-11-12T11:16:13.920Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x470f5a06…",
+   "at": "2026-11-12T11:16:31.147Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xa04dcef3…",
+   "at": "2026-11-12T11:17:17.298Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x49eac77f…",
+   "at": "2026-11-12T11:17:30.407Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0x6508f4f3…",
+   "at": "2026-11-12T11:17:47.453Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xfa0d49a7…",
+   "at": "2026-11-12T11:18:06.890Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xe82ae3f8…",
+   "at": "2026-11-12T11:19:00.820Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed · REFUSED: NOTHING_NEW_FINALIZED · tx 0xa5e0ddc4…",
+   "at": "2026-11-12T11:19:17.958Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "accepted · Accepted. Re-reading the contract to confirm. · tx 0x9508f9be…",
+   "at": "2026-11-12T11:20:06.679Z"
+  },
+  {
+   "step": "created",
+   "bond": 8,
+   "at": "2026-11-12T11:41:28.705Z"
+  },
+  {
+   "step": "closed",
+   "bond": 8,
+   "status": "RETURNED",
+   "settled_to": "0xca0881c0403e080e7099a4351710eed0f22fb991",
+   "amount": "500000000000000000",
+   "wallet_delta": "499873692499999177",
+   "at": "2026-11-12T11:42:27.158Z"
   }
  ]
 }

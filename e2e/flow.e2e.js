@@ -146,8 +146,15 @@ test("rug check, claim, refusal, create, close on the demo registry", async ({ p
   expect(hb.status).toBe("HELD");
   const b2 = await balance(address);
   await go(page, `/bond/demo-${H}`);
-  await page.getByRole("button", { name: /Settle/ }).click();
-  await expect(statusText(page)).toContainText(/accepted|finalized/i, { timeout: 20 * 60_000 });
+  for (let i = 0; ; i++) {          // a fee estimate that times out sent nothing: the click is repeated
+    await page.getByRole("button", { name: /Settle/ }).click();
+    await expect(statusText(page)).toContainText(/accepted|finalized|failed|rejected/i, { timeout: 20 * 60_000 });
+    const t = await statusText(page).innerText();
+    if (/accepted|finalized/i.test(t) || i >= 5 || !/timed out|rate limit/i.test(t)) break;
+    log("settle_click_retried", { bond: H, status: t.slice(0, 160) });
+    await sleep(60_000); await go(page, `/bond/demo-${H}`);
+  }
+  await expect(statusText(page)).toContainText(/accepted|finalized/i, { timeout: 60_000 });
   let a2 = await balance(address);
   for (let i = 0; i < 30 && a2 - b2 <= 0n; i++) { await sleep(10_000); a2 = await balance(address); }
   const fin = await view(page, "get_bond", [H, Math.floor(Date.now() / 1000)]);
