@@ -67,6 +67,42 @@
    "claims_paid": "400000000000000000",
    "claims_offset": 1,
    "claims_seen": 1
+  },
+  "6": {
+   "status": "RETURNED",
+   "chain": "base-sepolia",
+   "token": "0xc18d3969d66f8c87f95dc14d550e99882699855f",
+   "cursor": 57784846,
+   "cursor_ts": 1794478838,
+   "n_checks": 10,
+   "n_pending": 0,
+   "last_result": "HELD",
+   "due": "",
+   "name": "HOLDDEMO short bond 57765837"
+  },
+  "7": {
+   "status": "RETURNED",
+   "chain": "base-sepolia",
+   "token": "0xc18d3969d66f8c87f95dc14d550e99882699855f",
+   "cursor": 57777229,
+   "cursor_ts": 1794477314,
+   "n_checks": 2,
+   "n_pending": 0,
+   "last_result": "HELD",
+   "due": "",
+   "name": "e2e bond 57774306"
+  },
+  "8": {
+   "status": "RETURNED",
+   "chain": "base-sepolia",
+   "token": "0xc18d3969d66f8c87f95dc14d550e99882699855f",
+   "cursor": 57796020,
+   "cursor_ts": 1794481072,
+   "n_checks": 2,
+   "n_pending": 0,
+   "last_result": "HELD",
+   "due": "",
+   "name": "e2e bond 57793839"
   }
  },
  "actions": {},
@@ -78,5 +114,5 @@
  "contract": "RugBondDemo",
  "address": "0x40aB41033194DFA35aeF2e7b295eFe3AF6ab5715",
  "keeper": "0xfEC989fC1176c5524C3b20ef2c09bca724d6BD4e",
- "saved_at": "2026-11-12T11:43:51.036Z"
+ "saved_at": "2026-11-12T11:43:51.050Z"
 }
