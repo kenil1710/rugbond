@@ -42,8 +42,9 @@ MAX_PROBE_CALLS = 48    # balanceOf calls one check spends on probes: probe_budg
 MAX_LOGS = 400          # LP transfers one check takes in (whole blocks); the rest waits for the next check
 MAX_CLAIM_LOG_CALLS = 64  # eth_getLogs requests one claim may spend per log RPC (a refused window is split in two)
 # How far below min(the window's last block, a validator's own finalized head) a
-# leader's last block may be: about an hour of blocks, for a leader whose
-# finalized head trailed the validator's.
+# leader's last block may be, for a leader whose finalized head trailed the
+# validator's: 300 blocks are about an hour on Ethereum (12 s blocks); 1,800
+# blocks are about six minutes on Base Sepolia (0.2 s blocks when measured).
 FIN_SLACK = {"ethereum": 300, "base-sepolia": 1800}
 MAX_HOLDERS = 8         # LP-holder addresses per bond
 MAX_EXCLUDED = 24       # extra excluded addresses per bond (besides team, pair, token, LP holders, zero, dead)
@@ -270,15 +271,6 @@ def share_of(bond_amount: int, balance: int, denom: int) -> int:
         return 0
     s = (bond_amount * balance) // denom
     return s if s < bond_amount else bond_amount
-
-
-def bonus_of(pool: int, share: int, base: int) -> int:
-    """A claimant's part of what nobody claimed: pool * its share // the sum of
-    all claimed shares (integer math, rounded down)."""
-    if pool <= 0 or share <= 0 or base <= 0:
-        return 0
-    x = (pool * share) // base
-    return x if x < pool else pool
 
 
 def team_senders(t: dict) -> list:

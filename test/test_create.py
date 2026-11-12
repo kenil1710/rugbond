@@ -245,7 +245,7 @@ class Pagination(unittest.TestCase):
         w, reg = fresh()
         b = get(w, reg, bond(w, reg, Sim()))
         for k in ("bond_id", "team", "chain", "token", "pair", "lp_holders", "min_lp", "start_block", "end_time",
-                  "claim_window_s", "fund", "span", "lp_low", "bonus_pool", "n_bonus", "bonuses_due", "excluded", "dust_floor", "amount", "status", "cursor", "cursor_ts",
+                  "claim_window_s", "fund", "span", "lp_low", "excluded", "dust_floor", "amount", "status", "cursor", "cursor_ts",
                   "n_checks", "n_pending", "last_result", "recovery_deadline", "rug_block", "rug", "denominator",
                   "claim_deadline", "paid", "n_claims", "remaining", "settled_to", "due", "checkable", "replay"):
             self.assertIn(k, b)

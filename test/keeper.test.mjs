@@ -3,23 +3,23 @@
 // hashes, retry queue, nothing silently skipped.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { runKeeper, emptyState, checkKey, settleKey, bonusKey, payeeOf, STALE_S, MAX_ATTEMPTS, FAILED_RETRY_S, backoffS } from "../tools/lib/keeper_core.mjs";
+import { runKeeper, emptyState, checkKey, settleKey, payeeOf, STALE_S, MAX_ATTEMPTS, FAILED_RETRY_S, backoffS } from "../tools/lib/keeper_core.mjs";
 
 /** A fake registry with the contract's semantics, and transactions that finalize when told to. */
 function world({ nBonds = 3, head = 10_000, claims = 0 } = {}) {
   let now = 1_800_000_000;
   const bonds = [];
   for (let i = 1; i <= nBonds; i++) {
-    bonds.push({ bond_id: i, found: true, team: "0xteam" + i, fund: "0xfund", bonuses_due: 0, chain: "base", token: "0xt" + i, status: "ACTIVE",
+    bonds.push({ bond_id: i, found: true, team: "0xteam" + i, fund: "0xfund", chain: "base", token: "0xt" + i, status: "ACTIVE",
       start_block: 1000, cursor: 0, cursor_ts: 0, n_checks: 0, n_pending: 0, last_result: "", due: "", checkable: true, end_block: 5000,
       rug_block: 0, n_claims: claims, claim_deadline: 0, recovery_deadline: now + 86400 * 30 });
   }
-  const claimList = Array.from({ length: claims }, (_, i) => ({ claim_no: i, share: "10", holder: "0xh" + i, payee: "0xp" + i, bonus_paid: false, found: true }));
+  const claimList = Array.from({ length: claims }, (_, i) => ({ claim_no: i, share: "10", holder: "0xh" + i, payee: "0xp" + i, found: true }));
   const txs = {};
   let n = 0;
   const w = {
     head, down: new Set(), failList: false, submitFail: 0, autoFinal: true, txFate: null, outcome: () => "SCANNED",
-    calls: { check: 0, settle: 0, bonus: 0, listBonds: 0, listClaims: 0 }, settledTo: [], bonusTo: [], leftover: false,
+    calls: { check: 0, settle: 0, listBonds: 0, listClaims: 0 }, settledTo: [],
     now: () => now, advance: (s) => { now += s; },
     bonds, txs,
     apply(t) {
@@ -36,17 +36,9 @@ function world({ nBonds = 3, head = 10_000, claims = 0 } = {}) {
         if (r === "HELD" || b.cursor >= b.end_block) { b.status = "HELD"; b.last_result = "HELD"; b.due = "RETURN"; b.checkable = false; }
         return true;
       }
-      if (t.kind === "bonus") {
-        const c = claimList.find((x) => x.holder === t.holder);
-        if (b.status !== "REDISTRIBUTING" || !c || c.bonus_paid) return false;
-        c.bonus_paid = true; b.bonuses_due--; w.bonusTo.push(c.payee);
-        if (b.bonuses_due === 0) { if (w.leftover) b.due = "FUND"; else b.status = "CLOSED"; }
-        return true;
-      }
       if (!b.due) return false;
-      if (b.due === "REDISTRIBUTE") { b.status = "REDISTRIBUTING"; b.bonuses_due = claimList.length; b.due = ""; return true; }
       w.settledTo.push(t.payee);
-      b.status = ["RUGGED", "REDISTRIBUTING"].includes(b.status) ? "CLOSED" : b.status === "ACTIVE" ? "UNRESOLVED" : "RETURNED";
+      b.status = b.status === "RUGGED" ? "CLOSED" : b.status === "ACTIVE" ? "UNRESOLVED" : "RETURNED";
       b.due = ""; b.checkable = false;
       return true;
     },
@@ -73,10 +65,6 @@ function world({ nBonds = 3, head = 10_000, claims = 0 } = {}) {
     async settle(bid, payee) {
       if (w.submitFail > 0) { w.submitFail--; throw new Error("busy"); }
       w.calls.settle++; const h = "0xtx" + ++n; txs[h] = { kind: "settle", bid, payee, status: "PENDING" }; return h;
-    },
-    async payBonus(bid, holder, payee) {
-      if (w.submitFail > 0) { w.submitFail--; throw new Error("busy"); }
-      w.calls.bonus++; const h = "0xtx" + ++n; txs[h] = { kind: "bonus", bid, holder, payee, status: "PENDING" }; return h;
     },
     async getTx(h) {
       const t = txs[h];
@@ -266,73 +254,23 @@ test("settle queued when due, paid to the right payee, once", async () => {
   assert.equal(x.w.calls.settle, 1);
 });
 
-test("payee: the team on RETURN, nobody on REDISTRIBUTE, the registry's fund otherwise (victim_fund on a registry from before)", () => {
+test("payee: the team on RETURN, the registry's fund otherwise (victim_fund on a registry from before)", () => {
   assert.equal(payeeOf({ due: "RETURN", team: "0xt", fund: "0xf" }), "0xt");
-  assert.equal(payeeOf({ due: "REDISTRIBUTE", team: "0xt", fund: "0xf" }), null);
   assert.equal(payeeOf({ due: "FUND", team: "0xt", fund: "0xf" }), "0xf");
   assert.equal(payeeOf({ due: "VICTIM_FUND", team: "0xt", victim_fund: "0xv" }), "0xv");
 });
 
-test("rugged with claims: settle opens the round, every claim gets its bonus once, the bond closes", async () => {
+test("rugged with claims: one settle sends the unclaimed part to the registry's fund; no claimant is paid again", async () => {
   const x = world({ nBonds: 1, head: 1200, claims: 7 });
   x.w.outcome = () => "RUGGED";
   await go(x);
-  x.w.bonds[0].due = "REDISTRIBUTE";
-  await go(x);
-  assert.equal(x.w.bonds[0].status, "REDISTRIBUTING");
-  assert.equal(x.state.actions[settleKey(1)].payee, null);
+  x.w.bonds[0].due = "FUND";
   for (let i = 0; i < 3; i++) await go(x);
   assert.equal(x.w.bonds[0].status, "CLOSED");
-  assert.equal(x.w.calls.bonus, 7);
-  assert.deepEqual([...x.w.bonusTo].sort(), Array.from({ length: 7 }, (_, i) => "0xp" + i));
   assert.equal(x.w.calls.settle, 1);
-  for (let i = 0; i < 7; i++) assert.equal(x.state.actions[bonusKey(1, "0xh" + i)].result, "BONUS_PAID");
-  await go(x);
-  assert.equal(x.w.calls.bonus, 7);
-});
-
-test("bonus round over 120 claims: every claims page, then the leftover goes to the registry's fund in a final settle", async () => {
-  const x = world({ nBonds: 1, head: 1200, claims: 120 });
-  x.w.outcome = () => "RUGGED";
-  x.w.leftover = true;
-  await go(x);
-  x.w.bonds[0].due = "REDISTRIBUTE";
-  for (let i = 0; i < 8; i++) await go(x, { maxActions: 500 });
-  assert.equal(x.w.calls.bonus, 120);
-  assert.equal(x.w.bonds[0].status, "CLOSED");
-  assert.equal(x.w.calls.settle, 2);
   assert.deepEqual(x.w.settledTo, ["0xfund"]);
-  assert.equal(x.state.actions[settleKey(1, "REDISTRIBUTING")].result, "CLOSED");
-  assert.equal(x.state.unprocessed.length, 0);
-});
-
-test("a bonus someone else already paid is not paid again", async () => {
-  const x = world({ nBonds: 1, head: 1200, claims: 3 });
-  x.w.outcome = () => "RUGGED";
-  await go(x);
-  x.w.bonds[0].due = "REDISTRIBUTE";
-  await go(x);
-  // another keeper pays claim 1 before this one acts
-  x.w.txs["0xother"] = { kind: "bonus", bid: 1, holder: "0xh1", status: "PENDING" };
-  await x.reg.getTx("0xother");
-  for (let i = 0; i < 3; i++) await go(x);
-  assert.equal(x.w.calls.bonus, 2);
-  assert.equal(x.w.bonds[0].status, "CLOSED");
-});
-
-test("a bonus transaction that is lost is retried and paid once", async () => {
-  const x = world({ nBonds: 1, head: 1200, claims: 2 });
-  x.w.outcome = () => "RUGGED";
-  await go(x);
-  x.w.bonds[0].due = "REDISTRIBUTE";
-  await go(x);
-  let lost = 1;
-  x.w.txFate = (t) => (t.kind === "bonus" && lost-- > 0 ? "UNDETERMINED" : "FINALIZED");
-  await go(x);
-  x.w.advance(3600);
-  for (let i = 0; i < 3; i++) { await go(x); x.w.advance(3600); }
-  assert.equal(x.w.bonds[0].status, "CLOSED");
-  assert.equal(x.w.bonusTo.length, 2);
+  assert.equal(x.state.actions[settleKey(1)].result, "CLOSED");
+  assert.deepEqual(Object.values(x.state.actions).map((a) => a.kind).filter((k) => !["CHECK", "SETTLE"].includes(k)), []);
 });
 
 test("already done by someone else: no transaction", async () => {

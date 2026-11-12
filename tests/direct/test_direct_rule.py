@@ -131,7 +131,7 @@ def test_nobody_claimed_goes_to_the_registry_fund(direct_vm, net, contract, bond
     assert contract.get_config()["fund"] == FUND
 
 
-def test_unclaimed_is_redistributed_to_the_claimants(direct_vm, net, contract, bond):
+def test_unclaimed_goes_to_the_fund_and_claimants_get_no_bonus(direct_vm, net, contract, bond):
     net.a.rug(START + 300)
     contract.check(bond)
     for h in HOLDERS[:2]:
@@ -139,16 +139,12 @@ def test_unclaimed_is_redistributed_to_the_claimants(direct_vm, net, contract, b
         assert contract.claim(bond)["share"] == str(GEN // 4)
     warp(direct_vm, "2026-10-03T04:11:00Z")
     r = contract.settle(bond)
-    assert r["status"] == "REDISTRIBUTING" and r["pool"] == str(GEN // 2) and r["claims"] == 2, r
-    with direct_vm.expect_revert("BONUSES_UNPAID_2"):
+    assert r["status"] == "CLOSED" and r["to"] == FUND and r["amount"] == str(GEN // 2), r
+    with direct_vm.expect_revert("BOND_IS_CLOSED"):
         contract.settle(bond)
-    assert contract.pay_bonus(bond, HOLDERS[0])["bonus"] == str(GEN // 4)
-    with direct_vm.expect_revert("BONUS_ALREADY_PAID"):
-        contract.pay_bonus(bond, HOLDERS[0])
-    with direct_vm.expect_revert("NO_SUCH_CLAIM"):
-        contract.pay_bonus(bond, TEAM)
-    r = contract.pay_bonus(bond, HOLDERS[1])
-    assert r["bonus"] == str(GEN // 4) and r["status"] == "CLOSED", r
+    for h in HOLDERS[:2]:
+        c = contract.get_claim(bond, h)
+        assert c["share"] == str(GEN // 4) and "bonus" not in c, c
     b = contract.get_bond(bond, 0)
     assert b["remaining"] == "0" and "victim_fund" not in b and b["fund"] == FUND
 

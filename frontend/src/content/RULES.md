@@ -126,34 +126,26 @@ is ACTIVE or RUGGED. Without one, the share goes to the holder.
 
 ## 4. Settlement
 
-No bond names a destination. Unclaimed GEN goes to the holders who claimed; what cannot go to them goes to the
-**registry's fund**, one address per registry, set in the constructor and written by no method (`get_config`).
+No bond names a destination. A claimant receives its own share and nothing else, however few holders claim.
+Everything nobody claimed goes to the **registry's fund**, one address per registry, set in the constructor and
+written by no method (`get_config`).
 
 Anyone calls `settle(bond_id)`:
 
 | status | when | GEN goes to | new status |
 |---|---|---|---|
 | HELD or VOID | any time | the team (the whole bond) | RETURNED |
-| RUGGED | after the claim window, somebody claimed | nobody yet: the unclaimed part is set aside for the claimants | REDISTRIBUTING |
-| RUGGED | after the claim window, nobody claimed | the registry's fund (the whole bond) | CLOSED |
-| REDISTRIBUTING | every bonus paid | the registry's fund (the integer leftover) | CLOSED |
+| RUGGED | after the claim window | the registry's fund (everything nobody claimed) | CLOSED |
 | ACTIVE | after the recovery deadline | the registry's fund (the whole bond) | UNRESOLVED |
 
-**Redistribution** is one round. `settle` freezes the pool (everything not claimed) and the base (the sum of the
-claimed shares). Anyone then calls `pay_bonus(bond_id, holder)` once per claim:
-
-    bonus = pool * share // base
-
-paid to the claim's payee (the holder or its committed beneficiary). The round is exactly one call per claim; a
-bonus is never redistributed again. Rounding down leaves fewer wei than there are claims; when the last bonus leaves
-nothing the bond closes there, otherwise a last `settle` sends the leftover to the registry's fund. Refused:
-`NO_SUCH_CLAIM`, `BONUS_ALREADY_PAID`, `BONUSES_UNPAID_<n>` (settle before the round is done).
+Turnout changes nobody's payout: with one claimant or with all of them, each is paid bond x eligible / claimable
+supply. A wallet that claims early in a short window gains nothing from the holders who did not claim.
 
 Every payout is one external value message to the recipient, posted in the call that records it; the caller funds
 it. `withdraw_credit` returns refused values; `sweep_stray` sends GEN that arrived outside `create_bond` to the
 deployer (only above what the ledger holds, and 48 h (canonical) / 1 h (demo) after the last payout).
 
-Ledger: received = held + claims paid + bonuses paid + returned + to the registry's fund + credits paid + swept;
+Ledger: received = held + claims paid + returned + to the registry's fund + credits paid + swept;
 held = open bond balances + credits owed. Counters move only after every check of the call has passed.
 
 ## 5. LaunchGate
@@ -167,7 +159,7 @@ bonds that `team` itself posted for that token (the worst state wins). `safe` is
 | ACTIVE_HELD_SO_FAR | ACTIVE, at least one agreed read, the last check not PENDING, the last block read at most 6 h old (Base Sepolia's finalized head trails its tip by about 4.4 h) |
 | HELD_FINAL | HELD or RETURNED |
 | RUGGED_PAYING | RUGGED and the claim window open |
-| RUGGED_CLOSED | RUGGED after the claim window, REDISTRIBUTING or CLOSED |
+| RUGGED_CLOSED | RUGGED after the claim window (CLOSED) |
 | PENDING | anything else: no read yet, the last check PENDING, stale reads, no clock, UNRESOLVED, an unreadable registry |
 
 Never favorable on missing, pending or stale data. `attest` / `attest_team` store an answer on chain.

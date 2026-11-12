@@ -44,9 +44,9 @@ class Shares(unittest.TestCase):
         self.assertTrue(all(x == (10 ** 18 + 1) // 3 for x in shares))
         w.advance(700)
         out = close(w, reg, bid)
-        # 2 wei are left; 2 * share // (3 shares) is 0 for each claimant, so the leftover goes to the registry's fund
-        self.assertEqual([x["bonus"] for x in out["bonuses"]], ["0", "0", "0"])
-        self.assertEqual((out["settles"][-1]["to"], int(out["settles"][-1]["amount"])), (FUND, 10 ** 18 + 1 - sum(shares)))
+        # 2 wei are left: they go to the registry's fund, not to a claimant
+        self.assertEqual((out["to"], int(out["amount"]), out["status"]), (FUND, 10 ** 18 + 1 - sum(shares), "CLOSED"))
+        self.assertEqual([paid_to(w, h) for h in HOLDERS[:3]], shares)
 
     def test_shares_never_exceed_bond(self):
         w, reg, s, bid = rugged(holders=7, value=7 * GEN + 3)
@@ -300,16 +300,13 @@ class Beneficiary(unittest.TestCase):
 
 
 class Settle(unittest.TestCase):
-    def test_unclaimed_goes_to_the_claimants(self):
+    def test_unclaimed_goes_to_the_registry_fund_not_to_claimants(self):
         w, reg, s, bid = rugged()
         w.call(reg, "claim", bid, sender=HOLDERS[0])
         w.advance(601)
         r = w.call(reg, "settle", bid, sender=STRANGER)
-        self.assertEqual((r["status"], r["pool"], r["base"], r["claims"]), ("REDISTRIBUTING", str(GEN - GEN // 5), str(GEN // 5), 1))
-        self.assertEqual(paid_to(w, FUND), 0)
-        r = w.call(reg, "pay_bonus", bid, HOLDERS[0], sender=STRANGER)
-        self.assertEqual((r["bonus"], r["status"], r["payee"]), (str(GEN - GEN // 5), "CLOSED", HOLDERS[0]))
-        self.assertEqual(paid_to(w, HOLDERS[0]), GEN)
+        self.assertEqual((r["status"], r["to"], r["amount"]), ("CLOSED", FUND, str(GEN - GEN // 5)))
+        self.assertEqual((paid_to(w, HOLDERS[0]), paid_to(w, FUND), paid_to(w, TEAM)), (GEN // 5, GEN - GEN // 5, 0))
         self.assertEqual(w.view(reg, "get_stats")["balance"], "0")
 
     def test_nobody_claimed_goes_to_the_registry_fund(self):
@@ -332,16 +329,6 @@ class Settle(unittest.TestCase):
         w.call(reg, "settle", bid, sender=STRANGER)
         with self.assertRaises(Reverted):
             w.call(reg, "settle", bid, sender=STRANGER)
-
-    def test_settle_refused_while_bonuses_are_unpaid(self):
-        w, reg, s, bid = rugged()
-        w.call(reg, "claim", bid, sender=HOLDERS[0])
-        w.call(reg, "claim", bid, sender=HOLDERS[1])
-        w.advance(601)
-        w.call(reg, "settle", bid, sender=STRANGER)
-        with self.assertRaises(Reverted) as e:
-            w.call(reg, "settle", bid, sender=STRANGER)
-        self.assertIn("BONUSES_UNPAID_2", e.exception.msg)
 
     def test_all_claimed_settles_zero(self):
         w, reg, s, bid = rugged(value=5 * GEN)
@@ -390,7 +377,7 @@ class Settle(unittest.TestCase):
 class Conservation(unittest.TestCase):
     def _ledger(self, w, reg):
         st = w.view(reg, "get_stats")
-        out = sum(int(st[k]) for k in ("claims_paid_total", "bonus_paid_total", "returned_total", "fund_total", "credit_paid_total",
+        out = sum(int(st[k]) for k in ("claims_paid_total", "returned_total", "fund_total", "credit_paid_total",
                                        "stray_swept_total"))
         self.assertEqual(int(st["received_total"]), int(st["held"]) + out)
         self.assertEqual(int(st["balance"]), int(st["held"]))
@@ -420,13 +407,6 @@ class Conservation(unittest.TestCase):
         for bid in bids:
             w.call(reg, "settle", bid, sender=STRANGER)
             self._ledger(w, reg)
-            for c in w.view(reg, "list_claims", bid, 0, 50)["items"]:
-                if get(w, reg, bid)["status"] == "REDISTRIBUTING":
-                    w.call(reg, "pay_bonus", bid, c["holder"], sender=STRANGER)
-                    self._ledger(w, reg)
-            if get(w, reg, bid)["status"] == "REDISTRIBUTING":
-                w.call(reg, "settle", bid, sender=STRANGER)
-                self._ledger(w, reg)
         st = self._ledger(w, reg)
         self.assertEqual(st["balance"], "0")
         self.assertEqual(int(st["received_total"]), 21 * GEN)
@@ -615,125 +595,105 @@ class ClaimLogFlood(unittest.TestCase):
         self.assertIn("PENDING", e.exception.msg)
 
 
-class Redistribution(unittest.TestCase):
-    """C2: what nobody claimed goes to the holders who claimed, pro rata, in one bounded round."""
+class Unclaimed(unittest.TestCase):
+    """A claimant receives its own share and nothing else; everything unclaimed goes to the registry's fund."""
 
-    def test_pro_rata_math(self):
-        def setup(s):
-            s.buy(s.start, HOLDERS[7], 30_000 * GEN)
-        w, reg, s, bid = rugged(setup=setup, value=8 * GEN)          # 80,000 claimable: 1 GEN per 10,000
-        w.call(reg, "claim", bid, sender=HOLDERS[0])                # 1 GEN
-        w.call(reg, "claim", bid, sender=HOLDERS[7])                # 3 GEN
+    def test_low_turnout_gives_no_bonus(self):
+        # one of five holders claims: it gets a fifth, exactly what it gets when all five claim
+        w, reg, s, bid = rugged()
+        low = int(w.call(reg, "claim", bid, sender=HOLDERS[0])["share"])
         w.advance(601)
         out = close(w, reg, bid)
-        self.assertEqual(out["settles"][0]["pool"], str(4 * GEN))
-        self.assertEqual([x["bonus"] for x in out["bonuses"]], [str(GEN), str(3 * GEN)])
-        self.assertEqual((paid_to(w, HOLDERS[0]), paid_to(w, HOLDERS[7]), paid_to(w, FUND)), (2 * GEN, 6 * GEN, 0))
-        self.assertEqual(len(out["settles"]), 1)                    # nothing left over: the last bonus closed the bond
-        self.assertEqual(get(w, reg, bid)["status"], "CLOSED")
+        w2, reg2, s2, bid2 = rugged()
+        full = [int(w2.call(reg2, "claim", bid2, sender=h)["share"]) for h in HOLDERS[:5]]
+        w2.advance(601)
+        close(w2, reg2, bid2)
+        self.assertEqual((low, full[0]), (GEN // 5, GEN // 5))
+        self.assertEqual((paid_to(w, HOLDERS[0]), paid_to(w2, HOLDERS[0])), (GEN // 5, GEN // 5))
+        self.assertEqual((out["to"], out["amount"]), (FUND, str(GEN - GEN // 5)))
+        self.assertEqual(len([t for t in w.transfers if t[1] == HOLDERS[0]]), 1)
 
-    def test_rounding_leftover_goes_to_the_registry_fund(self):
+    def test_turnout_never_changes_a_share(self):
+        for k in range(1, 6):
+            w, reg, s, bid = rugged(value=7 * GEN + 3)
+            shares = [int(w.call(reg, "claim", bid, sender=h)["share"]) for h in HOLDERS[:k]]
+            w.advance(601)
+            out = close(w, reg, bid)
+            self.assertEqual(shares, [(7 * GEN + 3) // 5] * k)
+            self.assertEqual([paid_to(w, h) for h in HOLDERS[:5]], shares + [0] * (5 - k))
+            self.assertEqual(paid_to(w, FUND), 7 * GEN + 3 - sum(shares))
+            self.assertEqual(out["status"], "CLOSED")
+            self.assertEqual(w.view(reg, "get_stats")["balance"], "0")
+
+    def test_team_pre_start_float_gets_only_its_own_share(self):
+        # the team holds 30,000 of the 80,000 claimable tokens in an unlisted wallet from before the start block,
+        # sets the shortest claim window and is the only claimant: it gets 3/8 of the bond, never the rest
+        hidden = A(777)
+        def setup(s):
+            s.buy(s.start, hidden, 30_000 * GEN)
+        w, reg, s, bid = rugged(setup=setup, value=8 * GEN, window=600)
+        r = w.call(reg, "claim", bid, sender=hidden)
+        self.assertEqual(int(r["share"]), 3 * GEN)
+        w.advance(601)
+        out = close(w, reg, bid)
+        self.assertEqual((paid_to(w, hidden), paid_to(w, TEAM), paid_to(w, FUND)), (3 * GEN, 0, 5 * GEN))
+        self.assertEqual((out["to"], out["amount"]), (FUND, str(5 * GEN)))
+        with self.assertRaises(Reverted):
+            w.call(reg, "claim", bid, sender=hidden)
+
+    def test_nobody_claimed_whole_bond_to_the_fund(self):
+        w, reg, s, bid = rugged(value=3 * GEN + 1)
+        w.advance(601)
+        out = close(w, reg, bid)
+        self.assertEqual((out["to"], out["amount"], out["status"]), (FUND, str(3 * GEN + 1), "CLOSED"))
+        self.assertEqual((paid_to(w, FUND), paid_to(w, TEAM)), (3 * GEN + 1, 0))
+        self.assertEqual(w.view(reg, "get_stats")["balance"], "0")
+
+    def test_rounding_goes_to_the_fund(self):
         w, reg, s, bid = rugged(holders=3, value=10 ** 18 + 1)       # shares 333333333333333333 each
         w.call(reg, "claim", bid, sender=HOLDERS[0])
         w.call(reg, "claim", bid, sender=HOLDERS[1])
         w.advance(601)
         out = close(w, reg, bid)
-        pool = 10 ** 18 + 1 - 2 * (10 ** 18 // 3)
-        self.assertEqual(pool % 2, 1)
-        self.assertEqual(out["settles"][0]["pool"], str(pool))
-        self.assertEqual([int(x["bonus"]) for x in out["bonuses"]], [pool // 2, pool // 2])
-        self.assertEqual((out["settles"][1]["to"], out["settles"][1]["amount"], out["settles"][1]["status"]),
-                         (FUND, str(pool - 2 * (pool // 2)), "CLOSED"))
+        self.assertEqual((out["to"], int(out["amount"])), (FUND, 10 ** 18 + 1 - 2 * (10 ** 18 // 3)))
+        self.assertEqual((paid_to(w, HOLDERS[0]), paid_to(w, HOLDERS[1])), (10 ** 18 // 3, 10 ** 18 // 3))
         self.assertEqual(w.view(reg, "get_stats")["balance"], "0")
 
-    def test_bonus_goes_to_the_committed_beneficiary(self):
+    def test_beneficiary_gets_the_share_only(self):
         w, reg, s, bid = rugged()
         w.call(reg, "commit_beneficiary", bid, A(500), sender=HOLDERS[0])
         w.call(reg, "claim", bid, sender=HOLDERS[0])
         w.advance(601)
         close(w, reg, bid)
-        self.assertEqual((paid_to(w, A(500)), paid_to(w, HOLDERS[0])), (GEN, 0))
+        self.assertEqual((paid_to(w, A(500)), paid_to(w, HOLDERS[0]), paid_to(w, FUND)), (GEN // 5, 0, GEN - GEN // 5))
 
-    def test_bonus_once_per_claim(self):
+    def test_no_claim_and_no_second_payment_after_close(self):
         w, reg, s, bid = rugged()
         w.call(reg, "claim", bid, sender=HOLDERS[0])
-        w.call(reg, "claim", bid, sender=HOLDERS[1])
-        w.advance(601)
-        w.call(reg, "settle", bid, sender=STRANGER)
-        w.call(reg, "pay_bonus", bid, HOLDERS[0], sender=STRANGER)
-        with self.assertRaises(Reverted) as e:
-            w.call(reg, "pay_bonus", bid, HOLDERS[0], sender=STRANGER)
-        self.assertIn("BONUS_ALREADY_PAID", e.exception.msg)
-
-    def test_no_bonus_for_someone_who_did_not_claim(self):
-        w, reg, s, bid = rugged()
-        w.call(reg, "claim", bid, sender=HOLDERS[0])
-        w.advance(601)
-        w.call(reg, "settle", bid, sender=STRANGER)
-        for who in (HOLDERS[1], TEAM, FUND, "nonsense"):
-            with self.assertRaises(Reverted) as e:
-                w.call(reg, "pay_bonus", bid, who, sender=who if who.startswith("0x") else STRANGER)
-            self.assertIn("NO_SUCH_CLAIM", e.exception.msg)
-
-    def test_no_bonus_before_the_window_ends_or_after_close(self):
-        w, reg, s, bid = rugged()
-        w.call(reg, "claim", bid, sender=HOLDERS[0])
-        with self.assertRaises(Reverted) as e:
-            w.call(reg, "pay_bonus", bid, HOLDERS[0], sender=STRANGER)
-        self.assertIn("BOND_IS_RUGGED", e.exception.msg)
         w.advance(601)
         close(w, reg, bid)
+        for h in (HOLDERS[0], HOLDERS[1]):
+            with self.assertRaises(Reverted):
+                w.call(reg, "claim", bid, sender=h)
         with self.assertRaises(Reverted) as e:
-            w.call(reg, "pay_bonus", bid, HOLDERS[0], sender=STRANGER)
+            w.call(reg, "settle", bid, sender=STRANGER)
         self.assertIn("BOND_IS_CLOSED", e.exception.msg)
 
-    def test_no_claim_once_redistributing(self):
-        w, reg, s, bid = rugged()
-        w.call(reg, "claim", bid, sender=HOLDERS[0])
-        w.advance(601)
-        w.call(reg, "settle", bid, sender=STRANGER)
-        with self.assertRaises(Reverted) as e:
-            w.call(reg, "claim", bid, sender=HOLDERS[1])
-        self.assertIn("BOND_IS_REDISTRIBUTING", e.exception.msg)
+    def test_no_redistribution_in_the_code(self):
+        from pathlib import Path
+        M = module("RugBond")
+        src = (Path(__file__).resolve().parent.parent / "build" / "RugBond.py").read_text().lower()
+        for word in ("bonus", "redistribut"):
+            self.assertNotIn(word, src)
+        self.assertFalse(hasattr(M.RugBond, "pay_bonus"))
+        self.assertNotIn("REDISTRIBUTING", M.STATUSES)
 
-    def test_round_is_bounded_by_the_number_of_claims(self):
-        w, reg, s, bid = rugged(holders=13, value=13 * GEN + 5)
-        for h in HOLDERS[:9]:
-            w.call(reg, "claim", bid, sender=h)
-        w.advance(601)
-        out = close(w, reg, bid)
-        self.assertEqual(len(out["bonuses"]), 9)
-        b = get(w, reg, bid)
-        self.assertEqual((b["n_bonus"], b["n_claims"], b["status"], b["remaining"]), (9, 9, "CLOSED", "0"))
-        self.assertEqual(sum(int(x["bonus"]) for x in out["bonuses"]) + int(b["settled_amount"]), int(b["bonus_pool"]))
-        self.assertEqual(w.view(reg, "get_stats")["balance"], "0")
-
-    def test_bonus_order_does_not_change_amounts(self):
-        got = []
-        for order in ((0, 1, 2), (2, 1, 0), (1, 2, 0)):
-            def setup(s):
-                s.buy(s.start, HOLDERS[7], 7_777 * GEN)
-            w, reg, s, bid = rugged(setup=setup, value=10 ** 18 + 11)
-            who = [HOLDERS[0], HOLDERS[1], HOLDERS[7]]
-            for h in who:
-                w.call(reg, "claim", bid, sender=h)
-            w.advance(601)
-            w.call(reg, "settle", bid, sender=STRANGER)
-            res = {}
-            for i in order:
-                res[who[i]] = w.call(reg, "pay_bonus", bid, who[i], sender=STRANGER)["bonus"]
-            got.append([res[h] for h in who])
-        self.assertEqual(got[0], got[1])
-        self.assertEqual(got[0], got[2])
-
-    def test_anyone_may_run_the_round_and_cannot_redirect_it(self):
+    def test_settler_cannot_redirect(self):
         w, reg, s, bid = rugged()
         w.call(reg, "claim", bid, sender=HOLDERS[0])
         w.advance(601)
         w.call(reg, "settle", bid, sender=TEAM)
-        r = w.call(reg, "pay_bonus", bid, HOLDERS[0], sender=TEAM)
-        self.assertEqual(r["payee"], HOLDERS[0])
-        self.assertEqual(paid_to(w, TEAM), 0)
+        self.assertEqual((paid_to(w, TEAM), paid_to(w, FUND)), (0, GEN - GEN // 5))
 
     def test_fund_is_fixed_at_deployment(self):
         import inspect
@@ -767,9 +727,8 @@ def _gen_share_cases():
                 self.assertEqual(tot, (value // n) * n)
                 w.advance(601)
                 out = close(w, reg, bid)
-                paid = sum(int(x["bonus"]) for x in out["bonuses"])
-                self.assertEqual(tot + paid + int(out["settles"][-1]["amount"]), value)
-                self.assertLess(int(out["settles"][-1]["amount"]), n)
+                self.assertEqual(tot + int(out["amount"]), value)
+                self.assertLess(int(out["amount"]), n)
                 self.assertEqual(get(w, reg, bid)["status"], "CLOSED")
                 self.assertEqual(w.view(reg, "get_stats")["balance"], "0")
             setattr(ShareMatrix, "test_%d_holders_bond_%d" % (n, value), t)

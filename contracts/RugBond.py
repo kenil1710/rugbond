@@ -47,10 +47,9 @@ import typing
 # A transfer from the team costs a holder exactly what it carried: a zero-value
 # or dust transfer changes nothing.
 #
-# After the claim window anyone settles. What nobody claimed is shared among
-# the holders who did claim, pro rata to their shares, in one round (pay_bonus,
-# one call per claim); integer leftovers, and the whole bond when nobody
-# claimed, go to the registry's fund, an address fixed in the constructor.
+# A claimant receives its own share and nothing else, however few holders
+# claim. After the claim window anyone settles: everything nobody claimed goes
+# to the registry's fund, an address fixed in the constructor.
 # HELD (or VOID): the bond goes back to the team. A bond whose cursor has not
 # moved for the recovery window (counted from the later of the end time, the
 # creation and the last check that moved the cursor) is UNRESOLVED and goes
@@ -64,25 +63,24 @@ import typing
 #   2. Every check runs before the first write; counters move only after.
 #   3. GEN leaves only through _send: one external value message per call,
 #      posted in the call that records the payout. The caller funds it.
-#   4. Ledger: received = held + claims_paid + bonus_paid + returned + to_fund +
+#   4. Ledger: received = held + claims_paid + returned + to_fund +
 #      credits_paid + swept; held = open bond balances + credits owed. Anything
 #      above held in the balance arrived outside create_bond; sweep_stray sends
 #      it to the deployer.
 
-VERSION = "1.1.0"
+VERSION = "1.2.0"
 
 B_ACTIVE = "ACTIVE"
 B_RUGGED = "RUGGED"
 B_HELD = "HELD"
 B_VOID = "VOID"
-B_SHARING = "REDISTRIBUTING"   # RUGGED, claim window over, the unclaimed part being paid to the claimants
-B_CLOSED = "CLOSED"            # RUGGED and fully paid out
+B_CLOSED = "CLOSED"            # RUGGED, claim window over, the unclaimed part sent to the registry's fund
 B_RETURNED = "RETURNED"        # HELD or VOID, the bond sent back to the team
 B_UNRESOLVED = "UNRESOLVED"    # no check moved the cursor for the recovery window; sent to the registry's fund
-STATUSES = (B_ACTIVE, B_RUGGED, B_HELD, B_VOID, B_SHARING, B_CLOSED, B_RETURNED, B_UNRESOLVED)
+STATUSES = (B_ACTIVE, B_RUGGED, B_HELD, B_VOID, B_CLOSED, B_RETURNED, B_UNRESOLVED)
 
 COUNT_KEYS = ("bonds", "create_refused", "checks", "checks_scanned", "checks_pending", "rugged", "held", "void",
-              "claims", "beneficiaries", "settles", "redistributions", "bonuses", "credit_withdrawals", "sweeps")
+              "claims", "beneficiaries", "settles", "credit_withdrawals", "sweeps")
 
 # mode -> (chains, min_claim_window_s, recovery_s, stale_s, sweep_delay_s)
 #   min_claim_window_s  the shortest claim window a bond may set
@@ -206,11 +204,6 @@ class Bond:
     claim_deadline: u64
     paid: u256
     n_claims: u64
-    bonus_pool: u256
-    bonus_base: u256
-    bonus_paid: u256
-    n_bonus: u64
-    shared_at: u64
     settled_amount: u256
     settled_to: str
     settled_at: u64
@@ -248,9 +241,6 @@ class Claim:
     share: u256
     claimed_at: u64
     claim_no: u64
-    bonus: u256
-    bonus_paid: bool
-    bonus_at: u64
 
 
 class RugBond(gl.contract.Contract):
@@ -282,7 +272,6 @@ class RugBond(gl.contract.Contract):
     open_total: u256
     claims_paid_total: u256
     returned_total: u256
-    bonus_paid_total: u256
     fund_total: u256
     credit_owed_total: u256
     credit_paid_total: u256
@@ -348,7 +337,7 @@ class RugBond(gl.contract.Contract):
         gl.evm.Account(Address(who)).emit_call(u256(amount), b"")
 
     def _remaining(self, b: Bond) -> int:
-        return int(b.amount) - int(b.paid) - int(b.bonus_paid) - int(b.settled_amount)
+        return int(b.amount) - int(b.paid) - int(b.settled_amount)
 
     # --- bonds ------------------------------------------------------------------
 
@@ -384,7 +373,6 @@ class RugBond(gl.contract.Contract):
             span=u64(CHAINS[t["chain"]][2]), lp_low=u256(0), scanned_at=u64(0), n_checks=u64(0), n_pending=u64(0), last_result="", last_reason="",
             last_check_at=u64(0), pair_json="{}", start_ts=u64(0), replay=False, rug_block=u64(0), rug_ts=u64(0),
             rug_json="{}", denom=u256(0), rugged_at=u64(0), claim_deadline=u64(0), paid=u256(0), n_claims=u64(0),
-            bonus_pool=u256(0), bonus_base=u256(0), bonus_paid=u256(0), n_bonus=u64(0), shared_at=u64(0),
             settled_amount=u256(0), settled_to="", settled_at=u64(0), settled_by="", verdict_at=u64(0))
         tk = t["chain"] + ":" + t["token"]
         n = int(self.token_n.get(tk, u64(0)))
@@ -642,8 +630,7 @@ class RugBond(gl.contract.Contract):
         no = int(b.n_claims)
         self.claims[k] = Claim(bond_id=b.bond_id, holder=who, payee=payee, balance=u256(bal),
                                start_balance=u256(int(r["start_balance"])), r_balance=u256(int(r["balance"])),
-                               from_team=u256(recv), share=u256(share), claimed_at=u64(now), claim_no=u64(no),
-                               bonus=u256(0), bonus_paid=False, bonus_at=u64(0))
+                               from_team=u256(recv), share=u256(share), claimed_at=u64(now), claim_no=u64(no))
         self.bond_claims[str(int(b.bond_id)) + ":" + str(no)] = who
         b.n_claims = u64(no + 1)
         b.paid = u256(int(b.paid) + share)
@@ -659,13 +646,11 @@ class RugBond(gl.contract.Contract):
                 "from_team": str(recv), "share": str(share), "denominator": str(int(b.denom))}
 
     def _due(self, b: Bond, now: int) -> str:
-        """What settle would do now: RETURN (to the team), REDISTRIBUTE (open the
-        bonus round), FUND (to the registry's fund), or ""."""
+        """What settle would do now: RETURN (to the team), FUND (to the registry's
+        fund), or ""."""
         if b.status in (B_HELD, B_VOID):
             return "RETURN"
         if b.status == B_RUGGED and now > int(b.claim_deadline):
-            return "REDISTRIBUTE" if int(b.n_claims) > 0 and self._remaining(b) > 0 else "FUND"
-        if b.status == B_SHARING and int(b.n_bonus) >= int(b.n_claims):
             return "FUND"
         if b.status == B_ACTIVE and now > int(b.recovery_deadline):
             return "FUND"
@@ -674,10 +659,8 @@ class RugBond(gl.contract.Contract):
     @gl.public.write
     def settle(self, bond_id: int) -> typing.Any:
         """Anyone. HELD or VOID -> the bond back to the team. RUGGED after the
-        claim window -> what nobody claimed is set aside for the holders who
-        claimed (REDISTRIBUTING; pay_bonus pays each one), or, when nobody
-        claimed, sent to the registry's fund. REDISTRIBUTING with every bonus
-        paid -> the integer leftover to the registry's fund. ACTIVE after the
+        claim window -> everything nobody claimed to the registry's fund (no
+        claimant receives more than its own share). ACTIVE after the
         recovery deadline -> UNRESOLVED, the bond to the registry's fund."""
         now = self._now()
         if now <= 0:
@@ -691,24 +674,13 @@ class RugBond(gl.contract.Contract):
                 raise gl.vm.UserError("REFUSED: CLAIM_WINDOW_OPEN_UNTIL_" + str(int(b.claim_deadline)))
             if b.status == B_ACTIVE:
                 raise gl.vm.UserError("REFUSED: ACTIVE_UNTIL_VERDICT_OR_" + str(int(b.recovery_deadline)))
-            if b.status == B_SHARING:
-                raise gl.vm.UserError("REFUSED: BONUSES_UNPAID_" + str(int(b.n_claims) - int(b.n_bonus)))
             raise gl.vm.UserError("REFUSED: BOND_IS_" + b.status)
         left = self._remaining(b)
         if left > 0 and int(self.balance) < left:
             raise gl.vm.UserError("REFUSED: CONTRACT_BALANCE_BELOW_BOND")
-        if due == "REDISTRIBUTE":
-            # --- writes (no GEN moves here: each claimant's part leaves in pay_bonus)
-            b.status = B_SHARING
-            b.bonus_pool = u256(left)
-            b.bonus_base = b.paid
-            b.shared_at = u64(now)
-            self._bump("redistributions")
-            return {"ok": True, "bond_id": int(b.bond_id), "status": b.status, "pool": str(left),
-                    "base": str(int(b.paid)), "claims": int(b.n_claims)}
         to = b.team if due == "RETURN" else self.fund
         # --- writes
-        if b.status in (B_RUGGED, B_SHARING):
+        if b.status == B_RUGGED:
             b.status = B_CLOSED
         elif b.status == B_ACTIVE:
             b.status = B_UNRESOLVED
@@ -728,50 +700,6 @@ class RugBond(gl.contract.Contract):
             self._send(to, left)
         return {"ok": True, "bond_id": int(b.bond_id), "status": b.status, "to": to if left > 0 else "",
                 "amount": str(left)}
-
-    @gl.public.write
-    def pay_bonus(self, bond_id: int, holder: str) -> typing.Any:
-        """Anyone, once per claim of a REDISTRIBUTING bond: pays the claimant
-        (its payee) pool * share // the sum of all claimed shares. The round is
-        one pass over the claims; a bonus is never itself redistributed."""
-        now = self._now()
-        if now <= 0:
-            raise gl.vm.UserError("REFUSED: NO_CLOCK")
-        b = self._bond(bond_id)
-        if b is None:
-            raise gl.vm.UserError("REFUSED: NO_SUCH_BOND")
-        if b.status != B_SHARING:
-            raise gl.vm.UserError("REFUSED: BOND_IS_" + b.status)
-        h = _addr(holder)
-        c = self.claims.get(str(int(b.bond_id)) + ":" + h) if h != "" else None
-        if c is None:
-            raise gl.vm.UserError("REFUSED: NO_SUCH_CLAIM")
-        if c.bonus_paid:
-            raise gl.vm.UserError("REFUSED: BONUS_ALREADY_PAID")
-        bonus = bonus_of(int(b.bonus_pool), int(c.share), int(b.bonus_base))
-        left = int(b.bonus_pool) - int(b.bonus_paid)
-        if bonus > left:
-            bonus = left
-        if bonus > 0 and int(self.balance) < bonus:
-            raise gl.vm.UserError("REFUSED: CONTRACT_BALANCE_BELOW_BONUS")
-        # --- writes
-        c.bonus = u256(bonus)
-        c.bonus_paid = True
-        c.bonus_at = u64(now)
-        b.bonus_paid = u256(int(b.bonus_paid) + bonus)
-        b.n_bonus = u64(int(b.n_bonus) + 1)
-        self.open_total = u256(int(self.open_total) - bonus)
-        self.bonus_paid_total = u256(int(self.bonus_paid_total) + bonus)
-        self._bump("bonuses")
-        if int(b.n_bonus) >= int(b.n_claims) and self._remaining(b) == 0:
-            # nothing left over: the round closes the bond
-            b.status = B_CLOSED
-            b.settled_at = u64(now)
-            b.settled_by = self._sender()
-        if bonus > 0:
-            self._send(c.payee, bonus)
-        return {"ok": True, "bond_id": int(b.bond_id), "holder": h, "payee": c.payee, "bonus": str(bonus),
-                "status": b.status, "bonuses_left": int(b.n_claims) - int(b.n_bonus)}
 
     @gl.public.write
     def withdraw_credit(self) -> typing.Any:
@@ -829,9 +757,6 @@ class RugBond(gl.contract.Contract):
                 "rug_ts": int(b.rug_ts), "rug": json.loads(b.rug_json), "denominator": str(int(b.denom)),
                 "rugged_at": int(b.rugged_at), "claim_deadline": int(b.claim_deadline), "paid": str(int(b.paid)),
                 "n_claims": int(b.n_claims), "remaining": str(self._remaining(b)),
-                "bonus_pool": str(int(b.bonus_pool)), "bonus_base": str(int(b.bonus_base)),
-                "bonus_paid": str(int(b.bonus_paid)), "n_bonus": int(b.n_bonus), "shared_at": int(b.shared_at),
-                "bonuses_due": int(b.n_claims) - int(b.n_bonus) if b.status == B_SHARING else 0,
                 "settled_amount": str(int(b.settled_amount)), "settled_to": b.settled_to,
                 "settled_at": int(b.settled_at), "settled_by": b.settled_by, "verdict_at": int(b.verdict_at),
                 "due": self._due(b, now) if now > 0 else "",
@@ -921,8 +846,7 @@ class RugBond(gl.contract.Contract):
         return {"bond_id": int(c.bond_id), "holder": c.holder, "payee": c.payee, "balance": str(int(c.balance)),
                 "start_balance": str(int(c.start_balance)), "r_balance": str(int(c.r_balance)),
                 "from_team": str(int(c.from_team)), "share": str(int(c.share)), "claimed_at": int(c.claimed_at),
-                "claim_no": int(c.claim_no), "bonus": str(int(c.bonus)), "bonus_paid": bool(c.bonus_paid),
-                "bonus_at": int(c.bonus_at)}
+                "claim_no": int(c.claim_no)}
 
     @gl.public.view
     def list_claims(self, bond_id: int, offset: int, limit: int) -> typing.Any:
@@ -997,7 +921,7 @@ class RugBond(gl.contract.Contract):
         return {"bonds": int(self.n_bonds), "checks": int(self.n_checks), "counts": c,
                 "received_total": str(int(self.received_total)), "open_total": str(int(self.open_total)),
                 "claims_paid_total": str(int(self.claims_paid_total)), "returned_total": str(int(self.returned_total)),
-                "bonus_paid_total": str(int(self.bonus_paid_total)), "fund_total": str(int(self.fund_total)),
+                "fund_total": str(int(self.fund_total)),
                 "credit_owed_total": str(int(self.credit_owed_total)),
                 "credit_paid_total": str(int(self.credit_paid_total)),
                 "stray_swept_total": str(int(self.stray_swept_total)), "held": str(self._held()),

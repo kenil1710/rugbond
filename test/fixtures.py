@@ -226,19 +226,8 @@ def until_verdict(w, reg, bid, n=50):
 
 
 def close(w, reg, bid, sender=STRANGER):
-    """Everything after the claim window: settle, then the bonus round (one pay_bonus per claim), then the
-    final settle when an integer leftover remains. -> {"settles": [...], "bonuses": [...]}"""
-    out = {"settles": [w.call(reg, "settle", bid, sender=sender)], "bonuses": []}
-    if out["settles"][0]["status"] == "REDISTRIBUTING":
-        off = 0
-        while off >= 0:
-            pg = w.view(reg, "list_claims", bid, off, 50)
-            for c in pg["items"]:
-                out["bonuses"].append(w.call(reg, "pay_bonus", bid, c["holder"], sender=sender))
-            off = pg["next_offset"]
-        if get(w, reg, bid)["status"] == "REDISTRIBUTING":
-            out["settles"].append(w.call(reg, "settle", bid, sender=sender))
-    return out
+    """Everything after the claim window: one settle. -> its result."""
+    return w.call(reg, "settle", bid, sender=sender)
 
 
 def get(w, reg, bid):

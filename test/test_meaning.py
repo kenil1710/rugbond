@@ -77,7 +77,7 @@ class DocsMatchCode(unittest.TestCase):
 
     def test_refusal_reasons_exist_in_code(self):
         for r in re.findall(r"`([A-Z][A-Z_]+[A-Z])`", RULES):
-            if r in ("ACTIVE", "RUGGED", "HELD", "VOID", "CLOSED", "RETURNED", "UNRESOLVED", "SCANNED", "PENDING", "REDISTRIBUTING"):
+            if r in ("ACTIVE", "RUGGED", "HELD", "VOID", "CLOSED", "RETURNED", "UNRESOLVED", "SCANNED", "PENDING"):
                 continue
             self.assertIn(r, SRC, r)
 
@@ -97,8 +97,10 @@ class DocsMatchCode(unittest.TestCase):
         self.assertEqual(RB.claim_balance(5, 3, 0), 3)
         self.assertEqual(RB.claim_balance(2, 9, 0), 2)
         self.assertEqual((RB.claim_balance(5, 9, 2), RB.claim_balance(5, 9, 5), RB.claim_balance(5, 9, 50)), (3, 0, 0))
-        self.assertIn("bonus = pool * share // base", RULES)
-        self.assertEqual((RB.bonus_of(10, 1, 3), RB.bonus_of(10, 3, 3), RB.bonus_of(0, 1, 3), RB.bonus_of(10, 1, 0)), (3, 10, 0, 0))
+        self.assertIn("A claimant receives its own share and nothing else", RULES)
+        self.assertFalse(hasattr(RB, "bonus_of"))
+        self.assertNotIn("bonus", RULES.lower())
+        self.assertNotIn("redistribut", RULES.lower())
         self.assertEqual(RB.share_of(10, 1, 3), 3)
         self.assertEqual(RB.share_of(10, 5, 3), 10)
         self.assertEqual(RB.share_of(10, 1, 0), 0)
@@ -111,9 +113,7 @@ class DocsMatchCode(unittest.TestCase):
 
     def test_settle_table(self):
         self.assertIn("| HELD or VOID | any time | the team (the whole bond) | RETURNED |", RULES)
-        self.assertIn("| RUGGED | after the claim window, somebody claimed | nobody yet: the unclaimed part is set aside for the claimants | REDISTRIBUTING |", RULES)
-        self.assertIn("| RUGGED | after the claim window, nobody claimed | the registry's fund (the whole bond) | CLOSED |", RULES)
-        self.assertIn("| REDISTRIBUTING | every bonus paid | the registry's fund (the integer leftover) | CLOSED |", RULES)
+        self.assertIn("| RUGGED | after the claim window | the registry's fund (everything nobody claimed) | CLOSED |", RULES)
         self.assertIn("| ACTIVE | after the recovery deadline | the registry's fund (the whole bond) | UNRESOLVED |", RULES)
         self.assertNotIn("victim", RULES.lower())
         self.assertNotIn("victim", SRC.lower())

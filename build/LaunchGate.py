@@ -25,14 +25,14 @@ import typing
 #                      PENDING, and the last block read is at most stale_s old
 #   HELD_FINAL         the promise held to its end time (HELD or RETURNED)
 #   RUGGED_PAYING      RUGGED, the claim window open
-#   RUGGED_CLOSED      RUGGED after the claim window, REDISTRIBUTING or CLOSED
+#   RUGGED_CLOSED      RUGGED after the claim window (CLOSED)
 #   PENDING            anything else: no read yet, the last check PENDING, stale
 #                      reads, no clock, UNRESOLVED, an unreadable registry
 #
 # `safe` is true only for ACTIVE_HELD_SO_FAR: a live promise read recently.
 # Never favorable on missing, pending or stale data.
 
-VERSION = "1.1.0"
+VERSION = "1.2.0"
 G_NO_BOND = "NO_BOND"
 G_ACTIVE = "ACTIVE_HELD_SO_FAR"
 G_HELD = "HELD_FINAL"
@@ -89,8 +89,9 @@ MAX_PROBE_CALLS = 48    # balanceOf calls one check spends on probes: probe_budg
 MAX_LOGS = 400          # LP transfers one check takes in (whole blocks); the rest waits for the next check
 MAX_CLAIM_LOG_CALLS = 64  # eth_getLogs requests one claim may spend per log RPC (a refused window is split in two)
 # How far below min(the window's last block, a validator's own finalized head) a
-# leader's last block may be: about an hour of blocks, for a leader whose
-# finalized head trailed the validator's.
+# leader's last block may be, for a leader whose finalized head trailed the
+# validator's: 300 blocks are about an hour on Ethereum (12 s blocks); 1,800
+# blocks are about six minutes on Base Sepolia (0.2 s blocks when measured).
 FIN_SLACK = {"ethereum": 300, "base-sepolia": 1800}
 MAX_HOLDERS = 8         # LP-holder addresses per bond
 MAX_EXCLUDED = 24       # extra excluded addresses per bond (besides team, pair, token, LP holders, zero, dead)
@@ -319,15 +320,6 @@ def share_of(bond_amount: int, balance: int, denom: int) -> int:
     return s if s < bond_amount else bond_amount
 
 
-def bonus_of(pool: int, share: int, base: int) -> int:
-    """A claimant's part of what nobody claimed: pool * its share // the sum of
-    all claimed shares (integer math, rounded down)."""
-    if pool <= 0 or share <= 0 or base <= 0:
-        return 0
-    x = (pool * share) // base
-    return x if x < pool else pool
-
-
 def team_senders(t: dict) -> list:
     """The addresses whose DIRECT token transfers to a claimant after the start
     block, up to R, are subtracted from its eligible balance: every excluded
@@ -417,7 +409,7 @@ def gate_state(raw: typing.Any, token: str, now: int, stale_s: int) -> dict:
         out["state"] = G_NO_BOND
         out["why"] = "the bond's pair is not a pool of the token"
         return out
-    if st in ("CLOSED", "REDISTRIBUTING"):
+    if st == "CLOSED":
         out["state"] = G_CLOSED
         return out
     if st == "RUGGED":
