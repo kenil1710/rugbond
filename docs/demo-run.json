@@ -37,7 +37,34 @@
     "arrived": true
    },
    "at": "2026-11-12T16:43:57.393Z"
+  },
+  {
+   "id": "fund_is_the_registrys",
+   "what": "the fund is the registry's (its constructor argument), not a bond term: get_config.fund",
+   "ok": true,
+   "fund": "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7",
+   "constructor_args": [
+    "DEMO",
+    "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7"
+   ],
+   "at": "2026-11-12T16:43:58.488Z"
+  },
+  {
+   "id": "open_A",
+   "what": "open bond RUGDEMO liquidity bond",
+   "ok": true,
+   "tx": "0x8b235526cf3de9b5c5067f61114f52b4d8c4ce3e7a8c5cc34a64bf5ae56c4e99",
+   "bond_id": 1,
+   "start_block": 57899851,
+   "end_time": 1794537839,
+   "amount": "2000000000000000000",
+   "min_lp": "38729833462074167851",
+   "fund": "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7",
+   "at": "2026-11-12T16:44:45.625Z"
   }
  ],
- "bonds": {}
+ "bonds": {
+  "A": 1
+ },
+ "start_block": 57899851
 }

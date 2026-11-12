@@ -18,8 +18,8 @@ A team, or the launchpad listing it, posts a bond in GEN on GenLayer and freezes
 
 That's it. No roadmap, no vibes, just numbers you can check on chain. If the LP those wallets hold drops below the
 floor before the deadline, the bond belongs to the people who held the token when it happened, in proportion to
-what they held. Whatever they don't claim within the window is shared among the holders who did claim. The team
-never gets to say where unclaimed money goes (more on that below). If the promise holds, the team gets its bond back.
+what they held. Each holder gets their own share and nothing more; whatever nobody claims within the window goes to a fund fixed
+when the registry was deployed. The team never gets to say where unclaimed money goes (more on that below). If the promise holds, the team gets its bond back.
 
 ## Who decides?
 
@@ -52,9 +52,10 @@ all. That hands the team a weapon. Send every holder one wei, or a zero-value tr
 transfer from the team just gets subtracted from what the holder is paid on. Dust costs the dust.
 
 The team used to name a "victim fund" for unclaimed money, with a rule that it couldn't name itself. A second
-wallet gets around that in one step. So the team no longer names anything. Unclaimed shares are split among the
-holders who did claim, in one extra round, and the odd leftover wei go to an address fixed when the registry was
-deployed. The same goes for a bond nobody managed to read in time. And a team can't run out that clock by flooding
+wallet gets around that in one step. So the team no longer names anything. Unclaimed shares go to an address
+fixed when the registry was deployed, and so does a bond nobody managed to read in time. (For a while unclaimed
+shares were split among the holders who did claim. That pays a wallet more the fewer holders show up, which a
+team holding float in a quiet wallet could use, so it went: every claimant gets its own share, full stop.) And a team can't run out that clock by flooding
 its LP wallet with tiny transfers: the scan keeps a cursor per bond, works through any number of them across checks,
 and the deadline only counts time in which no check made progress.
 
@@ -80,8 +81,8 @@ and the rule needs two. So the live registry covers Ethereum, and the demo runs 
   created after the fact, with tiny bonds, to show the rule on real history. They're marked as replays on chain, and
   the gate never treats a replay as a credential.
 - A demo on Base Sepolia with real tokens and a real Uniswap V2 pair. I rug one and hold the other, then go through
-  the claims, a dusting attempt, a flood of 1,100 LP transfers, every kind of refusal, the bonus round and the
-  settlements, with each payout checked by the recipient's balance.
+  the claims, a dusting attempt, a flood of 1,100 LP transfers, every kind of refusal, a low-turnout settlement and
+  the other settlements, with each payout checked by the recipient's balance.
 - LaunchGate, a small contract that answers "is this token's promise holding right now?" for one bond or one team.
   It never answers favorably on missing, pending or stale data, and a copycat bond by someone else is never read.
 - A keeper on GitHub Actions that files the checks and settlements, with its state on a branch so a crashed run
