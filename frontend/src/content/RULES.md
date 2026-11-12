@@ -58,8 +58,10 @@ So any number of transfers out, dust or not, is worked through across checks; no
 
 **Who decides the range.** The cursor, the span and the bound come from the contract's storage. A validator derives
 the range itself and takes from the leader only the last block, and only inside its own range: at or below its own
-last block and at most about an hour of blocks short of it (300 on Ethereum, 1,800 on Base Sepolia; a leader's
-finalized head may trail). It then reads that range itself; the two RPCs must answer identically and its facts must
+last block and at most a fixed number of blocks short of it (300 on Ethereum, 1,800 on Base Sepolia: about an hour
+of Ethereum blocks and about six minutes of Base Sepolia's 0.2 s blocks; a leader's finalized head may trail). A
+round in which the finalized head jumped further than that between the leader's read and a validator's is not
+agreed and is simply run again. It then reads that range itself; the two RPCs must answer identically and its facts must
 equal the leader's. When the leader says it **could not read** (`RPC_UNREADABLE`, `RPC_DISAGREE`), nothing the
 leader sent is used: each validator reads the range it derived and agrees only if its own read fails too. A leader
 that claims a failure while the chain is readable is outvoted and replaced.

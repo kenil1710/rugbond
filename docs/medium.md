@@ -18,8 +18,8 @@ A team, or the launchpad listing it, posts a bond in GEN on GenLayer and freezes
 
 That's it. No roadmap, no vibes, just numbers you can check on chain. If the LP those wallets hold drops below the
 floor before the deadline, the bond belongs to the people who held the token when it happened, in proportion to
-what they held. Whatever they don't claim within the window goes to a victim fund the team named at the start (and
-the team can't name itself). If the promise holds, the team gets its bond back.
+what they held. Whatever they don't claim within the window is shared among the holders who did claim. The team
+never gets to say where unclaimed money goes (more on that below). If the promise holds, the team gets its bond back.
 
 ## Who decides?
 
@@ -39,11 +39,28 @@ team can game that easily. Right before pulling, the team buys up most of the fl
 pays goes into the pool, and it gets that ETH straight back when it removes the liquidity. Then it claims most of its
 own bond through fresh wallets. The penalty almost disappears.
 
-The fix has two parts. A holder is paid on the smaller of its balance at the bond's start block and at R-1, so
-anything bought after the promise was made earns nothing. And any address that received the token directly from the
-team, or from another excluded wallet, between the start and the rug can't claim at all. Both checks are read from
-two RPCs, like everything else. I like this version much better: the bond protects the people who trusted the
-promise when it was made.
+The fix: a holder is paid on the smaller of its balance at the bond's start block and at R-1, so anything bought
+after the promise was made earns nothing. I like this version much better: the bond protects the people who trusted
+the promise when it was made.
+
+## The parts a reviewer got me on
+
+Three more, from a strict review of the deployed code.
+
+My second rule also said: any address that received the token straight from the team after the start can't claim at
+all. That hands the team a weapon. Send every holder one wei, or a zero-value transfer, and nobody can claim. Now a
+transfer from the team just gets subtracted from what the holder is paid on. Dust costs the dust.
+
+The team used to name a "victim fund" for unclaimed money, with a rule that it couldn't name itself. A second
+wallet gets around that in one step. So the team no longer names anything. Unclaimed shares are split among the
+holders who did claim, in one extra round, and the odd leftover wei go to an address fixed when the registry was
+deployed. The same goes for a bond nobody managed to read in time. And a team can't run out that clock by flooding
+its LP wallet with tiny transfers: the scan keeps a cursor per bond, works through any number of them across checks,
+and the deadline only counts time in which no check made progress.
+
+Last one: a validator used to re-read whatever block range the leader named. A dishonest leader could name an empty
+range, say "I couldn't read it", and have validators agree. Now each validator works the range out from the
+contract's own storage, and it accepts "couldn't read" only if its own read fails too.
 
 ## Does it work on real rugs?
 
@@ -63,7 +80,8 @@ and the rule needs two. So the live registry covers Ethereum, and the demo runs 
   created after the fact, with tiny bonds, to show the rule on real history. They're marked as replays on chain, and
   the gate never treats a replay as a credential.
 - A demo on Base Sepolia with real tokens and a real Uniswap V2 pair. I rug one and hold the other, then go through
-  the claims, every kind of refusal, and the settlements, with each payout checked by the recipient's balance.
+  the claims, a dusting attempt, a flood of 1,100 LP transfers, every kind of refusal, the bonus round and the
+  settlements, with each payout checked by the recipient's balance.
 - LaunchGate, a small contract that answers "is this token's promise holding right now?" for one bond or one team.
   It never answers favorably on missing, pending or stale data, and a copycat bond by someone else is never read.
 - A keeper on GitHub Actions that files the checks and settlements, with its state on a branch so a crashed run

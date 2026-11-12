@@ -32,6 +32,7 @@ L.push(`- **${rugs.length} real rug pulls** (team removed liquidity: an LP Trans
 L.push(`- **${held.length} real tokens whose LP stayed in place** for the whole promised period (Ethereum): team-held LP (${held.filter((c) => !c.lp_holders.some((h) => h.startsWith("0x663a") || h.endsWith("dead"))).length}), LP locked in the UNCX UniswapV2Locker (1), LP burned to 0x...dEaD (2).`);
 L.push(`- Rule verdicts from the Mac match the expected outcome for **${agree}/${F.cases.length}** cases; both RPCs returned identical facts on every read that produced a verdict.`);
 L.push(`- GenVM: **${gOk}/${gRows}** reads (check ranges and holder snapshots) byte-for-byte identical to the Mac's reads of the same ranges, under consensus (leader and validators each reading both RPCs).`);
+L.push("- The study ran on the first version of the read code. The deployed code makes the same requests and adds a stored lower bound, a cap of 400 transfers per check and a stored span; [SEEDS.md](SEEDS.md) compares every check GenVM stored on the current canonical registry with this machine's read of the same range.");
 L.push(`- The threshold (8 readable real rugs) is met.`, "");
 L.push("## RPCs", "");
 L.push("| chain | log RPC A | log RPC B | state RPC A | state RPC B | blocks per check |", "|---|---|---|---|---|---|");

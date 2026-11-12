@@ -10,6 +10,7 @@ Every case below was scanned to a verdict with the contract's own reads (contrac
 - **6 real tokens whose LP stayed in place** for the whole promised period (Ethereum): team-held LP (3), LP locked in the UNCX UniswapV2Locker (1), LP burned to 0x...dEaD (2).
 - Rule verdicts from the Mac match the expected outcome for **23/23** cases; both RPCs returned identical facts on every read that produced a verdict.
 - GenVM: **39/39** reads (check ranges and holder snapshots) byte-for-byte identical to the Mac's reads of the same ranges, under consensus (leader and validators each reading both RPCs).
+- The study ran on the first version of the read code. The deployed code makes the same requests and adds a stored lower bound, a cap of 400 transfers per check and a stored span; [SEEDS.md](SEEDS.md) compares every check GenVM stored on the current canonical registry with this machine's read of the same range.
 - The threshold (8 readable real rugs) is met.
 
 ## RPCs

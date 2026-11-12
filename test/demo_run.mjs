@@ -334,16 +334,35 @@ await step("gate_closed", "LaunchGate: RUGGED_CLOSED", async () => {
   return { ok: a.state === "RUGGED_CLOSED", check_for: a };
 });
 
-// 8. the copycat: rugged as well, and nobody claims on it: the whole bond goes to the registry's fund
-await step("copycat_done", "the copycat bond: checked to a verdict; nobody claimed, so after its window the whole bond goes to the registry's fund", async () => {
+// 8. the copycat: nobody filed a check on it within its recovery window (1 hour after its end on the demo registry),
+//    so it is UNRESOLVED: the whole bond goes to the registry's fund, not to anyone its poster chose
+await step("copycat_unresolved", "the copycat bond had no check for its whole recovery window: checks are refused, settle sends it to the registry's fund (UNRESOLVED)", async () => {
   const C = doc.bonds.C;
-  const r = await checkUntil(C, ["HELD", "RUGGED"]);
   const b = await team.view("get_bond", [C, now()]);
-  if (b.status === "RUGGED") while (now() <= b.claim_deadline + 30) await sleep(20000);
-  const due = await team.view("get_bond", [C, now()]);
-  const payee = due.due === "RETURN" ? ad("stranger") : FUND;
-  const p = await paying(cl("stranger"), "settle", [C], payee, (x) => x?.amount);        // even the copycat's own team cannot redirect it
-  return { ok: r.ok && p.ok && (r.status !== "RUGGED" || (due.due === "FUND" && p.returned?.to === FUND && p.returned?.amount === due.amount)), status: r.status, due: due.due, settle: p };
+  if (b.status !== "ACTIVE" || b.due !== "FUND") return { ok: false, status: b.status, due: b.due };
+  const chk = await refused(cl("keeper"), "check", [C], "RECOVERY_WINDOW_OVER_SETTLE_IT");
+  const p = await paying(cl("stranger"), "settle", [C], FUND, (x) => x?.amount);        // its own poster settles it and still cannot redirect it
+  return { ...p, ok: chk.ok && p.ok && p.returned?.status === "UNRESOLVED" && p.returned?.to === FUND && p.returned?.amount === b.amount, refused_check: chk, recovery_deadline: b.recovery_deadline };
+});
+// 8b. a rugged bond nobody claims on: the whole bond goes to the registry's fund
+await step("open_E", "a stranger bonds RUGDEMO again (its liquidity is already gone); nobody will claim", async () => {
+  const s = cl("stranger");
+  const name = "RUGDEMO unclaimed " + start;
+  const w = await s.write("create_bond", [name, "base-sepolia", RUG.token, RUG.pair, JSON.stringify([RUG.team]), "1", start, now() + 1800, 120,
+    JSON.stringify([]), "0"], { value: GEN / 100n });
+  const pg = await s.view("bonds_by_team", [s.me, 0, 50, now()]);
+  doc.bonds.E = pg.items.find((x) => x.name === name)?.bond_id; save();
+  return { ok: w.ok && !!doc.bonds.E, tx: w.hash, bond_id: doc.bonds.E };
+});
+await step("nobody_claimed_E", "bond E: RUGGED, nobody claims in its window, settle sends the whole bond to the registry's fund", async () => {
+  const E = doc.bonds.E;
+  const r = await checkUntil(E, ["RUGGED"], 60);
+  let b = await team.view("get_bond", [E, now()]);
+  if (b.status !== "RUGGED") return { ok: false, status: b.status };
+  while (now() <= b.claim_deadline + 30) await sleep(20000);
+  b = await team.view("get_bond", [E, now()]);
+  const p = await paying(cl("stranger"), "settle", [E], FUND, (x) => x?.amount);
+  return { ...p, ok: r.ok && b.due === "FUND" && b.n_claims === 0 && p.ok && p.returned?.status === "CLOSED" && p.returned?.to === FUND && p.returned?.amount === b.amount, rug_block: b.rug_block };
 });
 
 // 9. a live promise read recently: LaunchGate's ACTIVE_HELD_SO_FAR, then held and settled

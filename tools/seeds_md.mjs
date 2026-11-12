@@ -1,13 +1,15 @@
 // The canonical replay seeds, verified on chain -> docs/seed-verify.json and docs/SEEDS.md.
 // For every replay bond on the current canonical registry (and the superseded one): its verdict against the
-// expected one and the rug block against docs/feasibility.json; how it settled (to the victim fund after the
-// 1-hour claim window, or back to the launchpad), with the keeper's settle transaction checked FINALIZED and its
-// value message delivered to the recipient; and each registry's eth_getBalance at the end.
+// expected one and the rug block against docs/feasibility.json; how it settled (to the fund after the 1-hour claim
+// window, or back to the launchpad), with the keeper's settle transaction checked FINALIZED and its value message
+// delivered to the recipient; each registry's eth_getBalance at the end; and, on the current registry, every check
+// GenVM stored (range, LP transfers, probes, result) against the same read made from this machine (tools/lib/rug.mjs).
 //   node tools/seeds_md.mjs
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { createRequire } from "node:module";
 import { retry } from "../test/harness.mjs";
 import { balanceOf, payoutDelivered, plain, gen } from "./lib/rb.mjs";
+import { readCheck, judgeScan } from "./lib/rug.mjs";
 
 const root = new URL("../", import.meta.url);
 const { createClient } = createRequire(new URL("../test/package.json", import.meta.url))("genlayer-js");
@@ -48,7 +50,29 @@ try {
   }
 } catch (e) { console.log("keeper-state history unreadable: " + String(e.message).slice(0, 120)); }
 
-async function registry(address, seedFile, label) {
+/** Every agreed check GenVM stored for this bond, re-read from this machine with the same cursor, span and bound. */
+async function sameReads(address, b) {
+  const stored = [];
+  for (let off = 0; off >= 0;) { const pg = await view(address, "list_checks", [b.bond_id, off, 50]); stored.push(...pg.items); off = pg.next_offset; }
+  const t = { chain: b.chain, token: b.token, pair: b.pair, lp_holders: b.lp_holders, min_lp: b.min_lp, start_block: b.start_block, end_time: b.end_time, excluded_all: b.excluded_all };
+  let cursor = 0, low = 0n, first = true, same = 0, n = 0;
+  const diffs = [];
+  for (const c of stored.filter((x) => x.result !== "PENDING")) {
+    n++;
+    let r = null;
+    for (let k = 0; k < 4; k++) { r = await readCheck(t.chain, t, cursor, first, -1, c.b - c.a + 1, low); if (r.facts) break; await new Promise((z) => setTimeout(z, 3000 * (k + 1))); }
+    if (!r?.facts) { diffs.push({ check_id: c.check_id, why: "unreadable here: " + (r?.reason ?? "") }); break; }
+    const w = r.facts.window, j = first && !r.facts.pair.ok ? { verdict: "VOID" } : judgeScan(t, w);
+    const ok = w.a === c.a && w.b === c.b && w.logs.length === c.n_logs && JSON.stringify(w.probes) === JSON.stringify(c.probes) && j.verdict === c.result
+      && JSON.stringify(w.logs.slice(0, 20)) === JSON.stringify(c.logs);
+    if (ok) same++; else diffs.push({ check_id: c.check_id, here: { a: w.a, b: w.b, n_logs: w.logs.length, probes: w.probes, verdict: j.verdict }, stored: { a: c.a, b: c.b, n_logs: c.n_logs, probes: c.probes, result: c.result } });
+    if (j.verdict !== "SCANNED") break;
+    cursor = w.b; low = BigInt(w.low); first = false;
+  }
+  return { checks: n, identical: same, pending: stored.length - n, diffs };
+}
+
+async function registry(address, seedFile, label, compare = false) {
   const seeds = JSON.parse(readFileSync(new URL(seedFile, root)));
   const kname = Object.keys(ks).find((k) => ks[k].address?.toLowerCase() === address.toLowerCase());
   const acts = kname ? ks[kname].actions ?? [] : [];
@@ -68,7 +92,8 @@ async function registry(address, seedFile, label) {
     rows.push({ case_id: s.case_id, bond_id: s.bond_id, name: b.name, expect: s.expect, status: b.status, verdict, matches: verdict === s.expect,
       rug_block: b.rug_block, feasibility_rug_block: f?.rug?.block ?? 0, rug_block_matches: s.expect !== "RUGGED" || b.rug_block === f?.rug?.block,
       replay: b.replay, n_checks: b.n_checks, n_claims: b.n_claims, amount: b.amount, settled_to: b.settled_to, settled_amount: b.settled_amount,
-      settled_at: b.settled_at, to_victim_fund: b.settled_to === b.victim_fund, to_launchpad: b.settled_to === b.team, settle_proof: proof });
+      settled_at: b.settled_at, to_fund: b.settled_to === (b.fund ?? b.victim_fund), to_launchpad: b.settled_to === b.team, settle_proof: proof,
+      ...(compare ? { reads: await sameReads(address, b) } : {}) });
   }
   const bal = await balanceOf(address);
   const stats = await view(address, "get_stats", []);
@@ -76,9 +101,10 @@ async function registry(address, seedFile, label) {
 }
 
 const out = { generated_at: new Date().toISOString(), registries: [] };
-out.registries.push(await registry(dep.contracts.RugBond.address, "docs/seed-canonical.json", "current canonical registry"));
+out.registries.push(await registry(dep.contracts.RugBond.address, "docs/seed-canonical.json", "current canonical registry", true));
 for (const [f, label] of [["docs/superseded/seed-canonical-0x24ff68A1.json", "superseded canonical registry (first deployment)"],
-  ["docs/superseded/seed-canonical-0x07ED5695.json", "superseded canonical registry (second deployment)"]]) if (existsSync(new URL(f, root))) {
+  ["docs/superseded/seed-canonical-0x07ED5695.json", "superseded canonical registry (second deployment)"],
+  ["docs/superseded/seed-canonical-0x4D2a5e25.json", "superseded canonical registry (third deployment)"]]) if (existsSync(new URL(f, root))) {
   const old = JSON.parse(readFileSync(new URL(f, root)));
   out.registries.push(await registry(old.registry, f, label));
 }
@@ -86,14 +112,15 @@ writeFileSync(new URL("docs/seed-verify.json", root), JSON.stringify(out, null, 
 
 const L = ["# Canonical seeds", "",
   "**These bonds are historical replays.** Each was created on the canonical registry after the events it describes, by a throwaway `launchpad` account, with a small symbolic bond (0.01 GEN × the case number), over a real Ethereum token from [FEASIBILITY.md](FEASIBILITY.md): the real pair, the real LP holders, the LP they held at the start block as the promised minimum, a 7-day promise from that block. They are not promises the teams made. The contract marks each as a `replay` (its start block is older than the bond) and LaunchGate never answers favorably for one.", "",
-  "The keeper (GitHub Actions) filed every rug check and settled every bond: RUGGED replays opened a 1-hour claim window and then sent what nobody claimed to the victim fund (the original holders do not hold keys here, and under the claim rule they bought after the start block, so no claim was possible); HELD replays returned the bond to the launchpad. Generated by `tools/seeds_md.mjs` from [seed-verify.json](seed-verify.json).", ""];
+  "The keeper (GitHub Actions) filed every rug check and settled every bond: RUGGED replays opened a 1-hour claim window; nobody claimed (the original holders do not hold keys here), so each whole bond then went to the fund: on the current registry the registry's own fund, an address fixed in its constructor; on the registries deployed before that change, the victim fund each bond named. HELD replays returned the bond to the launchpad. On the current registry every check GenVM stored is also re-read from this machine with the same cursor, span and bound and compared field by field (range, LP transfers, probes, result). Generated by `tools/seeds_md.mjs` from [seed-verify.json](seed-verify.json).", ""];
 for (const r of out.registries) {
   const ok = r.rows.filter((x) => x.matches && x.rug_block_matches).length;
   L.push(`## ${r.label}: \`${r.address}\``, "",
-    `Verdicts as expected: **${ok}/${r.rows.length}**. Settled: ${r.rows.filter((x) => x.settled_at).length}/${r.rows.length}. eth_getBalance of the registry now: **${gen(r.eth_getBalance)} GEN** (held by open bonds: ${gen(r.held)}).`, "",
+    `Verdicts as expected: **${ok}/${r.rows.length}**. Settled: ${r.rows.filter((x) => x.settled_at).length}/${r.rows.length}. eth_getBalance of the registry now: **${gen(r.eth_getBalance)} GEN** (held by open bonds: ${gen(r.held)}).`
+      + (r.rows[0]?.reads ? ` Checks GenVM stored that this machine reads identically: **${r.rows.reduce((n, x) => n + x.reads.identical, 0)}/${r.rows.reduce((n, x) => n + x.reads.checks, 0)}** (PENDING checks, which store no read: ${r.rows.reduce((n, x) => n + x.reads.pending, 0)}).` : ""), "",
     "| case | bond | expected | status | rug block (rule / feasibility) | checks | settled to | amount | settle tx | delivered |", "|---|---|---|---|---|---|---|---|---|---|");
   for (const x of r.rows) {
-    L.push(`| ${x.case_id} | ${x.bond_id} | ${x.expect} | ${x.status} | ${x.rug_block ? `${x.rug_block} / ${x.feasibility_rug_block}` : "—"} | ${x.n_checks} | ${x.settled_at ? (x.to_victim_fund ? "victim fund" : x.to_launchpad ? "launchpad" : x.settled_to) : "—"} | ${x.settled_at ? gen(x.settled_amount) : "—"} | ${x.settle_proof ? "`" + x.settle_proof.tx.slice(0, 14) + "…`" : "—"} | ${x.settle_proof ? (x.settle_proof.delivered ? "yes" : "NO " + x.settle_proof.why) : "—"} |`);
+    L.push(`| ${x.case_id} | ${x.bond_id} | ${x.expect} | ${x.status} | ${x.rug_block ? `${x.rug_block} / ${x.feasibility_rug_block}` : "—"} | ${x.n_checks} | ${x.settled_at ? (x.to_fund ? "fund" : x.to_launchpad ? "launchpad" : x.settled_to) : "—"} | ${x.settled_at ? gen(x.settled_amount) : "—"} | ${x.settle_proof ? "`" + x.settle_proof.tx.slice(0, 14) + "…`" : "—"} | ${x.settle_proof ? (x.settle_proof.delivered ? "yes" : "NO " + x.settle_proof.why) : "—"} |`);
   }
   L.push("");
 }

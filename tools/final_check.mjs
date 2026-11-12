@@ -4,10 +4,11 @@
  *   2  on-chain code is byte-identical to build/ at the deploy commit and HEAD, all four from one commit
  *   3  the deployed addresses are the same everywhere they are written
  *   4  every link in the docs answers (explorer pages sampled once per shape)
- *   5  every canonical replay bond reached its expected verdict (rug block = the feasibility study's) and settled
+ *   5  every canonical replay bond reached its expected verdict (rug block = the feasibility study's) and settled;
+ *      every check GenVM stored for them reads identically from this machine
  *   6  every payout arrived: canonical settles and every demo payout finalized, delivered, balances moved
  *   7  every registry's eth_getBalance is what its ledger holds (0 when everything is settled), superseded ones too
- *   8  the keeper ran within the last 8 hours, has no failed action, and a scheduled run succeeded
+ *   8  the keeper ran within the last 8 hours, has no failed action, and a scheduled run succeeded since the deployment
  *   9  the test suites pass (offline 300+, keeper, Direct Mode)
  *  10  no placeholder language, no limitation or risk disclaimers, no vendor mentions in the docs (the check's own
  *      result line never contains a phrase it looks for: docs/AUDIT.md quotes it)
@@ -95,15 +96,20 @@ const now = () => Math.floor(Date.now() / 1000);
   const cur = s.registries[0];
   const wrong = cur.rows.filter((r) => !r.matches || !r.rug_block_matches);
   const open = cur.rows.filter((r) => !r.settled_at);
-  add("canonical replays decided and settled", sv.status === 0 && wrong.length === 0 && open.length === 0,
-    `${cur.rows.length} replay bonds on ${cur.address}: ${cur.rows.filter((r) => r.matches && r.rug_block_matches).length} at the expected verdict and rug block; ${cur.rows.length - open.length} settled (${cur.rows.filter((r) => r.to_victim_fund).length} to the victim fund after the claim window, ${cur.rows.filter((r) => r.to_launchpad).length} back to the launchpad)${wrong.length ? "; WRONG: " + wrong.map((r) => r.case_id).join(",") : ""}${open.length ? "; OPEN: " + open.map((r) => r.case_id).join(",") : ""}`);
+  const rc = cur.rows.reduce((n, r) => n + (r.reads?.checks ?? 0), 0), ri = cur.rows.reduce((n, r) => n + (r.reads?.identical ?? 0), 0);
+  add("canonical replays decided and settled", sv.status === 0 && wrong.length === 0 && open.length === 0 && rc > 0 && ri === rc,
+    `${cur.rows.length} replay bonds on ${cur.address}: ${cur.rows.filter((r) => r.matches && r.rug_block_matches).length} at the expected verdict and rug block; ${cur.rows.length - open.length} settled (${cur.rows.filter((r) => r.to_fund).length} to the registry's fund after a claim window in which nobody claimed, ${cur.rows.filter((r) => r.to_launchpad).length} back to the launchpad); ${ri}/${rc} checks stored by GenVM read identically from this machine${wrong.length ? "; WRONG: " + wrong.map((r) => r.case_id).join(",") : ""}${open.length ? "; OPEN: " + open.map((r) => r.case_id).join(",") : ""}`);
   const bad = [];
   let n = 0;
   for (const reg of s.registries) for (const r of reg.rows) if (r.settled_at && BigInt(r.settled_amount) > 0n) { if (r.settle_proof?.delivered) n++; else bad.push(`${reg.address.slice(0, 10)} bond ${r.bond_id}: ${r.settle_proof ? r.settle_proof.why : "no settle transaction found"}`); }
   let dn = 0;
   if (existsSync(root + "docs/demo-run.json")) {
     const demo = JSON.parse(rd("docs/demo-run.json"));
-    for (const st of demo.steps.filter((x) => x.payout)) {
+    // every payout the demo recorded, wherever it sits in a step (claims, bonuses, settles, the close-outs at the end)
+    const found = [];
+    const walk = (o, id) => { if (!o || typeof o !== "object") return; if (o.payout && o.tx) found.push({ id, tx: o.tx, payout: o.payout }); for (const v of Object.values(o)) if (v !== o.payout) walk(v, id); };
+    for (const st of demo.steps) walk(st, st.id);
+    for (const st of found) {
       const tx = plain(await retry(() => read.getTransaction({ hash: st.tx }), { label: "tx" }));
       const d = payoutDelivered(tx, st.payout.to, st.payout.amount);
       if (!d.ok || !st.payout.arrived) bad.push(`demo ${st.id}: ${d.why || "balance did not move by the amount"}`); else dn++;
@@ -127,10 +133,11 @@ const now = () => Math.floor(Date.now() / 1000);
 {
   const st = await (await fetch(`https://raw.githubusercontent.com/${REPO}/keeper-state/status.json`, { cache: "no-store" })).json().catch(() => null);
   const runs = JSON.parse(sh("gh", ["run", "list", "-R", REPO, "-w", "keeper.yml", "-L", "50", "--json", "event,conclusion,url,createdAt"]).stdout || "[]");
-  const sched = runs.find((r) => r.event === "schedule" && r.conclusion === "success");
+  const since = Date.parse(dep.RugBond.deployed_at);
+  const sched = runs.find((r) => r.event === "schedule" && r.conclusion === "success" && Date.parse(r.createdAt) > since);
   const age = st ? (Date.now() - Date.parse(st.finished_at)) / 3600000 : 99;
   const failed = st ? Object.values(st.contracts).flatMap((c) => c.actions).filter((a) => a.status === "FAILED") : [];
-  add("keeper", !!st && age < 8 && failed.length === 0 && !!sched, `last run finished ${age.toFixed(1)} h ago (${st?.trigger}); ${failed.length} failed actions; latest successful scheduled run: ${sched?.url ?? "none"}`);
+  add("keeper", !!st && age < 8 && failed.length === 0 && !!sched, `last run finished ${age.toFixed(1)} h ago (${st?.trigger}); ${failed.length} failed actions; latest successful scheduled run since the deployment (${dep.RugBond.deployed_at}): ${sched?.url ?? "none"}`);
 }
 // 9
 {
