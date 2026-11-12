@@ -5,63 +5,67 @@
   "explorer": "https://explorer-studio-dev.genlayer.com/",
   "contracts": {
     "RugBond": {
-      "address": "0x4D2a5e250a419b1D1798E103F80A23aC5be59a23",
-      "deploy_tx": "0x47c7959142d73d8dbb70f760743dee006dea9834867e46433c59d8df5ca5941f",
+      "address": "0x42f22d3C3d782E678C0561217276be836cba93fb",
+      "deploy_tx": "0x4314ebb41bca4e7d2a5e207058c3336437cb0f9c69f9c47068b3a289a8e0ad63",
       "file": "build/RugBond.py",
       "source": "contracts/RugBond.py",
-      "commit": "f28753db96904dc172867cced068c641888ce864",
-      "bytes": 68763,
-      "sha256": "5ef2dcf9a5e264621615cabfa1610edf698b209b81053abef57e7b75df82eb71",
+      "commit": "9c8495ebcd8d2d42843ee17d51ed0d6ca0afce46",
+      "bytes": 81547,
+      "sha256": "b5ce871be818b41c6e0acdaf035f56c960fc3ba1980d0a8027e5f4afd7a3bd23",
       "constructor_args": [
-        "CANONICAL"
+        "CANONICAL",
+        "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7"
       ],
       "deployer": "0xDd4B5DeFd7198C5A4597655323b851967d7a814F",
-      "deployed_at": "2026-11-11T08:58:40.189Z",
-      "mode": "CANONICAL"
+      "deployed_at": "2026-11-12T04:53:01.073Z",
+      "mode": "CANONICAL",
+      "fund": "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7"
     },
     "RugBondDemo": {
-      "address": "0x3491AAC81ec96B05B50B25AD9F8b3CAeE7fF51b8",
-      "deploy_tx": "0xa759687f25807f15a3e570efbee3b4656c0134269c8ce9cef8a70b017a18a2e9",
+      "address": "0x40aB41033194DFA35aeF2e7b295eFe3AF6ab5715",
+      "deploy_tx": "0xb6b6bd4e139a3cd1ceab83a8a4b736f1c1153a7238ad774563c642bf5f726644",
       "file": "build/RugBond.py",
       "source": "contracts/RugBond.py",
-      "commit": "f28753db96904dc172867cced068c641888ce864",
-      "bytes": 68763,
-      "sha256": "5ef2dcf9a5e264621615cabfa1610edf698b209b81053abef57e7b75df82eb71",
+      "commit": "9c8495ebcd8d2d42843ee17d51ed0d6ca0afce46",
+      "bytes": 81547,
+      "sha256": "b5ce871be818b41c6e0acdaf035f56c960fc3ba1980d0a8027e5f4afd7a3bd23",
       "constructor_args": [
-        "DEMO"
+        "DEMO",
+        "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7"
       ],
       "deployer": "0xDd4B5DeFd7198C5A4597655323b851967d7a814F",
-      "deployed_at": "2026-11-11T08:58:46.225Z",
-      "mode": "DEMO"
+      "deployed_at": "2026-11-12T04:53:10.175Z",
+      "mode": "DEMO",
+      "fund": "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7"
     },
     "LaunchGate": {
-      "address": "0x526D2923C56281f0c95ef9A4a02d8a29E2752D28",
-      "deploy_tx": "0x52e65f2fe36e7e70c45d12e71253e8fa1b3fc1d551992534c0e36c8e3aa41d80",
+      "address": "0xf079A5119a0997E9d6b47B83E52EF6F3EFF03821",
+      "deploy_tx": "0xd266ab15750230af1c080c4687d4f34bbfb567dae97173ac2f81488133e85781",
       "file": "build/LaunchGate.py",
       "source": "contracts/LaunchGate.py",
-      "commit": "f28753db96904dc172867cced068c641888ce864",
-      "bytes": 23371,
-      "sha256": "4fbb1978fd475172c7ec48b841151a25dd19df7fb037710fbec74a5cf0f07288",
+      "commit": "9c8495ebcd8d2d42843ee17d51ed0d6ca0afce46",
+      "bytes": 25496,
+      "sha256": "7620bfa071feae719df9869f38368121d1db0418e4738a5e2c202f57d8e6c4e2",
       "constructor_args": [
-        "0x4D2a5e250a419b1D1798E103F80A23aC5be59a23"
+        "0x42f22d3C3d782E678C0561217276be836cba93fb"
       ],
       "deployer": "0xDd4B5DeFd7198C5A4597655323b851967d7a814F",
-      "deployed_at": "2026-11-11T08:58:51.724Z",
+      "deployed_at": "2026-11-12T04:53:18.864Z",
       "mode": "CANONICAL"
     },
     "LaunchGateDemo": {
-      "address": "0x8317C4e1e8D76335f249d977FA855Cfbb431e5C9",
-      "deploy_tx": "0x66ceb8350e97f27f5cef7dd0f915f966dcf45ba6b97a6556ef7ef7c58165f6eb",
+      "address": "0xf851bC4dd469CccdB384bcDb2a480eb1255e312B",
+      "deploy_tx": "0xec4caccc837203043fae063176bc4b0ef72d499bc56dff8e0251ab8e4a8e852d",
       "file": "build/LaunchGate.py",
       "source": "contracts/LaunchGate.py",
-      "commit": "f28753db96904dc172867cced068c641888ce864",
-      "bytes": 23371,
-      "sha256": "4fbb1978fd475172c7ec48b841151a25dd19df7fb037710fbec74a5cf0f07288",
+      "commit": "9c8495ebcd8d2d42843ee17d51ed0d6ca0afce46",
+      "bytes": 25496,
+      "sha256": "7620bfa071feae719df9869f38368121d1db0418e4738a5e2c202f57d8e6c4e2",
       "constructor_args": [
-        "0x3491AAC81ec96B05B50B25AD9F8b3CAeE7fF51b8"
+        "0x40aB41033194DFA35aeF2e7b295eFe3AF6ab5715"
       ],
       "deployer": "0xDd4B5DeFd7198C5A4597655323b851967d7a814F",
-      "deployed_at": "2026-11-11T08:59:00.679Z",
+      "deployed_at": "2026-11-12T04:53:24.425Z",
       "mode": "DEMO"
     }
   },
@@ -209,6 +213,78 @@
       "mode": "DEMO",
       "superseded_by": "0x8317C4e1e8D76335f249d977FA855Cfbb431e5C9",
       "why": "LaunchGate staleness on the demo chain (6 h)"
+    },
+    {
+      "name": "RugBond",
+      "address": "0x4D2a5e250a419b1D1798E103F80A23aC5be59a23",
+      "deploy_tx": "0x47c7959142d73d8dbb70f760743dee006dea9834867e46433c59d8df5ca5941f",
+      "file": "build/RugBond.py",
+      "source": "contracts/RugBond.py",
+      "commit": "f28753db96904dc172867cced068c641888ce864",
+      "bytes": 68763,
+      "sha256": "5ef2dcf9a5e264621615cabfa1610edf698b209b81053abef57e7b75df82eb71",
+      "constructor_args": [
+        "CANONICAL"
+      ],
+      "deployer": "0xDd4B5DeFd7198C5A4597655323b851967d7a814F",
+      "deployed_at": "2026-11-11T08:58:40.189Z",
+      "mode": "CANONICAL",
+      "superseded_by": "0x42f22d3C3d782E678C0561217276be836cba93fb",
+      "why": "C1-C3: team transfers subtracted, no team-chosen fund (redistribution to claimants, registry fund), stored span and bound, validators derive the range"
+    },
+    {
+      "name": "RugBondDemo",
+      "address": "0x3491AAC81ec96B05B50B25AD9F8b3CAeE7fF51b8",
+      "deploy_tx": "0xa759687f25807f15a3e570efbee3b4656c0134269c8ce9cef8a70b017a18a2e9",
+      "file": "build/RugBond.py",
+      "source": "contracts/RugBond.py",
+      "commit": "f28753db96904dc172867cced068c641888ce864",
+      "bytes": 68763,
+      "sha256": "5ef2dcf9a5e264621615cabfa1610edf698b209b81053abef57e7b75df82eb71",
+      "constructor_args": [
+        "DEMO"
+      ],
+      "deployer": "0xDd4B5DeFd7198C5A4597655323b851967d7a814F",
+      "deployed_at": "2026-11-11T08:58:46.225Z",
+      "mode": "DEMO",
+      "superseded_by": "0x40aB41033194DFA35aeF2e7b295eFe3AF6ab5715",
+      "why": "C1-C3: team transfers subtracted, no team-chosen fund (redistribution to claimants, registry fund), stored span and bound, validators derive the range"
+    },
+    {
+      "name": "LaunchGate",
+      "address": "0x526D2923C56281f0c95ef9A4a02d8a29E2752D28",
+      "deploy_tx": "0x52e65f2fe36e7e70c45d12e71253e8fa1b3fc1d551992534c0e36c8e3aa41d80",
+      "file": "build/LaunchGate.py",
+      "source": "contracts/LaunchGate.py",
+      "commit": "f28753db96904dc172867cced068c641888ce864",
+      "bytes": 23371,
+      "sha256": "4fbb1978fd475172c7ec48b841151a25dd19df7fb037710fbec74a5cf0f07288",
+      "constructor_args": [
+        "0x4D2a5e250a419b1D1798E103F80A23aC5be59a23"
+      ],
+      "deployer": "0xDd4B5DeFd7198C5A4597655323b851967d7a814F",
+      "deployed_at": "2026-11-11T08:58:51.724Z",
+      "mode": "CANONICAL",
+      "superseded_by": "0xf079A5119a0997E9d6b47B83E52EF6F3EFF03821",
+      "why": "C1-C3: team transfers subtracted, no team-chosen fund (redistribution to claimants, registry fund), stored span and bound, validators derive the range"
+    },
+    {
+      "name": "LaunchGateDemo",
+      "address": "0x8317C4e1e8D76335f249d977FA855Cfbb431e5C9",
+      "deploy_tx": "0x66ceb8350e97f27f5cef7dd0f915f966dcf45ba6b97a6556ef7ef7c58165f6eb",
+      "file": "build/LaunchGate.py",
+      "source": "contracts/LaunchGate.py",
+      "commit": "f28753db96904dc172867cced068c641888ce864",
+      "bytes": 23371,
+      "sha256": "4fbb1978fd475172c7ec48b841151a25dd19df7fb037710fbec74a5cf0f07288",
+      "constructor_args": [
+        "0x3491AAC81ec96B05B50B25AD9F8b3CAeE7fF51b8"
+      ],
+      "deployer": "0xDd4B5DeFd7198C5A4597655323b851967d7a814F",
+      "deployed_at": "2026-11-11T08:59:00.679Z",
+      "mode": "DEMO",
+      "superseded_by": "0xf851bC4dd469CccdB384bcDb2a480eb1255e312B",
+      "why": "C1-C3: team transfers subtracted, no team-chosen fund (redistribution to claimants, registry fund), stored span and bound, validators derive the range"
     }
   ]
 }

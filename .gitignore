@@ -23,3 +23,4 @@ demo/out/
 demo/cache/
 .venv-gl/
 docs/e2e/artifacts/
+deployments.smoke.json
