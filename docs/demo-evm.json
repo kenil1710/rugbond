@@ -173,6 +173,44 @@
    "tx": "0x277bc7da731c694caae054d54c18a6a5d84faff8c395233667fbc8da36e0f8d4",
    "status": "success",
    "block": 57689336
+  },
+  "deploy_E2EDEMO4": {
+   "tx": "0x22b19f039ee3328f2e0dda208bdc8193603a08b3ca7a8e737f258f02c697b1ab",
+   "status": "success",
+   "block": 57765094,
+   "address": "0xa9acd221a0c809a1eb2ce829ff07e5b0e493ee4a"
+  },
+  "approve_E2EDEMO4": {
+   "tx": "0x25a0fe6bcc865476af676faaf180dc05f5d5c5f75f4cae5c01f59eaa45bf92d7",
+   "status": "success",
+   "block": 57765100
+  },
+  "liquidity_E2EDEMO4": {
+   "tx": "0x04195edc1616c89dfbe9b4b57af731c728fb49b6d90f455c4cb878546b287a5f",
+   "status": "success",
+   "block": 57765107,
+   "pair": "0xcb440a697bc21d0796698f1d4b7da19bdf0217f9",
+   "lp": "31622776601683792319"
+  },
+  "send_E2EDEMO4_wallet": {
+   "tx": "0x9c7d59f3fe0cf2b687bf7049bdf1290494fde61a77c73a13e37601bd59004150",
+   "status": "success",
+   "block": 57765114
+  },
+  "send_E2EDEMO4_holder1": {
+   "tx": "0x68375ea6843e917e44e994391dfd13e347d8c8b0842fe7fa6c58070772054161",
+   "status": "success",
+   "block": 57765121
+  },
+  "approve_lp_E2EDEMO4": {
+   "tx": "0xe1706ab677844634284bb47ff45590a126ebb89b4ea45c6434a5c9c6a141f1a3",
+   "status": "success",
+   "block": 57765376
+  },
+  "rug_E2EDEMO4": {
+   "tx": "0x860a51247e74ab5b1c085d8c16a137c112654a16a90cf7e876341fe2713d8f7b",
+   "status": "success",
+   "block": 57765384
   }
  },
  "RUGDEMO": {
@@ -225,5 +263,17 @@
    ],
    "lp_after": "38729833462074166751"
   }
+ },
+ "E2EDEMO4": {
+  "token": "0xa9acd221a0c809a1eb2ce829ff07e5b0e493ee4a",
+  "pair": "0xcb440a697bc21d0796698f1d4b7da19bdf0217f9",
+  "team": "0x6365881b460e79216303fc370348ca857d8da9ef",
+  "lp_minted": "31622776601683792319",
+  "wallet": "0xca0881c0403e080e7099a4351710eed0f22fb991",
+  "bond_id": 5,
+  "start_block": 57765134,
+  "bond_tx": "0x119c6107a98e97ce342e10bdabe6b85d6723a596b21e9586ecafb845004e3741",
+  "rug_block": 57765384,
+  "rug_tx": "0x860a51247e74ab5b1c085d8c16a137c112654a16a90cf7e876341fe2713d8f7b"
  }
 }

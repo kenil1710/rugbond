@@ -45,11 +45,12 @@ export async function viewOf<T>(address: string, fn: string, args: CalldataEncod
   throw new Error(last);
 }
 
-const STATUS_NAMES = ["PENDING", "PROPOSING", "COMMITTING", "REVEALING", "ACCEPTED", "FINALIZED", "UNDETERMINED", "CANCELED"];
+const STATUS_NAMES = ["UNINITIALIZED", "PENDING", "PROPOSING", "COMMITTING", "REVEALING", "ACCEPTED", "UNDETERMINED", "FINALIZED", "CANCELED"];
 function statusName(tx: unknown): string {
   const t = tx as { status?: number | string; statusName?: string };
-  if (typeof t?.status === "number") return STATUS_NAMES[t.status] ?? "";
-  return String(t?.statusName ?? t?.status ?? "");
+  if (typeof t?.statusName === "string" && t.statusName) return t.statusName.toUpperCase();
+  if (typeof t?.status === "number" || /^\d+$/.test(String(t?.status ?? ""))) return STATUS_NAMES[Number(t.status)] ?? "";
+  return String(t?.status ?? "").toUpperCase();
 }
 
 /** The SDK's `readable` rendering drops commas between map entries; put them back. */

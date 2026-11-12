@@ -929,13 +929,479 @@
    "tx": "0xfdd0f6947e21f15d5f0447e5d24f099cfb6713acb07c0e94fd20976b3419a108",
    "bond_id": 4,
    "at": "2026-11-12T09:13:52.193Z"
+  },
+  {
+   "id": "nobody_claimed_E",
+   "what": "bond E: RUGGED, nobody claims in its window, settle sends the whole bond to the registry's fund",
+   "ok": true,
+   "tx": "0xa41f1e392c116224d219bff0a95aa2479e2b0ce1df2520b30ff34f513061be59",
+   "status": "FINALIZED",
+   "returned": {
+    "amount": "10000000000000000",
+    "bond_id": 4,
+    "ok": true,
+    "status": "CLOSED",
+    "to": "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7"
+   },
+   "payout": {
+    "to": "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7",
+    "amount": "10000000000000000",
+    "delivered": true,
+    "why": "",
+    "recipient_delta": "10000000000000000",
+    "contract_delta": "-10000000000000000",
+    "self_paid": false,
+    "fee": "126307500000823",
+    "arrived": true
+   },
+   "rug_block": 57689336,
+   "at": "2026-11-12T09:17:15.390Z"
+  },
+  {
+   "id": "open_D",
+   "what": "team2 opens a second HOLDDEMO bond (ends in about an hour)",
+   "ok": true,
+   "tx": "0xcd4451d9ec051511196765d07a53c40a5c7f9de193ad897d0fb72139dd949413",
+   "bond_id": 6,
+   "start_block": 57765837,
+   "at": "2026-11-12T09:17:37.153Z"
+  },
+  {
+   "id": "check_D",
+   "what": "the first check of bond D (SCANNED while the promise runs)",
+   "ok": true,
+   "tx": "0x87b7cac862a87a24f7c0253eccb1c1ddf06baa0f6dc3ec0ea9f50c5326b9285f",
+   "returned": {
+    "check_id": 15,
+    "cursor": 57767638,
+    "cursor_ts": 1794475396,
+    "ok": true,
+    "result": "SCANNED"
+   },
+   "at": "2026-11-12T09:44:30.608Z"
+  },
+  {
+   "id": "gate_active_D",
+   "what": "LaunchGate: check_for(HOLDDEMO, D) is ACTIVE_HELD_SO_FAR and safe; a copycat team and another token are not",
+   "ok": true,
+   "check_for": {
+    "amount": "500000000000000000",
+    "bond_id": 6,
+    "chain": "base-sepolia",
+    "claim_deadline": 0,
+    "cursor_ts": 1794475396,
+    "rug_block": 0,
+    "safe": true,
+    "state": "ACTIVE_HELD_SO_FAR",
+    "status": "ACTIVE",
+    "team": "0xcdb369f092f67edf02fc987394115d6f62b71ce6",
+    "token": "0xc18d3969d66f8c87f95dc14d550e99882699855f",
+    "why": ""
+   },
+   "is_safe_for": {
+    "bonds": [
+     {
+      "bond_id": 2,
+      "state": "HELD_FINAL",
+      "why": ""
+     },
+     {
+      "bond_id": 6,
+      "state": "ACTIVE_HELD_SO_FAR",
+      "why": ""
+     }
+    ],
+    "safe": true,
+    "state": "ACTIVE_HELD_SO_FAR",
+    "team": "0xcdb369f092f67edf02fc987394115d6f62b71ce6",
+    "token": "0xc18d3969d66f8c87f95dc14d550e99882699855f",
+    "why": ""
+   },
+   "wrong_token": {
+    "amount": "500000000000000000",
+    "bond_id": 6,
+    "chain": "base-sepolia",
+    "claim_deadline": 0,
+    "cursor_ts": 1794475396,
+    "rug_block": 0,
+    "safe": false,
+    "state": "NO_BOND",
+    "status": "ACTIVE",
+    "team": "0xcdb369f092f67edf02fc987394115d6f62b71ce6",
+    "token": "0xc9b2a82a6e75b7746f95ca69f3348e3c809d0e4b",
+    "why": "the bond is for another token"
+   },
+   "copycat_team": {
+    "bonds": [],
+    "safe": false,
+    "state": "NO_BOND",
+    "team": "0x0a24216da7e0bbbb224a9f9847f87cf64c18177e",
+    "token": "0xc18d3969d66f8c87f95dc14d550e99882699855f",
+    "why": "no bond of this team for this token"
+   },
+   "attest_tx": "0xf90d356bc2e6c62fc97f501d75613bf21fecd9ca8ffa0da1ee6dbf8f40e5c6e6",
+   "at": "2026-11-12T09:44:51.195Z"
+  },
+  {
+   "id": "held_D",
+   "what": "rug checks on bond D until HELD",
+   "ok": true,
+   "status": "HELD",
+   "checks": [
+    {
+     "tx": "0x131e58ac4087f1388105514760b5ceac68a2cef02bb40cbd9a186ee463ddf0fd",
+     "ok": false,
+     "reason": "REFUSED: NOTHING_NEW_FINALIZED",
+     "result": ""
+    },
+    {
+     "tx": "0x99a301176301f7a3a699473a0fdd676d837f8fb0018cbd88917981a337868691",
+     "ok": false,
+     "reason": "REFUSED: NOTHING_NEW_FINALIZED",
+     "result": ""
+    },
+    {
+     "tx": "0xd566361d406c8480b4970b07edbc35ca467e8e16a1aa0ca88904aebaabb3e5a7",
+     "ok": true,
+     "reason": ".\bcheck_id�\u0001\u0006cursor���\u0001\tcursor_ts��5\u0002ok\u0010\u0006result<SCANNED",
+     "result": "SCANNED"
+    },
+    {
+     "tx": "0x122f4afa56371245f49be11f351d191858ca5ee051ef1430c062039d35560c62",
+     "ok": false,
+     "reason": "REFUSED: NOTHING_NEW_FINALIZED",
+     "result": ""
+    },
+    {
+     "tx": "0x89d94755d153ed2c1e3ca03d15f0e1ea9d021476f51890d4101b276fba093cd4",
+     "ok": false,
+     "reason": "REFUSED: NOTHING_NEW_FINALIZED",
+     "result": ""
+    },
+    {
+     "tx": "0x377f3f3a35180c51e46180bbf7e0dff1ee073369148404a1e8597365982cfeaf",
+     "ok": true,
+     "reason": ".\bcheck_id�\u0001\u0006cursor���\u0001\tcursor_tsы��5\u0002ok\u0010\u0006result<SCANNED",
+     "result": "SCANNED"
+    },
+    {
+     "tx": "0x43e061c441d11062573eecc8f3dbd833595745ce7b5fda40acf6f25e65b97468",
+     "ok": false,
+     "reason": "REFUSED: NOTHING_NEW_FINALIZED",
+     "result": ""
+    },
+    {
+     "tx": "0xb73b719646e105562d42ecc87b5cf99b8fdb3216cb315a784d8bca86c478f30c",
+     "ok": true,
+     "reason": ".\bcheck_id�\u0001\u0006cursor����\u0001\tcursor_ts����5\u0002ok\u0010\u0006result<SCANNED",
+     "result": "SCANNED"
+    },
+    {
+     "tx": "0x9bdf16f650377f5df6ca0aabb5e5b4fd479e7c1d173ca593ce1ab7ca5c46024d",
+     "ok": false,
+     "reason": "REFUSED: NOTHING_NEW_FINALIZED",
+     "result": ""
+    },
+    {
+     "tx": "0x4e1032dbff8686998476ef4f45a06be8c1b74197df365f4d208e9922ae05f6a9",
+     "ok": false,
+     "reason": "REFUSED: NOTHING_NEW_FINALIZED",
+     "result": ""
+    },
+    {
+     "tx": "0x86aa8df174977542cf93577c49bb8954c43c6cbcf58b2d62dc1ca132bcbb6a95",
+     "ok": true,
+     "reason": ".\bcheck_id�\u0001\u0006cursor����\u0001\tcursor_tsᳱ�5\u0002ok\u0010\u0006result<SCANNED",
+     "result": "SCANNED"
+    },
+    {
+     "tx": "0xa9ba69618e8c9fcb329fb854cb4a5ef4a5277ed32629587220bbd870769945ea",
+     "ok": false,
+     "reason": "REFUSED: NOTHING_NEW_FINALIZED",
+     "result": ""
+    },
+    {
+     "tx": "0xdae20e54a0f89d9c147f37667d04c1a06ff7bb47e6743ef9b51152c915ba26d5",
+     "ok": true,
+     "reason": ".\bcheck_id�\u0001\u0006cursor�ĳ�\u0001\tcursor_ts�б�5\u0002ok\u0010\u0006result<SCANNED",
+     "result": "SCANNED"
+    },
+    {
+     "tx": "0x79297c1d2e48beaa884dd69606210e618edb2ef088212822cd08a067b9c0aa4d",
+     "ok": false,
+     "reason": "REFUSED: NOTHING_NEW_FINALIZED",
+     "result": ""
+    },
+    {
+     "tx": "0x7ca6d87c2897197f04b2dc6ee2740cc1b016adcd93df364f1bffe9abe555b8df",
+     "ok": false,
+     "reason": "REFUSED: NOTHING_NEW_FINALIZED",
+     "result": ""
+    },
+    {
+     "tx": "0x6e0578e2b3f2a4ffab1e7034013392293f97c0216fa39931b802a1f60283f7aa",
+     "ok": true,
+     "reason": ".\bcheck_id�\u0001\u0006cursor�Ĵ�\u0001\tcursor_ts�鱽5\u0002ok\u0010\u0006result<SCANNED",
+     "result": "SCANNED"
+    },
+    {
+     "tx": "0xd6843b87afb2a8fd946be65c11c3daa517e5b5e7778b1011ee55f1be304535b9",
+     "ok": false,
+     "reason": "REFUSED: NOTHING_NEW_FINALIZED",
+     "result": ""
+    },
+    {
+     "tx": "0x3273a187c19fb8d058f8d1abcaf4508343fce75dfcab458862b247bd47f72ec9",
+     "ok": true,
+     "reason": ".\bcheck_id�\u0001\u0006cursor����\u0001\tcursor_ts񁲽5\u0002ok\u0010\u0006result<SCANNED",
+     "result": "SCANNED"
+    },
+    {
+     "tx": "0x02429e1924210024f9e0d031ea848c1df430203b7e0bd9111bf888d5982b1963",
+     "ok": false,
+     "reason": "REFUSED: NOTHING_NEW_FINALIZED",
+     "result": ""
+    },
+    {
+     "tx": "0x7567b8a7e43d13312cfbc9436ff7cd78b6ed3ac7235a61a20ae67a9f00c04452",
+     "ok": false,
+     "reason": "REFUSED: NOTHING_NEW_FINALIZED",
+     "result": ""
+    },
+    {
+     "tx": "0xd77afeccf6f191eff59147296a987f51177971961c2c3ba5c92eb2e2ba8d3094",
+     "ok": true,
+     "reason": ".\bcheck_id�\u0001\u0006cursor����\u0001\tcursor_ts����5\u0002ok\u0010\u0006result<SCANNED",
+     "result": "SCANNED"
+    },
+    {
+     "tx": "0x75e49ca6646ab4177796fb1b6c57b2b5fb45039ce8c3dbfcb6b779708e6bb508",
+     "ok": false,
+     "reason": "REFUSED: NOTHING_NEW_FINALIZED",
+     "result": ""
+    },
+    {
+     "tx": "0x15a0f7613dc8af3fa74deb92f5b9e2291315ebafa3caf41e595c5171f873da2b",
+     "ok": true,
+     "reason": ".\bcheck_id�\u0001\u0006cursor��\u0001\tcursor_ts����5\u0002ok\u0010\u0006result$HELD",
+     "result": "HELD"
+    }
+   ],
+   "rug_block": 0,
+   "cursor": 57784846,
+   "at": "2026-11-12T10:41:46.588Z"
+  },
+  {
+   "id": "settle_D",
+   "what": "settle D: the bond back to team2",
+   "ok": true,
+   "tx": "0x577ac1726667508c1f3d45796d637df45943baf2614e98506fa5227d5769432e",
+   "status": "FINALIZED",
+   "returned": {
+    "amount": "500000000000000000",
+    "bond_id": 6,
+    "ok": true,
+    "status": "RETURNED",
+    "to": "0xcdb369f092f67edf02fc987394115d6f62b71ce6"
+   },
+   "payout": {
+    "to": "0xcdb369f092f67edf02fc987394115d6f62b71ce6",
+    "amount": "500000000000000000",
+    "delivered": true,
+    "why": "",
+    "recipient_delta": "500000000000000000",
+    "contract_delta": "-500000000000000000",
+    "self_paid": false,
+    "fee": "126307750000823",
+    "arrived": true
+   },
+   "at": "2026-11-12T10:42:35.093Z"
+  },
+  {
+   "id": "balance_zero_end",
+   "what": "the demo registry's balance is 0 at the end (after the e2e run's bonds close too)",
+   "ok": true,
+   "eth_getBalance": "0",
+   "fund": "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7",
+   "fund_balance": "711000000000000002",
+   "stats": {
+    "balance": "0",
+    "bonds": 7,
+    "bonus_paid_total": "1887359961052009410",
+    "checks": 26,
+    "claims_paid_total": "1112640038947990589",
+    "counts": {
+     "beneficiaries": 1,
+     "bonds": 7,
+     "bonuses": 4,
+     "checks": 26,
+     "checks_pending": 0,
+     "checks_scanned": 20,
+     "claims": 4,
+     "create_refused": 1,
+     "credit_withdrawals": 1,
+     "held": 3,
+     "redistributions": 2,
+     "rugged": 3,
+     "settles": 6,
+     "sweeps": 0,
+     "void": 0
+    },
+    "credit_owed_total": "0",
+    "credit_paid_total": "10000000000000000",
+    "fund_total": "20000000000000001",
+    "held": "0",
+    "open_total": "0",
+    "received_total": "5030000000000000000",
+    "returned_total": "2000000000000000000",
+    "stray_swept_total": "0"
+   },
+   "leftovers": [
+    {
+     "bond_id": 5,
+     "name": "E2EDEMO4 liquidity bond 57765134",
+     "ok": true,
+     "status": "CLOSED",
+     "actions": [
+      {
+       "action": "settle (set the unclaimed part aside)",
+       "ok": true,
+       "tx": "0x2b719b1c117b23e621cd52adde26cc812bfdc94fed092875ba3e96e9f6fd68fa",
+       "status": "FINALIZED",
+       "returned": {
+        "base": "400000000000000000",
+        "bond_id": 5,
+        "claims": 1,
+        "ok": true,
+        "pool": "600000000000000000",
+        "status": "REDISTRIBUTING"
+       },
+       "contract_delta": "0"
+      },
+      {
+       "action": "pay_bonus 0xca0881c0403e080e7099a4351710eed0f22fb991",
+       "ok": true,
+       "tx": "0x1d24c237db4b182088c24dd186ea3e4322acf2708751f29ecfa7a08288eac9b6",
+       "status": "FINALIZED",
+       "returned": {
+        "bond_id": 5,
+        "bonus": "600000000000000000",
+        "bonuses_left": 0,
+        "holder": "0xca0881c0403e080e7099a4351710eed0f22fb991",
+        "ok": true,
+        "payee": "0xca0881c0403e080e7099a4351710eed0f22fb991",
+        "status": "CLOSED"
+       },
+       "payout": {
+        "to": "0xca0881c0403e080e7099a4351710eed0f22fb991",
+        "amount": "600000000000000000",
+        "delivered": true,
+        "why": "",
+        "recipient_delta": "600000000000000000",
+        "contract_delta": "-600000000000000000",
+        "self_paid": false,
+        "fee": "126307750000823",
+        "arrived": true
+       }
+      }
+     ]
+    }
+   ],
+   "bonds": [
+    {
+     "bond_id": 1,
+     "name": "RUGDEMO liquidity bond",
+     "team": "0x6365881b460e79216303fc370348ca857d8da9ef",
+     "status": "CLOSED",
+     "amount": "2000000000000000000",
+     "paid": "712640038947990589",
+     "bonus_paid": "1287359961052009410",
+     "settled_to": "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7",
+     "settled_amount": "1",
+     "rug_block": 57689336
+    },
+    {
+     "bond_id": 2,
+     "name": "HOLDDEMO liquidity bond",
+     "team": "0xcdb369f092f67edf02fc987394115d6f62b71ce6",
+     "status": "RETURNED",
+     "amount": "1000000000000000000",
+     "paid": "0",
+     "bonus_paid": "0",
+     "settled_to": "0xcdb369f092f67edf02fc987394115d6f62b71ce6",
+     "settled_amount": "1000000000000000000",
+     "rug_block": 0
+    },
+    {
+     "bond_id": 3,
+     "name": "RUGDEMO copycat",
+     "team": "0x0a24216da7e0bbbb224a9f9847f87cf64c18177e",
+     "status": "UNRESOLVED",
+     "amount": "10000000000000000",
+     "paid": "0",
+     "bonus_paid": "0",
+     "settled_to": "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7",
+     "settled_amount": "10000000000000000",
+     "rug_block": 0
+    },
+    {
+     "bond_id": 4,
+     "name": "RUGDEMO unclaimed 57688320",
+     "team": "0x0a24216da7e0bbbb224a9f9847f87cf64c18177e",
+     "status": "CLOSED",
+     "amount": "10000000000000000",
+     "paid": "0",
+     "bonus_paid": "0",
+     "settled_to": "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7",
+     "settled_amount": "10000000000000000",
+     "rug_block": 57689336
+    },
+    {
+     "bond_id": 5,
+     "name": "E2EDEMO4 liquidity bond 57765134",
+     "team": "0x6365881b460e79216303fc370348ca857d8da9ef",
+     "status": "CLOSED",
+     "amount": "1000000000000000000",
+     "paid": "400000000000000000",
+     "bonus_paid": "600000000000000000",
+     "settled_to": "",
+     "settled_amount": "0",
+     "rug_block": 57765384
+    },
+    {
+     "bond_id": 6,
+     "name": "HOLDDEMO short bond 57765837",
+     "team": "0xcdb369f092f67edf02fc987394115d6f62b71ce6",
+     "status": "RETURNED",
+     "amount": "500000000000000000",
+     "paid": "0",
+     "bonus_paid": "0",
+     "settled_to": "0xcdb369f092f67edf02fc987394115d6f62b71ce6",
+     "settled_amount": "500000000000000000",
+     "rug_block": 0
+    },
+    {
+     "bond_id": 7,
+     "name": "e2e bond 57774306",
+     "team": "0xca0881c0403e080e7099a4351710eed0f22fb991",
+     "status": "RETURNED",
+     "amount": "500000000000000000",
+     "paid": "0",
+     "bonus_paid": "0",
+     "settled_to": "0xca0881c0403e080e7099a4351710eed0f22fb991",
+     "settled_amount": "500000000000000000",
+     "rug_block": 0
+    }
+   ],
+   "at": "2026-11-12T10:47:32.196Z"
   }
  ],
  "bonds": {
   "A": 1,
   "B": 2,
   "C": 3,
-  "E": 4
+  "E": 4,
+  "D": 6
  },
  "start_block": 57688320
 }

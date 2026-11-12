@@ -3,7 +3,7 @@
 // claims its share (the GEN arrives), is refused on a bond it held nothing in, posts its own bond on a pool that
 // holds, checks it to HELD and settles it (the bond comes back). Screenshots, video, trace and a summary go to docs/e2e/.
 import { test, expect } from "@playwright/test";
-import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { connectWallet, rpc } from "./wallet.js";
 
@@ -15,10 +15,12 @@ mkdirSync(SHOTS, { recursive: true });
 const KEY = process.env.E2E_KEY ?? "E2EDEMO";
 const node = (script, ...args) => execFileSync("node", [new URL(script, root).pathname, ...args], { cwd: new URL("test/", root).pathname }).toString().trim();
 const evm = () => JSON.parse(readFileSync(new URL("docs/demo-evm.json", root)));
-const summary = { site: "", demo_registry: DEMO, steps: [] };
-const log = (step, detail) => { summary.steps.push({ step, ...detail, at: new Date().toISOString() }); console.log(step, JSON.stringify(detail)); writeFileSync(new URL("summary.json", SHOTS), JSON.stringify(summary, null, 1) + "\n"); };
+// E2E_RESUME=1 continues an interrupted run: the summary and the screenshots of the steps already done are kept
+const RESUME = !!process.env.E2E_RESUME && existsSync(new URL("summary.json", SHOTS));
+const summary = RESUME ? JSON.parse(readFileSync(new URL("summary.json", SHOTS))) : { site: "", demo_registry: DEMO, steps: [] };
+const log = (step, detail) => { if (RESUME && ["wallet", "setup", "rugged", "claimed", "refused"].includes(step) && summary.steps.some((x) => x.step === step && (x.what ?? "") === (detail.what ?? ""))) return; summary.steps.push({ step, ...detail, at: new Date().toISOString() }); console.log(step, JSON.stringify(detail)); writeFileSync(new URL("summary.json", SHOTS), JSON.stringify(summary, null, 1) + "\n"); };
 const balance = async (a) => BigInt(await rpc("eth_getBalance", [a, "latest"]));
-const shot = (page, name) => page.screenshot({ path: new URL(name + ".png", SHOTS).pathname, fullPage: true });
+const shot = (page, name) => (RESUME && /^0[1-4]/.test(name) && existsSync(new URL(name + ".png", SHOTS)) ? null : page.screenshot({ path: new URL(name + ".png", SHOTS).pathname, fullPage: true }));
 const statusText = (page) => page.getByRole("status").last();
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -119,7 +121,7 @@ test("rug check, claim, refusal, create, close on the demo registry", async ({ p
   // this wallet already posted is used, never a second one)
   const hold = evm().HOLDDEMO;
   let mine = await view(page, "bonds_by_team", [address.toLowerCase(), 0, 50, Math.floor(Date.now() / 1000)]);
-  let H = mine.items.find((b) => b.name.startsWith("e2e bond "))?.bond_id;
+  let H = mine.items.find((b) => b.name.startsWith("e2e bond ") && ["ACTIVE", "HELD"].includes(b.status))?.bond_id;
   if (!H) {
     const headNow = Number(node("test/demo_evm.mjs", "head"));
     await go(page, "/team");
