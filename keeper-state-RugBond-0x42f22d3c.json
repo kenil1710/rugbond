@@ -886,7 +886,7 @@
  "contract": "RugBond",
  "address": "0x42f22d3C3d782E678C0561217276be836cba93fb",
  "keeper": "0xfEC989fC1176c5524C3b20ef2c09bca724d6BD4e",
- "saved_at": "2026-11-12T07:45:49.396Z",
+ "saved_at": "2026-11-12T11:42:58.985Z",
  "totals": {
   "actions": 35,
   "done": 35,
