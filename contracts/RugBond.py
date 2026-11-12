@@ -13,14 +13,17 @@ import typing
 # is no cancel and no amendment: the chain, the token, its V2 pair, the
 # LP-holder addresses (team wallets and/or lockers), the promised minimum LP
 # amount they hold together, the start block, the end time, the claim window,
-# the victim-fund address (never the team), the extra excluded addresses
-# (routers, other team wallets) and the dust floor.
+# the extra excluded addresses (routers, other team wallets) and the dust
+# floor. A bond never names where unclaimed GEN goes: the team has no say.
 #
 # Anyone files a RUG CHECK. Validators read the next stretch of finalized
 # blocks from TWO RPCs that must agree (contracts/shared/rpc.py read_check):
 # every LP Transfer out of an LP holder, and the holders' summed LP balance at
-# the end of each block that had one. Code applies the rule
-# (contracts/shared/common.py judge_scan):
+# the end of each block those transfers could have taken below the promise.
+# The range comes from the bond's stored cursor and span; a validator derives
+# it itself and accepts a leader's "could not read" only when its own read of
+# that range fails too. Code applies the rule (contracts/shared/common.py
+# judge_scan):
 #
 #   RUGGED  the summed balance was below the promised minimum at a block R
 #           between the start block and the end time; R is the first such
@@ -34,18 +37,25 @@ import typing
 # After RUGGED each token holder claims once, as msg.sender (the same key on
 # both chains), optionally paying a beneficiary it committed on chain:
 #
-#   share = bond * min(balanceOf(holder, start block), balanceOf(holder, R-1))
-#                // (totalSupply(R-1) - excluded balances at R-1)
+#   eligible = max(0, min(balanceOf(holder, start block), balanceOf(holder, R-1))
+#                     - tokens received directly from team senders after the
+#                       start block, up to R)
+#   share    = bond * eligible // (totalSupply(R-1) - excluded balances at R-1)
 #
-# read from two archive RPCs that must agree. Contracts (code at the address),
-# excluded addresses, and addresses that received the token directly from a
-# team sender (an excluded address other than the pair and the routers) between
-# the start block and R cannot claim; a share below the dust floor is refused.
-# After the claim window anyone settles: what nobody claimed goes to the victim
-# fund. HELD (or VOID): the bond goes back to the team. A bond still unread at
-# its recovery deadline (fixed at creation: max(end time, creation) + recovery
-# window) is UNRESOLVED and its bond goes to the victim fund. No model is asked
-# anything; no owner can intervene.
+# read from two archive RPCs that must agree. Contracts (code at the address)
+# and excluded addresses cannot claim; a share below the dust floor is refused.
+# A transfer from the team costs a holder exactly what it carried: a zero-value
+# or dust transfer changes nothing.
+#
+# After the claim window anyone settles. What nobody claimed is shared among
+# the holders who did claim, pro rata to their shares, in one round (pay_bonus,
+# one call per claim); integer leftovers, and the whole bond when nobody
+# claimed, go to the registry's fund, an address fixed in the constructor.
+# HELD (or VOID): the bond goes back to the team. A bond whose cursor has not
+# moved for the recovery window (counted from the later of the end time, the
+# creation and the last check that moved the cursor) is UNRESOLVED and goes
+# the same way: to the registry's fund, never to an address a team chose.
+# No model is asked anything; no owner can intervene.
 #
 # RULES
 #   1. create_bond is the only payable method and never raises: a refusal
@@ -54,30 +64,33 @@ import typing
 #   2. Every check runs before the first write; counters move only after.
 #   3. GEN leaves only through _send: one external value message per call,
 #      posted in the call that records the payout. The caller funds it.
-#   4. Ledger: received = held + claims_paid + returned + to_victim_funds +
+#   4. Ledger: received = held + claims_paid + bonus_paid + returned + to_fund +
 #      credits_paid + swept; held = open bond balances + credits owed. Anything
 #      above held in the balance arrived outside create_bond; sweep_stray sends
 #      it to the deployer.
 
-VERSION = "1.0.0"
+VERSION = "1.1.0"
 
 B_ACTIVE = "ACTIVE"
 B_RUGGED = "RUGGED"
 B_HELD = "HELD"
 B_VOID = "VOID"
-B_CLOSED = "CLOSED"            # RUGGED, claim window over, the rest sent to the victim fund
+B_SHARING = "REDISTRIBUTING"   # RUGGED, claim window over, the unclaimed part being paid to the claimants
+B_CLOSED = "CLOSED"            # RUGGED and fully paid out
 B_RETURNED = "RETURNED"        # HELD or VOID, the bond sent back to the team
-B_UNRESOLVED = "UNRESOLVED"    # never read to a verdict by its recovery deadline, sent to the victim fund
-STATUSES = (B_ACTIVE, B_RUGGED, B_HELD, B_VOID, B_CLOSED, B_RETURNED, B_UNRESOLVED)
+B_UNRESOLVED = "UNRESOLVED"    # no check moved the cursor for the recovery window; sent to the registry's fund
+STATUSES = (B_ACTIVE, B_RUGGED, B_HELD, B_VOID, B_SHARING, B_CLOSED, B_RETURNED, B_UNRESOLVED)
 
 COUNT_KEYS = ("bonds", "create_refused", "checks", "checks_scanned", "checks_pending", "rugged", "held", "void",
-              "claims", "beneficiaries", "settles", "credit_withdrawals", "sweeps")
+              "claims", "beneficiaries", "settles", "redistributions", "bonuses", "credit_withdrawals", "sweeps")
 
 # mode -> (chains, min_claim_window_s, recovery_s, stale_s, sweep_delay_s)
 #   min_claim_window_s  the shortest claim window a bond may set
-#   recovery_s          after max(end time, creation), how long checks may still
-#                       run before the bond is UNRESOLVED; fixed at creation, so
-#                       PENDING checks cannot extend it
+#   recovery_s          how long a bond may go without a check that moves its
+#                       cursor, counted from the later of the end time, the
+#                       creation and the last such check, before it is
+#                       UNRESOLVED. PENDING checks never extend it; a scan that
+#                       is making progress never runs into it
 #   stale_s             LaunchGate: an ACTIVE bond whose last read block is older
 #                       than this is PENDING, never "held so far" (Base Sepolia's
 #                       finalized head trails its tip by about 4.4 hours)
@@ -101,8 +114,8 @@ PAGE_MAX = 50
 
 def parse_terms(mode_chains: tuple, chain: typing.Any, token: typing.Any, pair: typing.Any, lp_holders_json: typing.Any,
                 min_lp: typing.Any, start_block: typing.Any, end_time: typing.Any, claim_window_s: typing.Any,
-                victim_fund: typing.Any, excluded_json: typing.Any, dust_floor: typing.Any, team: str,
-                now: int, min_claim: int) -> typing.Any:
+                excluded_json: typing.Any, dust_floor: typing.Any, team: str, now: int, min_claim: int,
+                fund: str) -> typing.Any:
     """The frozen terms -> a dict, or a reason string."""
     ch = str(chain).strip().lower()
     if ch not in CHAINS or ch not in mode_chains:
@@ -132,18 +145,14 @@ def parse_terms(mode_chains: tuple, chain: typing.Any, token: typing.Any, pair: 
     cw = _as_int(claim_window_s, -1)
     if cw < min_claim or cw > MAX_CLAIM_WINDOW_S:
         return "CLAIM_WINDOW_INVALID"
-    vf = _addr(victim_fund)
-    if vf == "" or vf == ZERO or vf == DEAD:
-        return "VICTIM_FUND_INVALID"
-    if vf == team:
-        return "VICTIM_FUND_IS_TEAM"
-    if vf in holders:
-        return "VICTIM_FUND_IS_LP_HOLDER"
     extra = addr_list(excluded_json, MAX_EXCLUDED)
     if isinstance(extra, str):
         return "EXCLUDED_" + extra
-    if vf in extra:
-        return "VICTIM_FUND_IS_EXCLUDED"
+    # the registry's fund takes what no holder claims: it is never a party to a bond
+    if fund == team:
+        return "TEAM_IS_REGISTRY_FUND"
+    if fund in holders or fund in extra or fund == tok or fund == pr:
+        return "REGISTRY_FUND_IN_TERMS"
     dust = _as_int(dust_floor, -1)
     if dust < 0 or dust > MAX_AMOUNT:
         return "DUST_FLOOR_INVALID"
@@ -157,7 +166,7 @@ def parse_terms(mode_chains: tuple, chain: typing.Any, token: typing.Any, pair: 
         if e not in ex_all:
             ex_all.append(e)
     return {"chain": ch, "token": tok, "pair": pr, "lp_holders": holders, "min_lp": str(mlp), "start_block": sb,
-            "end_time": et, "claim_window_s": cw, "victim_fund": vf, "excluded": extra,
+            "end_time": et, "claim_window_s": cw, "excluded": extra,
             "excluded_all": sorted(ex_all), "dust_floor": str(dust)}
 
 
@@ -178,6 +187,8 @@ class Bond:
     status: str
     cursor: u64
     cursor_ts: u64
+    span: u64
+    lp_low: u256
     scanned_at: u64
     n_checks: u64
     n_pending: u64
@@ -195,6 +206,11 @@ class Bond:
     claim_deadline: u64
     paid: u256
     n_claims: u64
+    bonus_pool: u256
+    bonus_base: u256
+    bonus_paid: u256
+    n_bonus: u64
+    shared_at: u64
     settled_amount: u256
     settled_to: str
     settled_at: u64
@@ -226,14 +242,21 @@ class Claim:
     holder: str
     payee: str
     balance: u256
+    start_balance: u256
+    r_balance: u256
+    from_team: u256
     share: u256
     claimed_at: u64
     claim_no: u64
+    bonus: u256
+    bonus_paid: bool
+    bonus_at: u64
 
 
 class RugBond(gl.contract.Contract):
     mode: str
     deployer: str
+    fund: str
     min_claim_window_s: u64
     recovery_s: u64
     stale_s: u64
@@ -259,18 +282,24 @@ class RugBond(gl.contract.Contract):
     open_total: u256
     claims_paid_total: u256
     returned_total: u256
-    victim_total: u256
+    bonus_paid_total: u256
+    fund_total: u256
     credit_owed_total: u256
     credit_paid_total: u256
     stray_swept_total: u256
 
-    def __init__(self, mode: str) -> None:
+    def __init__(self, mode: str, fund: str) -> None:
         m = str(mode).strip().upper()
         if m not in MODES:
             raise gl.vm.UserError("mode must be CANONICAL or DEMO")
+        f = _addr(fund)
+        if f == "" or f == ZERO or f == DEAD:
+            raise gl.vm.UserError("fund must be an address")
         p = MODES[m]
         self.mode = m
         self.deployer = gl.message.sender_address.as_hex.lower()
+        # where GEN no holder claimed goes. Set here, once; no method writes it.
+        self.fund = f
         self.min_claim_window_s = u64(p[1])
         self.recovery_s = u64(p[2])
         self.stale_s = u64(p[3])
@@ -319,13 +348,13 @@ class RugBond(gl.contract.Contract):
         gl.evm.Account(Address(who)).emit_call(u256(amount), b"")
 
     def _remaining(self, b: Bond) -> int:
-        return int(b.amount) - int(b.paid) - int(b.settled_amount)
+        return int(b.amount) - int(b.paid) - int(b.bonus_paid) - int(b.settled_amount)
 
     # --- bonds ------------------------------------------------------------------
 
     @gl.public.write.payable
     def create_bond(self, name: str, chain: str, token: str, pair: str, lp_holders_json: str, min_lp: typing.Any,
-                    start_block: typing.Any, end_time: typing.Any, claim_window_s: typing.Any, victim_fund: str,
+                    start_block: typing.Any, end_time: typing.Any, claim_window_s: typing.Any,
                     excluded_json: str, dust_floor: typing.Any) -> typing.Any:
         """Open a bond and lock msg.value in it. The sender is the team. Never raises."""
         value = int(gl.message.value)
@@ -341,8 +370,8 @@ class RugBond(gl.contract.Contract):
             return self._refuse(value, "NAME_REQUIRED")
         team = self._sender()
         t = parse_terms(MODES[self.mode][0], chain, token, pair, lp_holders_json, min_lp, start_block, end_time,
-                        claim_window_s, victim_fund, excluded_json, dust_floor, team, now,
-                        int(self.min_claim_window_s))
+                        claim_window_s, excluded_json, dust_floor, team, now, int(self.min_claim_window_s),
+                        self.fund)
         if isinstance(t, str):
             return self._refuse(value, t)
         base = int(t["end_time"]) if int(t["end_time"]) > now else now
@@ -352,9 +381,10 @@ class RugBond(gl.contract.Contract):
         self.bonds[u64(bid)] = Bond(
             bond_id=u64(bid), team=team, name=nm, terms_json=_canon(t), amount=u256(value), created_at=u64(now),
             recovery_deadline=u64(base + int(self.recovery_s)), status=B_ACTIVE, cursor=u64(0), cursor_ts=u64(0),
-            scanned_at=u64(0), n_checks=u64(0), n_pending=u64(0), last_result="", last_reason="",
+            span=u64(CHAINS[t["chain"]][2]), lp_low=u256(0), scanned_at=u64(0), n_checks=u64(0), n_pending=u64(0), last_result="", last_reason="",
             last_check_at=u64(0), pair_json="{}", start_ts=u64(0), replay=False, rug_block=u64(0), rug_ts=u64(0),
             rug_json="{}", denom=u256(0), rugged_at=u64(0), claim_deadline=u64(0), paid=u256(0), n_claims=u64(0),
+            bonus_pool=u256(0), bonus_base=u256(0), bonus_paid=u256(0), n_bonus=u64(0), shared_at=u64(0),
             settled_amount=u256(0), settled_to="", settled_at=u64(0), settled_by="", verdict_at=u64(0))
         tk = t["chain"] + ":" + t["token"]
         n = int(self.token_n.get(tk, u64(0)))
@@ -386,9 +416,11 @@ class RugBond(gl.contract.Contract):
         cursor = int(b.cursor)
         first = cursor == 0
         ch = t["chain"]
+        span = int(b.span)
+        low = int(b.lp_low)
 
         def leader() -> dict:
-            return read_check(ch, t, cursor, first, -1)
+            return read_check(ch, t, cursor, first, -1, span, low)
 
         def validator(res: gl.vm.Result) -> bool:
             try:
@@ -397,25 +429,38 @@ class RugBond(gl.contract.Contract):
                 return False
 
         def agree(res: gl.vm.Result) -> bool:
+            # cursor, span and low come from this contract's storage, never from the leader
             if not isinstance(res, gl.vm.Return):
                 return False
             got = res.calldata
             if not isinstance(got, dict):
                 return False
-            rng = got.get("range")
-            if not isinstance(rng, list) or len(rng) != 2:
-                # no range: the leader could not even read the heads
-                return "reason" in got and "reason" in read_check(ch, t, cursor, first, -1)
-            mine = read_check(ch, t, cursor, first, int(rng[1]))
+            if "facts" not in got:
+                # the leader says it could not read. Nothing it sent is used:
+                # this validator reads the range it derives itself, and agrees
+                # only if that read fails too (or, for "nothing new", finds
+                # nothing new either).
+                said = got.get("reason")
+                mine = read_check(ch, t, cursor, first, -1, span, low)
+                if said == "NOTHING_NEW":
+                    return mine.get("reason") == "NOTHING_NEW"
+                fails = ("RPC_UNREADABLE", "RPC_DISAGREE")
+                return said in fails and mine.get("reason") in fails
             if "reason" in got:
-                # the leader could not read: agree only if this validator cannot either
-                return "reason" in mine
+                return False
+            rng = got.get("range")
+            if not isinstance(rng, list) or len(rng) != 2 or _as_int(rng[1], -1) < 0:
+                return False
+            # the leader's last block is taken only inside the range derived here
+            mine = read_check(ch, t, cursor, first, _as_int(rng[1], -1), span, low)
             if "facts" not in mine:
                 return False
             return _canon(mine["facts"]) == _canon(got["facts"]) and _canon(mine["range"]) == _canon(rng)
 
         r = gl.vm.run_nondet(leader, validator)
         if not isinstance(r, dict) or ("reason" not in r and not isinstance(r.get("facts"), dict)):
+            r = {"reason": "RPC_UNREADABLE", "detail": "no answer"}
+        if isinstance(r.get("facts"), dict) and "reason" in r:
             r = {"reason": "RPC_UNREADABLE", "detail": "no answer"}
         if r.get("reason", "") == "NOTHING_NEW":
             raise gl.vm.UserError("REFUSED: NOTHING_NEW_FINALIZED")
@@ -465,8 +510,10 @@ class RugBond(gl.contract.Contract):
             b.pair_json = _canon(pr)
         if result == V_PENDING:
             b.n_pending = u64(int(b.n_pending) + 1)
+            b.span = u64(next_span(span, CHAINS[ch][2], False))
             self._bump("checks_pending")
-            return {"ok": True, "check_id": cid, "result": result, "reason": reason, "detail": detail}
+            return {"ok": True, "check_id": cid, "result": result, "reason": reason, "detail": detail,
+                    "span": int(b.span)}
         if result == B_VOID:
             b.status = B_VOID
             b.verdict_at = u64(now)
@@ -493,6 +540,11 @@ class RugBond(gl.contract.Contract):
                     "claim_deadline": now + int(t["claim_window_s"]), "denominator": str(rug["denom"])}
         b.cursor = u64(int(j["cursor"]))
         b.cursor_ts = u64(int(w["end_ts"]))
+        b.lp_low = u256(int(w["low"]))
+        b.span = u64(next_span(span, CHAINS[ch][2], True))
+        # the cursor moved: the recovery window is counted from here
+        if now + int(self.recovery_s) > int(b.recovery_deadline):
+            b.recovery_deadline = u64(now + int(self.recovery_s))
         if result == V_HELD:
             b.status = B_HELD
             b.verdict_at = u64(now)
@@ -564,10 +616,13 @@ class RugBond(gl.contract.Contract):
             raise gl.vm.UserError("PENDING: " + why + "_TRY_AGAIN")
         if r.get("code") is not False:
             raise gl.vm.UserError("REFUSED: CONTRACT_HOLDER")
-        if len(r.get("from_team", [])) > 0:
-            raise gl.vm.UserError("REFUSED: RECEIVED_FROM_EXCLUDED_ADDRESS")
-        bal = claim_balance(int(r["start_balance"]), int(r["balance"]))
+        recv = _as_int(r.get("from_team"), -1)
+        if recv < 0:
+            raise gl.vm.UserError("PENDING: RPC_UNREADABLE_TRY_AGAIN")
+        bal = claim_balance(int(r["start_balance"]), int(r["balance"]), recv)
         if bal <= 0:
+            if recv > 0 and claim_balance(int(r["start_balance"]), int(r["balance"]), 0) > 0:
+                raise gl.vm.UserError("REFUSED: NOTHING_ELIGIBLE_AFTER_TEAM_TRANSFERS")
             raise gl.vm.UserError("REFUSED: NO_BALANCE_AT_START_AND_R_MINUS_1")
         share = share_of(int(b.amount), bal, int(b.denom))
         dust = int(t["dust_floor"])
@@ -585,8 +640,10 @@ class RugBond(gl.contract.Contract):
             payee = who
         # --- writes
         no = int(b.n_claims)
-        self.claims[k] = Claim(bond_id=b.bond_id, holder=who, payee=payee, balance=u256(bal), share=u256(share),
-                               claimed_at=u64(now), claim_no=u64(no))
+        self.claims[k] = Claim(bond_id=b.bond_id, holder=who, payee=payee, balance=u256(bal),
+                               start_balance=u256(int(r["start_balance"])), r_balance=u256(int(r["balance"])),
+                               from_team=u256(recv), share=u256(share), claimed_at=u64(now), claim_no=u64(no),
+                               bonus=u256(0), bonus_paid=False, bonus_at=u64(0))
         self.bond_claims[str(int(b.bond_id)) + ":" + str(no)] = who
         b.n_claims = u64(no + 1)
         b.paid = u256(int(b.paid) + share)
@@ -599,23 +656,29 @@ class RugBond(gl.contract.Contract):
         self._send(payee, share)
         return {"ok": True, "bond_id": int(b.bond_id), "holder": who, "payee": payee, "balance": str(bal),
                 "start_balance": str(int(r["start_balance"])), "r_balance": str(int(r["balance"])),
-                "share": str(share), "denominator": str(int(b.denom))}
+                "from_team": str(recv), "share": str(share), "denominator": str(int(b.denom))}
 
     def _due(self, b: Bond, now: int) -> str:
-        """What settle would do now: RETURN (to the team), VICTIM_FUND, or ""."""
+        """What settle would do now: RETURN (to the team), REDISTRIBUTE (open the
+        bonus round), FUND (to the registry's fund), or ""."""
         if b.status in (B_HELD, B_VOID):
             return "RETURN"
         if b.status == B_RUGGED and now > int(b.claim_deadline):
-            return "VICTIM_FUND"
+            return "REDISTRIBUTE" if int(b.n_claims) > 0 and self._remaining(b) > 0 else "FUND"
+        if b.status == B_SHARING and int(b.n_bonus) >= int(b.n_claims):
+            return "FUND"
         if b.status == B_ACTIVE and now > int(b.recovery_deadline):
-            return "VICTIM_FUND"
+            return "FUND"
         return ""
 
     @gl.public.write
     def settle(self, bond_id: int) -> typing.Any:
-        """Anyone: HELD or VOID -> the bond back to the team; RUGGED after the
-        claim window -> what nobody claimed to the victim fund; ACTIVE after the
-        recovery deadline -> UNRESOLVED, the bond to the victim fund."""
+        """Anyone. HELD or VOID -> the bond back to the team. RUGGED after the
+        claim window -> what nobody claimed is set aside for the holders who
+        claimed (REDISTRIBUTING; pay_bonus pays each one), or, when nobody
+        claimed, sent to the registry's fund. REDISTRIBUTING with every bonus
+        paid -> the integer leftover to the registry's fund. ACTIVE after the
+        recovery deadline -> UNRESOLVED, the bond to the registry's fund."""
         now = self._now()
         if now <= 0:
             raise gl.vm.UserError("REFUSED: NO_CLOCK")
@@ -628,32 +691,87 @@ class RugBond(gl.contract.Contract):
                 raise gl.vm.UserError("REFUSED: CLAIM_WINDOW_OPEN_UNTIL_" + str(int(b.claim_deadline)))
             if b.status == B_ACTIVE:
                 raise gl.vm.UserError("REFUSED: ACTIVE_UNTIL_VERDICT_OR_" + str(int(b.recovery_deadline)))
+            if b.status == B_SHARING:
+                raise gl.vm.UserError("REFUSED: BONUSES_UNPAID_" + str(int(b.n_claims) - int(b.n_bonus)))
             raise gl.vm.UserError("REFUSED: BOND_IS_" + b.status)
-        t = json.loads(b.terms_json)
         left = self._remaining(b)
         if left > 0 and int(self.balance) < left:
             raise gl.vm.UserError("REFUSED: CONTRACT_BALANCE_BELOW_BOND")
-        to = b.team if due == "RETURN" else t["victim_fund"]
+        if due == "REDISTRIBUTE":
+            # --- writes (no GEN moves here: each claimant's part leaves in pay_bonus)
+            b.status = B_SHARING
+            b.bonus_pool = u256(left)
+            b.bonus_base = b.paid
+            b.shared_at = u64(now)
+            self._bump("redistributions")
+            return {"ok": True, "bond_id": int(b.bond_id), "status": b.status, "pool": str(left),
+                    "base": str(int(b.paid)), "claims": int(b.n_claims)}
+        to = b.team if due == "RETURN" else self.fund
         # --- writes
-        if b.status == B_RUGGED:
+        if b.status in (B_RUGGED, B_SHARING):
             b.status = B_CLOSED
         elif b.status == B_ACTIVE:
             b.status = B_UNRESOLVED
         else:
             b.status = B_RETURNED
         b.settled_amount = u256(left)
-        b.settled_to = to
+        b.settled_to = to if left > 0 else ""
         b.settled_at = u64(now)
         b.settled_by = self._sender()
         self.open_total = u256(int(self.open_total) - left)
         if due == "RETURN":
             self.returned_total = u256(int(self.returned_total) + left)
         else:
-            self.victim_total = u256(int(self.victim_total) + left)
+            self.fund_total = u256(int(self.fund_total) + left)
         self._bump("settles")
         if left > 0:
             self._send(to, left)
-        return {"ok": True, "bond_id": int(b.bond_id), "status": b.status, "to": to, "amount": str(left)}
+        return {"ok": True, "bond_id": int(b.bond_id), "status": b.status, "to": to if left > 0 else "",
+                "amount": str(left)}
+
+    @gl.public.write
+    def pay_bonus(self, bond_id: int, holder: str) -> typing.Any:
+        """Anyone, once per claim of a REDISTRIBUTING bond: pays the claimant
+        (its payee) pool * share // the sum of all claimed shares. The round is
+        one pass over the claims; a bonus is never itself redistributed."""
+        now = self._now()
+        if now <= 0:
+            raise gl.vm.UserError("REFUSED: NO_CLOCK")
+        b = self._bond(bond_id)
+        if b is None:
+            raise gl.vm.UserError("REFUSED: NO_SUCH_BOND")
+        if b.status != B_SHARING:
+            raise gl.vm.UserError("REFUSED: BOND_IS_" + b.status)
+        h = _addr(holder)
+        c = self.claims.get(str(int(b.bond_id)) + ":" + h) if h != "" else None
+        if c is None:
+            raise gl.vm.UserError("REFUSED: NO_SUCH_CLAIM")
+        if c.bonus_paid:
+            raise gl.vm.UserError("REFUSED: BONUS_ALREADY_PAID")
+        bonus = bonus_of(int(b.bonus_pool), int(c.share), int(b.bonus_base))
+        left = int(b.bonus_pool) - int(b.bonus_paid)
+        if bonus > left:
+            bonus = left
+        if bonus > 0 and int(self.balance) < bonus:
+            raise gl.vm.UserError("REFUSED: CONTRACT_BALANCE_BELOW_BONUS")
+        # --- writes
+        c.bonus = u256(bonus)
+        c.bonus_paid = True
+        c.bonus_at = u64(now)
+        b.bonus_paid = u256(int(b.bonus_paid) + bonus)
+        b.n_bonus = u64(int(b.n_bonus) + 1)
+        self.open_total = u256(int(self.open_total) - bonus)
+        self.bonus_paid_total = u256(int(self.bonus_paid_total) + bonus)
+        self._bump("bonuses")
+        if int(b.n_bonus) >= int(b.n_claims) and self._remaining(b) == 0:
+            # nothing left over: the round closes the bond
+            b.status = B_CLOSED
+            b.settled_at = u64(now)
+            b.settled_by = self._sender()
+        if bonus > 0:
+            self._send(c.payee, bonus)
+        return {"ok": True, "bond_id": int(b.bond_id), "holder": h, "payee": c.payee, "bonus": str(bonus),
+                "status": b.status, "bonuses_left": int(b.n_claims) - int(b.n_bonus)}
 
     @gl.public.write
     def withdraw_credit(self) -> typing.Any:
@@ -699,17 +817,21 @@ class RugBond(gl.contract.Contract):
         return {"bond_id": int(b.bond_id), "team": b.team, "name": b.name, "chain": t["chain"], "token": t["token"],
                 "pair": t["pair"], "lp_holders": t["lp_holders"], "min_lp": t["min_lp"],
                 "start_block": int(t["start_block"]), "end_time": int(t["end_time"]),
-                "claim_window_s": int(t["claim_window_s"]), "victim_fund": t["victim_fund"],
+                "claim_window_s": int(t["claim_window_s"]), "fund": self.fund,
                 "excluded": t["excluded"], "excluded_all": t["excluded_all"], "dust_floor": t["dust_floor"],
                 "amount": str(int(b.amount)), "created_at": int(b.created_at),
                 "recovery_deadline": int(b.recovery_deadline), "status": b.status, "cursor": int(b.cursor),
-                "cursor_ts": int(b.cursor_ts), "scanned_at": int(b.scanned_at), "n_checks": int(b.n_checks),
+                "cursor_ts": int(b.cursor_ts), "span": int(b.span), "lp_low": str(int(b.lp_low)),
+                "scanned_at": int(b.scanned_at), "n_checks": int(b.n_checks),
                 "n_pending": int(b.n_pending), "last_result": b.last_result, "last_reason": b.last_reason,
                 "last_check_at": int(b.last_check_at), "pair_check": json.loads(b.pair_json),
                 "start_ts": int(b.start_ts), "replay": bool(b.replay), "rug_block": int(b.rug_block),
                 "rug_ts": int(b.rug_ts), "rug": json.loads(b.rug_json), "denominator": str(int(b.denom)),
                 "rugged_at": int(b.rugged_at), "claim_deadline": int(b.claim_deadline), "paid": str(int(b.paid)),
                 "n_claims": int(b.n_claims), "remaining": str(self._remaining(b)),
+                "bonus_pool": str(int(b.bonus_pool)), "bonus_base": str(int(b.bonus_base)),
+                "bonus_paid": str(int(b.bonus_paid)), "n_bonus": int(b.n_bonus), "shared_at": int(b.shared_at),
+                "bonuses_due": int(b.n_claims) - int(b.n_bonus) if b.status == B_SHARING else 0,
                 "settled_amount": str(int(b.settled_amount)), "settled_to": b.settled_to,
                 "settled_at": int(b.settled_at), "settled_by": b.settled_by, "verdict_at": int(b.verdict_at),
                 "due": self._due(b, now) if now > 0 else "",
@@ -797,7 +919,10 @@ class RugBond(gl.contract.Contract):
 
     def _claim_view(self, c: Claim) -> dict:
         return {"bond_id": int(c.bond_id), "holder": c.holder, "payee": c.payee, "balance": str(int(c.balance)),
-                "share": str(int(c.share)), "claimed_at": int(c.claimed_at), "claim_no": int(c.claim_no)}
+                "start_balance": str(int(c.start_balance)), "r_balance": str(int(c.r_balance)),
+                "from_team": str(int(c.from_team)), "share": str(int(c.share)), "claimed_at": int(c.claimed_at),
+                "claim_no": int(c.claim_no), "bonus": str(int(c.bonus)), "bonus_paid": bool(c.bonus_paid),
+                "bonus_at": int(c.bonus_at)}
 
     @gl.public.view
     def list_claims(self, bond_id: int, offset: int, limit: int) -> typing.Any:
@@ -848,13 +973,16 @@ class RugBond(gl.contract.Contract):
     @gl.public.view
     def get_config(self) -> typing.Any:
         return {"version": VERSION, "contract": "RugBond", "mode": self.mode, "deployer": self.deployer,
+                "fund": self.fund,
                 "chains_allowed": list(MODES[self.mode][0]), "min_claim_window_s": int(self.min_claim_window_s),
                 "max_claim_window_s": MAX_CLAIM_WINDOW_S, "recovery_s": int(self.recovery_s),
                 "stale_s": int(self.stale_s), "sweep_delay_s": int(self.sweep_delay_s),
                 "last_send_at": int(self.last_send_at), "max_period_s": MAX_PERIOD_S, "min_bond": str(MIN_BOND),
-                "max_holders": MAX_HOLDERS, "max_excluded": MAX_EXCLUDED, "max_probes": MAX_PROBES,
+                "max_holders": MAX_HOLDERS, "max_excluded": MAX_EXCLUDED, "max_probe_calls": MAX_PROBE_CALLS,
+                "max_logs": MAX_LOGS,
                 "replay_grace_s": REPLAY_GRACE_S, "page_max": PAGE_MAX, "statuses": list(STATUSES),
                 "chains": {k: {"chain_id": CHAINS[k][0], "log_rpcs": list(CHAINS[k][1]), "blocks_per_check": CHAINS[k][2],
+                               "fin_slack": FIN_SLACK[k],
                                "state_rpcs": list(CHAINS[k][3]),
                                "rpc_limits": {u: {"log_window": RPC_LIMITS[u][0], "batch": RPC_LIMITS[u][1],
                                                   "range_past_head": RPC_LIMITS[u][2]}
@@ -869,7 +997,8 @@ class RugBond(gl.contract.Contract):
         return {"bonds": int(self.n_bonds), "checks": int(self.n_checks), "counts": c,
                 "received_total": str(int(self.received_total)), "open_total": str(int(self.open_total)),
                 "claims_paid_total": str(int(self.claims_paid_total)), "returned_total": str(int(self.returned_total)),
-                "victim_total": str(int(self.victim_total)), "credit_owed_total": str(int(self.credit_owed_total)),
+                "bonus_paid_total": str(int(self.bonus_paid_total)), "fund_total": str(int(self.fund_total)),
+                "credit_owed_total": str(int(self.credit_owed_total)),
                 "credit_paid_total": str(int(self.credit_paid_total)),
                 "stray_swept_total": str(int(self.stray_swept_total)), "held": str(self._held()),
                 "balance": str(int(self.balance))}

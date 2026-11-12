@@ -25,14 +25,14 @@ import typing
 #                      PENDING, and the last block read is at most stale_s old
 #   HELD_FINAL         the promise held to its end time (HELD or RETURNED)
 #   RUGGED_PAYING      RUGGED, the claim window open
-#   RUGGED_CLOSED      RUGGED after the claim window, or CLOSED
+#   RUGGED_CLOSED      RUGGED after the claim window, REDISTRIBUTING or CLOSED
 #   PENDING            anything else: no read yet, the last check PENDING, stale
 #                      reads, no clock, UNRESOLVED, an unreadable registry
 #
 # `safe` is true only for ACTIVE_HELD_SO_FAR: a live promise read recently.
 # Never favorable on missing, pending or stale data.
 
-VERSION = "1.0.0"
+VERSION = "1.1.0"
 G_NO_BOND = "NO_BOND"
 G_ACTIVE = "ACTIVE_HELD_SO_FAR"
 G_HELD = "HELD_FINAL"
@@ -104,7 +104,7 @@ def gate_state(raw: typing.Any, token: str, now: int, stale_s: int) -> dict:
         out["state"] = G_NO_BOND
         out["why"] = "the bond's pair is not a pool of the token"
         return out
-    if st == "CLOSED":
+    if st in ("CLOSED", "REDISTRIBUTING"):
         out["state"] = G_CLOSED
         return out
     if st == "RUGGED":

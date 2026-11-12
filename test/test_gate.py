@@ -264,7 +264,7 @@ def _gen():
             self.assertIn(r["state"], ("PENDING", "NO_BOND"))
         setattr(PureGate, "test_malformed_%s_%s" % (k, str(v).replace("-", "m")), t)
     for st, want in (("ACTIVE", "ACTIVE_HELD_SO_FAR"), ("HELD", "HELD_FINAL"), ("RETURNED", "HELD_FINAL"),
-                     ("RUGGED", "RUGGED_PAYING"), ("CLOSED", "RUGGED_CLOSED"), ("VOID", "NO_BOND"),
+                     ("RUGGED", "RUGGED_PAYING"), ("CLOSED", "RUGGED_CLOSED"), ("REDISTRIBUTING", "RUGGED_CLOSED"), ("VOID", "NO_BOND"),
                      ("UNRESOLVED", "PENDING"), ("WEIRD", "PENDING")):
         def t(self, st=st, want=want):
             r = self.gs(self.base(status=st, claim_deadline=NOW + 10))

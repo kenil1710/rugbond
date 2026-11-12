@@ -53,7 +53,7 @@ class Money(unittest.TestCase):
     def test_single_send_site(self):
         s = (ROOT / "build" / "RugBond.py").read_text()
         self.assertEqual(s.count("emit_call("), 1)
-        self.assertEqual(len(re.findall(r"self\._send\(", s)), 4)       # claim, settle, withdraw_credit, sweep_stray
+        self.assertEqual(len(re.findall(r"self\._send\(", s)), 5)       # claim, settle, pay_bonus, withdraw_credit, sweep_stray
 
     def test_gate_never_sends(self):
         s = (ROOT / "build" / "LaunchGate.py").read_text()

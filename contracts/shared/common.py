@@ -27,7 +27,7 @@ RPC_LIMITS = {
     "https://sepolia.base.org": (200, 6, False),
 }
 # Swap routers per chain: tokens a buyer receives from a router came from the pair,
-# so a router is never a "team" sender for the received-from-excluded rule (they
+# so a router is never a "team" sender for the received-from-team rule (they
 # stay excluded from claiming and from the snapshot when a bond lists them).
 ROUTERS = {
     "ethereum": ("0x7a250d5630b4cf539739df2c5dacb4c659f2488d", "0xd9e1ce17f2641f24ae83637ab66a2cca9c378b9f",
@@ -38,7 +38,12 @@ TRANSFER = "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"
 ZERO = "0x" + "0" * 40
 DEAD = "0x000000000000000000000000000000000000dead"
 RPC_TRIES = 4
-MAX_PROBES = 6          # blocks with an LP transfer out of the holders whose summed balance one check reads
+MAX_PROBE_CALLS = 48    # balanceOf calls one check spends on probes: probe_budget() blocks x the LP holders
+MAX_LOGS = 400          # LP transfers one check takes in (whole blocks); the rest waits for the next check
+# How far below min(the window's last block, a validator's own finalized head) a
+# leader's last block may be: about an hour of blocks, for a leader whose
+# finalized head trailed the validator's.
+FIN_SLACK = {"ethereum": 300, "base-sepolia": 1800}
 MAX_HOLDERS = 8         # LP-holder addresses per bond
 MAX_EXCLUDED = 24       # extra excluded addresses per bond (besides team, pair, token, LP holders, zero, dead)
 
@@ -196,16 +201,34 @@ def addr_list(raw: typing.Any, most: int) -> typing.Any:
 # the rule (pure: the offline suite calls it on every shape)
 # =============================================================================
 
-def scan_range(t: dict, cursor: int, fin: int) -> list:
-    """The blocks one check reads: [a, b], a = the block after the cursor (the
-    start block on the first check), b = a + the chain's check span - 1, cut at the
-    finalized head. a > b: nothing new is finalized."""
-    ch = CHAINS[t["chain"]]
+def scan_range(t: dict, cursor: int, fin: int, span: int) -> list:
+    """The blocks one check reads: [a, b], a = the block after the bond's
+    persisted cursor (the start block on the first check), b = a + the bond's
+    persisted span - 1, cut at the finalized head. a > b: nothing new is
+    finalized. Everything but the finalized head comes from contract state."""
     a = cursor + 1 if cursor >= int(t["start_block"]) else int(t["start_block"])
-    b = a + ch[2] - 1
+    b = a + span - 1
     if b > fin:
         b = fin
     return [a, b]
+
+
+def probe_budget(n_holders: int) -> int:
+    """Blocks whose summed LP balance one check reads."""
+    n = MAX_PROBE_CALLS // (n_holders if n_holders > 0 else 1)
+    return n if n > 1 else 2
+
+
+def next_span(span: int, most: int, read_ok: bool) -> int:
+    """The bond's span after a check: halved (never below one block) after a
+    read that failed, so a stretch with more LP transfers than an endpoint
+    returns in one answer is still read, block by block if it must be; doubled
+    (up to the chain's span) after a read that moved the cursor."""
+    if read_ok:
+        n = span * 2
+        return n if n < most else most
+    n = span // 2
+    return n if n > 1 else 1
 
 
 def judge_scan(t: dict, facts: dict) -> dict:
@@ -231,6 +254,9 @@ def judge_scan(t: dict, facts: dict) -> dict:
         if int(p[1]) < floor:
             # a probe below the floor with no rug record is a malformed read
             return {"verdict": V_PENDING, "cursor": -1, "block": 0}
+    if int(facts.get("low", "-1")) < floor:
+        # the lower bound carried to the next check must itself hold the floor
+        return {"verdict": V_PENDING, "cursor": -1, "block": 0}
     if int(facts["end_ts"]) >= end:
         return {"verdict": V_HELD, "cursor": int(facts["b"]), "block": 0}
     return {"verdict": V_SCANNED, "cursor": int(facts["b"]), "block": 0}
@@ -245,10 +271,20 @@ def share_of(bond_amount: int, balance: int, denom: int) -> int:
     return s if s < bond_amount else bond_amount
 
 
+def bonus_of(pool: int, share: int, base: int) -> int:
+    """A claimant's part of what nobody claimed: pool * its share // the sum of
+    all claimed shares (integer math, rounded down)."""
+    if pool <= 0 or share <= 0 or base <= 0:
+        return 0
+    x = (pool * share) // base
+    return x if x < pool else pool
+
+
 def team_senders(t: dict) -> list:
-    """The addresses whose DIRECT token transfers to a claimant between the start
-    block and R disqualify it: every excluded address except the pair (buys come
-    from the pair), 0x0 (mints), 0x...dEaD and the chain's swap routers."""
+    """The addresses whose DIRECT token transfers to a claimant after the start
+    block, up to R, are subtracted from its eligible balance: every excluded
+    address except the pair (buys come from the pair), 0x0 (mints), 0x...dEaD
+    and the chain's swap routers."""
     out = []
     for a in t["excluded_all"]:
         if a == t["pair"] or a == ZERO or a == DEAD or a in ROUTERS.get(t["chain"], ()):
@@ -257,11 +293,16 @@ def team_senders(t: dict) -> list:
     return sorted(out)
 
 
-def claim_balance(start_balance: int, r_balance: int) -> int:
+def claim_balance(start_balance: int, r_balance: int, from_team: int) -> int:
     """The balance a claim is paid on: the smaller of the holder's balance at the
-    end of the bond's start block and at R-1. Tokens bought after the bond
-    opened earn nothing."""
-    return start_balance if start_balance < r_balance else r_balance
+    end of the bond's start block and at R-1, minus everything the holder
+    received directly from team senders after the start block up to R, never
+    below 0. Tokens bought after the bond opened earn nothing; tokens the team
+    handed over earn nothing; a zero-value or dust transfer from the team takes
+    away its own amount and nothing else."""
+    m = start_balance if start_balance < r_balance else r_balance
+    m -= from_team if from_team > 0 else 0
+    return m if m > 0 else 0
 
 
 def snapshot_denominator(supply: int, excluded: list) -> int:

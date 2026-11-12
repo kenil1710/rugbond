@@ -177,6 +177,160 @@ class Consensus(unittest.TestCase):
         with self.assertRaises(Reverted):
             check(w, reg, bid)
 
+    # --- C3: a validator derives the range from contract state and never takes the leader's word for a failure
+
+    def _forged_pending_rolls_back(self, payload, **kw):
+        w, reg, s, bid = world(**kw)
+        stub.FORGE["payload"] = payload
+        with self.assertRaises(Reverted) as e:
+            check(w, reg, bid)
+        self.assertIn("UNDETERMINED", e.exception.msg)
+        b = get(w, reg, bid)
+        self.assertEqual((b["n_checks"], b["n_pending"], b["cursor"], b["span"]), (0, 0, 0, 40000))
+        # the next leader is honest: the check reads and decides
+        stub.FORGE["payload"] = None
+        self.assertEqual(check(w, reg, bid)["result"], "RUGGED" if kw.get("rug", True) else "HELD")
+
+    def test_leader_pending_with_zero_range_is_refused(self):
+        self._forged_pending_rolls_back({"reason": "RPC_UNREADABLE", "detail": "x", "range": [0, 0]})
+
+    def test_leader_pending_with_no_range_is_refused(self):
+        self._forged_pending_rolls_back({"reason": "RPC_UNREADABLE", "detail": "x"})
+
+    def test_leader_pending_with_wrong_ranges_is_refused(self):
+        for rng in ([1000, 1000], [1, 2], [10 ** 9, 10 ** 9 + 1], [2000, 1000], [0, 10 ** 12], "junk", [0], None, [-1, -1]):
+            for reason in ("RPC_UNREADABLE", "RPC_DISAGREE"):
+                self._forged_pending_rolls_back({"reason": reason, "detail": "x", "range": rng})
+
+    def test_leader_nothing_new_when_there_is_something_new_is_refused(self):
+        for rng in ([0, 0], [21001, 21000], None):
+            self._forged_pending_rolls_back({"reason": "NOTHING_NEW", "detail": "x", "range": rng})
+
+    def test_leader_unknown_reason_is_refused(self):
+        for reason in ("RANGE_MISMATCH", "", "HELD", 7, None):
+            self._forged_pending_rolls_back({"reason": reason, "detail": "x", "range": [0, 0]}, rug=False)
+
+    def test_leader_facts_together_with_a_reason_is_refused(self):
+        w, reg, s, bid = world()
+
+        def both(r):
+            r["reason"] = "RPC_UNREADABLE"
+            return r
+        stub.FORGE["mutate"] = both
+        with self.assertRaises(Reverted):
+            check(w, reg, bid)
+
+    def test_genuine_outage_pending_is_accepted_whatever_range_the_leader_sent(self):
+        for rng in ([1000, 21000], [0, 0], None):
+            w, reg, s, bid = world()
+            stub.WEB.down.add("*")
+            stub.FORGE["payload"] = {"reason": "RPC_UNREADABLE", "detail": "x", "range": rng}
+            r = check(w, reg, bid)
+            self.assertEqual((r["result"], r["reason"]), ("PENDING", "RPC_UNREADABLE"))
+            b = get(w, reg, bid)
+            self.assertEqual((b["n_pending"], b["cursor"], b["status"]), (1, 0, "ACTIVE"))
+
+    def test_outage_on_the_validators_only_does_not_make_a_real_read_pending(self):
+        w, reg, s, bid = world()
+        stub.WEB.validator_hook = lambda: stub.WEB.down.add("*")
+        with self.assertRaises(Reverted):
+            check(w, reg, bid)
+        self.assertEqual(get(w, reg, bid)["n_checks"], 0)
+
+    def test_outage_on_the_leader_only_is_not_pending(self):
+        w, reg, s, bid = world()
+        stub.WEB.down.add("*")
+        stub.WEB.validator_hook = lambda: stub.WEB.down.clear()
+        with self.assertRaises(Reverted):
+            check(w, reg, bid)
+        self.assertEqual(get(w, reg, bid)["n_pending"], 0)
+
+    def test_validator_reads_what_the_leader_names_only_inside_its_own_range(self):
+        # the range is [cursor + 1, cursor + span] cut at the finalized head: 1000..21000 here
+        for b_claimed, ok in ((21000, True), (21001, False), (20999, True), (21000 - 1800, True), (21000 - 1801, False),
+                              (1000, False), (999, False), (0, False)):
+            w, reg, s, bid = world(rug=False)
+
+            def move(r, b_claimed=b_claimed):
+                r["range"][1] = b_claimed
+                return r
+            stub.FORGE["mutate"] = move
+            if ok and b_claimed == 21000:
+                self.assertEqual(check(w, reg, bid)["result"], "HELD")
+            else:
+                # inside the slack the range is acceptable, but the facts the leader sent are for another range
+                with self.assertRaises(Reverted):
+                    check(w, reg, bid)
+                self.assertEqual(get(w, reg, bid)["n_checks"], 0, b_claimed)
+
+    def test_leader_with_a_slightly_older_head_is_accepted(self):
+        w, reg = fresh()
+        s = Sim(fin=1050).launch().install()
+        bid = bond(w, reg, s)
+
+        def hook():
+            for c in s.all_mocks():
+                c.finalized = 1050 + 1800
+        stub.WEB.validator_hook = hook
+        r = check(w, reg, bid)
+        self.assertEqual((r["result"], r["cursor"]), ("SCANNED", 1050))
+
+    def test_leader_with_a_much_older_head_is_refused(self):
+        w, reg = fresh()
+        s = Sim(fin=1050).launch().install()
+        bid = bond(w, reg, s)
+
+        def hook():
+            for c in s.all_mocks():
+                c.finalized = 1050 + 1801
+        stub.WEB.validator_hook = hook
+        with self.assertRaises(Reverted):
+            check(w, reg, bid)
+
+    def test_leader_moving_the_first_block_is_refused(self):
+        w, reg, s, bid = world(rug=False)
+
+        def move(r):
+            r["range"][0] = 1001
+            r["facts"]["window"]["a"] = 1001
+            return r
+        stub.FORGE["mutate"] = move
+        with self.assertRaises(Reverted):
+            check(w, reg, bid)
+
+    def test_leader_cannot_supply_cursor_span_or_bound(self):
+        # extra keys change nothing: the validator's read takes cursor, span and low from storage
+        w, reg, s, bid = world(rug=False)
+
+        def extra(r):
+            r.update({"cursor": 20000, "span": 1, "low": "0", "first": False})
+            return r
+        stub.FORGE["mutate"] = extra
+        r = check(w, reg, bid)
+        self.assertEqual((r["result"], r["cursor"]), ("HELD", 21000))
+
+    def test_leader_forging_the_carried_bound_is_refused(self):
+        w, reg = fresh()
+        s = Sim(fin=1050).launch().install()
+        bid = bond(w, reg, s)
+
+        def forge(r):
+            r["facts"]["window"]["low"] = str(10 ** 30)
+            return r
+        stub.FORGE["mutate"] = forge
+        with self.assertRaises(Reverted):
+            check(w, reg, bid)
+
+    def test_claim_leader_pending_when_readable_is_refused(self):
+        w, reg, s, bid = world()
+        check(w, reg, bid)
+        stub.FORGE["payload"] = {"reason": "RPC_UNREADABLE", "detail": "x"}
+        with self.assertRaises(Reverted) as e:
+            w.call(reg, "claim", bid, sender=HOLDERS[0])
+        self.assertIn("UNDETERMINED", e.exception.msg)
+        stub.FORGE["payload"] = None
+        self.assertEqual(w.call(reg, "claim", bid, sender=HOLDERS[0])["share"], str(GEN // 5))
+
     def test_leader_widens_range_validator_disagrees(self):
         w, reg, s, bid = world(rug=False)
 

@@ -1,8 +1,10 @@
 """Rug checks: the floor, the start and end boundaries, R detection, windows, probes, VOID."""
 import unittest
 
+import stub
+
 from fixtures import (Sim, fresh, bond, check, until_verdict, get, terms, create, Reverted, TEAM, TEAM2, LOCKER,
-                      HOLDERS, ZERO, GEN, STRANGER, AERODROME, A, T, module)
+                      HOLDERS, ZERO, GEN, STRANGER, AERODROME, A, T, module, urls)
 
 
 def rug_world(rug_at=None, amount=None, chain="base-sepolia", mode="DEMO", min_lp=900 * GEN, end_s=3600, **o):
@@ -233,9 +235,11 @@ class Detection(unittest.TestCase):
         bid = bond(w, reg, s, min_lp=900 * GEN)
         out = until_verdict(w, reg, bid)
         self.assertEqual(out[-1]["result"], "HELD")
-        self.assertGreaterEqual(len(out), 3)
+        # 15 GEN left in 15 blocks; 1000 - 15 stays above 900, so after the start block no block needs a probe
+        M = module("RugBond")
         for c in w.view(reg, "list_checks", bid, 0, 50)["items"]:
-            self.assertLessEqual(len(c["probes"]), module("RugBond").MAX_PROBES)
+            self.assertLessEqual(len(c["probes"]), M.probe_budget(1))
+        self.assertEqual(get(w, reg, bid)["lp_low"], str(985 * GEN))
 
     def test_rug_after_many_small_outflows_found(self):
         w, reg = fresh()
@@ -289,6 +293,237 @@ class Detection(unittest.TestCase):
         bid = bond(w, reg, s, end_time=s.ts(1000) + 300 * 86400, claim_window_s=3600)
         out = until_verdict(w, reg, bid)
         self.assertEqual(out[-1]["rug_block"], 95000)
+
+
+def scan_all(w, reg, bid, n=400, step=0):
+    """Checks until a verdict, going on through PENDING. -> the list of answers"""
+    out = []
+    for _ in range(n):
+        r = check(w, reg, bid)
+        out.append(r)
+        if r["result"] not in ("SCANNED", "PENDING"):
+            break
+        if step:
+            w.advance(step)
+    return out
+
+
+class Flood(unittest.TestCase):
+    """C2: any number of LP transfers out is processed across checks, from the bond's stored cursor."""
+
+    def _sim(self, hours=3):
+        s = Sim().launch()
+        return s, s.ts(s.start) + hours * 3600
+
+    def test_1200_dust_transfers_reach_held(self):
+        w, reg = fresh()
+        s, end = self._sim()
+        for i in range(1200):
+            s.lp(1010 + i, TEAM, A(9), 1)
+        s.install()
+        bid = bond(w, reg, s, end_time=end)
+        out = scan_all(w, reg, bid)
+        self.assertEqual(out[-1]["result"], "HELD")
+        M = module("RugBond")
+        cs = w.view(reg, "list_checks", bid, 0, 50)["items"]
+        self.assertEqual(sum(c["n_logs"] for c in cs), 1200)
+        self.assertTrue(all(c["n_logs"] <= M.MAX_LOGS for c in cs))
+        self.assertGreaterEqual(len(cs), 3)
+        self.assertEqual(get(w, reg, bid)["lp_low"], str(1000 * GEN - 1200))
+        # every check began where the last one ended
+        for x, y in zip(cs, cs[1:]):
+            self.assertEqual(y["a"], x["b"] + 1)
+
+    def test_1200_dust_transfers_then_the_rug_is_found(self):
+        w, reg = fresh()
+        s, end = self._sim()
+        for i in range(1200):
+            s.lp(1010 + i, TEAM, A(9), 1)
+        s.rug(2500)
+        s.install()
+        bid = bond(w, reg, s, end_time=end)
+        out = scan_all(w, reg, bid)
+        self.assertEqual((out[-1]["result"], out[-1]["rug_block"]), ("RUGGED", 2500))
+
+    def test_dust_after_the_first_check_needs_no_probe(self):
+        w, reg = fresh()
+        s, end = self._sim()
+        for i in range(300):
+            s.lp(1100 + i, TEAM, A(9), 1)
+        s.install(fin=1050)
+        bid = bond(w, reg, s, end_time=end)
+        check(w, reg, bid)
+        s.install(fin=21000)
+        scan_all(w, reg, bid)
+        cs = w.view(reg, "list_checks", bid, 0, 50)["items"]
+        self.assertEqual([len(c["probes"]) for c in cs], [1] + [0] * (len(cs) - 1))
+        self.assertEqual(get(w, reg, bid)["status"], "HELD")
+
+    def test_1000_large_transfers_out_and_back_reach_held(self):
+        # every transfer could break the promise, so every block is probed: probe_budget() blocks per check
+        w, reg = fresh()
+        s, end = self._sim(hours=4)
+        for i in range(1000):
+            s.lp(1010 + 2 * i, TEAM, A(9), 50 * GEN)
+            s.lp(1011 + 2 * i, A(9), TEAM, 50 * GEN)
+        s.install()
+        bid = bond(w, reg, s, end_time=end, min_lp=940 * GEN)
+        check(w, reg, bid)                     # the first check; the rest start from a stored bound
+        out = scan_all(w, reg, bid)
+        self.assertEqual(out[-1]["result"], "HELD")
+        M = module("RugBond")
+        cs = w.view(reg, "list_checks", bid, 0, 50)["items"] + w.view(reg, "list_checks", bid, 50, 50)["items"]
+        self.assertTrue(all(len(c["probes"]) <= M.probe_budget(1) for c in cs))
+        self.assertGreaterEqual(sum(len(c["probes"]) for c in cs), 500)
+        self.assertLessEqual(len(cs), 30)
+
+    def test_large_transfers_out_and_back_then_one_that_stays_out(self):
+        w, reg = fresh()
+        s, end = self._sim(hours=4)
+        for i in range(300):
+            s.lp(1010 + 2 * i, TEAM, A(9), 50 * GEN)
+            s.lp(1011 + 2 * i, A(9), TEAM, 50 * GEN)
+        s.lp(1700, TEAM, A(9), 61 * GEN)
+        s.install()
+        bid = bond(w, reg, s, end_time=end, min_lp=940 * GEN)
+        out = scan_all(w, reg, bid)
+        self.assertEqual((out[-1]["result"], out[-1]["rug_block"]), ("RUGGED", 1700))
+
+    def test_1000_transfers_in_one_block_are_one_check(self):
+        w, reg = fresh()
+        s, end = self._sim()
+        for i in range(1000):
+            s.lp(1200, TEAM, A(9), 1)
+        s.rug(1300)
+        s.install()
+        bid = bond(w, reg, s, end_time=end)
+        out = scan_all(w, reg, bid)
+        self.assertEqual((out[-1]["result"], out[-1]["rug_block"]), ("RUGGED", 1300))
+        self.assertIn(1000, [c["n_logs"] for c in w.view(reg, "list_checks", bid, 0, 50)["items"]])
+
+    def test_answer_too_large_for_the_endpoint_shrinks_the_span(self):
+        # both log RPCs refuse an answer with more than 300 logs: the bond's span halves until its windows fit
+        w, reg = fresh()
+        s, end = self._sim()
+        for i in range(1100):
+            s.lp(1010 + i, TEAM, A(9), 1)
+        s.rug(2400)
+        s.install()
+
+        def cap(req, ans):
+            if req["method"] == "eth_getLogs" and isinstance(ans.get("result"), list) and len(ans["result"]) > 300:
+                return {"jsonrpc": "2.0", "id": req["id"], "error": {"code": -32005, "message": "query returned more than 300 results"}}
+            return ans
+        for u in urls(s.chain):
+            stub.WEB.tamper[u] = cap
+        bid = bond(w, reg, s, end_time=end)
+        top = module("RugBond").CHAINS[s.chain][2]
+        self.assertEqual(get(w, reg, bid)["span"], top)
+        out = scan_all(w, reg, bid)
+        self.assertEqual((out[-1]["result"], out[-1]["rug_block"]), ("RUGGED", 2400))
+        self.assertGreater(len([r for r in out if r["result"] == "PENDING"]), 5)
+        self.assertLess(min(r["span"] for r in out if r["result"] == "PENDING"), 400)
+
+    def test_span_halves_on_pending_and_doubles_on_progress(self):
+        M = module("RugBond")
+        self.assertEqual([M.next_span(40000, 40000, False), M.next_span(1, 40000, False), M.next_span(3, 40000, False)],
+                         [20000, 1, 1])
+        self.assertEqual([M.next_span(1, 40000, True), M.next_span(30000, 40000, True), M.next_span(40000, 40000, True)],
+                         [2, 40000, 40000])
+        w, reg = fresh()
+        s = Sim().launch().install(fin=1050)
+        bid = bond(w, reg, s)
+        stub.WEB.down.add("*")
+        for want in (20000, 10000, 5000):
+            self.assertEqual(check(w, reg, bid)["span"], want)
+        stub.WEB.down.clear()
+        check(w, reg, bid)
+        self.assertEqual(get(w, reg, bid)["span"], 10000)
+
+    def test_span_one_block_still_moves(self):
+        w, reg = fresh()
+        s = Sim().launch()
+        s.rug(1003)
+        s.install()
+        bid = bond(w, reg, s)
+        w.instances[reg].bonds[bid].span = 1
+        out = scan_all(w, reg, bid)
+        self.assertEqual((out[-1]["result"], out[-1]["rug_block"]), ("RUGGED", 1003))
+        self.assertEqual([c["b"] for c in w.view(reg, "list_checks", bid, 0, 50)["items"]], [1000, 1002, 1003])
+
+    def test_progress_moves_the_recovery_deadline_and_pending_does_not(self):
+        w, reg = fresh()
+        s, end = self._sim()
+        for i in range(1200):
+            s.lp(1010 + i, TEAM, A(9), 1)
+        s.rug(2500)
+        s.install()
+        bid = bond(w, reg, s, end_time=end)
+        first = get(w, reg, bid)["recovery_deadline"]
+        rec = w.view(reg, "get_config")["recovery_s"]
+        # a slow keeper: one check every 0.9 recovery windows. The clock passes the first deadline; the scan goes on.
+        out = scan_all(w, reg, bid, step=rec * 9 // 10)
+        self.assertGreater(w.now(), first)
+        self.assertEqual((out[-1]["result"], out[-1]["rug_block"]), ("RUGGED", 2500))
+        self.assertEqual(get(w, reg, bid)["status"], "RUGGED")
+
+    def test_flood_cannot_send_the_bond_to_unresolved_while_checks_move(self):
+        w, reg = fresh()
+        s, end = self._sim()
+        for i in range(1200):
+            s.lp(1010 + i, TEAM, A(9), 1)
+        s.install()
+        bid = bond(w, reg, s, end_time=end)
+        rec = w.view(reg, "get_config")["recovery_s"]
+        for _ in range(2):
+            self.assertEqual(check(w, reg, bid)["result"], "SCANNED")
+            w.advance(rec - 10)
+            with self.assertRaises(Reverted) as e:
+                w.call(reg, "settle", bid, sender=TEAM)
+            self.assertIn("ACTIVE_UNTIL_VERDICT_OR_", e.exception.msg)
+        self.assertEqual(get(w, reg, bid)["recovery_deadline"], w.now() + 10)
+
+    def test_no_progress_for_the_whole_window_is_unresolved(self):
+        w, reg = fresh()
+        s, end = self._sim()
+        s.install(fin=1050)
+        bid = bond(w, reg, s, end_time=end)
+        check(w, reg, bid)
+        dl = get(w, reg, bid)["recovery_deadline"]
+        stub.WEB.down.add("*")
+        for _ in range(4):
+            check(w, reg, bid)
+            w.advance(600)
+        self.assertEqual(get(w, reg, bid)["recovery_deadline"], dl)
+        w.set_time(dl + 1)
+        self.assertEqual(w.call(reg, "settle", bid, sender=STRANGER)["status"], "UNRESOLVED")
+
+    def test_lower_bound_never_clears_a_block_that_broke_the_promise(self):
+        # the stored bound is exact here; a transfer that takes the real balance below the floor is always probed
+        for amount, rugged in ((100 * GEN, False), (100 * GEN + 1, True)):
+            w, reg = fresh()
+            s, end = self._sim()
+            s.lp(1200, TEAM, A(9), amount)
+            s.install(fin=1100)
+            bid = bond(w, reg, s, end_time=end)
+            check(w, reg, bid)
+            s.install(fin=21000)
+            out = scan_all(w, reg, bid)
+            self.assertEqual(out[-1]["result"], "RUGGED" if rugged else "HELD", amount)
+
+    def test_inflow_between_checks_only_costs_a_probe(self):
+        # LP comes in (unseen by the log filter) and goes out again: the bound is too low, a probe reads the truth
+        w, reg = fresh()
+        s, end = self._sim()
+        s.lp(1150, ZERO, TEAM, 500 * GEN)
+        s.lp(1200, TEAM, A(9), 400 * GEN)
+        s.install(fin=1100)
+        bid = bond(w, reg, s, end_time=end)
+        check(w, reg, bid)
+        s.install(fin=21000)
+        out = scan_all(w, reg, bid)
+        self.assertEqual(out[-1]["result"], "HELD")
+        self.assertEqual(get(w, reg, bid)["lp_low"], str(1100 * GEN))
 
 
 class PairValidity(unittest.TestCase):

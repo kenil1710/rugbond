@@ -34,7 +34,7 @@ def addr(n):
     return "0x" + hashlib.sha256(b"d%d" % n).hexdigest()[:40]
 
 
-TEAM, TOKEN, PAIR, WETH, VICTIM_FUND, ROUTER = (addr(i) for i in range(1, 7))
+TEAM, TOKEN, PAIR, WETH, FUND, ROUTER = (addr(i) for i in range(1, 7))
 HOLDERS = [addr(100 + i) for i in range(4)]
 W = lambda n: "0x" + "%064x" % n
 T = lambda a: "0x" + "0" * 24 + a[2:]
@@ -177,7 +177,7 @@ def contract(direct_vm, direct_deploy, direct_owner, tmp_path):
     path.write_text(text)
     direct_vm.sender = direct_owner
     direct_vm.warp(NOW_ISO)
-    c = direct_deploy(str(path), "DEMO", sdk_version=SDK_VERSION)
+    c = direct_deploy(str(path), "DEMO", FUND, sdk_version=SDK_VERSION)
     warp(direct_vm, NOW_ISO)
     return c
 
@@ -187,7 +187,7 @@ def bond(direct_vm, contract, direct_alice, net):
     direct_vm.sender = direct_alice
     direct_vm.value = GEN
     r = contract.create_bond("direct", "base-sepolia", TOKEN, PAIR, json.dumps([TEAM]), 900 * GEN, START,
-                             net.a.ts(START) + 3600, 600, VICTIM_FUND, json.dumps([ROUTER]), 0)
+                             net.a.ts(START) + 3600, 600, json.dumps([ROUTER]), 0)
     direct_vm.value = 0
     assert r["ok"] is True, r
     fund_contract(direct_vm, GEN)

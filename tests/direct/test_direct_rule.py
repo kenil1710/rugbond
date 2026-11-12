@@ -4,7 +4,7 @@ Covers RUGGED and HELD verdicts, claims, validator agreement and disagreement,
 forged leader results, RPC failures and disagreement between the RPCs."""
 import json
 
-from conftest import GEN, HOLDERS, PAIR, RPC_A, RPC_B, RPC_C, START, TEAM, TOKEN, Chain, warp
+from conftest import FUND, GEN, HOLDERS, PAIR, RPC_A, RPC_B, RPC_C, START, TEAM, TOKEN, Chain, warp
 
 
 def test_rug_is_detected_at_the_first_block(direct_vm, net, contract, bond):
@@ -122,21 +122,108 @@ def test_claim_rpc_disagreement_refused_pending(direct_vm, net, contract, bond):
         contract.claim(bond)
 
 
-def test_settle_after_window_to_victim_fund(direct_vm, net, contract, bond):
+def test_nobody_claimed_goes_to_the_registry_fund(direct_vm, net, contract, bond):
     net.a.rug(START + 300)
     contract.check(bond)
     warp(direct_vm, "2026-10-03T04:11:00Z")
     r = contract.settle(bond)
-    assert r["status"] == "CLOSED" and r["amount"] == str(GEN), r
+    assert r["status"] == "CLOSED" and r["amount"] == str(GEN) and r["to"] == FUND, r
+    assert contract.get_config()["fund"] == FUND
 
 
-def test_claim_refused_when_the_team_sent_tokens_after_start(direct_vm, net, contract, bond):
+def test_unclaimed_is_redistributed_to_the_claimants(direct_vm, net, contract, bond):
     net.a.rug(START + 300)
-    net.a.token_transfer(START + 100, TEAM, HOLDERS[3], GEN)
+    contract.check(bond)
+    for h in HOLDERS[:2]:
+        direct_vm.sender = bytes.fromhex(h[2:])
+        assert contract.claim(bond)["share"] == str(GEN // 4)
+    warp(direct_vm, "2026-10-03T04:11:00Z")
+    r = contract.settle(bond)
+    assert r["status"] == "REDISTRIBUTING" and r["pool"] == str(GEN // 2) and r["claims"] == 2, r
+    with direct_vm.expect_revert("BONUSES_UNPAID_2"):
+        contract.settle(bond)
+    assert contract.pay_bonus(bond, HOLDERS[0])["bonus"] == str(GEN // 4)
+    with direct_vm.expect_revert("BONUS_ALREADY_PAID"):
+        contract.pay_bonus(bond, HOLDERS[0])
+    with direct_vm.expect_revert("NO_SUCH_CLAIM"):
+        contract.pay_bonus(bond, TEAM)
+    r = contract.pay_bonus(bond, HOLDERS[1])
+    assert r["bonus"] == str(GEN // 4) and r["status"] == "CLOSED", r
+    b = contract.get_bond(bond, 0)
+    assert b["remaining"] == "0" and "victim_fund" not in b and b["fund"] == FUND
+
+
+def test_team_transfer_is_subtracted_not_disqualifying(direct_vm, net, contract, bond):
+    net.a.rug(START + 300)
+    net.a.token_transfer(START + 100, TEAM, HOLDERS[3], 2_500 * GEN)
+    net.a.token_transfer(START + 120, TEAM, HOLDERS[3], 500 * GEN)
     contract.check(bond)
     direct_vm.sender = bytes.fromhex(HOLDERS[3][2:])
-    with direct_vm.expect_revert("RECEIVED_FROM_EXCLUDED_ADDRESS"):
-        contract.claim(bond)
+    r = contract.claim(bond)
+    assert r["from_team"] == str(3_000 * GEN) and r["balance"] == str(7_000 * GEN), r
+    assert r["share"] == str(GEN * 7_000 // 40_000)
+
+
+def test_zero_value_and_dust_transfers_from_the_team_change_nothing(direct_vm, net, contract, bond):
+    net.a.rug(START + 300)
+    for h in HOLDERS:
+        net.a.token_transfer(START + 100, TEAM, h, 0)
+    net.a.token_transfer(START + 101, TEAM, HOLDERS[1], 1)
+    contract.check(bond)
+    direct_vm.sender = bytes.fromhex(HOLDERS[0][2:])
+    assert contract.claim(bond)["share"] == str(GEN // 4)
+    direct_vm.sender = bytes.fromhex(HOLDERS[1][2:])
+    r = contract.claim(bond)
+    assert r["from_team"] == "1" and int(r["share"]) == GEN * (10_000 * GEN - 1) // (40_000 * GEN), r
+
+
+# --- C3: a validator derives the range itself; a leader's failure counts only if the validator's own read fails
+
+def test_validator_rejects_pending_with_zero_range_when_readable(direct_vm, net, contract, bond):
+    net.a.rug(START + 300)
+    contract.check(bond)
+    for forged in ({"reason": "RPC_UNREADABLE", "detail": "x", "range": [0, 0]},
+                   {"reason": "RPC_DISAGREE", "detail": "x", "range": [0, 0]},
+                   {"reason": "RPC_UNREADABLE", "detail": "x"},
+                   {"reason": "RPC_UNREADABLE", "detail": "x", "range": [START, START]},
+                   {"reason": "RPC_UNREADABLE", "detail": "x", "range": [10 ** 9, 10 ** 9 + 5]},
+                   {"reason": "NOTHING_NEW", "detail": "x", "range": [0, 0]},
+                   {"reason": "ANYTHING", "detail": "x", "range": [0, 0]}):
+        assert direct_vm.run_validator(leader_result=forged) is False, forged
+
+
+def test_validator_accepts_pending_in_a_genuine_outage(direct_vm, net, contract, bond):
+    net.down.add(RPC_A)
+    r = contract.check(bond)
+    assert r["result"] == "PENDING", r
+    assert direct_vm.run_validator() is True
+    # the leader's range plays no part: the validator's own read of the range it derives fails
+    assert direct_vm.run_validator(leader_result={"reason": "RPC_UNREADABLE", "detail": "x", "range": [0, 0]}) is True
+    net.down.clear()
+    assert direct_vm.run_validator() is False
+    assert direct_vm.run_validator(leader_result={"reason": "RPC_UNREADABLE", "detail": "x", "range": [0, 0]}) is False
+
+
+def test_validator_takes_the_last_block_only_inside_its_own_range(direct_vm, net, contract, bond):
+    contract.check(bond)
+    stored = direct_vm._captured_validators[-1][0]
+    assert stored["range"] == [START, START + 3000]
+    for b in (START + 3001, START + 3000 - 1801, START, 0, 10 ** 9):
+        forged = json.loads(json.dumps(stored))
+        forged["range"][1] = b
+        assert direct_vm.run_validator(leader_result=forged) is False, b
+    forged = json.loads(json.dumps(stored))
+    forged["range"][0] = START + 1
+    assert direct_vm.run_validator(leader_result=forged) is False
+    assert direct_vm.run_validator(leader_result=stored) is True
+
+
+def test_span_halves_on_pending(direct_vm, net, contract, bond):
+    net.down.add(RPC_A)
+    assert contract.check(bond)["span"] == 20000
+    assert contract.check(bond)["span"] == 10000
+    net.down.clear()
+    assert contract.check(bond)["result"] == "HELD"
 
 
 def test_claim_paid_on_the_lower_balance(direct_vm, net, contract, bond):

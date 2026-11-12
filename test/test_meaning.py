@@ -31,6 +31,7 @@ class DocsMatchCode(unittest.TestCase):
     def test_recovery(self):
         self.assertEqual((RB.MODES["CANONICAL"][2], RB.MODES["DEMO"][2]), (7 * 86400, 3600))
         self.assertIn("max(end time, creation time) + 7 days (canonical) or 1 hour (demo)", RULES)
+        self.assertIn("PENDING checks never extend it, and a scan that is making progress never runs into it", " ".join(RULES.split()))
 
     def test_stale(self):
         self.assertEqual((RB.MODES["CANONICAL"][3], RB.MODES["DEMO"][3]), (6 * 3600, 6 * 3600))
@@ -47,8 +48,12 @@ class DocsMatchCode(unittest.TestCase):
         self.assertIn("1 to 8 addresses", RULES)
         self.assertEqual(RB.MAX_EXCLUDED, 24)
         self.assertIn("up to 24 extra addresses", RULES)
-        self.assertEqual(RB.MAX_PROBES, 6)
-        self.assertIn("at most 6 such blocks per check", RULES)
+        self.assertEqual((RB.MAX_PROBE_CALLS, RB.probe_budget(1), RB.probe_budget(8)), (48, 48, 6))
+        self.assertIn("as many blocks as 48 balanceOf calls pay for (48 for one LP holder, 6 for eight)", RULES)
+        self.assertEqual(RB.MAX_LOGS, 400)
+        self.assertIn("At most 400 transfers", RULES)
+        self.assertEqual(RB.FIN_SLACK, {"ethereum": 300, "base-sepolia": 1800})
+        self.assertIn("(300 on Ethereum, 1,800 on Base Sepolia", RULES)
         self.assertEqual(RB.REPLAY_GRACE_S, 3600)
         self.assertIn("more than 3600 s older", RULES)
         self.assertEqual(RB.MAX_PERIOD_S, 366 * 86400)
@@ -70,7 +75,7 @@ class DocsMatchCode(unittest.TestCase):
 
     def test_refusal_reasons_exist_in_code(self):
         for r in re.findall(r"`([A-Z][A-Z_]+[A-Z])`", RULES):
-            if r in ("ACTIVE", "RUGGED", "HELD", "VOID", "CLOSED", "RETURNED", "UNRESOLVED", "SCANNED", "PENDING"):
+            if r in ("ACTIVE", "RUGGED", "HELD", "VOID", "CLOSED", "RETURNED", "UNRESOLVED", "SCANNED", "PENDING", "REDISTRIBUTING"):
                 continue
             self.assertIn(r, SRC, r)
 
@@ -85,10 +90,13 @@ class DocsMatchCode(unittest.TestCase):
         self.assertIn("Uniswap V2 and SushiSwap on Ethereum, the official Uniswap V2 factory on Base Sepolia", " ".join(RULES.split()))
 
     def test_share_formula(self):
-        self.assertIn("share = bond * min(balanceOf(holder, start block), balanceOf(holder, R-1))", RULES)
-        self.assertIn("// (totalSupply(R-1) - sum of excluded balances at R-1)", RULES)
-        self.assertEqual(RB.claim_balance(5, 3), 3)
-        self.assertEqual(RB.claim_balance(2, 9), 2)
+        self.assertIn("eligible = max(0, min(balanceOf(holder, start block), balanceOf(holder, R-1)) - received from team senders)", RULES)
+        self.assertIn("share = bond * eligible // (totalSupply(R-1) - sum of excluded balances at R-1)", RULES)
+        self.assertEqual(RB.claim_balance(5, 3, 0), 3)
+        self.assertEqual(RB.claim_balance(2, 9, 0), 2)
+        self.assertEqual((RB.claim_balance(5, 9, 2), RB.claim_balance(5, 9, 5), RB.claim_balance(5, 9, 50)), (3, 0, 0))
+        self.assertIn("bonus = pool * share // base", RULES)
+        self.assertEqual((RB.bonus_of(10, 1, 3), RB.bonus_of(10, 3, 3), RB.bonus_of(0, 1, 3), RB.bonus_of(10, 1, 0)), (3, 10, 0, 0))
         self.assertEqual(RB.share_of(10, 1, 3), 3)
         self.assertEqual(RB.share_of(10, 5, 3), 10)
         self.assertEqual(RB.share_of(10, 1, 0), 0)
@@ -101,8 +109,12 @@ class DocsMatchCode(unittest.TestCase):
 
     def test_settle_table(self):
         self.assertIn("| HELD or VOID | any time | the team (the whole bond) | RETURNED |", RULES)
-        self.assertIn("| RUGGED | after the claim window | the victim fund (everything not claimed) | CLOSED |", RULES)
-        self.assertIn("| ACTIVE | after the recovery deadline | the victim fund (the whole bond) | UNRESOLVED |", RULES)
+        self.assertIn("| RUGGED | after the claim window, somebody claimed | nobody yet: the unclaimed part is set aside for the claimants | REDISTRIBUTING |", RULES)
+        self.assertIn("| RUGGED | after the claim window, nobody claimed | the registry's fund (the whole bond) | CLOSED |", RULES)
+        self.assertIn("| REDISTRIBUTING | every bonus paid | the registry's fund (the integer leftover) | CLOSED |", RULES)
+        self.assertIn("| ACTIVE | after the recovery deadline | the registry's fund (the whole bond) | UNRESOLVED |", RULES)
+        self.assertNotIn("victim", RULES.lower())
+        self.assertNotIn("victim", SRC.lower())
 
 
 class NeverFavorable(unittest.TestCase):
@@ -110,7 +122,7 @@ class NeverFavorable(unittest.TestCase):
 
     def test_every_status_and_age_combination(self):
         n = 0
-        for st in ("ACTIVE", "HELD", "RETURNED", "RUGGED", "CLOSED", "VOID", "UNRESOLVED", "X"):
+        for st in ("ACTIVE", "HELD", "RETURNED", "RUGGED", "REDISTRIBUTING", "CLOSED", "VOID", "UNRESOLVED", "X"):
             for last in ("", "SCANNED", "PENDING", "HELD", "RUGGED"):
                 for n_checks in (0, 1):
                     for age in (0, 10, 10 ** 9):
@@ -122,7 +134,7 @@ class NeverFavorable(unittest.TestCase):
                                 and v["cursor_ts"] > 0
                             self.assertEqual(r["safe"], fresh_agreed, v)
                             n += 1
-        self.assertEqual(n, 8 * 5 * 2 * 3 * 2)
+        self.assertEqual(n, 9 * 5 * 2 * 3 * 2)
 
     def test_no_clock_never_safe(self):
         v = {"found": True, "bond_id": 1, "status": "ACTIVE", "token": A(1), "team": A(2), "cursor_ts": NOW, "n_checks": 1,

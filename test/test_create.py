@@ -3,7 +3,7 @@ import json
 import unittest
 
 from fixtures import (Sim, fresh, bond, create, terms, check, until_verdict, get, Reverted, TEAM, TEAM2, LOCKER,
-                      ROUTER, VICTIM_FUND, HOLDERS, ZERO, DEAD, GEN, STRANGER, NOW, A, module)
+                      ROUTER, FUND, HOLDERS, ZERO, DEAD, GEN, STRANGER, NOW, A, module)
 
 
 class Refusals(unittest.TestCase):
@@ -26,10 +26,6 @@ class Refusals(unittest.TestCase):
         ("end_time", NOW + 367 * 86400, "END_TIME_INVALID"),
         ("claim_window_s", 59, "CLAIM_WINDOW_INVALID"),
         ("claim_window_s", 181 * 86400, "CLAIM_WINDOW_INVALID"),
-        ("victim_fund", "", "VICTIM_FUND_INVALID"),
-        ("victim_fund", ZERO, "VICTIM_FUND_INVALID"),
-        ("victim_fund", DEAD, "VICTIM_FUND_INVALID"),
-        ("victim_fund", TEAM, "VICTIM_FUND_IS_TEAM"),
         ("excluded", [A(i) for i in range(25)], "EXCLUDED_TOO_MANY"),
         ("excluded", ["0xzz"], "EXCLUDED_BAD_ADDRESS"),
         ("dust_floor", -1, "DUST_FLOOR_INVALID"),
@@ -70,15 +66,15 @@ class More(unittest.TestCase):
         r = create(w, reg, terms(Sim()), value=0)
         self.assertEqual((r["ok"], r["credited"]), (False, "0"))
 
-    def test_victim_fund_cannot_be_lp_holder(self):
+    def test_registry_fund_cannot_be_lp_holder(self):
         w, reg = fresh()
-        r = create(w, reg, terms(Sim(), lp_holders=[TEAM, LOCKER], victim_fund=LOCKER))
-        self.assertEqual(r["reason"], "VICTIM_FUND_IS_LP_HOLDER")
+        r = create(w, reg, terms(Sim(), lp_holders=[TEAM, FUND]))
+        self.assertEqual(r["reason"], "REGISTRY_FUND_IN_TERMS")
 
-    def test_victim_fund_cannot_be_excluded(self):
+    def test_registry_fund_cannot_be_excluded_or_the_team(self):
         w, reg = fresh()
-        r = create(w, reg, terms(Sim(), excluded=[VICTIM_FUND]))
-        self.assertEqual(r["reason"], "VICTIM_FUND_IS_EXCLUDED")
+        self.assertEqual(create(w, reg, terms(Sim(), excluded=[FUND]))["reason"], "REGISTRY_FUND_IN_TERMS")
+        self.assertEqual(create(w, reg, terms(Sim()), sender=FUND)["reason"], "TEAM_IS_REGISTRY_FUND")
 
     def test_lp_holder_cannot_be_pair(self):
         s = Sim()
@@ -105,7 +101,7 @@ class More(unittest.TestCase):
 
     def test_withdraw_credit(self):
         w, reg = fresh()
-        create(w, reg, terms(Sim(), victim_fund=TEAM), value=2 * GEN)
+        create(w, reg, terms(Sim(), min_lp=0), value=2 * GEN)
         r = w.call(reg, "withdraw_credit", sender=TEAM)
         self.assertEqual(r["withdrawn"], str(2 * GEN))
         self.assertEqual(w.view(reg, "get_stats")["balance"], "0")
@@ -249,7 +245,7 @@ class Pagination(unittest.TestCase):
         w, reg = fresh()
         b = get(w, reg, bond(w, reg, Sim()))
         for k in ("bond_id", "team", "chain", "token", "pair", "lp_holders", "min_lp", "start_block", "end_time",
-                  "claim_window_s", "victim_fund", "excluded", "dust_floor", "amount", "status", "cursor", "cursor_ts",
+                  "claim_window_s", "fund", "span", "lp_low", "bonus_pool", "n_bonus", "bonuses_due", "excluded", "dust_floor", "amount", "status", "cursor", "cursor_ts",
                   "n_checks", "n_pending", "last_result", "recovery_deadline", "rug_block", "rug", "denominator",
                   "claim_deadline", "paid", "n_claims", "remaining", "settled_to", "due", "checkable", "replay"):
             self.assertIn(k, b)

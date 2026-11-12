@@ -3,8 +3,8 @@ import json
 import unittest
 
 import stub
-from fixtures import (Sim, fresh, bond, check, until_verdict, get, create, terms, Reverted, TEAM, TEAM2, LOCKER,
-                      ROUTER, VICTIM_FUND, HOLDERS, ZERO, DEAD, GEN, STRANGER, BOT, A, T, W, urls, module)
+from fixtures import (close, Sim, fresh, bond, check, until_verdict, get, create, terms, Reverted, TEAM, TEAM2, LOCKER,
+                      ROUTER, FUND, HOLDERS, ZERO, DEAD, GEN, STRANGER, BOT, A, T, W, urls, module)
 
 
 def rugged_with(setup, **o):
@@ -58,11 +58,11 @@ class Attacks(unittest.TestCase):
                 w.call(reg, "claim", bid, sender=HOLDERS[10 + i])
 
     def test_a05_team_funds_fresh_wallet_after_start_refused(self):
-        # the team sends tokens to a fresh wallet after the bond opened: RECEIVED_FROM_EXCLUDED_ADDRESS
+        # the team sends tokens to a fresh wallet after the bond opened: it held nothing at the start
         w, reg, s, bid = rugged_with(lambda s: s.tok(1200, TEAM, TEAM2, 40_000 * GEN))
         with self.assertRaises(Reverted) as e:
             w.call(reg, "claim", bid, sender=TEAM2)
-        self.assertIn("RECEIVED_FROM_EXCLUDED_ADDRESS", e.exception.msg)
+        self.assertIn("NO_BALANCE_AT_START_AND_R_MINUS_1", e.exception.msg)
 
     def test_a05b_team_buys_supply_before_rug_earns_nothing(self):
         # the attack: buy most of the float from the pool (the ETH comes back with the LP), rug, claim
@@ -93,7 +93,7 @@ class Attacks(unittest.TestCase):
         with self.assertRaises(Reverted):
             w.call(reg, "claim", bid, sender=TEAM2)
 
-    def test_a05d_received_from_lp_holder_or_token_contract_refused(self):
+    def test_a05d_received_from_lp_holder_or_token_contract_subtracted(self):
         for sender in (LOCKER, "token"):
             def setup(s, sender=sender):
                 frm = s.token if sender == "token" else LOCKER
@@ -101,9 +101,9 @@ class Attacks(unittest.TestCase):
                 s.tok(1100, TEAM, frm, 50_000 * GEN)
                 s.tok(1200, frm, HOLDERS[11], 1_000 * GEN)
             w, reg, s, bid = rugged_with(setup, lp_holders=[TEAM, LOCKER])
-            with self.assertRaises(Reverted) as e:
-                w.call(reg, "claim", bid, sender=HOLDERS[11])
-            self.assertIn("RECEIVED_FROM_EXCLUDED_ADDRESS", e.exception.msg, sender)
+            r = w.call(reg, "claim", bid, sender=HOLDERS[11])
+            # 5,000 at the start, 6,000 at R-1, 1,000 of it from a team sender: 4,000 eligible
+            self.assertEqual((r["from_team"], r["balance"]), (str(1_000 * GEN), str(4_000 * GEN)), sender)
 
     def test_a05e_received_via_router_is_a_buy(self):
         def setup(s):
@@ -126,8 +126,8 @@ class Attacks(unittest.TestCase):
             s.buy(s.start, HOLDERS[13], 5_000 * GEN)
             s.tok(1500, TEAM, HOLDERS[13], 1 * GEN)
         w, reg, s, bid = rugged_with(setup)
-        with self.assertRaises(Reverted):
-            w.call(reg, "claim", bid, sender=HOLDERS[13])
+        r = w.call(reg, "claim", bid, sender=HOLDERS[13])
+        self.assertEqual((r["from_team"], r["balance"]), (str(GEN), str(4_999 * GEN)))
 
     def test_a05h_transfer_logs_disagree_is_pending(self):
         def setup(s):
@@ -234,15 +234,53 @@ class Attacks(unittest.TestCase):
             w.call(reg, "claim", bid, sender=HOLDERS[0])
 
     def test_a17_victim_fund_cannot_be_team(self):
+        # a bond has no destination field at all: a team's second wallet cannot be named anywhere
         w, reg = fresh()
-        r = create(w, reg, terms(Sim(), victim_fund=TEAM))
-        self.assertEqual(r["reason"], "VICTIM_FUND_IS_TEAM")
+        t = terms(Sim())
+        self.assertNotIn("victim_fund", t)
+        with self.assertRaises(TypeError):
+            w.call(reg, "create_bond", t["name"], t["chain"], t["token"], t["pair"], json.dumps(t["lp_holders"]),
+                   t["min_lp"], t["start_block"], t["end_time"], t["claim_window_s"], TEAM2,
+                   json.dumps(t["excluded"]), t["dust_floor"], sender=TEAM, value=GEN)
+        bid = bond(w, reg, Sim().launch().install())
+        b = get(w, reg, bid)
+        self.assertNotIn("victim_fund", b)
+        self.assertEqual(b["fund"], FUND)
+
+    def test_a17b_the_fund_itself_cannot_post_a_bond(self):
+        w, reg = fresh()
+        r = create(w, reg, terms(Sim()), sender=FUND)
+        self.assertEqual(r["reason"], "TEAM_IS_REGISTRY_FUND")
+        for o in (dict(lp_holders=[TEAM, FUND]), dict(excluded=[FUND])):
+            self.assertEqual(create(w, reg, terms(Sim(), **o))["reason"], "REGISTRY_FUND_IN_TERMS")
 
     def test_a18_team_cannot_redirect_unclaimed(self):
         w, reg, s, bid = rugged_with(lambda s: None)
         w.advance(601)
         r = w.call(reg, "settle", bid, sender=TEAM)
-        self.assertEqual(r["to"], VICTIM_FUND)
+        self.assertEqual(r["to"], FUND)
+        self.assertEqual(sum(a for (_, to, a) in w.transfers if to in (TEAM, TEAM2)), 0)
+
+    def test_a18b_team_second_wallet_gets_nothing_from_any_path(self):
+        # rugged with claims, rugged without claims, unresolved: every wei goes to claimants or the registry's fund
+        for case in ("claims", "none", "unresolved"):
+            if case == "unresolved":
+                w, reg = fresh()
+                s = Sim().launch().install(fin=1050)
+                bid = bond(w, reg, s)
+                w.set_time(get(w, reg, bid)["recovery_deadline"] + 1)
+            else:
+                w, reg, s, bid = rugged_with(lambda s: None)
+                if case == "claims":
+                    w.call(reg, "claim", bid, sender=HOLDERS[0])
+                w.advance(601)
+            close(w, reg, bid, sender=TEAM2)
+            got = {}
+            for (_, to, a) in w.transfers:
+                got[to] = got.get(to, 0) + a
+            self.assertEqual(sum(got.values()), GEN, case)
+            self.assertTrue(set(got) <= {FUND, HOLDERS[0]}, case)
+            self.assertEqual(w.view(reg, "get_stats")["balance"], "0", case)
 
     def test_a19_settle_by_anyone_same_destination(self):
         for who in (TEAM, STRANGER, HOLDERS[0]):
@@ -286,14 +324,14 @@ class Attacks(unittest.TestCase):
         bid = bond(w, reg, s, min_lp=900 * GEN)
         self.assertEqual(until_verdict(w, reg, bid)[-1]["rug_block"], 1100)
 
-    def test_a24_probe_flood_until_recovery_sends_bond_to_victims(self):
+    def test_a24_stalled_bond_goes_to_the_registry_fund(self):
         w, reg = fresh()
         s = Sim().launch()
         s.install(fin=1050)
         bid = bond(w, reg, s)
         check(w, reg, bid)
         w.set_time(get(w, reg, bid)["recovery_deadline"] + 1)
-        self.assertEqual(w.call(reg, "settle", bid, sender=TEAM)["to"], VICTIM_FUND)
+        self.assertEqual(w.call(reg, "settle", bid, sender=TEAM)["to"], FUND)
 
     def test_a25_share_cannot_exceed_remaining(self):
         # an inconsistent snapshot (balances above the denominator) is capped by what is left

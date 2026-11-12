@@ -41,7 +41,7 @@ def T(a):
     return "0x" + "0" * 24 + a[2:]
 
 
-TEAM, TEAM2, LOCKER, VICTIM_FUND, ROUTER, STRANGER = A(1), A(2), A(3), A(4), A(5), A(6)
+TEAM, TEAM2, LOCKER, FUND, ROUTER, STRANGER = A(1), A(2), A(3), A(4), A(5), A(6)
 HOLDERS = [A(100 + i) for i in range(20)]
 BOT = A(90)            # a contract holder
 WETH = A(91)
@@ -186,13 +186,13 @@ def fresh(mode="DEMO", now=NOW):
     stub.FORGE["mutate"] = None
     w = new_world()
     w.set_time(now)
-    reg = w.deploy("RugBond", mode)
+    reg = w.deploy("RugBond", mode, FUND)
     return w, reg
 
 
 def terms(sim, **o):
     t = dict(name="Test token", chain=sim.chain, token=sim.token, pair=sim.pair, lp_holders=[TEAM], min_lp=900 * GEN,
-             start_block=sim.start, end_time=sim.ts(sim.start) + 3600, claim_window_s=600, victim_fund=VICTIM_FUND,
+             start_block=sim.start, end_time=sim.ts(sim.start) + 3600, claim_window_s=600,
              excluded=[ROUTER], dust_floor=0)
     t.update(o)
     return t
@@ -201,7 +201,7 @@ def terms(sim, **o):
 def create(w, reg, t, value=GEN, sender=TEAM):
     import json
     return w.call(reg, "create_bond", t["name"], t["chain"], t["token"], t["pair"], json.dumps(t["lp_holders"]),
-                  t["min_lp"], t["start_block"], t["end_time"], t["claim_window_s"], t["victim_fund"],
+                  t["min_lp"], t["start_block"], t["end_time"], t["claim_window_s"],
                   json.dumps(t["excluded"]), t["dust_floor"], sender=sender, value=value)
 
 
@@ -222,6 +222,22 @@ def until_verdict(w, reg, bid, n=50):
         out.append(r)
         if r["result"] != "SCANNED":
             return out
+    return out
+
+
+def close(w, reg, bid, sender=STRANGER):
+    """Everything after the claim window: settle, then the bonus round (one pay_bonus per claim), then the
+    final settle when an integer leftover remains. -> {"settles": [...], "bonuses": [...]}"""
+    out = {"settles": [w.call(reg, "settle", bid, sender=sender)], "bonuses": []}
+    if out["settles"][0]["status"] == "REDISTRIBUTING":
+        off = 0
+        while off >= 0:
+            pg = w.view(reg, "list_claims", bid, off, 50)
+            for c in pg["items"]:
+                out["bonuses"].append(w.call(reg, "pay_bonus", bid, c["holder"], sender=sender))
+            off = pg["next_offset"]
+        if get(w, reg, bid)["status"] == "REDISTRIBUTING":
+            out["settles"].append(w.call(reg, "settle", bid, sender=sender))
     return out
 
 

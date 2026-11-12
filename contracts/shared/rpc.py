@@ -166,14 +166,14 @@ def _logs_call(t: dict, w: int, z: int) -> list:
                              "fromBlock": hex(w), "toBlock": hex(z)}]]
 
 
-def read_open(url: str, chain: str, t: dict, a: int) -> dict:
+def read_open(url: str, chain: str, t: dict, a: int, span: int) -> dict:
     """Request 1 on one endpoint: chain id, finalized head and the first log
     window from block a. An endpoint that refuses ranges past its head is asked
     up to its "finalized" block; if that range is too long for it, the logs are
     read in windows afterwards (logs None, to = a - 1). Blocks past the check's
     range are dropped later."""
     lim = RPC_LIMITS[url]
-    top = a + CHAINS[chain][2] - 1
+    top = a + span - 1
     z = a + lim[0] - 1
     if z > top:
         z = top
@@ -191,18 +191,29 @@ def read_open(url: str, chain: str, t: dict, a: int) -> dict:
     return {"fin": fin, "logs": r[2], "to": z if lim[2] else (fin if fin < top else top)}
 
 
-def read_window(url: str, surl: str, chain: str, t: dict, a: int, b: int, opened: dict, first: bool) -> dict:
+def read_window(url: str, surl: str, chain: str, t: dict, a: int, b: int, opened: dict, first: bool,
+                low_in: int) -> dict:
     """Blocks [a, b] of one bond as ONE view: logs from the log endpoint `url`,
     state from the state endpoint `surl` (both views are read; the caller
     compares), in as few requests as each endpoint allows: the opening request
     (read_open), the rest of the log windows, one batch of state, and one more
-    when there is a rug or a pair to check. -> {"window": ..., "pair": ...}
+    when there is a rug, a pair to check or a shortened range.
+    -> {"window": ..., "pair": ...}
       logs    every LP Transfer out of an LP holder in [a, b] (eth_getLogs on
-              the pair, topic1 = any holder): [block, log index, tx, from, to, amount]
+              the pair, topic1 = any holder): [block, log index, tx, from, to,
+              amount]. More than MAX_LOGS: b is cut at a block boundary (one
+              block is never split) and the next check goes on from there.
+      low     a lower bound of the holders' summed LP balance at the end of b.
+              The holders' balances fall only through these transfers, so the
+              bound after a block is the bound before it minus what the block
+              sent to non-holders; `low_in` is the bound the previous check
+              stored at its last block. A block that keeps the bound at or
+              above min_lp cannot be a rug and is not probed.
       probes  [block, summed LP balance of the holders at the end of that block]
-              for the start block (first check) and each block with such a
-              transfer, in order, up to MAX_PROBES, stopping at the first below
-              min_lp. More blocks than that: b is cut before the first unread one.
+              for the start block (first check) and for blocks the bound cannot
+              clear, up to probe_budget(), stopping at the first below min_lp.
+              A probe replaces the bound with the real balance. A block that
+              is neither probed nor cleared: b is cut before it.
       rug     that first block below min_lp: its timestamp, the transfers in it,
               and the token snapshot at R-1 (totalSupply and every excluded
               address's balance), or None
@@ -227,20 +238,40 @@ def read_window(url: str, surl: str, chain: str, t: dict, a: int, b: int, opened
     if len(more) > 0:
         parts = parts + rpc_send(url, more, 1)
     logs = _parse_logs(parts, t, a, b)
-    pb = []
-    if a == start:
-        pb.append(start)
-    for lg in logs:
-        if lg[0] not in pb:
-            pb.append(lg[0])
-    if len(pb) > MAX_PROBES:
-        b = pb[MAX_PROBES] - 1
-        pb = pb[0:MAX_PROBES]
+    if len(logs) > MAX_LOGS:
+        over = logs[MAX_LOGS][0]
+        b = over if over == logs[0][0] else over - 1
         keep = []
         for lg in logs:
             if lg[0] <= b:
                 keep.append(lg)
         logs = keep
+    flows = []                      # [block, LP sent to non-holders in it]
+    if a == start:
+        flows.append([start, 0])
+    for lg in logs:
+        out = 0 if lg[4] in holders else int(lg[5])
+        if len(flows) > 0 and flows[len(flows) - 1][0] == lg[0]:
+            flows[len(flows) - 1][1] += out
+        else:
+            flows.append([lg[0], out])
+    # which blocks to probe: decided before the balances are known, so after a
+    # probe the bound is assumed unchanged; the walk below never relies on it
+    budget = probe_budget(len(holders))
+    pb = []
+    low = low_in
+    known = a != start
+    for fl in flows:
+        if a == start and fl[0] == start:
+            pb.append(start)
+            continue
+        if fl[1] == 0 or (known and low - fl[1] >= floor):
+            if known:
+                low -= fl[1]
+            continue
+        if len(pb) >= budget:
+            break
+        pb.append(fl[0])
     sc = [["eth_getBlockByNumber", [hex(b), False]]]
     if a == start:
         sc.append(["eth_getBlockByNumber", [hex(start), False]])
@@ -260,18 +291,35 @@ def read_window(url: str, surl: str, chain: str, t: dict, a: int, b: int, opened
         j = 2 if a == start else 1
         pr = {"token0": _word_addr(vals[j]), "token1": _word_addr(vals[j + 1]), "factory": _word_addr(vals[j + 2]),
               "ok": False, "why": ""}
-    probes = []
-    rug_at = -1
+    real = {}
     k = k0
     for blk in pb:
         tot = 0
         for h in holders:
             tot += _uint(vals[k])
             k += 1
-        probes.append([blk, str(tot)])
-        if tot < floor:
-            rug_at = blk
-            break
+        real[blk] = tot
+    # the walk: every block with a transfer out is either probed or cleared by the bound
+    probes = []
+    rug_at = -1
+    cut = -1
+    low = low_in if a != start else -1
+    for fl in flows:
+        if fl[0] in real:
+            tot = real[fl[0]]
+            probes.append([fl[0], str(tot)])
+            if tot < floor:
+                rug_at = fl[0]
+                break
+            low = tot
+            continue
+        if low >= 0 and low - fl[1] >= floor:
+            low -= fl[1]
+            continue
+        cut = fl[0] - 1
+        break
+    if cut >= 0 and cut < a:
+        raise ReadFailed("no block cleared")
     third = []
     how = ""
     if pr is not None:
@@ -289,10 +337,11 @@ def read_window(url: str, surl: str, chain: str, t: dict, a: int, b: int, opened
                 if how == "getPool":
                     data = data + "0" * 64          # stable = false: volatile pools only
                 third.append(["eth_call", [{"to": pr["factory"], "data": data}, "latest"]])
-    out = {"a": a, "b": b, "logs": logs, "probes": probes, "rug": None, "end_ts": end_ts, "start_ts": start_ts}
     snap = rug_at >= 0
+    last = rug_at if snap else (cut if cut >= 0 else b)
+    if last != b:
+        third.append(["eth_getBlockByNumber", [hex(last), False]])
     if snap:
-        third.append(["eth_getBlockByNumber", [hex(rug_at), False]])
         third.append(["eth_call", [{"to": t["token"], "data": "0x18160ddd"}, hex(rug_at - 1)]])
         for h in holders:
             third.append(_bal_call(pair, h, rug_at - 1))
@@ -305,28 +354,30 @@ def read_window(url: str, surl: str, chain: str, t: dict, a: int, b: int, opened
         if not pr["ok"]:
             pr["why"] = "FACTORY_DOES_NOT_KNOW_PAIR"
         i = 1
-    if snap:
-        out["b"] = rug_at
+    if last != b:
+        end_ts = _ts(got[i], last)
+        i += 1
         keep = []
         for lg in logs:
-            if lg[0] <= rug_at:
+            if lg[0] <= last:
                 keep.append(lg)
-        out["logs"] = keep
-        ts = _ts(got[i], rug_at)
-        out["end_ts"] = ts
+        logs = keep
+    out = {"a": a, "b": last, "logs": logs, "probes": probes, "rug": None, "end_ts": end_ts, "start_ts": start_ts,
+           "low": str(low if not snap else 0)}
+    if snap:
         txs = []
-        for lg in keep:
+        for lg in logs:
             if lg[0] == rug_at and lg[2] not in txs:
                 txs.append(lg[2])
-        rug = {"block": rug_at, "ts": ts, "txs": sorted(txs), "lp_after": probes[len(probes) - 1][1]}
-        if ts <= int(t["end_time"]):
-            supply = _uint(got[i + 1])
+        rug = {"block": rug_at, "ts": end_ts, "txs": sorted(txs), "lp_after": probes[len(probes) - 1][1]}
+        if end_ts <= int(t["end_time"]):
+            supply = _uint(got[i])
             lpb = 0
             for n in range(len(holders)):
-                lpb += _uint(got[i + 2 + n])
+                lpb += _uint(got[i + 1 + n])
             ex = []
             for n in range(len(t["excluded_all"])):
-                ex.append([t["excluded_all"][n], str(_uint(got[i + 2 + len(holders) + n]))])
+                ex.append([t["excluded_all"][n], str(_uint(got[i + 1 + len(holders) + n]))])
             rug["supply"] = str(supply)
             rug["lp_before"] = str(lpb)
             rug["excluded"] = ex
@@ -338,12 +389,16 @@ def read_window(url: str, surl: str, chain: str, t: dict, a: int, b: int, opened
     return view
 
 
-def read_check(chain: str, t: dict, cursor: int, first: bool, b_fixed: int) -> dict:
+def read_check(chain: str, t: dict, cursor: int, first: bool, b_fixed: int, span: int, low: int) -> dict:
     """One rug check read from BOTH RPCs of the chain ->
     {"facts": ..., "range": [a, b]} when they agree, else {"reason": ..., "detail": ...}
-    (RPC_UNREADABLE, RPC_DISAGREE, NOTHING_NEW). b_fixed < 0: the leader picks b
-    (cut at the lower of the two finalized heads); else a validator re-reads the
-    leader's range and needs b at or below both its finalized heads."""
+    (RPC_UNREADABLE, RPC_DISAGREE, NOTHING_NEW, RANGE_MISMATCH).
+    cursor, span and low are the bond's stored state: a is the block after the
+    cursor and the window ends at a + span - 1 at most. b_fixed < 0: b is the
+    window's end cut at the lower of the two finalized heads (a leader, and a
+    validator judging a leader's failure). Else a validator re-reads [a, b_fixed]
+    and takes b_fixed only inside the range it derived itself: at or below its
+    own b, and no more than FIN_SLACK blocks short of it."""
     views = []
     rng = [0, 0]
     try:
@@ -351,19 +406,18 @@ def read_check(chain: str, t: dict, cursor: int, first: bool, b_fixed: int) -> d
         a = cursor + 1 if cursor >= int(t["start_block"]) else int(t["start_block"])
         opened = []
         for url in urls:
-            opened.append(read_open(url, chain, t, a))
+            opened.append(read_open(url, chain, t, a, span))
         fin = opened[0]["fin"] if opened[0]["fin"] < opened[1]["fin"] else opened[1]["fin"]
-        rng = scan_range(t, cursor, fin)
-        if b_fixed >= 0:
-            top = rng[0] + CHAINS[chain][2] - 1
-            if b_fixed > fin or b_fixed > top:
-                return {"reason": "RPC_DISAGREE", "detail": "range not finalized here", "range": rng}
-            rng[1] = b_fixed
+        rng = scan_range(t, cursor, fin, span)
         if rng[0] > rng[1]:
             return {"reason": "NOTHING_NEW", "detail": "no new finalized block", "range": rng}
+        if b_fixed >= 0:
+            if b_fixed > rng[1] or b_fixed < rng[0] or b_fixed < rng[1] - FIN_SLACK[chain]:
+                return {"reason": "RANGE_MISMATCH", "detail": "not the range this validator derives", "range": rng}
+            rng[1] = b_fixed
         surls = CHAINS[chain][3]
         for n in range(len(urls)):
-            views.append(read_window(urls[n], surls[n], chain, t, rng[0], rng[1], opened[n], first))
+            views.append(read_window(urls[n], surls[n], chain, t, rng[0], rng[1], opened[n], first, low))
     except ReadFailed as e:
         return {"reason": "RPC_UNREADABLE", "detail": str(e)[:60], "range": rng}
     except Exception:
@@ -375,13 +429,14 @@ def read_check(chain: str, t: dict, cursor: int, first: bool, b_fixed: int) -> d
 
 def read_claim(chain: str, t: dict, holder: str, rug_block: int) -> dict:
     """What a claim needs, as two views (log RPC n + state RPC n) that must be
-    identical -> {"start_balance", "balance", "code", "delegated", "from_team"}
-    or {"reason": ..., "detail": ...}.
+    identical -> {"start_balance", "balance", "code", "delegated", "from_team",
+    "n_from_team"} or {"reason": ..., "detail": ...}.
       start_balance  balanceOf(holder) at the end of the start block
       balance        balanceOf(holder) at R-1
       code           the address has code now (an EIP-7702 delegation is not code)
-      from_team      Transfer logs of the token TO the holder FROM a team sender
-                     (team_senders) in [start block, R]: [block, tx, from], up to 5"""
+      from_team      the summed amount of the token's Transfer logs TO the holder
+                     FROM a team sender (team_senders) in blocks start+1 .. R
+      n_from_team    how many such logs"""
     ch = CHAINS[chain]
     start = int(t["start_block"])
     senders = team_senders(t)
@@ -399,10 +454,11 @@ def read_claim(chain: str, t: dict, holder: str, rug_block: int) -> dict:
             if not code.startswith("0x"):
                 raise ReadFailed("code")
             delegated = len(code) == 48 and code.startswith("0xef0100")
-            hits = []
-            if len(senders) > 0:
+            total = 0
+            count = 0
+            if len(senders) > 0 and start + 1 <= rug_block:
                 calls = []
-                w = start
+                w = start + 1
                 span = RPC_LIMITS[url][0]
                 while w <= rug_block:
                     z = w + span - 1
@@ -425,13 +481,13 @@ def read_claim(chain: str, t: dict, holder: str, rug_block: int) -> dict:
                             continue
                         frm = _word_addr(tp[1])
                         blk = _hex_int(lg.get("blockNumber"))
-                        txh = _hash32(lg.get("transactionHash", ""))
-                        if frm not in senders or _word_addr(tp[2]) != holder or blk < start or blk > rug_block or txh == "":
+                        amt = _word_uint(lg.get("data", ""))
+                        if frm not in senders or _word_addr(tp[2]) != holder or blk <= start or blk > rug_block or amt < 0:
                             raise ReadFailed("log fields")
-                        hits.append([blk, txh, frm])
-            hits = sorted(hits, key=lambda x: (x[0], x[1], x[2]))
+                        total += amt
+                        count += 1
             views.append({"start_balance": _uint(st[1]), "balance": _uint(st[2]), "code": len(code) > 2 and not delegated,
-                          "delegated": delegated, "from_team": hits[0:5]})
+                          "delegated": delegated, "from_team": str(total), "n_from_team": count})
     except ReadFailed as e:
         return {"reason": "RPC_UNREADABLE", "detail": str(e)[:60]}
     except Exception:
