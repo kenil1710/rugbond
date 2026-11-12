@@ -112,6 +112,7 @@ test("rug check, claim, refusal, create, close on the demo registry", async ({ p
     await shot(page, "04-refused-beneficiary");
   }
   const A = JSON.parse(readFileSync(new URL("docs/demo-run.json", root))).bonds.A;
+  for (let i = 0; i < 180; i++) { if ((await view(page, "get_bond", [A, Math.floor(Date.now() / 1000)])).status === "CLOSED") break; await sleep(60_000); }   // the demo run closes A after its claim window
   await go(page, `/claim?bond=demo-${A}`);
   await expect(page.getByRole("button", { name: "Claim my share" })).toBeDisabled({ timeout: 120_000 });
   await shot(page, "04-refused-closed");
