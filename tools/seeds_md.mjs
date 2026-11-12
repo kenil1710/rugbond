@@ -106,7 +106,8 @@ const out = { generated_at: new Date().toISOString(), registries: [] };
 out.registries.push(await registry(dep.contracts.RugBond.address, "docs/seed-canonical.json", "current canonical registry", true));
 for (const [f, label] of [["docs/superseded/seed-canonical-0x24ff68A1.json", "superseded canonical registry (first deployment)"],
   ["docs/superseded/seed-canonical-0x07ED5695.json", "superseded canonical registry (second deployment)"],
-  ["docs/superseded/seed-canonical-0x4D2a5e25.json", "superseded canonical registry (third deployment)"]]) if (existsSync(new URL(f, root))) {
+  ["docs/superseded/seed-canonical-0x4D2a5e25.json", "superseded canonical registry (third deployment)"],
+  ["docs/superseded/seed-canonical-0x42f22d3C.json", "superseded canonical registry (fourth deployment)"]]) if (existsSync(new URL(f, root))) {
   const old = JSON.parse(readFileSync(new URL(f, root)));
   out.registries.push(await registry(old.registry, f, label));
 }

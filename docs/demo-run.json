@@ -61,10 +61,97 @@
    "min_lp": "38729833462074167851",
    "fund": "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7",
    "at": "2026-11-12T16:44:45.625Z"
+  },
+  {
+   "id": "open_B",
+   "what": "open bond HOLDDEMO liquidity bond",
+   "ok": true,
+   "tx": "0x7c4ceb623d7767dffef68e94a0af08bceac3247e4167fa64490517a092f2850e",
+   "bond_id": 2,
+   "start_block": 57899851,
+   "end_time": 1794504585,
+   "amount": "1000000000000000000",
+   "min_lp": "34856850115866751065",
+   "fund": "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7",
+   "at": "2026-11-12T16:45:32.321Z"
+  },
+  {
+   "id": "open_copycat",
+   "what": "a stranger bonds RUGDEMO too (copycat)",
+   "ok": true,
+   "tx": "0x70189ba9f93d4dc0e5ece8547de99408e9730fd63dceff96ef9ae21e0d8bf1b3",
+   "bond_id": 3,
+   "at": "2026-11-12T16:45:44.195Z"
+  },
+  {
+   "id": "evm_after_start",
+   "what": "Base Sepolia, after the start block: team -> holder5 15,000; team -> holder2 a zero-value transfer; team -> holder3 1 wei; team -> holder1 4,000; a buy by the deployer",
+   "ok": true,
+   "holder5": 57900384,
+   "dust_zero_holder2": 57900390,
+   "dust_one_wei_holder3": 57900402,
+   "holder1_4000": 57900408,
+   "deployer_buy": 57900417,
+   "txs": {
+    "holder5": "0xfb218bcef09d6fe52e23519ab7db4fa6954c678b2387705150aacef6cdcf6016",
+    "dust_zero_holder2": "0x813bf6ce92de3e778bcfe41681482b3c0bdd24a1b531c69684eb0acf0456ba4c",
+    "dust_one_wei_holder3": "0x6795a345084cd90d59427cd7c2cc922b4aead6a25b4d914e325486ed302d426f",
+    "holder1_4000": "0x20d5297f7dce146a4d1167e07db293109414cd58ac6650b40ef335f0153e3e00",
+    "deployer_buy": "0x810d1666de250868c0bb4ae072bb43d5e4d13d87aaeacccc78556b4d747417aa"
+   },
+   "at": "2026-11-12T16:45:52.508Z"
+  },
+  {
+   "id": "evm_flood",
+   "what": "Base Sepolia: team2 sends 1,100 LP transfers of 1 wei out of its HOLDDEMO position",
+   "ok": true,
+   "contract": "0x9b18ba1ec2e2b2b3bfdb29b6c84a575169a698aa",
+   "to": "0x0a24216da7e0bbbb224a9f9847f87cf64c18177e",
+   "value_each": "1",
+   "transfers": 1100,
+   "txs": [
+    "0x58d314c6ed56a0ed2c8500f816f557e62366cba17b565f07d796b05d71293141",
+    "0x97dba4b70178f0d877b6dcefae65c4a5d77507f3914b64b6d9798c1bf163a3d5",
+    "0xfd0b4c5a427e9af1490a57b50708ca8e6cf38b62fdfd30ddaf1babf9c64ab95c",
+    "0x614235f04e127dd76302d3d96b0faa86ebe3f59fd5e59ac936909416472c595e",
+    "0x87e6b8e3a0cb09db61ba76389fbdd70b2fa97c33e13deb4b2816719021902c5f"
+   ],
+   "blocks": [
+    57900443,
+    57900451,
+    57900459,
+    57900472,
+    57900480
+   ],
+   "lp_after": "38729833462074166751",
+   "at": "2026-11-12T16:46:05.908Z"
+  },
+  {
+   "id": "beneficiary",
+   "what": "holder1 commits a beneficiary (once)",
+   "ok": true,
+   "tx": "0x40dccaafbade9070a7cbe735e58ddf73f097db9b0faba83d5d080332b570b6a8",
+   "returned": {
+    "beneficiary": "0xd8834fb21396dfcca2d1c317294458e9ab2b69b4",
+    "bond_id": 1,
+    "holder": "0x708119149a9e4915fb918b3aff8052f750aacbba",
+    "ok": true
+   },
+   "at": "2026-11-12T16:46:16.554Z"
+  },
+  {
+   "id": "evm_rug",
+   "what": "Base Sepolia: the team removes RUGDEMO's liquidity (removeLiquidityETH)",
+   "ok": true,
+   "rug_block": 57900553,
+   "rug_tx": "0x693599657122e6699719444365d2ec7e85940baefa8e6ddb9b1f4018a6c6b759",
+   "at": "2026-11-12T16:46:20.646Z"
   }
  ],
  "bonds": {
-  "A": 1
+  "A": 1,
+  "B": 2,
+  "C": 3
  },
  "start_block": 57899851
 }
