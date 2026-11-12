@@ -40,6 +40,7 @@ DEAD = "0x000000000000000000000000000000000000dead"
 RPC_TRIES = 4
 MAX_PROBE_CALLS = 48    # balanceOf calls one check spends on probes: probe_budget() blocks x the LP holders
 MAX_LOGS = 400          # LP transfers one check takes in (whole blocks); the rest waits for the next check
+MAX_CLAIM_LOG_CALLS = 64  # eth_getLogs requests one claim may spend per log RPC (a refused window is split in two)
 # How far below min(the window's last block, a validator's own finalized head) a
 # leader's last block may be: about an hour of blocks, for a leader whose
 # finalized head trailed the validator's.

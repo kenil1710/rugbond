@@ -104,7 +104,9 @@ nothing.
 chain's swap routers (Ethereum: Uniswap V2 Router02, SushiSwap router, Uniswap Universal Routers; Base Sepolia: Uniswap
 V2 router and Universal Router). A transfer from a team sender takes away exactly the amount it carried and nothing
 else: a zero-value transfer changes nothing, a dust transfer costs the dust, and nobody is disqualified for having
-been sent something. The team therefore cannot wash its supply into a claim (a fresh wallet held nothing at the
+been sent something. The transfers are summed, not listed, so their number does not matter: a log window with
+more of them than an endpoint returns in one answer is split in two until it fits (at most 64 eth_getLogs requests
+per log RPC for one claim). The team therefore cannot wash its supply into a claim (a fresh wallet held nothing at the
 start; an old holder topped up by the team loses the top-up), and it cannot knock holders out by sending them
 tokens. A transfer in the start block itself is part of the start balance. A wallet the team funded before the
 start block holds at the start like anyone else; a launchpad that knows such wallets lists them as excluded.

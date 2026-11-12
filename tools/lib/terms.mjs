@@ -6,6 +6,6 @@ export function termsOf(c, team = c.team) {
   const extra = [...new Set((c.excluded ?? []).map((x) => x.toLowerCase()))].sort();
   const all = [...new Set([team.toLowerCase(), c.pair, c.token, ZERO, DEAD, ...holders, ...extra])].sort();
   return { chain: c.chain, token: c.token, pair: c.pair, lp_holders: holders, min_lp: String(c.min_lp), start_block: Number(c.start_block),
-    end_time: Number(c.end_time), claim_window_s: Number(c.claim_window_s ?? 3600), victim_fund: c.victim_fund ?? "",
+    end_time: Number(c.end_time), claim_window_s: Number(c.claim_window_s ?? 3600),
     excluded: extra, excluded_all: all, dust_floor: String(c.dust_floor ?? "0") };
 }

@@ -1,9 +1,12 @@
 /**
  * The demo on RugBondDemo + LaunchGateDemo with a real token and a real Uniswap V2
  * pair on Base Sepolia (test/demo_evm.mjs). Every path: a rug, claims (one through
- * a committed beneficiary), every refusal, unclaimed GEN to the victim fund, a held
- * bond returned to its team, a refused bond credited and withdrawn, LaunchGate
- * answers including a copycat bond. Each payout is proved by its arrival (the
+ * a committed beneficiary), a dusting attempt by the team (a zero-value and a 1 wei
+ * transfer change nothing; a real team transfer is subtracted), every refusal,
+ * unclaimed GEN redistributed to the claimants (one bonus per claim), a bond nobody
+ * claimed sent to the registry's fund, a flood of 1,100 LP transfers out scanned
+ * across checks to HELD, a held bond returned to its team, a refused bond credited
+ * and withdrawn, LaunchGate answers including a copycat bond. Each payout is proved by its arrival (the
  * transaction FINALIZED, its value message delivered, the balance delta at the
  * recipient) and the demo registry's balance ends at 0. Writes docs/demo-run.json;
  * resumable (finished steps are kept).
@@ -99,48 +102,96 @@ const RUG = e0.RUGDEMO, HOLD = e0.HOLDDEMO;
 const ROUTER_BSEP = "0x1689e7b1f10000ae47ebfe339a4f69decd19f602";
 const team = cl("team"), team2 = cl("team2");
 const now = () => Math.floor(Date.now() / 1000);
+const FUND = (await team.view("get_config", [])).fund;
+const E18 = 10n ** 18n;
+const HOLD_FLOOR = ((BigInt(HOLD.lp_minted) * 9n) / 10n).toString();      // HOLDDEMO promises 90% of its LP
 
-// 0. a refused bond (victim fund = the team): credited, then withdrawn
-await step("refused_create", "create_bond naming the team as victim fund is refused and credited", async () => {
-  const w = await team.write("create_bond", ["bad", "base-sepolia", RUG.token, RUG.pair, JSON.stringify([RUG.team]), RUG.lp_minted, 1, now() + 3600, 600,
-    ad("team"), JSON.stringify([]), "0"], { value: GEN / 100n });
+/** A write that pays nobody (or must not): finalized, and the registry's balance unchanged. */
+async function plain(c, fn, args) {
+  const cbefore = await balanceOf(ADDR);
+  const w = await c.write(fn, args);
+  if (!w.ok) return { ok: false, tx: w.hash, status: w.status, reason: w.reason };
+  const tx = await finalized(c.read, w.hash);
+  const cafter = await balanceOf(ADDR);
+  return { ok: tx?.statusName === "FINALIZED" && cafter === cbefore, tx: w.hash, status: tx?.statusName, returned: w.returned, contract_delta: String(cafter - cbefore) };
+}
+
+/** Everything a bond needs after its verdict and window, each payout verified: settle; for a redistributing bond one
+ *  pay_bonus per unpaid claim; then the final settle when an integer leftover remains. */
+async function closeOut(bid) {
+  const k = cl("keeper");
+  const out = [];
+  for (let i = 0; i < 6; i++) {
+    const b = await k.view("get_bond", [bid, now()]);
+    if (["CLOSED", "RETURNED", "UNRESOLVED"].includes(b.status)) return { ok: out.every((x) => x.ok), status: b.status, actions: out };
+    if (b.due === "REDISTRIBUTE") { out.push({ action: "settle (set the unclaimed part aside)", ...(await plain(k, "settle", [bid])) }); continue; }
+    if (b.due) { const to = b.due === "RETURN" ? b.team : b.fund; out.push({ action: "settle -> " + (b.due === "RETURN" ? "team" : "registry fund"), ...(await paying(k, "settle", [bid], to, (r) => r?.amount)) }); continue; }
+    if (b.status === "REDISTRIBUTING") {
+      for (let off = 0; off >= 0;) {
+        const pg = await k.view("list_claims", [bid, off, 50]);
+        for (const c of pg.items) if (!c.bonus_paid) out.push({ action: "pay_bonus " + c.holder, ...(await paying(k, "pay_bonus", [bid, c.holder], c.payee, (r) => r?.bonus)) });
+        off = pg.next_offset;
+      }
+      continue;
+    }
+    return { ok: false, status: b.status, actions: out, why: "nothing due" };
+  }
+  return { ok: false, actions: out, why: "did not close" };
+}
+
+// 0. a refused bond (a claim window below the registry's minimum): credited, then withdrawn
+await step("refused_create", "create_bond with a 10 s claim window is refused and its value credited", async () => {
+  const w = await team.write("create_bond", ["bad", "base-sepolia", RUG.token, RUG.pair, JSON.stringify([RUG.team]), RUG.lp_minted, 1, now() + 3600, 10,
+    JSON.stringify([]), "0"], { value: GEN / 100n });
   const credit = await team.view("get_credit", [team.me]);
-  return { ok: w.ok && w.returned?.ok === false && w.returned?.reason === "VICTIM_FUND_IS_TEAM" && BigInt(credit.credit) === GEN / 100n, tx: w.hash, returned: w.returned, credit: credit.credit };
+  return { ok: w.ok && w.returned?.ok === false && w.returned?.reason === "CLAIM_WINDOW_INVALID" && BigInt(credit.credit) === GEN / 100n, tx: w.hash, returned: w.returned, credit: credit.credit };
 });
 await step("withdraw_credit", "withdraw_credit pays the credited GEN back to the team", () => paying(team, "withdraw_credit", [], team.me, (r) => r?.withdrawn));
+await step("fund_is_the_registrys", "the fund is the registry's (its constructor argument), not a bond term: get_config.fund", async () => {
+  const cfg = await team.view("get_config", []);
+  return { ok: cfg.fund === ad("fund") && dep.RugBondDemo.constructor_args[1] === cfg.fund && cfg.fund !== ad("team") && cfg.fund !== ad("team2"),
+    fund: cfg.fund, constructor_args: dep.RugBondDemo.constructor_args };
+});
 
 // 1. two bonds open at the same start block, after the tokens were distributed
 const start = doc.start_block ?? Number(runEvm("head").trim());
 doc.start_block = start; save();
-async function open(key, c, name, t, endIn, value, extra) {
+async function open(key, c, name, t, minLp, endIn, value, extra, window = 600) {
   return step("open_" + key, "open bond " + name, async () => {
-    const w = await c.write("create_bond", [name, "base-sepolia", t.token, t.pair, JSON.stringify([t.team]), t.lp_minted, start, now() + endIn, 600,
-      ad("victimfund"), JSON.stringify(extra), "0"], { value });
+    const w = await c.write("create_bond", [name, "base-sepolia", t.token, t.pair, JSON.stringify([t.team]), minLp, start, now() + endIn, window,
+      JSON.stringify(extra), "0"], { value });
     const tx = w.hash ? await finalized(c.read, w.hash) : null;
     const pg = await c.view("bonds_by_team", [c.me, 0, 50, now()]);
     const b = pg.items.find((x) => x.name === name);
     doc.bonds[key] = b?.bond_id; save();
-    return { ok: w.ok && tx?.statusName === "FINALIZED" && !!b, tx: w.hash, bond_id: b?.bond_id, start_block: start, end_time: b?.end_time, amount: b?.amount };
+    return { ok: w.ok && tx?.statusName === "FINALIZED" && !!b && !("victim_fund" in b) && b.fund === FUND, tx: w.hash, bond_id: b?.bond_id, start_block: start,
+      end_time: b?.end_time, amount: b?.amount, min_lp: b?.min_lp, fund: b?.fund };
   });
 }
-await open("A", team, "RUGDEMO liquidity bond", RUG, 10 * 3600, 2n * GEN, [ad("stranger"), ROUTER_BSEP]);
-await open("B", team2, "HOLDDEMO liquidity bond", HOLD, 20 * 60, GEN, [ad("stranger"), ROUTER_BSEP]);
+await open("A", team, "RUGDEMO liquidity bond", RUG, RUG.lp_minted, 10 * 3600, 2n * GEN, [ad("stranger"), ROUTER_BSEP], 1200);
+await open("B", team2, "HOLDDEMO liquidity bond", HOLD, HOLD_FLOOR, 45 * 60, GEN, [ad("stranger"), ROUTER_BSEP]);
 const A = doc.bonds.A, B = doc.bonds.B;
 
-// 2. a copycat bond on RUGDEMO by a stranger (its own bond, its own victim fund): never read for the real team
+// 2. a copycat bond on RUGDEMO by a stranger: never read for the real team; nobody will claim on it
 await step("open_copycat", "a stranger bonds RUGDEMO too (copycat)", async () => {
   const s = cl("stranger");
   const w = await s.write("create_bond", ["RUGDEMO copycat", "base-sepolia", RUG.token, RUG.pair, JSON.stringify([RUG.team]), "1", start, now() + 1800, 600,
-    ad("victimfund"), JSON.stringify([]), "0"], { value: GEN / 100n });
+    JSON.stringify([]), "0"], { value: GEN / 100n });
   const pg = await s.view("bonds_by_team", [s.me, 0, 50, now()]);
   doc.bonds.C = pg.items.find((x) => x.name === "RUGDEMO copycat")?.bond_id; save();
   return { ok: w.ok && !!doc.bonds.C, tx: w.hash, bond_id: doc.bonds.C };
 });
 
-// 4. on Base Sepolia: after the start, the team hands tokens to a fresh wallet and the deployer buys; then the rug
-await step("evm_after_start", "Base Sepolia: team -> holder5 transfer and a buy by the deployer, after the start block", async () => {
+// 3. on Base Sepolia, after the start: the team hands tokens to a fresh wallet, dusts two holders, tops one up; the
+//    deployer buys; team2 floods its LP position with 1,100 transfers out; then the team pulls RUGDEMO's liquidity
+await step("evm_after_start", "Base Sepolia, after the start block: team -> holder5 15,000; team -> holder2 a zero-value transfer; team -> holder3 1 wei; team -> holder1 4,000; a buy by the deployer", async () => {
   runEvm("after_start");
   return { ok: true, ...evm().RUGDEMO.after_start };
+});
+await step("evm_flood", "Base Sepolia: team2 sends 1,100 LP transfers of 1 wei out of its HOLDDEMO position", async () => {
+  runEvm("flood");
+  const f = evm().HOLDDEMO.flood;
+  return { ok: f.transfers === 1100, ...f };
 });
 await step("beneficiary", "holder1 commits a beneficiary (once)", async () => {
   const w = await cl("holder1").write("commit_beneficiary", [A, ad("e2e")]);
@@ -152,25 +203,22 @@ await step("evm_rug", "Base Sepolia: the team removes RUGDEMO's liquidity (remov
   return { ok: !!r.rug_block, rug_block: r.rug_block, rug_tx: r.rug_tx };
 });
 
-// 5a. the first check of A: the start block read, the pair checked. Base Sepolia's finalized head trails its tip
-// by about 4.4 hours, so this waits; the rug (minutes after the start) is usually still past the finalized head,
-// and LaunchGate then answers ACTIVE_HELD_SO_FAR from that read
+// 4. the first check of A waits for Base Sepolia's finalized head to pass the start block
 await step("first_check_A", "the first rug check of bond A reads the start block", async () => {
   const k = cl("keeper");
-  for (let i = 0; i < 400; i++) {                 // Base Sepolia's finalized head trails the tip by about 4.4 hours
+  for (let i = 0; i < 400; i++) {
     const cur = await k.view("get_bond", [A, now()]);
     if (cur.n_checks > 0) {
-      const c1 = await k.view("get_check", [1]);
-      return { ok: ["SCANNED", "HELD", "RUGGED"].includes(c1.result), check: c1, status: cur.status };
+      const cs = await k.view("list_checks", [A, 0, 1]);
+      return { ok: ["SCANNED", "HELD", "RUGGED", "PENDING"].includes(cs.items[0]?.result), check: cs.items[0], status: cur.status };
     }
     const w = await k.write("check", [A]);
-    if (w.ok) return { ok: ["SCANNED", "HELD", "RUGGED"].includes(w.returned?.result), tx: w.hash, returned: w.returned };
+    if (w.ok) return { ok: ["SCANNED", "HELD", "RUGGED", "PENDING"].includes(w.returned?.result), tx: w.hash, returned: w.returned };
     console.log("   ", (w.reason ?? "").slice(0, 60), "- waiting for finality");
     await sleep(90000);
   }
   return { ok: false };
 });
-// 5. rug checks until RUGGED
 await step("rugged_A", "rug checks on bond A until RUGGED at the rug block", async () => {
   const r = await checkUntil(A, ["RUGGED"]);
   const b = await team.view("get_bond", [A, now()]);
@@ -182,73 +230,128 @@ await step("gate_rugged", "LaunchGate: RUGGED_PAYING", async () => {
   return { ok: a.state === "RUGGED_PAYING" && a.safe === false, check_for: a };
 });
 
-// 6. claims and refusals
-await step("claim_holder1", "holder1 claims; paid to its committed beneficiary", () => paying(cl("holder1"), "claim", [A], ad("e2e"), (r) => r?.share));
-await step("claim_holder2", "holder2 claims", () => paying(cl("holder2"), "claim", [A], ad("holder2"), (r) => r?.share));
-await step("claim_holder3", "holder3 claims", () => paying(cl("holder3"), "claim", [A], ad("holder3"), (r) => r?.share));
+// 5. claims: the team's transfers cost exactly what they carried
+const claimStep = (id, what, role, payee, want) => step(id, what, async () => {
+  const p = await paying(cl(role), "claim", [A], payee, (r) => r?.share);
+  const r = p.returned ?? {};
+  return { ...p, ok: p.ok && r.from_team === want.from_team && r.balance === want.balance, expected: want };
+});
+await claimStep("claim_holder1", "holder1 claims: held 10,000 at the start, the team sent it 4,000 after: paid on 6,000, to its committed beneficiary", "holder1", ad("e2e"),
+  { from_team: (4000n * E18).toString(), balance: (6000n * E18).toString() });
+await claimStep("claim_holder2", "holder2 claims: the team's zero-value transfer changed nothing (paid on all 20,000)", "holder2", ad("holder2"),
+  { from_team: "0", balance: (20000n * E18).toString() });
+await claimStep("claim_holder3", "holder3 claims: the team's 1 wei transfer cost 1 wei (paid on 30,000 minus 1 wei)", "holder3", ad("holder3"),
+  { from_team: "1", balance: (30000n * E18 - 1n).toString() });
 await step("refuse_double", "holder2 claims again: ALREADY_CLAIMED", () => refused(cl("holder2"), "claim", [A], "ALREADY_CLAIMED", ad("holder2")));
 await step("refuse_excluded", "the excluded stranger: EXCLUDED_ADDRESS", () => refused(cl("stranger"), "claim", [A], "EXCLUDED_ADDRESS", ad("stranger")));
-await step("refuse_team_funded", "holder5 got tokens from the team after the start: RECEIVED_FROM_EXCLUDED_ADDRESS", () =>
-  refused(cl("holder5"), "claim", [A], "RECEIVED_FROM_EXCLUDED_ADDRESS", ad("holder5")));
+await step("refuse_team_funded", "holder5, a fresh wallet the team funded after the start: NO_BALANCE_AT_START_AND_R_MINUS_1", () =>
+  refused(cl("holder5"), "claim", [A], "NO_BALANCE_AT_START_AND_R_MINUS_1", ad("holder5")));
 await step("refuse_bought_after_start", "the deployer bought after the start: NO_BALANCE_AT_START_AND_R_MINUS_1", () =>
   refused(cl("deployer"), "claim", [A], "NO_BALANCE_AT_START_AND_R_MINUS_1", ad("deployer")));
 await step("refuse_team", "the team: EXCLUDED_ADDRESS", () => refused(team, "claim", [A], "EXCLUDED_ADDRESS", ad("team")));
 await step("refuse_wrong_bond", "holder1 claims on bond B (not rugged): BOND_IS_ACTIVE", () => refused(cl("holder1"), "claim", [B], "BOND_IS_", ad("holder1")));
 await step("refuse_beneficiary_twice", "holder1 commits a second beneficiary: refused", () => refused(cl("holder1"), "commit_beneficiary", [A, ad("holder1")], "REFUSED"));
+await step("refuse_bonus_early", "pay_bonus while the claim window is open: BOND_IS_RUGGED", () => refused(cl("keeper"), "pay_bonus", [A, ad("holder2")], "BOND_IS_RUGGED", ad("holder2")));
 
-await step("gate_active", "LaunchGate before the rug is read: ACTIVE_HELD_SO_FAR (or RUGGED_PAYING if the first read already reached the rug)", async () => {
+await step("gate_active", "LaunchGate on bond A: RUGGED_PAYING once the rug is read; the real team is not safe, a copycat team neither", async () => {
   const a = await g.view("check_for", [RUG.token, A]);
-  if (a.state === "RUGGED_PAYING") return { ok: true, check_for: a, note: "the first read already reached the rug block" };
   const t = await g.view("is_safe_for", [RUG.token, ad("team")]);
   const wrong = await g.view("check_for", [HOLD.token, A]);
-  const cop = await g.view("is_safe_for", [RUG.token, ad("stranger")]);
-  return { ok: a.state === "ACTIVE_HELD_SO_FAR" && a.safe === true && t.safe === true && wrong.state === "NO_BOND" && cop.safe === false,
-    check_for: a, is_safe_for: t, wrong_token: wrong, copycat_team: cop };
+  return { ok: a.state === "RUGGED_PAYING" && t.safe === false && wrong.state === "NO_BOND", check_for: a, is_safe_for: t, wrong_token: wrong };
 });
 await step("gate_attest", "LaunchGate: attest(RUGDEMO, A) stored on chain", async () => {
   const w = await g.write("attest", [RUG.token, A]);
-  return { ok: w.ok && ["ACTIVE_HELD_SO_FAR", "RUGGED_PAYING"].includes(w.returned?.state), tx: w.hash, returned: w.returned };
+  return { ok: w.ok && ["RUGGED_PAYING", "RUGGED_CLOSED"].includes(w.returned?.state), tx: w.hash, returned: w.returned };
 });
 
-// 7. bond B holds: checks until HELD, settle returns the bond to team2
-await step("held_B", "rug checks on bond B until HELD", () => checkUntil(B, ["HELD"]));
+// 6. bond B: 1,100 LP transfers out of its holder; the scan works through them across checks and reaches HELD
+await step("held_B", "rug checks on bond B (flooded with 1,100 LP transfers out) until HELD", async () => {
+  const r = await checkUntil(B, ["HELD"]);
+  const cs = [];
+  for (let off = 0; off >= 0;) { const pg = await team.view("list_checks", [B, off, 50]); cs.push(...pg.items); off = pg.next_offset; }
+  const logs = cs.reduce((n, c) => n + c.n_logs, 0);
+  const b = await team.view("get_bond", [B, now()]);
+  return { ...r, ok: r.ok && logs === 1100 && cs.filter((c) => c.n_logs > 0).length >= 3 && cs.every((c) => c.result !== "RUGGED"),
+    lp_transfers_scanned: logs, checks_with_transfers: cs.filter((c) => c.n_logs > 0).map((c) => ({ check_id: c.check_id, a: c.a, b: c.b, n_logs: c.n_logs, probes: c.probes.length, result: c.result })),
+    lp_low: b.lp_low, min_lp: b.min_lp, lp_minted: HOLD.lp_minted };
+});
 await step("gate_held", "LaunchGate: HELD_FINAL", async () => {
   const a = await g.view("check_for", [HOLD.token, B]);
   return { ok: a.state === "HELD_FINAL", check_for: a };
 });
 await step("settle_B", "settle B: the bond back to team2", () => paying(cl("keeper"), "settle", [B], ad("team2"), (r) => r?.amount));
 
-// 8. after A's claim window: a late claim is refused; settle sends the unclaimed GEN to the victim fund
+// 7. after A's claim window: a late claim is refused; what nobody claimed is shared among the three claimants
 await step("wait_window_A", "wait for bond A's claim window to end", async () => {
   const b = await team.view("get_bond", [A, now()]);
   while (now() <= b.claim_deadline + 30) await sleep(20000);
   return { ok: true, claim_deadline: b.claim_deadline };
 });
 await step("refuse_late", "holder4 claims after the window: CLAIM_WINDOW_OVER", () => refused(cl("holder4"), "claim", [A], "CLAIM_WINDOW_OVER", ad("holder4")));
-await step("settle_A", "settle A: what holders did not claim to the victim fund", () => paying(cl("keeper"), "settle", [A], ad("victimfund"), (r) => r?.amount));
+await step("settle_A_redistribute", "settle A: no GEN moves; the unclaimed part is set aside for the claimants (REDISTRIBUTING)", async () => {
+  const fb = await balanceOf(FUND);
+  const p = await plain(team, "settle", [A]);          // the team itself calls it: it cannot direct anything
+  const b = await team.view("get_bond", [A, now()]);
+  const fa = await balanceOf(FUND);
+  return { ...p, ok: p.ok && b.status === "REDISTRIBUTING" && b.bonus_pool === String(BigInt(b.amount) - BigInt(b.paid)) && b.bonus_base === b.paid && b.bonuses_due === 3 && fa === fb,
+    pool: b.bonus_pool, base: b.bonus_base, claims: b.n_claims, fund_delta: String(fa - fb) };
+});
+await step("gate_redistributing", "LaunchGate while redistributing: RUGGED_CLOSED", async () => {
+  const a = await g.view("check_for", [RUG.token, A]);
+  return { ok: a.state === "RUGGED_CLOSED" && a.safe === false, check_for: a };
+});
+await step("refuse_settle_unpaid", "settle A again before the bonuses are paid: BONUSES_UNPAID_3", () => refused(cl("keeper"), "settle", [A], "BONUSES_UNPAID_3"));
+await step("refuse_bonus_nonclaimant", "pay_bonus for holder4 (did not claim), the team and the fund: NO_SUCH_CLAIM", async () => {
+  const rs = [];
+  for (const who of ["holder4", "team", "fund"]) rs.push(await refused(cl("keeper"), "pay_bonus", [A, ad(who)], "NO_SUCH_CLAIM", ad(who)));
+  return { ok: rs.every((r) => r.ok), refusals: rs };
+});
+const bonusStep = (id, what, role, payee) => step(id, what, async () => {
+  const b = await team.view("get_bond", [A, now()]);
+  const c = await team.view("get_claim", [A, ad(role)]);
+  const want = (BigInt(b.bonus_pool) * BigInt(c.share)) / BigInt(b.bonus_base);
+  const p = await paying(cl("stranger"), "pay_bonus", [A, ad(role)], payee, (r) => r?.bonus);     // anyone may run the round
+  return { ...p, ok: p.ok && p.returned?.bonus === want.toString() && p.returned?.payee === payee, expected_bonus: want.toString(), share: c.share };
+});
+await bonusStep("bonus_holder1", "pay_bonus holder1: pool x share / base, to its committed beneficiary", "holder1", ad("e2e"));
+await step("refuse_bonus_twice", "pay_bonus holder1 again: BONUS_ALREADY_PAID", () => refused(cl("keeper"), "pay_bonus", [A, ad("holder1")], "BONUS_ALREADY_PAID", ad("e2e")));
+await bonusStep("bonus_holder2", "pay_bonus holder2", "holder2", ad("holder2"));
+await bonusStep("bonus_holder3", "pay_bonus holder3", "holder3", ad("holder3"));
+await step("settle_A_leftover", "the integer leftover of the round goes to the registry's fund (or the last bonus closed the bond with nothing left)", async () => {
+  const b = await team.view("get_bond", [A, now()]);
+  if (b.status === "CLOSED") return { ok: b.remaining === "0", status: b.status, leftover: "0", note: "the last bonus left nothing over" };
+  const p = await paying(cl("keeper"), "settle", [A], FUND, (r) => r?.amount);
+  return { ...p, ok: p.ok && p.returned?.status === "CLOSED" && BigInt(p.returned.amount) < 3n, leftover: p.returned?.amount };
+});
+await step("conservation_A", "bond A: claims + bonuses + leftover = the bond; nothing went to the team", async () => {
+  const b = await team.view("get_bond", [A, now()]);
+  const total = BigInt(b.paid) + BigInt(b.bonus_paid) + BigInt(b.settled_amount);
+  return { ok: b.status === "CLOSED" && total === BigInt(b.amount) && b.remaining === "0" && b.settled_to !== b.team && b.n_bonus === 3,
+    amount: b.amount, claims_paid: b.paid, bonuses_paid: b.bonus_paid, to_fund: b.settled_amount, settled_to: b.settled_to };
+});
 await step("gate_closed", "LaunchGate: RUGGED_CLOSED", async () => {
   const a = await g.view("check_for", [RUG.token, A]);
   return { ok: a.state === "RUGGED_CLOSED", check_for: a };
 });
 
-// 9. the copycat: never read for the real team; it holds or is settled like any bond
-await step("copycat_done", "the copycat bond is checked to a verdict and settled", async () => {
+// 8. the copycat: rugged as well, and nobody claims on it: the whole bond goes to the registry's fund
+await step("copycat_done", "the copycat bond: checked to a verdict; nobody claimed, so after its window the whole bond goes to the registry's fund", async () => {
   const C = doc.bonds.C;
   const r = await checkUntil(C, ["HELD", "RUGGED"]);
   const b = await team.view("get_bond", [C, now()]);
   if (b.status === "RUGGED") while (now() <= b.claim_deadline + 30) await sleep(20000);
-  const due = (await team.view("get_bond", [C, now()]));
-  const payee = due.due === "RETURN" ? ad("stranger") : ad("victimfund");
-  const p = await paying(cl("keeper"), "settle", [C], payee, (x) => x?.amount);
-  return { ok: r.ok && p.ok, status: r.status, settle: p };
+  const due = await team.view("get_bond", [C, now()]);
+  const payee = due.due === "RETURN" ? ad("stranger") : FUND;
+  const p = await paying(cl("stranger"), "settle", [C], payee, (x) => x?.amount);        // even the copycat's own team cannot redirect it
+  return { ok: r.ok && p.ok && (r.status !== "RUGGED" || (due.due === "FUND" && p.returned?.to === FUND && p.returned?.amount === due.amount)), status: r.status, due: due.due, settle: p };
 });
 
-// 10. a live promise read recently: LaunchGate's ACTIVE_HELD_SO_FAR, then held and settled
+// 9. a live promise read recently: LaunchGate's ACTIVE_HELD_SO_FAR, then held and settled
 await step("open_D", "team2 opens a second HOLDDEMO bond (ends in about an hour)", async () => {
   const head = Number(runEvm("head").trim());
   const name = "HOLDDEMO short bond " + head;
-  const w = await team2.write("create_bond", [name, "base-sepolia", HOLD.token, HOLD.pair, JSON.stringify([HOLD.team]), HOLD.lp_minted, head, now() + 3600, 600,
-    ad("victimfund"), JSON.stringify([ad("stranger"), ROUTER_BSEP]), "0"], { value: GEN / 2n });
+  const w = await team2.write("create_bond", [name, "base-sepolia", HOLD.token, HOLD.pair, JSON.stringify([HOLD.team]), HOLD_FLOOR, head, now() + 3600, 600,
+    JSON.stringify([ad("stranger"), ROUTER_BSEP]), "0"], { value: GEN / 2n });
   const pg = await team2.view("bonds_by_team", [team2.me, 0, 50, now()]);
   doc.bonds.D = pg.items.find((x) => x.name === name)?.bond_id; save();
   return { ok: w.ok && !!doc.bonds.D, tx: w.hash, bond_id: doc.bonds.D, start_block: head };
@@ -257,7 +360,7 @@ await step("check_D", "the first check of bond D (SCANNED while the promise runs
   const k = cl("keeper");
   for (let i = 0; i < 400; i++) {
     const w = await k.write("check", [doc.bonds.D]);
-    if (w.ok) return { ok: w.returned?.result === "SCANNED", tx: w.hash, returned: w.returned };
+    if (w.ok && w.returned?.result !== "PENDING") return { ok: w.returned?.result === "SCANNED", tx: w.hash, returned: w.returned };
     await sleep(90000);
   }
   return { ok: false };
@@ -274,18 +377,18 @@ await step("gate_active_D", "LaunchGate: check_for(HOLDDEMO, D) is ACTIVE_HELD_S
 await step("held_D", "rug checks on bond D until HELD", () => checkUntil(doc.bonds.D, ["HELD"]));
 await step("settle_D", "settle D: the bond back to team2", () => paying(cl("keeper"), "settle", [doc.bonds.D], ad("team2"), (r) => r?.amount));
 
-await step("balance_zero_end", "the demo registry's balance is 0 at the end (after the e2e run's bonds settle too)", async () => {
+await step("balance_zero_end", "the demo registry's balance is 0 at the end (after the e2e run's bonds close too)", async () => {
   const leftovers = [];
   for (let i = 0; i < 720; i++) {
     const st = await team.view("get_stats", []);
     if (st.held === "0") break;
-    // the e2e run's rugged bonds (posted by `team`) are settled here once due; the e2e settles its own held bond
+    // the e2e run's rugged bonds (posted by `team`) are closed out here once due; the e2e settles its own held bond
     for (let off = 0; off >= 0;) {
       const pg = await team.view("bonds_by_team", [ad("team"), off, 50, now()]);
-      for (const b of pg.items) if (b.due && !leftovers.find((x) => x.bond_id === b.bond_id)) {
-        const p = await paying(cl("keeper"), "settle", [b.bond_id], b.due === "RETURN" ? b.team : b.victim_fund, (r) => r?.amount);
+      for (const b of pg.items) if ((b.due || b.status === "REDISTRIBUTING") && !leftovers.find((x) => x.bond_id === b.bond_id)) {
+        const p = await closeOut(b.bond_id);
         leftovers.push({ bond_id: b.bond_id, name: b.name, ...p });
-        console.log("   settled leftover bond", b.bond_id, p.ok);
+        console.log("   closed out bond", b.bond_id, p.ok, p.status);
       }
       off = pg.next_offset;
     }
@@ -297,10 +400,12 @@ await step("balance_zero_end", "the demo registry's balance is 0 at the end (aft
   const all = [];
   for (let off = 0; off >= 0;) {
     const pg = await team.view("list_bonds", [off, 50, now()]);
-    for (const b of pg.items) all.push({ bond_id: b.bond_id, name: b.name, team: b.team, status: b.status, amount: b.amount, paid: b.paid, settled_to: b.settled_to, settled_amount: b.settled_amount, rug_block: b.rug_block });
+    for (const b of pg.items) all.push({ bond_id: b.bond_id, name: b.name, team: b.team, status: b.status, amount: b.amount, paid: b.paid, bonus_paid: b.bonus_paid,
+      settled_to: b.settled_to, settled_amount: b.settled_amount, rug_block: b.rug_block });
     off = pg.next_offset;
   }
-  return { ok: bal === 0n && stats.held === "0" && leftovers.every((x) => x.ok) && all.every((b) => ["CLOSED", "RETURNED", "UNRESOLVED"].includes(b.status)),
-    eth_getBalance: String(bal), stats, leftovers, bonds: all };
+  const out = BigInt(stats.claims_paid_total) + BigInt(stats.bonus_paid_total) + BigInt(stats.returned_total) + BigInt(stats.fund_total) + BigInt(stats.credit_paid_total) + BigInt(stats.stray_swept_total);
+  return { ok: bal === 0n && stats.held === "0" && out === BigInt(stats.received_total) && leftovers.every((x) => x.ok) && all.every((b) => ["CLOSED", "RETURNED", "UNRESOLVED"].includes(b.status)),
+    eth_getBalance: String(bal), fund: FUND, fund_balance: String(await balanceOf(FUND)), stats, leftovers, bonds: all };
 });
 console.log("\ndemo done:", doc.steps.filter((s) => s.ok).length, "steps");

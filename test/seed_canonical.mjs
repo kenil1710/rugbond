@@ -22,8 +22,6 @@ if (st.registry.toLowerCase() !== dep.RugBond.address.toLowerCase()) {
   st = { registry: dep.RugBond.address, bonds: [], previous: st.registry };
 }
 const save = () => writeFileSync(out, JSON.stringify(st, null, 1) + "\n");
-const acc = accounts();
-const victim = acc.victimfund.address.toLowerCase();
 const c = client({ role: "launchpad", address: dep.RugBond.address });
 console.log("launchpad", c.me, "registry", dep.RugBond.address);
 // never twice on the same registry: the launchpad's bonds already there, by name
@@ -40,7 +38,7 @@ for (const k of cases) {
   const value = 10n ** 16n * BigInt(i);                 // 0.01 GEN x case number: symbolic
   const name = `Replay ${k.id} ${k.token.slice(0, 8)}`;
   if (already.has(name)) { console.log(k.id, "already on this registry; not posted again"); continue; }
-  const args = [name, "ethereum", k.token, k.pair, JSON.stringify(k.lp_holders), String(k.min_lp), k.start_block, k.end_time, 3600, victim,
+  const args = [name, "ethereum", k.token, k.pair, JSON.stringify(k.lp_holders), String(k.min_lp), k.start_block, k.end_time, 3600,
     JSON.stringify(k.excluded), "0"];
   const r = await c.write("create_bond", args, { value });
   const ok = r.ok && r.returned?.ok === true;

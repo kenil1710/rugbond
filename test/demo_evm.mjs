@@ -5,7 +5,10 @@
  *
  *   node demo_evm.mjs setup     fund the teams, deploy RUGDEMO (team) and HOLDDEMO (team2),
  *                               add liquidity on Uniswap V2 (LP to the team), send tokens to holders
- *   node demo_evm.mjs after_start  the team sends tokens to a fresh wallet; the deployer buys on the pool
+ *   node demo_evm.mjs after_start  after the bond's start block: the team sends tokens to a fresh wallet, a zero-value
+ *                               transfer to holder2 and 1 wei to holder3 (a dusting attempt), 4,000 tokens to holder1;
+ *                               the deployer buys on the pool
+ *   node demo_evm.mjs flood     team2 sends 1,100 LP transfers of 1 wei out of its HOLDDEMO position (5 transactions)
  *   node demo_evm.mjs rug       the team pulls RUGDEMO's liquidity (removeLiquidityETH)
  *   node demo_evm.mjs head      the latest block number
  *   node demo_evm.mjs status    balances and LP
@@ -54,8 +57,13 @@ async function setup() {
   const dep = A("deployer").address;
   const bal = await pub.getBalance({ address: dep });
   console.log("deployer", dep, formatEther(bal), "ETH");
-  for (const role of ["team", "team2"]) {
-    await step(`fund_${role}`, async () => sent(await wal("deployer").sendTransaction({ to: A(role).address, value: parseEther("0.008") })));
+  // the teams are topped up from the deployer only when they hold less than the demo needs; nothing else funds anything
+  for (const [role, need] of [["team", "0.007"], ["team2", "0.0045"]]) {
+    const have = await pub.getBalance({ address: A(role).address });
+    if (have >= parseEther(need)) { console.log(`  ${role} holds ${formatEther(have)} ETH: no funding`); continue; }
+    const gap = parseEther(need) - have;
+    if (bal < gap + parseEther("0.002")) throw new Error(`Please send Base Sepolia ETH to ${dep}`);
+    await step(`fund_${role}`, async () => sent(await wal("deployer").sendTransaction({ to: A(role).address, value: gap })));
   }
   for (const [role, sym, nm] of [["team", "RUGDEMO", "RugBond Demo Rug"], ["team2", "HOLDDEMO", "RugBond Demo Hold"]]) {
     const d = await step(`deploy_${sym}`, async () => {
@@ -103,19 +111,51 @@ async function rug() {
   save();
 }
 
-/** After the bond's start block: the team hands tokens to a fresh wallet (holder5), and the deployer buys on the pool. */
+/** After the bond's start block: the team hands tokens to a fresh wallet (holder5), tries to dust holder2 (a zero-value
+ *  transfer) and holder3 (1 wei), tops holder1 up with 4,000 tokens, and the deployer buys on the pool. */
 async function afterStart() {
   const s = st.RUGDEMO;
-  const r1 = await step("team_sends_holder5_after_start", async () => sent(await wal("team").writeContract({ address: s.token, abi: erc20, functionName: "transfer",
-    args: [A("holder5").address, parseEther("15000")] })));
+  const send = (name, to, amount) => step(name, async () => sent(await wal("team").writeContract({ address: s.token, abi: erc20, functionName: "transfer", args: [A(to).address, amount] })));
+  const r1 = await send("team_sends_holder5_after_start", "holder5", parseEther("15000"));
+  const d0 = await send("team_dusts_holder2_zero_value", "holder2", 0n);
+  const d1 = await send("team_dusts_holder3_one_wei", "holder3", 1n);
+  const d2 = await send("team_sends_holder1_4000_after_start", "holder1", parseEther("4000"));
   const swap = parseAbi(["function swapExactETHForTokens(uint256,address[],address,uint256) payable returns (uint256[])"]);
   const r2 = await step("deployer_buys_after_start", async () => {
     const dl = BigInt(Math.floor(Date.now() / 1000) + 1800);
     return sent(await wal("deployer").writeContract({ address: ROUTER, abi: swap, functionName: "swapExactETHForTokens",
       args: [0n, [WETH, s.token], A("deployer").address, dl], value: parseEther("0.0002") }));
   });
-  s.after_start = { holder5: r1.block, deployer_buy: r2.block };
+  s.after_start = { holder5: r1.block, dust_zero_holder2: d0.block, dust_one_wei_holder3: d1.block, holder1_4000: d2.block, deployer_buy: r2.block,
+    txs: { holder5: r1.tx, dust_zero_holder2: d0.tx, dust_one_wei_holder3: d1.tx, holder1_4000: d2.tx, deployer_buy: r2.tx } };
   save();
+}
+
+/** The flood: 1,100 LP Transfer logs out of team2 (the HOLDDEMO LP holder), 1 wei each, in 5 transactions of 220. */
+async function flood() {
+  const s = st.HOLDDEMO;
+  const fa = JSON.parse(readFileSync(new URL("../demo/out/Flood.sol/Flood.json", import.meta.url), "utf8"));
+  const fabi = parseAbi(["function run(address token, address to, uint256 value, uint256 n)"]);
+  const d = await step("deploy_flood", async () => {
+    const hash = await wal("team2").deployContract({ abi: fa.abi, bytecode: fa.bytecode.object, args: [] });
+    const r = await sent(hash);
+    return { ...r, address: (await pub.getTransactionReceipt({ hash })).contractAddress.toLowerCase() };
+  });
+  await step("approve_flood_lp", async () => sent(await wal("team2").writeContract({ address: s.pair, abi: erc20, functionName: "approve", args: [d.address, 1100n] })));
+  const runs = [];
+  for (let i = 0; i < 5; i++) {
+    runs.push(await step(`flood_${i}`, async () => {
+      const hash = await wal("team2").writeContract({ address: d.address, abi: fabi, functionName: "run", args: [s.pair, A("stranger").address, 1n, 220n] });
+      const r = await sent(hash);
+      const rc = await pub.getTransactionReceipt({ hash });
+      return { ...r, transfer_logs: rc.logs.filter((l) => l.address.toLowerCase() === s.pair && l.topics[0] === "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef").length };
+    }));
+  }
+  const lp = await pub.readContract({ address: s.pair, abi: erc20, functionName: "balanceOf", args: [s.team] });
+  s.flood = { contract: d.address, to: A("stranger").address.toLowerCase(), value_each: "1", transfers: runs.reduce((n, r) => n + r.transfer_logs, 0),
+    txs: runs.map((r) => r.tx), blocks: runs.map((r) => r.block), lp_after: lp.toString() };
+  save();
+  console.log(JSON.stringify(s.flood));
 }
 
 /** The e2e run's own token: deployed by the team, liquidity added, tokens sent to the e2e wallet (and holder1) before the bond. */
@@ -169,6 +209,7 @@ const cmd = process.argv[2] ?? "status";
 if (cmd === "setup") await setup();
 else if (cmd === "rug") await rug();
 else if (cmd === "after_start") await afterStart();
+else if (cmd === "flood") await flood();
 else if (cmd === "head") await head();
 else if (cmd === "e2e_setup") await e2eSetup(process.argv[3], process.argv[4]);
 else if (cmd === "e2e_rug") await e2eRug(process.argv[3]);

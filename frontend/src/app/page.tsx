@@ -33,7 +33,7 @@ export default async function Home() {
         <div className="sticker kpi"><div className="label">bonds</div><div className="big">{s?.bonds ?? "—"}</div></div>
         <div className="sticker kpi lime"><div className="label">GEN bonded</div><div className="big">{s ? gen(s.received_total) : "—"}</div></div>
         <div className="sticker kpi pink"><div className="label">paid to holders</div><div className="big">{s ? gen(s.claims_paid_total) : "—"}</div></div>
-        <div className="sticker kpi"><div className="label">to victim funds</div><div className="big">{s ? gen(s.victim_total) : "—"}</div></div>
+        <div className="sticker kpi"><div className="label">unclaimed, shared among claimants</div><div className="big">{s ? gen(s.bonus_paid_total) : "—"}</div><div className="small">{s ? gen(s.fund_total) : "—"} GEN to the registry&apos;s fund</div></div>
         <div className="sticker kpi"><div className="label">returned to teams</div><div className="big">{s ? gen(s.returned_total) : "—"}</div></div>
       </div>
       <h2>Bonded tokens</h2>

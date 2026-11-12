@@ -89,20 +89,23 @@ const pad = (a: string) => "0x" + "0".repeat(24) + a.slice(2).toLowerCase();
 const TRANSFER = "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
 
 /** What the contract reads for a claim, previewed from one RPC: balances at the start block and R-1, code,
- *  and direct transfers from a team sender in [start, R]. */
-export async function claimPreview(b: Bond, holder: string): Promise<{ start: string; atR: string; balance: string; contract: boolean; fromTeam: number } | null> {
+ *  and the summed amount of direct transfers from a team sender after the start block up to R.
+ *  balance = max(0, min(start, R-1) - fromTeam). */
+export async function claimPreview(b: Bond, holder: string): Promise<{ start: string; atR: string; balance: string; contract: boolean; fromTeam: string } | null> {
   const h = holder.toLowerCase();
   const senders = b.excluded_all.filter((a) => a !== b.pair && a !== "0x0000000000000000000000000000000000000000" && a !== "0x000000000000000000000000000000000000dead" && !(ROUTERS[b.chain] ?? []).includes(a));
   try {
     const calls: [string, unknown[]][] = [bal(b.token, h, b.start_block), bal(b.token, h, b.rug_block - 1), ["eth_getCode", [h, "latest"]]];
-    for (let w = b.start_block; w <= b.rug_block;) { const z = Math.min(w + SPAN[b.chain] - 1, b.rug_block);
+    for (let w = b.start_block + 1; w <= b.rug_block && senders.length;) { const z = Math.min(w + SPAN[b.chain] - 1, b.rug_block);
       calls.push(["eth_getLogs", [{ address: b.token, topics: [TRANSFER, senders.map(pad), pad(h)], fromBlock: hex(w), toBlock: hex(z) }]]); w = z + 1; }
     const r = await rpc(b.chain, calls, 60_000);
     const start = BigInt((r[0] as string) || "0x0"), atR = BigInt((r[1] as string) || "0x0");
     const c = String(r[2] ?? "0x").toLowerCase();
     const delegated = c.length === 48 && c.startsWith("0xef0100");
-    const fromTeam = r.slice(3).reduce((n: number, x) => n + (Array.isArray(x) ? x.length : 0), 0);
-    return { start: start.toString(), atR: atR.toString(), balance: (start < atR ? start : atR).toString(), contract: c.length > 2 && !delegated, fromTeam };
+    let fromTeam = 0n;
+    for (const part of r.slice(3)) for (const lg of (Array.isArray(part) ? part : []) as { data?: string }[]) fromTeam += BigInt(lg.data && lg.data !== "0x" ? lg.data : "0x0");
+    const m = (start < atR ? start : atR) - fromTeam;
+    return { start: start.toString(), atR: atR.toString(), balance: (m > 0n ? m : 0n).toString(), contract: c.length > 2 && !delegated, fromTeam: fromTeam.toString() };
   } catch {
     return null;
   }

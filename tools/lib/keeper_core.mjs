@@ -17,7 +17,10 @@
 //          check is filed once per cursor position and a PENDING one is
 //          retried as a new action).
 //        due (HELD, VOID, RUGGED past its claim window, ACTIVE past its
-//          recovery deadline): queue SETTLE.
+//          recovery deadline): queue SETTLE. A rugged bond with claims goes
+//          to REDISTRIBUTING: queue one BONUS per claim not yet paid its part
+//          of the unclaimed GEN (every claims page is walked), and, once all
+//          are paid, a final SETTLE for the integer leftover.
 //   4. ACT, oldest first, up to maxActions: re-read the bond (already done by
 //      anyone -> DONE, no transaction), else submit and checkpoint the hash.
 //   5. SETTLE: poll this run's transactions until FINALIZED, within settleMs.
@@ -40,15 +43,19 @@ export function emptyState() {
   return { version: VERSION, bonds_offset: 0, bonds: {}, actions: {}, runs: [], unprocessed: [], last_run: null };
 }
 export const checkKey = (bid, cursor, n) => `check:${bid}:${cursor}:${n}`;
-export const settleKey = (bid) => `settle:${bid}`;
+export const settleKey = (bid, status = "") => (status === "REDISTRIBUTING" ? `settle:${bid}:final` : `settle:${bid}`);
+export const bonusKey = (bid, holder) => `bonus:${bid}:${holder}`;
 export const backoffS = (attempts) => Math.min(60 * 2 ** Math.max(attempts - 1, 0), 6 * 3600);
-export const payeeOf = (b) => (b.due === "RETURN" ? b.team : b.victim_fund);
+// who a settle pays: the team (RETURN), nobody (REDISTRIBUTE only sets the pool aside), else the registry's fund
+// (a registry deployed before the fund was fixed at deployment names it per bond: victim_fund)
+export const payeeOf = (b) => (b.due === "RETURN" ? b.team : b.due === "REDISTRIBUTE" ? null : (b.fund ?? b.victim_fund));
+const resultOf = (a, b) => (a.kind === "SETTLE" ? b.status : a.kind === "BONUS" ? "BONUS_PAID" : (b.last_result || b.status));
 
 /**
  * chain: { endpoints(chain) -> [url], head(url, chain) -> finalized block number }
  * reg:   { now(), listBonds(offset, limit) -> page, getBond(bid) -> bond,
- *          listClaims(bid, offset, limit) -> page,
- *          check(bid) -> hash, settle(bid, payee) -> hash, getTx(hash) -> {statusName, ok, reason} | null,
+ *          listClaims(bid, offset, limit) -> page, getClaim(bid, holder) -> claim,
+ *          check(bid) -> hash, settle(bid, payee | null) -> hash, payBonus(bid, holder, payee) -> hash, getTx(hash) -> {statusName, ok, reason} | null,
  *          wait?(hash, ms), sleep?(ms) }
  * store: { load() -> state, save(state, why) }
  */
@@ -63,7 +70,12 @@ export async function runKeeper({ chain, reg, store, log = () => {}, maxActions 
   async function verify(a) {
     const b = await reg.getBond(a.bond_id);
     if (!b?.found) return { b: null, done: false };
-    if (a.kind === "SETTLE") return { b, done: SETTLED.includes(b.status) };
+    if (a.kind === "SETTLE") return { b, done: SETTLED.includes(b.status) || (!a.final && b.status === "REDISTRIBUTING") };
+    if (a.kind === "BONUS") {
+      if (b.status === "CLOSED") return { b, done: true };
+      const c = await reg.getClaim(a.bond_id, a.holder);
+      return { b, done: c?.found === true && c.bonus_paid === true };
+    }
     return { b, done: b.n_checks > a.n_checks_before || b.status !== "ACTIVE" };
   }
 
@@ -77,7 +89,7 @@ export async function runKeeper({ chain, reg, store, log = () => {}, maxActions 
     }
     const final = tx?.statusName === "FINALIZED" && tx.ok;
     if (v.done && final) {
-      a.status = "DONE"; a.verified_at = now; a.result = a.kind === "SETTLE" ? v.b.status : (v.b.last_result || v.b.status);
+      a.status = "DONE"; a.verified_at = now; a.result = resultOf(a, v.b);
       run.done++; log(`DONE ${a.key} ${a.tx} -> ${a.result}`);
       return;
     }
@@ -86,7 +98,7 @@ export async function runKeeper({ chain, reg, store, log = () => {}, maxActions 
         a.status = "ACCEPTED"; run.pending++; note(a.key, `effect visible but ${a.tx} is ${tx.statusName}; waiting for FINALIZED`);
         return;
       }
-      a.status = "DONE"; a.verified_at = now; a.result = a.kind === "SETTLE" ? v.b.status : (v.b.last_result || v.b.status); a.done_by_other = true;
+      a.status = "DONE"; a.verified_at = now; a.result = resultOf(a, v.b); a.done_by_other = true;
       run.done++; log(`DONE ${a.key} (the bond shows it done; our tx ${a.tx ?? "none"} ${tx?.statusName ?? ""})`);
       return;
     }
@@ -166,10 +178,31 @@ export async function runKeeper({ chain, reg, store, log = () => {}, maxActions 
     const bs = (state.bonds[b.bond_id] ??= {});
     Object.assign(bs, { status: b.status, chain: b.chain, token: b.token, cursor: b.cursor, cursor_ts: b.cursor_ts, n_checks: b.n_checks,
       n_pending: b.n_pending, last_result: b.last_result, due: b.due, name: b.name });
-    if (b.due && !state.actions[settleKey(b.bond_id)]) {
-      state.actions[settleKey(b.bond_id)] = { key: settleKey(b.bond_id), kind: "SETTLE", bond_id: b.bond_id, payee: payeeOf(b), status: "QUEUED",
+    const sk = settleKey(b.bond_id, b.status);
+    if (b.due && !state.actions[sk]) {
+      state.actions[sk] = { key: sk, kind: "SETTLE", bond_id: b.bond_id, payee: payeeOf(b), final: b.status === "REDISTRIBUTING", status: "QUEUED",
         attempts: 0, first_seen_at: reg.now(), tx: null };
       run.queued++;
+    }
+    // the bonus round: one BONUS per claim that has not been paid its part of the unclaimed GEN; every claims page
+    if (b.status === "REDISTRIBUTING" && b.bonuses_due > 0 && reg.listClaims) {
+      let co = 0;
+      for (;;) {
+        let pg;
+        try { pg = await reg.listClaims(b.bond_id, co, BOND_PAGE); } catch (e) { run.pages_failed++; note(`bonus:${b.bond_id}:${co}`, "claims page failed: " + String(e.message).slice(0, 80)); break; }
+        if (!Array.isArray(pg?.items) || pg.items.some((c, i) => c.claim_no !== co + i)) { run.pages_failed++; note(`bonus:${b.bond_id}:${co}`, "claims page malformed"); break; }
+        run.pages++;
+        for (const c of pg.items) {
+          const k = bonusKey(b.bond_id, c.holder);
+          if (c.bonus_paid || state.actions[k]) continue;
+          state.actions[k] = { key: k, kind: "BONUS", bond_id: b.bond_id, holder: c.holder, payee: c.payee, status: "QUEUED", attempts: 0,
+            first_seen_at: reg.now(), tx: null };
+          run.queued++;
+        }
+        co += pg.items.length;
+        if (pg.next_offset === undefined || pg.next_offset < 0 || pg.next_offset < co || pg.items.length === 0) break;
+      }
+      await save("bonuses " + b.bond_id);
     }
     // claims: every page from the persisted offset (the site and /keeper show them)
     if (b.n_claims > (bs.claims_seen ?? 0) && reg.listClaims) {
@@ -210,14 +243,18 @@ export async function runKeeper({ chain, reg, store, log = () => {}, maxActions 
     if (acted >= maxActions) { note(a.key, "queued; this run reached its action limit"); continue; }
     let v;
     try { v = await verify(a); } catch (e) { note(a.key, "pre-read failed: " + e.message); continue; }
-    if (v.done) { a.status = "DONE"; a.result = a.kind === "SETTLE" ? v.b.status : (v.b.last_result || v.b.status); a.done_by_other = !(a.tx_history?.length); a.verified_at = reg.now(); run.already++; run.done++; await save("already " + a.key); continue; }
+    if (v.done) { a.status = "DONE"; a.result = resultOf(a, v.b); a.done_by_other = !(a.tx_history?.length); a.verified_at = reg.now(); run.already++; run.done++; await save("already " + a.key); continue; }
     if (!v.b) { a.status = "FAILED"; a.failed_at = reg.now(); a.last_error = "no such bond"; run.failed++; note(a.key, a.last_error); continue; }
     if (a.kind === "CHECK" && (!v.b.checkable || v.b.cursor !== a.cursor)) {
       a.status = "DONE"; a.result = "SUPERSEDED"; a.verified_at = reg.now(); run.already++; run.done++; await save("superseded " + a.key); continue;
     }
     if (a.kind === "SETTLE" && !v.b.due) { note(a.key, "not due yet"); a.status = "RETRY"; a.next_try_at = reg.now() + 300; continue; }
+    if (a.kind === "BONUS" && v.b.status !== "REDISTRIBUTING") { note(a.key, "bond is " + v.b.status + ", not redistributing"); a.status = "RETRY"; a.next_try_at = reg.now() + 300; continue; }
     acted++;
-    try { a.tx = a.kind === "CHECK" ? await reg.check(a.bond_id) : await reg.settle(a.bond_id, payeeOf(v.b)); } catch (e) {
+    try {
+      a.tx = a.kind === "CHECK" ? await reg.check(a.bond_id) : a.kind === "BONUS" ? await reg.payBonus(a.bond_id, a.holder, a.payee)
+        : await reg.settle(a.bond_id, payeeOf(v.b));
+    } catch (e) {
       a.attempts++; a.last_error = "submit failed: " + String(e.message).slice(0, 160);
       a.status = a.attempts >= MAX_ATTEMPTS ? "FAILED" : "RETRY"; a.next_try_at = reg.now() + backoffS(a.attempts);
       if (a.status === "FAILED") { a.failed_at = reg.now(); run.failed++; } else run.retry++;

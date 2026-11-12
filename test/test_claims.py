@@ -557,6 +557,64 @@ class TeamTransfers(unittest.TestCase):
         self.assertIn("PENDING", e.exception.msg)
 
 
+class ClaimLogFlood(unittest.TestCase):
+    """A team cannot lock a holder out of its claim by sending it more dust transfers than an endpoint returns."""
+
+    def _cap(self, s, most):
+        def cap(req, ans):
+            if req["method"] == "eth_getLogs" and isinstance(ans.get("result"), list) and len(ans["result"]) > most:
+                return {"jsonrpc": "2.0", "id": req["id"], "error": {"code": -32005, "message": "query returned more than %d results" % most}}
+            return ans
+        for u in module("RugBond").CHAINS[s.chain][1]:
+            stub.WEB.tamper[u] = cap
+
+    def test_300_dust_transfers_to_one_holder_are_summed_through_split_windows(self):
+        def setup(s):
+            for i in range(300):
+                s.tok(1100 + i, TEAM, HOLDERS[0], 1)
+        w, reg, s, bid = rugged(setup=setup)
+        self._cap(s, 50)
+        r = w.call(reg, "claim", bid, sender=HOLDERS[0])
+        self.assertEqual((r["from_team"], int(r["balance"])), ("300", 10_000 * GEN - 300))
+        self.assertEqual(w.view(reg, "get_claim", bid, HOLDERS[0])["from_team"], "300")
+
+    def test_other_holders_are_not_slowed_by_the_flood(self):
+        def setup(s):
+            for i in range(300):
+                s.tok(1100 + i, TEAM, HOLDERS[0], 1)
+        w, reg, s, bid = rugged(setup=setup)
+        self._cap(s, 50)
+        before = len(stub.WEB.log)
+        w.call(reg, "claim", bid, sender=HOLDERS[1])
+        # leader + validator: 2 state requests and 2 log requests each
+        self.assertLessEqual(len(stub.WEB.log) - before, 8)
+
+    def test_more_dust_in_one_block_than_an_endpoint_returns_is_pending_not_a_wrong_share(self):
+        def setup(s):
+            for i in range(60):
+                s.tok(1200, TEAM, HOLDERS[0], 1)
+        w, reg, s, bid = rugged(setup=setup)
+        self._cap(s, 50)
+        with self.assertRaises(Reverted) as e:
+            w.call(reg, "claim", bid, sender=HOLDERS[0])
+        self.assertIn("PENDING", e.exception.msg)
+        stub.WEB.tamper.clear()
+        self.assertEqual(w.call(reg, "claim", bid, sender=HOLDERS[0])["from_team"], "60")
+
+    def test_request_budget(self):
+        M = module("RugBond")
+        self.assertEqual(M.MAX_CLAIM_LOG_CALLS, 64)
+
+        def setup(s):
+            for i in range(400):
+                s.tok(1050 + i, TEAM, HOLDERS[0], 1)
+        w, reg, s, bid = rugged(setup=setup)
+        self._cap(s, 3)                                   # 400 logs at 3 per answer needs far more than 64 requests
+        with self.assertRaises(Reverted) as e:
+            w.call(reg, "claim", bid, sender=HOLDERS[0])
+        self.assertIn("PENDING", e.exception.msg)
+
+
 class Redistribution(unittest.TestCase):
     """C2: what nobody claimed goes to the holders who claimed, pro rata, in one bounded round."""
 

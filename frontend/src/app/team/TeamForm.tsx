@@ -13,7 +13,7 @@ const toWei = (v: string) => { const [a, b = ""] = v.trim().split("."); return B
 export function TeamForm() {
   const w = useWallet();
   const [reg, setReg] = useState<Reg>("demo");
-  const [f, setF] = useState({ name: "", token: "", pair: "", holders: "", minLp: "", start: "", hours: "24", window: "60", victim: "", excluded: "", dust: "0", bond: "1" });
+  const [f, setF] = useState({ name: "", token: "", pair: "", holders: "", minLp: "", start: "", hours: "24", window: "60", excluded: "", dust: "0", bond: "1" });
   const [p, setP] = useState<TxProgress | null>(null);
   const [mine, setMine] = useState<Bond[]>([]);
   const set = (k: keyof typeof f) => (e: React.ChangeEvent<HTMLInputElement>) => setF({ ...f, [k]: e.target.value });
@@ -31,7 +31,7 @@ export function TeamForm() {
     const end = Math.floor(Date.now() / 1000) + Math.round(Number(f.hours) * 3600);
     await send<{ ok: boolean; bond_id: number }>(w.account, regAddr(reg), "create_bond",
       [f.name, chain, f.token.trim().toLowerCase(), f.pair.trim().toLowerCase(), list(f.holders), toWei(f.minLp).toString(), Number(f.start), end,
-        Math.round(Number(f.window) * 60), f.victim.trim().toLowerCase(), list(f.excluded), toWei(f.dust).toString()], toWei(f.bond), { onProgress: setP });
+        Math.round(Number(f.window) * 60), list(f.excluded), toWei(f.dust).toString()], toWei(f.bond), { onProgress: setP });
   }
   return (
     <>
@@ -54,7 +54,7 @@ export function TeamForm() {
           <div style={{ flex: "1 1 160px" }}><label htmlFor="t-bond">Bond (GEN)</label><input id="t-bond" value={f.bond} onChange={set("bond")} inputMode="decimal" /></div>
           <div style={{ flex: "1 1 160px" }}><label htmlFor="t-dust">Dust floor (GEN)</label><input id="t-dust" value={f.dust} onChange={set("dust")} inputMode="decimal" /></div>
         </div>
-        <label htmlFor="t-vf">Victim fund (receives unclaimed shares; not you)</label><input id="t-vf" className="mono" value={f.victim} onChange={set("victim")} placeholder="0x…" />
+        <p className="small">Unclaimed shares are redistributed to the holders who claimed. A bond cannot name a destination for them.</p>
         <label htmlFor="t-ex">Extra excluded addresses (routers, other team wallets)</label><input id="t-ex" className="mono" value={f.excluded} onChange={set("excluded")} />
         <div className="row" style={{ marginTop: 16 }}><button className="btn" onClick={() => void create()} disabled={!w.account || w.onWrongNetwork}>Post bond</button></div>
         <TxStatus p={p} />

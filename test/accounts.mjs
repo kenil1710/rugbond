@@ -11,7 +11,8 @@
  *   team2      the second demo token's team
  *   launchpad  posts canonical replay bonds
  *   holder1-5  demo token holders on Base Sepolia (claim on GenLayer with the same key)
- *   victimfund the demo victim-fund address
+ *   victimfund the victim-fund address bonds named on the registries deployed before the fund was fixed at deployment
+ *   fund       the registry's fund: the constructor argument of both registries (unclaimed GEN that cannot go to claimants)
  *   stranger   anyone else: calls that must be refused
  *   probe      throwaway GenVM probes
  *   e2e        the Playwright wallet
@@ -23,7 +24,7 @@ import { existsSync, readFileSync, writeFileSync } from "node:fs";
 const target = new URL("./.accounts.json", import.meta.url);
 const force = process.argv.includes("--force");
 const ROLES = ["deployer", "keeper", "team", "team2", "launchpad", "holder1", "holder2", "holder3", "holder4", "holder5",
-  "victimfund", "stranger", "probe", "e2e"];
+  "victimfund", "stranger", "probe", "e2e", "fund"];
 const existing = existsSync(target) && !force ? JSON.parse(readFileSync(target, "utf8")) : {};
 const out = {};
 for (const role of ROLES) {

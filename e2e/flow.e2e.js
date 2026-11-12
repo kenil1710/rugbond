@@ -132,7 +132,6 @@ test("rug check, claim, refusal, create, close on the demo registry", async ({ p
     await page.getByLabel(/Promise length/).fill("0.05");
     await page.getByLabel(/Claim window/).fill("1");
     await page.getByLabel("Bond (GEN)").fill("0.5");
-    await page.getByLabel(/Victim fund/).fill(JSON.parse(readFileSync(new URL("test/.accounts.json", root))).victimfund.address);
     await page.getByRole("button", { name: "Post bond" }).click();
     await expect(statusText(page)).toContainText(/accepted|finalized/i, { timeout: 20 * 60_000 });
     await shot(page, "05-created");

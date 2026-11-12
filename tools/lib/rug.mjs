@@ -5,7 +5,12 @@
 // byte with the one GenVM stored (tools/feasibility.mjs does).
 import { ALL_CHAINS as CHAINS, ALL_LIMITS as LIMITS, TRANSFER } from "./chains.mjs";
 
-export const MAX_PROBES = 6;
+export const MAX_PROBE_CALLS = 48;
+export const MAX_LOGS = 400;
+export const MAX_CLAIM_LOG_CALLS = 64;
+export const FIN_SLACK = { ethereum: 300, base: 1800, "base-sepolia": 1800 };
+export const probeBudget = (nHolders) => Math.max(2, Math.floor(MAX_PROBE_CALLS / Math.max(nHolders, 1)));
+export const nextSpan = (span, most, readOk) => (readOk ? Math.min(span * 2, most) : Math.max(Math.floor(span / 2), 1));
 const FACTORIES = {
   ethereum: { "0x5c69bee701ef814a2b6a3edd4b1652cb9cc5aa6f": "getPair", "0xc0aee478e3658e2610c5f7a4a2e1777ce9e4f2ac": "getPair" },
   base: { "0x8909dc15e40173ff4699343b6eb8132c65e18ec6": "getPair", "0x71524b4f93c58fcbf659783284e38825f0622859": "getPair",
@@ -112,9 +117,9 @@ function parseLogs(parts, t, a, b) {
   return logs.sort((x, y) => (x[0] * 1000000 + x[1]) - (y[0] * 1000000 + y[1]));
 }
 
-export async function readOpen(url, chain, t, a) {
+export async function readOpen(url, chain, t, a, span = CHAINS[chain].check_blocks) {
   const lim = LIMITS[url];
-  const top = a + CHAINS[chain].check_blocks - 1;
+  const top = a + span - 1;
   const z = Math.min(a + lim.span - 1, top);
   const call = logsCall(t, a, lim.beyond_head ? z : "finalized");
   const r = await rpcSend(url, [["eth_chainId", []], ["eth_getBlockByNumber", ["finalized", false]], call], 3, { soft: 2 });
@@ -125,7 +130,7 @@ export async function readOpen(url, chain, t, a) {
   return { fin, logs: r[2], to: lim.beyond_head ? z : Math.min(fin, top) };
 }
 
-export async function readWindow(url, surl, chain, t, a, b, opened, first) {
+export async function readWindow(url, surl, chain, t, a, b, opened, first, lowIn = 0n) {
   const span = LIMITS[url].span, per = LIMITS[surl].batch;
   const pair = t.pair, holders = t.lp_holders, start = Number(t.start_block), floor = BigInt(t.min_lp);
   let parts = [opened.logs];
@@ -133,28 +138,57 @@ export async function readWindow(url, surl, chain, t, a, b, opened, first) {
   for (let w = opened.to + 1; w <= b;) { const z = Math.min(w + span - 1, b); more.push(logsCall(t, w, z)); w = z + 1; }
   if (more.length) parts = parts.concat(await rpcSend(url, more, 1));
   let logs = parseLogs(parts, t, a, b);
-  let pb = [];
-  if (a === start) pb.push(start);
-  for (const lg of logs) if (!pb.includes(lg[0])) pb.push(lg[0]);
-  if (pb.length > MAX_PROBES) { b = pb[MAX_PROBES] - 1; pb = pb.slice(0, MAX_PROBES); logs = logs.filter((lg) => lg[0] <= b); }
+  if (logs.length > MAX_LOGS) {
+    const over = logs[MAX_LOGS][0];
+    b = over === logs[0][0] ? over : over - 1;
+    logs = logs.filter((lg) => lg[0] <= b);
+  }
+  const flows = [];                         // [block, LP sent to non-holders in it]
+  if (a === start) flows.push([start, 0n]);
+  for (const lg of logs) {
+    const out = holders.includes(lg[4]) ? 0n : BigInt(lg[5]);
+    if (flows.length && flows[flows.length - 1][0] === lg[0]) flows[flows.length - 1][1] += out;
+    else flows.push([lg[0], out]);
+  }
+  const budget = probeBudget(holders.length);
+  const pb = [];
+  let low = BigInt(lowIn);
+  const known = a !== start;
+  for (const fl of flows) {
+    if (a === start && fl[0] === start) { pb.push(start); continue; }
+    if (fl[1] === 0n || (known && low - fl[1] >= floor)) { if (known) low -= fl[1]; continue; }
+    if (pb.length >= budget) break;
+    pb.push(fl[0]);
+  }
   const sc = [["eth_getBlockByNumber", [hex(b), false]]];
   if (a === start) sc.push(["eth_getBlockByNumber", [hex(start), false]]);
   if (first) for (const d of ["0x0dfe1681", "0xd21220a7", "0xc45a0155"]) sc.push(["eth_call", [{ to: pair, data: d }, "latest"]]);
   const k0 = sc.length;
   for (const blk of pb) for (const h of holders) sc.push(balCall(pair, h, blk));
   const vals = await rpcSend(surl, sc, per);
-  const endTs = ts(vals[0], b);
+  let endTs = ts(vals[0], b);
   const startTs = a === start ? ts(vals[1], start) : 0;
   let pr = null;
   if (first) { const j = a === start ? 2 : 1; pr = { token0: wordAddr(vals[j]), token1: wordAddr(vals[j + 1]), factory: wordAddr(vals[j + 2]), ok: false, why: "" }; }
+  const real = new Map();
+  let k = k0;
+  for (const blk of pb) { let tot = 0n; for (const _ of holders) tot += uint(vals[k++]); real.set(blk, tot); }
   const probes = [];
-  let rugAt = -1, k = k0;
-  for (const blk of pb) {
-    let tot = 0n;
-    for (const _ of holders) tot += uint(vals[k++]);
-    probes.push([blk, tot.toString()]);
-    if (tot < floor) { rugAt = blk; break; }
+  let rugAt = -1, cut = -1;
+  low = a !== start ? BigInt(lowIn) : -1n;
+  for (const fl of flows) {
+    if (real.has(fl[0])) {
+      const tot = real.get(fl[0]);
+      probes.push([fl[0], tot.toString()]);
+      if (tot < floor) { rugAt = fl[0]; break; }
+      low = tot;
+      continue;
+    }
+    if (low >= 0n && low - fl[1] >= floor) { low -= fl[1]; continue; }
+    cut = fl[0] - 1;
+    break;
   }
+  if (cut >= 0 && cut < a) throw new ReadFailed("no block cleared");
   const third = [];
   let how = "";
   if (pr) {
@@ -170,10 +204,10 @@ export async function readWindow(url, surl, chain, t, a, b, opened, first) {
       }
     }
   }
-  const out = { a, b, logs, probes, rug: null, end_ts: endTs, start_ts: startTs };
   const snap = rugAt >= 0;
+  const last = snap ? rugAt : cut >= 0 ? cut : b;
+  if (last !== b) third.push(["eth_getBlockByNumber", [hex(last), false]]);
   if (snap) {
-    third.push(["eth_getBlockByNumber", [hex(rugAt), false]]);
     third.push(["eth_call", [{ to: t.token, data: "0x18160ddd" }, hex(rugAt - 1)]]);
     for (const h of holders) third.push(balCall(pair, h, rugAt - 1));
     for (const e of t.excluded_all) third.push(balCall(t.token, e, rugAt - 1));
@@ -181,19 +215,16 @@ export async function readWindow(url, surl, chain, t, a, b, opened, first) {
   const got = third.length ? await rpcSend(surl, third, per) : [];
   let i = 0;
   if (how) { pr.ok = wordAddr(got[0]) === pair; if (!pr.ok) pr.why = "FACTORY_DOES_NOT_KNOW_PAIR"; i = 1; }
+  if (last !== b) { endTs = ts(got[i], last); i += 1; logs = logs.filter((lg) => lg[0] <= last); }
+  const out = { a, b: last, logs, probes, rug: null, end_ts: endTs, start_ts: startTs, low: (snap ? 0n : low).toString() };
   if (snap) {
-    out.b = rugAt;
-    const keep = logs.filter((lg) => lg[0] <= rugAt);
-    out.logs = keep;
-    const t2 = ts(got[i], rugAt);
-    out.end_ts = t2;
-    const txs = [...new Set(keep.filter((lg) => lg[0] === rugAt).map((lg) => lg[2]))].sort();
-    const rug = { block: rugAt, ts: t2, txs, lp_after: probes[probes.length - 1][1] };
-    if (t2 <= Number(t.end_time)) {
-      const supply = uint(got[i + 1]);
+    const txs = [...new Set(logs.filter((lg) => lg[0] === rugAt).map((lg) => lg[2]))].sort();
+    const rug = { block: rugAt, ts: endTs, txs, lp_after: probes[probes.length - 1][1] };
+    if (endTs <= Number(t.end_time)) {
+      const supply = uint(got[i]);
       let lpb = 0n;
-      holders.forEach((_, n) => { lpb += uint(got[i + 2 + n]); });
-      const ex = t.excluded_all.map((e, n) => [e, uint(got[i + 2 + holders.length + n]).toString()]);
+      holders.forEach((_, n) => { lpb += uint(got[i + 1 + n]); });
+      const ex = t.excluded_all.map((e, n) => [e, uint(got[i + 1 + holders.length + n]).toString()]);
       Object.assign(rug, { supply: supply.toString(), lp_before: lpb.toString(), excluded: ex, denom: denominator(supply, ex).toString() });
     }
     out.rug = rug;
@@ -203,32 +234,30 @@ export async function readWindow(url, surl, chain, t, a, b, opened, first) {
   return view;
 }
 
-export function scanRange(t, cursor, fin) {
-  const ch = CHAINS[t.chain];
+export function scanRange(t, cursor, fin, span = CHAINS[t.chain].check_blocks) {
   const a = cursor >= Number(t.start_block) ? cursor + 1 : Number(t.start_block);
-  return [a, Math.min(a + ch.check_blocks - 1, fin)];
+  return [a, Math.min(a + span - 1, fin)];
 }
 
-/** read_check: both RPCs, compared. -> {facts, range} | {reason, detail, range?} */
-/** read_check: both RPCs, compared. -> {facts, range} | {reason, detail, range} */
-export async function readCheck(chain, t, cursor, first, bFixed = -1) {
+/** read_check: both RPCs, compared. -> {facts, range} | {reason, detail, range}. cursor, span and low are the bond's
+ *  stored state; bFixed >= 0 is a validator re-reading a leader's last block inside the range it derives itself. */
+export async function readCheck(chain, t, cursor, first, bFixed = -1, span = CHAINS[chain].check_blocks, low = 0n) {
   const views = [];
   let rng = [0, 0];
   try {
     const urls = CHAINS[chain].rpcs;
     const a = cursor >= Number(t.start_block) ? cursor + 1 : Number(t.start_block);
     const opened = [];
-    for (const u of urls) opened.push(await readOpen(u, chain, t, a));
+    for (const u of urls) opened.push(await readOpen(u, chain, t, a, span));
     const fin = Math.min(opened[0].fin, opened[1].fin);
-    rng = scanRange(t, cursor, fin);
+    rng = scanRange(t, cursor, fin, span);
+    if (rng[0] > rng[1]) return { reason: "NOTHING_NEW", detail: "no new finalized block", range: rng };
     if (bFixed >= 0) {
-      const top = rng[0] + CHAINS[chain].check_blocks - 1;
-      if (bFixed > fin || bFixed > top) return { reason: "RPC_DISAGREE", detail: "range not finalized here", range: rng };
+      if (bFixed > rng[1] || bFixed < rng[0] || bFixed < rng[1] - FIN_SLACK[chain]) return { reason: "RANGE_MISMATCH", detail: "not the range this validator derives", range: rng };
       rng[1] = bFixed;
     }
-    if (rng[0] > rng[1]) return { reason: "NOTHING_NEW", detail: "no new finalized block", range: rng };
     const surls = CHAINS[chain].state;
-    for (let n = 0; n < urls.length; n++) views.push(await readWindow(urls[n], surls[n], chain, t, rng[0], rng[1], opened[n], first));
+    for (let n = 0; n < urls.length; n++) views.push(await readWindow(urls[n], surls[n], chain, t, rng[0], rng[1], opened[n], first, low));
   } catch (e) {
     return { reason: "RPC_UNREADABLE", detail: String(e.message ?? e).slice(0, 60), range: rng };
   }
@@ -242,7 +271,17 @@ export const ROUTERS = {
 };
 const ZERO = "0x0000000000000000000000000000000000000000", DEAD = "0x000000000000000000000000000000000000dead";
 export const teamSenders = (t) => t.excluded_all.filter((a) => a !== t.pair && a !== ZERO && a !== DEAD && !(ROUTERS[t.chain] ?? []).includes(a)).sort();
-export const claimBalance = (start, r) => (BigInt(start) < BigInt(r) ? BigInt(start) : BigInt(r));
+/** max(0, min(balance at the start block, balance at R-1) - received from team senders after the start block up to R) */
+export const claimBalance = (start, r, fromTeam = 0n) => {
+  const m = (BigInt(start) < BigInt(r) ? BigInt(start) : BigInt(r)) - BigInt(fromTeam);
+  return m > 0n ? m : 0n;
+};
+export const bonusOf = (pool, share, base) => {
+  pool = BigInt(pool); share = BigInt(share); base = BigInt(base);
+  if (pool <= 0n || share <= 0n || base <= 0n) return 0n;
+  const x = (pool * share) / base;
+  return x < pool ? x : pool;
+};
 
 /** read_claim: both views (log RPC n + state RPC n), compared. */
 export async function readClaim(chain, t, holder, rugBlock) {
@@ -256,24 +295,33 @@ export async function readClaim(chain, t, holder, rugBlock) {
       const code = String(st[3]).trim().toLowerCase();
       if (!code.startsWith("0x")) throw new ReadFailed("code");
       const delegated = code.length === 48 && code.startsWith("0xef0100");
-      let hits = [];
-      if (senders.length) {
-        const calls = [];
-        for (let w = start; w <= rugBlock;) { const z = Math.min(w + LIMITS[url].span - 1, rugBlock); calls.push(["eth_getLogs", [{ address: t.token, topics: [TRANSFER, senders.map(pad), pad(holder)], fromBlock: hex(w), toBlock: hex(z) }]]); w = z + 1; }
-        for (const part of await rpcSend(url, calls, 1)) {
+      let total = 0n, count = 0;
+      if (senders.length && start + 1 <= rugBlock) {
+        const todo = [];
+        for (let w = start + 1; w <= rugBlock;) { const z = Math.min(w + LIMITS[url].span - 1, rugBlock); todo.push([w, z]); w = z + 1; }
+        let asked = 0;
+        while (todo.length) {
+          const win = todo.pop();
+          if (++asked > MAX_CLAIM_LOG_CALLS) throw new ReadFailed("too many log windows");
+          const part = (await rpcSend(url, [["eth_getLogs", [{ address: t.token, topics: [TRANSFER, senders.map(pad), pad(holder)], fromBlock: hex(win[0]), toBlock: hex(win[1]) }]]], 1, { soft: 0 }))[0];
+          if (part === null) {
+            if (win[0] >= win[1]) throw new ReadFailed("logs");
+            const mid = Math.floor((win[0] + win[1]) / 2);
+            todo.push([mid + 1, win[1]], [win[0], mid]);
+            continue;
+          }
           if (!Array.isArray(part)) throw new ReadFailed("logs");
           for (const lg of part) {
             if (!lg || lg.removed === true) throw new ReadFailed("log");
             const tp = lg.topics ?? [];
             if (addr(lg.address) !== t.token || tp.length !== 3 || String(tp[0]).toLowerCase() !== TRANSFER) continue;
-            const frm = wordAddr(tp[1]), blk = hexInt(lg.blockNumber), txh = hash32(lg.transactionHash);
-            if (!senders.includes(frm) || wordAddr(tp[2]) !== holder || blk < start || blk > rugBlock || !txh) throw new ReadFailed("log fields");
-            hits.push([blk, txh, frm]);
+            const frm = wordAddr(tp[1]), blk = hexInt(lg.blockNumber), amt = wordUint(lg.data);
+            if (!senders.includes(frm) || wordAddr(tp[2]) !== holder || blk < win[0] || blk > win[1] || amt < 0n) throw new ReadFailed("log fields");
+            total += amt; count += 1;
           }
         }
       }
-      hits.sort((x, y) => x[0] - y[0] || (x[1] < y[1] ? -1 : x[1] > y[1] ? 1 : 0) || (x[2] < y[2] ? -1 : 1));
-      views.push({ start_balance: uint(st[1]), balance: uint(st[2]), code: code.length > 2 && !delegated, delegated, from_team: hits.slice(0, 5) });
+      views.push({ start_balance: uint(st[1]), balance: uint(st[2]), code: code.length > 2 && !delegated, delegated, from_team: total.toString(), n_from_team: count });
     }
   } catch (e) { return { reason: "RPC_UNREADABLE", detail: String(e.message ?? e).slice(0, 60) }; }
   if (canon(views[0]) !== canon(views[1])) return { reason: "RPC_DISAGREE", detail: "the two RPCs answer differently" };
@@ -303,6 +351,7 @@ export function judgeScan(t, facts) {
   const floor = BigInt(t.min_lp), end = Number(t.end_time), r = facts.rug;
   if (r) return r.ts <= end ? { verdict: "RUGGED", cursor: r.block, block: r.block } : { verdict: "HELD", cursor: r.block - 1, block: 0 };
   for (const p of facts.probes ?? []) if (BigInt(p[1]) < floor) return { verdict: "PENDING", cursor: -1, block: 0 };
+  if (BigInt(facts.low ?? "-1") < floor) return { verdict: "PENDING", cursor: -1, block: 0 };
   if (facts.end_ts >= end) return { verdict: "HELD", cursor: facts.b, block: 0 };
   return { verdict: "SCANNED", cursor: facts.b, block: 0 };
 }
@@ -315,11 +364,13 @@ export function shareOf(amount, balance, denom) {
 
 /** Every check a bond needs until a verdict, from this machine (the keeper's preview and the feasibility study). */
 export async function scanToVerdict(t, { maxChecks = 500, onCheck = null } = {}) {
-  let cursor = 0, first = true;
+  let cursor = 0, first = true, low = 0n;
+  const most = CHAINS[t.chain].check_blocks;
+  let span = most;
   const checks = [];
   for (let i = 0; i < maxChecks; i++) {
     let r = null;
-    for (let k = 0; k < 4; k++) { r = await readCheck(t.chain, t, cursor, first); if (r.facts || r.reason === "NOTHING_NEW") break; await sleep(4000 * (k + 1)); }
+    for (let k = 0; k < 4; k++) { r = await readCheck(t.chain, t, cursor, first, -1, span, low); if (r.facts || r.reason === "NOTHING_NEW") break; await sleep(4000 * (k + 1)); }
     if (!r.facts) return { verdict: "PENDING", reason: r.reason, detail: r.detail, checks, cursor };
     const f = r.facts;
     if (first && !f.pair.ok) return { verdict: "VOID", reason: f.pair.why, checks, cursor, pair: f.pair };
@@ -329,6 +380,8 @@ export async function scanToVerdict(t, { maxChecks = 500, onCheck = null } = {})
     if (j.verdict === "RUGGED" || j.verdict === "HELD") return { verdict: j.verdict, checks, facts: f, cursor: j.cursor, pair: first ? f.pair : undefined };
     if (j.verdict === "PENDING") return { verdict: "PENDING", reason: "MALFORMED", checks, cursor };
     cursor = j.cursor;
+    low = BigInt(f.window.low);
+    span = nextSpan(span, most, true);
     first = false;
   }
   return { verdict: "SCANNED", checks, cursor };

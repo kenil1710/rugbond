@@ -150,6 +150,7 @@ DEAD = "0x000000000000000000000000000000000000dead"
 RPC_TRIES = 4
 MAX_PROBE_CALLS = 48    # balanceOf calls one check spends on probes: probe_budget() blocks x the LP holders
 MAX_LOGS = 400          # LP transfers one check takes in (whole blocks); the rest waits for the next check
+MAX_CLAIM_LOG_CALLS = 64  # eth_getLogs requests one claim may spend per log RPC (a refused window is split in two)
 # How far below min(the window's last block, a validator's own finalized head) a
 # leader's last block may be: about an hour of blocks, for a leader whose
 # finalized head trailed the validator's.
@@ -859,7 +860,9 @@ def read_claim(chain: str, t: dict, holder: str, rug_block: int) -> dict:
       code           the address has code now (an EIP-7702 delegation is not code)
       from_team      the summed amount of the token's Transfer logs TO the holder
                      FROM a team sender (team_senders) in blocks start+1 .. R
-      n_from_team    how many such logs"""
+      n_from_team    how many such logs
+    The logs are summed, not listed, so their number does not matter; a window
+    with more of them than an endpoint returns is split until it fits."""
     ch = CHAINS[chain]
     start = int(t["start_block"])
     senders = team_senders(t)
@@ -880,19 +883,33 @@ def read_claim(chain: str, t: dict, holder: str, rug_block: int) -> dict:
             total = 0
             count = 0
             if len(senders) > 0 and start + 1 <= rug_block:
-                calls = []
+                # windows of the endpoint's span; one the endpoint answers with a JSON-RPC error (more logs than
+                # it returns at once: a team can send a holder any number of dust transfers) is split in two
+                todo = []
                 w = start + 1
                 span = RPC_LIMITS[url][0]
                 while w <= rug_block:
                     z = w + span - 1
                     if z > rug_block:
                         z = rug_block
-                    calls.append(["eth_getLogs", [{"address": t["token"], "topics": [TRANSFER, [_pad(x) for x in senders],
-                                                                                    _pad(holder)],
-                                                   "fromBlock": hex(w), "toBlock": hex(z)}]])
+                    todo.append([w, z])
                     w = z + 1
-                parts = rpc_send(url, calls, 1)
-                for part in parts:
+                asked = 0
+                while len(todo) > 0:
+                    win = todo.pop()
+                    asked += 1
+                    if asked > MAX_CLAIM_LOG_CALLS:
+                        raise ReadFailed("too many log windows")
+                    part = rpc_send(url, [["eth_getLogs", [{"address": t["token"],
+                                                            "topics": [TRANSFER, [_pad(x) for x in senders], _pad(holder)],
+                                                            "fromBlock": hex(win[0]), "toBlock": hex(win[1])}]]], 1, 0)[0]
+                    if part is None:
+                        if win[0] >= win[1]:
+                            raise ReadFailed("logs")
+                        mid = (win[0] + win[1]) // 2
+                        todo.append([mid + 1, win[1]])
+                        todo.append([win[0], mid])
+                        continue
                     if not isinstance(part, list):
                         raise ReadFailed("logs")
                     for lg in part:
@@ -905,7 +922,7 @@ def read_claim(chain: str, t: dict, holder: str, rug_block: int) -> dict:
                         frm = _word_addr(tp[1])
                         blk = _hex_int(lg.get("blockNumber"))
                         amt = _word_uint(lg.get("data", ""))
-                        if frm not in senders or _word_addr(tp[2]) != holder or blk <= start or blk > rug_block or amt < 0:
+                        if frm not in senders or _word_addr(tp[2]) != holder or blk < win[0] or blk > win[1] or amt < 0:
                             raise ReadFailed("log fields")
                         total += amt
                         count += 1

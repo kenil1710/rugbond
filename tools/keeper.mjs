@@ -77,9 +77,15 @@ function regFor(address) {
       const fees = await retry(() => wallet.estimateTransactionFees(), { label: "fees" }).then((e) => ({ distribution: e.distribution, feeValue: e.feeValue })).catch(() => null);
       return retry(() => wallet.writeContract({ address, functionName: "check", args: [bid], value: 0n, ...(fees ? { fees } : {}) }), { label: "check" });
     },
+    getClaim: (bid, holder) => view("get_claim", [bid, holder]),
     async settle(bid, payee) {
-      const fees = await manualPayoutFees(wallet, payee);
+      // payee null: the settle only sets the unclaimed part aside (no GEN leaves); the payout allowance is harmless then
+      const fees = await manualPayoutFees(wallet, payee ?? account.address);
       return retry(() => wallet.writeContract({ address, functionName: "settle", args: [bid], value: 0n, fees }), { label: "settle" });
+    },
+    async payBonus(bid, holder, payee) {
+      const fees = await manualPayoutFees(wallet, payee);
+      return retry(() => wallet.writeContract({ address, functionName: "pay_bonus", args: [bid, holder], value: 0n, fees }), { label: "pay_bonus" });
     },
     getTx,
     sleep,

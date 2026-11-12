@@ -36,7 +36,7 @@ export default async function BondPage({ params }: { params: Promise<{ id: strin
     ["LP holders", <span key="h">{b.lp_holders.map((h) => <a key={h} className="mono" href={scan(b.chain, "address", h)} style={{ display: "block" }}>{h}</a>)}</span>],
     ["promised minimum LP", `${units(b.min_lp, 18, 6)} LP (summed)`], ["start block", <a key="s" href={scan(b.chain, "block", b.start_block)}>{b.start_block}</a>],
     ["end time", when(b.end_time)], ["bond", `${gen(b.amount)} GEN`], ["claim window", `${Math.round(b.claim_window_s / 60)} min`],
-    ["victim fund", <span key="v" className="mono">{b.victim_fund}</span>], ["dust floor", `${gen(b.dust_floor)} GEN`],
+    ["unclaimed GEN goes to", <span key="v">the holders who claimed, pro rata; leftovers (or everything, if nobody claimed) to the registry&apos;s fund <span className="mono">{b.fund}</span>. The team has no say.</span>], ["dust floor", `${gen(b.dust_floor)} GEN`],
     ["excluded (all)", <span key="e" className="mono small">{b.excluded_all.map((e) => short(e)).join(", ")}</span>],
     ["team", <span key="tm" className="mono">{b.team}</span>], ["created", when(b.created_at)], ["recovery deadline", when(b.recovery_deadline)],
   ];
@@ -54,7 +54,8 @@ export default async function BondPage({ params }: { params: Promise<{ id: strin
         <div className="sticker kpi"><div className="label">holders paid</div><div className="big">{b.n_claims}</div><div className="small">{gen(b.paid)} GEN</div></div>
         <div className="sticker kpi"><div className="label">checks</div><div className="big">{b.n_checks}</div><div className="small">{b.n_pending} pending · last {ago(b.last_check_at)}</div></div>
       </div>
-      <BondActions address={addr} bond={{ bond_id: b.bond_id, status: b.status, checkable: b.checkable, due: b.due, team: b.team, victim_fund: b.victim_fund, n_checks: b.n_checks }} />
+      <BondActions address={addr} bond={{ bond_id: b.bond_id, status: b.status, checkable: b.checkable, due: b.due, team: b.team, fund: b.fund, n_checks: b.n_checks }}
+        unpaid={b.status === "REDISTRIBUTING" ? claims.filter((c) => !c.bonus_paid).map((c) => ({ holder: c.holder, payee: c.payee })) : []} />
       <section className="sticker" style={{ marginTop: 16 }}>
         <h2 style={{ marginTop: 0 }}>Liquidity vs the promise</h2>
         {series ? <LiquidityChart points={series.points} floor={b.min_lp} rug={rug} endTime={b.end_time} title={`LP held by ${b.name}'s LP holders against the promised floor`} />
@@ -68,7 +69,15 @@ export default async function BondPage({ params }: { params: Promise<{ id: strin
             <p>At block <b><a href={scan(b.chain, "block", b.rug_block)}>{b.rug_block}</a></b> ({when(b.rug_ts)}) the LP holders&apos; summed LP fell from <b>{units(r.lp_before, 18, 6)}</b> to <b>{units(r.lp_after, 18, 6)}</b>, below the promised {units(b.min_lp, 18, 6)}.</p>
             <p>LP transfer{r.txs.length > 1 ? "s" : ""} out in that block: {r.txs.map((t) => <a key={t} className="mono" href={scan(b.chain, "tx", t)} style={{ display: "block" }}>{t}</a>)}</p>
             <p>Snapshot at block {b.rug_block - 1}: total supply {units(r.supply, 18, 6)}, excluded balances {units(String(BigInt(r.supply ?? "0") - BigInt(r.denom ?? "0")), 18, 6)} → claimable supply <b>{units(r.denom, 18, 6)}</b>.</p>
-            <p>Share = bond × min(balance at the start block {b.start_block}, balance at block {b.rug_block - 1}) ÷ {units(r.denom, 18, 6)}; tokens received directly from the team after the start do not count. Claim window until <b>{when(b.claim_deadline)}</b> ({ago(b.claim_deadline)}). <Link href={`/claim?bond=${id}`}>Claim →</Link></p>
+            <p>Share = bond × eligible ÷ {units(r.denom, 18, 6)}, where eligible = min(balance at the start block {b.start_block}, balance at block {b.rug_block - 1}) minus whatever the team sent the holder after the start. A transfer from the team costs exactly its own amount; nobody is disqualified by one. After the window, what nobody claimed is shared among the holders who did. Claim window until <b>{when(b.claim_deadline)}</b> ({ago(b.claim_deadline)}). <Link href={`/claim?bond=${id}`}>Claim →</Link></p>
+          </div>
+        </>
+      ) : null}
+      {b.shared_at ? (
+        <>
+          <h2>Redistribution</h2>
+          <div className="sticker">
+            <p>After the claim window, <b>{gen(b.bonus_pool)} GEN</b> nobody had claimed was set aside for the {b.n_claims} holder{b.n_claims === 1 ? "" : "s"} who claimed, pro rata to their shares ({when(b.shared_at)}). Paid so far: <b>{gen(b.bonus_paid)} GEN</b> in {b.n_bonus} of {b.n_claims} bonuses.</p>
           </div>
         </>
       ) : null}
@@ -76,19 +85,20 @@ export default async function BondPage({ params }: { params: Promise<{ id: strin
         <>
           <h2>Settlement</h2>
           <div className="sticker">
-            <p><b>{gen(b.settled_amount)} GEN</b> sent to <span className="mono">{b.settled_to}</span> ({b.settled_to === b.team ? "the team: the promise held" : "the victim fund: what holders did not claim"}) at {when(b.settled_at)}, by <span className="mono">{short(b.settled_by)}</span>.
+            {BigInt(b.settled_amount) > 0n ? <p><b>{gen(b.settled_amount)} GEN</b> sent to <span className="mono">{b.settled_to}</span> ({b.settled_to === b.team ? "the team: the promise held" : b.shared_at ? "the registry's fund: the integer leftover of the redistribution" : "the registry's fund: nobody claimed"}) at {when(b.settled_at)}, by <span className="mono">{short(b.settled_by)}</span>.
               {settleTx ? <> Transaction <a className="mono" href={`${STUDIO_EXPLORER}/tx/${settleTx}`}>{short(settleTx, 10)}</a>.</> : null}</p>
+              : <p>Closed at {when(b.settled_at)} with nothing left over: every GEN of the bond went to holders.</p>}
           </div>
         </>
       ) : null}
       <h2>Holder claims ({claims.length})</h2>
       {claims.length ? (
         <div className="table-wrap"><table>
-          <thead><tr><th>#</th><th>holder</th><th>paid to</th><th className="num">paid on (min of start, R-1)</th><th className="num">share (GEN)</th><th>when</th></tr></thead>
+          <thead><tr><th>#</th><th>holder</th><th>paid to</th><th className="num">eligible balance</th><th className="num">from the team (subtracted)</th><th className="num">share (GEN)</th><th className="num">bonus (GEN)</th><th>when</th></tr></thead>
           <tbody>{claims.map((c) => <tr key={c.holder}><td>{c.claim_no + 1}</td><td className="mono">{short(c.holder)}</td><td className="mono">{c.payee === c.holder ? "itself" : short(c.payee)}</td>
-            <td className="num">{units(c.balance, 18, 6)}</td><td className="num">{gen(c.share)}</td><td className="small">{when(c.claimed_at)}</td></tr>)}</tbody>
+            <td className="num">{units(c.balance, 18, 6)}</td><td className="num">{units(c.from_team ?? "0", 18, 6)}</td><td className="num">{gen(c.share)}</td><td className="num">{c.bonus_paid ? gen(c.bonus) : "—"}</td><td className="small">{when(c.claimed_at)}</td></tr>)}</tbody>
         </table></div>
-      ) : <p className="small">{b.status === "RUGGED" ? "No claims yet." : "Claims open only after a RUGGED verdict."}</p>}
+      ) : <p className="small">{b.status === "RUGGED" ? "No claims yet." : b.rug_block ? "Nobody claimed." : "Claims open only after a RUGGED verdict."}</p>}
       <h2>Rug checks ({checks.length})</h2>
       <div className="table-wrap"><table>
         <thead><tr><th>#</th><th>result</th><th>blocks read</th><th>LP transfers out</th><th>probes (block: summed LP)</th><th>by / when</th></tr></thead>

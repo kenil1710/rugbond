@@ -8,12 +8,11 @@ const evmPath = new URL("../docs/demo-evm.json", import.meta.url);
 const KEY = process.env.E2E_KEY ?? "E2EDEMO";
 const e = JSON.parse(readFileSync(evmPath, "utf8"))[KEY];
 if (e.bond_id) { console.log(JSON.stringify({ bond_id: e.bond_id, start_block: e.start_block })); process.exit(0); }
-const acc = accounts();
 const c = client({ role: "team", address: deployments().contracts.RugBondDemo.address });
 const start = Number(execFileSync("node", [new URL("./demo_evm.mjs", import.meta.url).pathname, "head"]).toString().trim());
 const name = KEY + " liquidity bond " + start;
 const w = await c.write("create_bond", [name, "base-sepolia", e.token, e.pair, JSON.stringify([e.team]), e.lp_minted, start, Math.floor(Date.now() / 1000) + 3 * 3600, 3600,
-  acc.victimfund.address.toLowerCase(), JSON.stringify(["0x1689e7b1f10000ae47ebfe339a4f69decd19f602"]), "0"], { value: 10n ** 18n });
+  JSON.stringify(["0x1689e7b1f10000ae47ebfe339a4f69decd19f602"]), "0"], { value: 10n ** 18n });
 await finalized(c.read, w.hash);
 const pg = await c.view("bonds_by_team", [c.me, 0, 50, Math.floor(Date.now() / 1000)]);
 const b = pg.items.find((x) => x.name === name);

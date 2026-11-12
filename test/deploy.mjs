@@ -11,7 +11,7 @@
  * changes or build/ is stale - so what is on chain is byte-identical to the
  * pushed commit. Order:
  *
- *   RugBond         CANONICAL  (Ethereum and Base, claim window >= 1 h)
+ *   RugBond         CANONICAL  (Ethereum, claim window >= 1 h)
  *   RugBondDemo     DEMO       (Base Sepolia, claim window >= 1 min)
  *   LaunchGate      on CANONICAL
  *   LaunchGateDemo  on DEMO
@@ -73,8 +73,11 @@ async function one(name, file, args, extra = {}) {
   return res.address;
 }
 
-const rc = await one("RugBond", "RugBond", ["CANONICAL"], { mode: "CANONICAL" });
-const rd = await one("RugBondDemo", "RugBond", ["DEMO"], { mode: "DEMO" });
+// the registry's fund: where GEN no holder claimed goes when it cannot go to claimants. Fixed here, at deployment;
+// no method of the contract writes it. On this testnet it is a throwaway address (role `fund`).
+const fund = acc.fund.address.toLowerCase();
+const rc = await one("RugBond", "RugBond", ["CANONICAL", fund], { mode: "CANONICAL", fund });
+const rd = await one("RugBondDemo", "RugBond", ["DEMO", fund], { mode: "DEMO", fund });
 await one("LaunchGate", "LaunchGate", [rc], { mode: "CANONICAL" });
 await one("LaunchGateDemo", "LaunchGate", [rd], { mode: "DEMO" });
 console.log(`\nwrote ${path.pathname}`);

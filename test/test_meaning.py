@@ -50,6 +50,8 @@ class DocsMatchCode(unittest.TestCase):
         self.assertIn("up to 24 extra addresses", RULES)
         self.assertEqual((RB.MAX_PROBE_CALLS, RB.probe_budget(1), RB.probe_budget(8)), (48, 48, 6))
         self.assertIn("as many blocks as 48 balanceOf calls pay for (48 for one LP holder, 6 for eight)", RULES)
+        self.assertEqual(RB.MAX_CLAIM_LOG_CALLS, 64)
+        self.assertIn("at most 64 eth_getLogs requests", " ".join(RULES.split()))
         self.assertEqual(RB.MAX_LOGS, 400)
         self.assertIn("At most 400 transfers", RULES)
         self.assertEqual(RB.FIN_SLACK, {"ethereum": 300, "base-sepolia": 1800})
