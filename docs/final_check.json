@@ -1,7 +1,7 @@
 {
- "at": "2026-11-12T11:58:10.352Z",
- "head": "4acea25277284edaaa66309b552113ffb9758847",
- "passed": 10,
+ "at": "2026-11-12T12:11:59.696Z",
+ "head": "1a5ace8c9033b08f79616e2e95fd488caa4cedb4",
+ "passed": 12,
  "total": 12,
  "checks": [
   {
@@ -16,13 +16,13 @@
   },
   {
    "name": "addresses consistent",
-   "ok": false,
-   "detail": "docs/SUBMISSION.md lacks 0x42f22d3c3d782e678c0561217276be836cba93fb; docs/SUBMISSION.md lacks 0x40ab41033194dfa35aef2e7b295efe3af6ab5715; docs/SUBMISSION.md lacks 0xf079a5119a0997e9d6b47b83e52ef6f3eff03821; docs/SUBMISSION.md lacks 0xf851bc4dd469cccdb384bcdb2a480eb1255e312b"
+   "ok": true,
+   "detail": "the four deployed addresses appear in README.md, docs/SUBMISSION.md, docs/SEEDS.md, docs/DEMO.md, frontend/src/lib/deployments.json"
   },
   {
    "name": "links",
    "ok": true,
-   "detail": "251 distinct links, 20 checked (one per page shape): 13 answered 200; 7 explorer pages that serve browsers only (sepolia.basescan.org (403), basescan.org (403))"
+   "detail": "260 distinct links, 29 checked (one per page shape): 22 answered 200; 7 explorer pages that serve browsers only (sepolia.basescan.org (403), basescan.org (403))"
   },
   {
    "name": "canonical replays decided and settled",
@@ -31,8 +31,8 @@
   },
   {
    "name": "payouts arrived",
-   "ok": false,
-   "detail": "65 canonical settle payouts finalized and delivered to their recipients; 13 demo payouts finalized, delivered and matched by the recipient's balance delta; 0x42f22d3C bond 7: no settle transaction found; 0x42f22d3C bond 8: no settle transaction found; 0x42f22d3C bond 14: no settle transaction found"
+   "ok": true,
+   "detail": "68 canonical settle payouts finalized and delivered to their recipients; 13 demo payouts finalized, delivered and matched by the recipient's balance delta"
   },
   {
    "name": "balances match ledgers",
@@ -42,7 +42,7 @@
   {
    "name": "keeper",
    "ok": true,
-   "detail": "last run finished 0.2 h ago (workflow_dispatch); 0 failed actions; latest successful scheduled run since the deployment (2026-11-12T04:53:01.073Z): https://github.com/kenil1710/rugbond/actions/runs/43177480645"
+   "detail": "last run finished 0.5 h ago (workflow_dispatch); 0 failed actions; latest successful scheduled run since the deployment (2026-11-12T04:53:01.073Z): https://github.com/kenil1710/rugbond/actions/runs/43177480645"
   },
   {
    "name": "tests",

@@ -14,7 +14,7 @@ A team or launchpad posts GEN behind a frozen promise: these wallets keep at lea
 
 ## Review verification
 
-Open https://rugbond.vercel.app/verify (on-chain code = build/ at one commit). Run sh test/run_offline.sh (406 tests) and pytest tests/direct (24). docs/DEMO.md: a real Base Sepolia rug, a dusting attempt, a 1,100-transfer flood, claims, bonuses, refusals, payouts checked at recipients, balance 0. docs/SEEDS.md: 17 replays settled. node tools/final_check.mjs: 10/12; docs/AUDIT.md: 14/14.
+Open https://rugbond.vercel.app/verify (on-chain code = build/ at one commit). Run sh test/run_offline.sh (406 tests) and pytest tests/direct (24). docs/DEMO.md: a real Base Sepolia rug, a dusting attempt, a 1,100-transfer flood, claims, bonuses, refusals, payouts checked at recipients, balance 0. docs/SEEDS.md: 17 replays settled. node tools/final_check.mjs: 12/12; docs/AUDIT.md: 14/14.
 
 (390 characters)
 
@@ -26,7 +26,7 @@ Open https://rugbond.vercel.app/verify (on-chain code = build/ at one commit). R
 - real-world check: 23/23
 - tests: offline 406, keeper 26, Direct Mode 24, Playwright e2e on the live site
 - canonical replay bonds: 17, settled 17
-- final check 10/12, audit 14/14
+- final check 12/12, audit 14/14
 
 ## Addresses (GenLayer Studio Dev, chain 61997)
 

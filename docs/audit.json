@@ -1,5 +1,5 @@
 {
- "at": "2026-11-11T21:29:07.529Z",
+ "at": "2026-11-12T12:12:06.334Z",
  "ok": 14,
  "total": 14,
  "rows": [
@@ -7,43 +7,43 @@
    "id": "A",
    "name": "source",
    "ok": true,
-   "detail": "4/4 contracts read back from Studio Dev are byte-identical to build/ at f28753d and HEAD; all from one commit: true"
+   "detail": "4/4 contracts read back from Studio Dev are byte-identical to build/ at 9c8495e and HEAD; all from one commit: true"
   },
   {
    "id": "B",
    "name": "funds",
    "ok": true,
-   "detail": "51 canonical settle payouts finalized and delivered to their recipients; 7 demo payouts finalized, delivered and matched by the recipient's balance delta; RugBond 0x4D2a5e25: eth_getBalance 0 wei, ledger holds 0; RugBondDemo 0x3491AAC8: eth_getBalance 0 wei, ledger holds 0; RugBond (superseded) 0x24ff68A1: eth_getBalance 0 wei, ledger holds 0; RugBondDemo (superseded) 0xbaa8FD3e: eth_getBalance 0 wei, ledger holds 0; RugBond (superseded) 0x07ED5695: eth_getBalance 0 wei, ledger holds 0; RugBondDemo (superseded) 0x6dfF7cFE: eth_getBalance 0 wei, ledger holds 0; the current registries are at 0; conservation tests: 21 pass"
+   "detail": "68 canonical settle payouts finalized and delivered to their recipients; 13 demo payouts finalized, delivered and matched by the recipient's balance delta; RugBond 0x42f22d3C: eth_getBalance 0 wei, ledger holds 0; RugBondDemo 0x40aB4103: eth_getBalance 0 wei, ledger holds 0; RugBond (superseded) 0x24ff68A1: eth_getBalance 0 wei, ledger holds 0; RugBondDemo (superseded) 0xbaa8FD3e: eth_getBalance 0 wei, ledger holds 0; RugBond (superseded) 0x07ED5695: eth_getBalance 0 wei, ledger holds 0; RugBondDemo (superseded) 0x6dfF7cFE: eth_getBalance 0 wei, ledger holds 0; RugBond (superseded) 0x4D2a5e25: eth_getBalance 0 wei, ledger holds 0; RugBondDemo (superseded) 0x3491AAC8: eth_getBalance 0 wei, ledger holds 0; the current registries are at 0; conservation, share and redistribution tests: 33 pass"
   },
   {
    "id": "C",
    "name": "stuck states",
    "ok": true,
-   "detail": "every status has an exit (HELD/VOID -> team, RUGGED -> victim fund after the window, ACTIVE past the fixed recovery deadline -> victim fund; credits withdrawable; stray swept): 43 tests; on chain: 17 replay bonds on 0x4D2a5e250a419b1D1798E103F80A23aC5be59a23: 17 at the expected verdict and rug block; 17 settled (11 to the victim fund after the claim window, 6 back to the launchpad)"
+   "detail": "every status has an exit (HELD/VOID -> team; RUGGED after the window -> REDISTRIBUTING -> one bonus per claim -> CLOSED, or straight to the registry's fund when nobody claimed; ACTIVE with no cursor movement for the recovery window -> the registry's fund; credits withdrawable; stray swept); a flood of 1,000+ LP transfers out is scanned across checks and the recovery deadline moves with every check that moves the cursor: 71 tests; on chain: 17 replay bonds on 0x42f22d3C3d782E678C0561217276be836cba93fb: 17 at the expected verdict and rug block; 17 settled (11 to the registry's fund after a claim window in which nobody claimed, 6 back to the launchpad); 19/19 checks stored by GenVM read identically from this machine"
   },
   {
    "id": "D",
    "name": "evidence binding",
    "ok": true,
-   "detail": "a RUGGED verdict stores R, its timestamp, the LP transfers out in R (tx hashes), LP before/after and the R-1 token snapshot; the pair must be one its listed factory maps back; claims bind to msg.sender and to transfers read from two log RPCs; 56 tests"
+   "detail": "a RUGGED verdict stores R, its timestamp, the LP transfers out in R (tx hashes), LP before/after and the R-1 token snapshot; the pair must be one its listed factory maps back; claims bind to msg.sender, to balances at the start block and R-1 and to the summed transfers from team senders, all read from two RPCs (a team transfer subtracts its own amount; zero-value and dust transfers disqualify nobody); 74 tests"
   },
   {
    "id": "E",
    "name": "two sources",
    "ok": true,
-   "detail": "two log RPCs and two state RPCs per chain from different operators; any disagreement or failure is PENDING, never a verdict (26 tests); GenVM: 39/39 feasibility reads and 2/2 claim reads identical to this machine's"
+   "detail": "two log RPCs and two state RPCs per chain from different operators; any disagreement or failure is PENDING, never a verdict; validators derive the range from the bond's stored cursor and span and accept a leader's failure only if their own read fails (42 offline tests, 8 Direct Mode validator tests); feasibility study on the first read code, GenVM: 39/39 feasibility reads and 2/2 claim reads identical to this machine's"
   },
   {
    "id": "F",
    "name": "identity",
    "ok": true,
-   "detail": "the claimant is msg.sender (claim takes only the bond id); a beneficiary is committed once by the holder itself; the team is the bond's sender and never its victim fund; 10 tests"
+   "detail": "the claimant is msg.sender (claim takes only the bond id); a beneficiary is committed once by the holder itself; the team is the bond's sender and names no destination: unclaimed GEN goes to claimants or to the registry's fund, fixed in the constructor; 13 tests"
   },
   {
    "id": "G",
    "name": "coverage",
    "ok": true,
-   "detail": "offline contract suite 347 tests, keeper suite 21 tests, Direct Mode 18 tests; all pass: true; Playwright on https://rugbond.vercel.app (the site's production build), demo registry 0x3491AAC81ec96B05B50B25AD9F8b3CAeE7fF51b8: 1 passed, 0 failed; steps wallet, setup, rug_check_click, rugged, claimed, refused, created, closed (docs/e2e/)"
+   "detail": "offline contract suite 406 tests, keeper suite 26 tests, Direct Mode 24 tests; all pass: true; Playwright on https://rugbond.vercel.app (the site's production build), demo registry 0x40aB41033194DFA35aeF2e7b295eFe3AF6ab5715: 1 passed, 0 failed; steps wallet, setup, rug_check_click, rugged, claimed, refused, created, closed (docs/e2e/)"
   },
   {
    "id": "H",
@@ -61,13 +61,13 @@
    "id": "J",
    "name": "keeper",
    "ok": true,
-   "detail": "last run finished 1.6 h ago (schedule); 0 failed actions; latest successful scheduled run: https://github.com/kenil1710/rugbond/actions/runs/43091284627; keeper tests: 21"
+   "detail": "last run finished 0.5 h ago (workflow_dispatch); 0 failed actions; latest successful scheduled run since the deployment (2026-11-12T04:53:01.073Z): https://github.com/kenil1710/rugbond/actions/runs/43177480645; keeper tests: 26"
   },
   {
    "id": "K",
    "name": "gate meaning",
    "ok": true,
-   "detail": "bound to (token, bond id) or (token, team); copycats never read; safe only for a fresh agreed read of an ACTIVE bond; every other status x read x age x replay combination unsafe; 57 tests"
+   "detail": "bound to (token, bond id) or (token, team); copycats never read; safe only for a fresh agreed read of an ACTIVE bond; every other status x read x age x replay combination unsafe; 58 tests"
   },
   {
    "id": "L",
@@ -85,7 +85,7 @@
    "id": "N",
    "name": "demo",
    "ok": true,
-   "detail": "37/37 demo steps ok on Base Sepolia (rug, claims, refusals, held, copycat, gate); payouts verified; demo registry eth_getBalance 0 wei"
+   "detail": "51/51 demo steps ok on Base Sepolia (rug, claims with a dusting attempt and a real team transfer, refusals, redistribution to claimants, a bond nobody claimed, a flood of 1,100 LP transfers, held, copycat, gate); payouts verified; demo registry eth_getBalance 0 wei"
   }
  ]
 }

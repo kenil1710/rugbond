@@ -63,6 +63,7 @@ the rule does not already treat as a holder, and none produces a wrong verdict.
 | R6 | **A leader can end a check up to the slack short** (300 blocks on Ethereum, 1,800 on Base Sepolia) of what a validator would read | Low | Progress only, never a verdict: the next check goes on from there |
 | R7 | **A comment in the deployed bytes calls the slack "about an hour of blocks".** Base Sepolia now produces a block every 0.2 s, so 1,800 blocks are about six minutes there. A round straddling a jump of the finalized head larger than that is not agreed and is run again | Low | docs/RULES.md states the measured figure; the constant is the rule |
 | R8 | **The feasibility study's GenVM comparison (39/39) was made with the first read code** | Low | docs/SEEDS.md compares every check GenVM stored on the current registry with this machine's read of the same range |
+| R9 | **The site showed a finalized transaction as canceled.** Its table of numeric transaction statuses was off by one against the SDK's, so a status read as the number 7 (finalized) was shown as a failure although the settle had been written and paid. Found by the end to end run on the live site | Low (display only; no GEN at stake) | Fixed in `a796430`: the status name is used when present and the numbers follow the SDK's table; the end to end run passes |
 
 ## Scope boundaries
 
