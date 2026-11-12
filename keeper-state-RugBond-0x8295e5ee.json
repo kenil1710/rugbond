@@ -617,10 +617,14 @@
    "bond_id": 12,
    "cursor": 0,
    "n_checks_before": 1,
-   "status": "QUEUED",
+   "status": "SUBMITTED",
    "attempts": 0,
    "first_seen_at": 1794521873,
-   "tx": null
+   "tx": "0x0d0bcc42150f9984e6c0b8b7bac0a376c9025e6097f26f25be3e1ed04ce2c8df",
+   "submitted_at": 1794521877,
+   "tx_history": [
+    "0x0d0bcc42150f9984e6c0b8b7bac0a376c9025e6097f26f25be3e1ed04ce2c8df"
+   ]
   },
   "settle:13": {
    "key": "settle:13",
@@ -718,7 +722,7 @@
  "contract": "RugBond",
  "address": "0x8295e5EE6dd5e74a2Ad4704B6025Ae4f2EcA1086",
  "keeper": "0xfEC989fC1176c5524C3b20ef2c09bca724d6BD4e",
- "saved_at": "2026-11-12T22:17:53.248Z",
+ "saved_at": "2026-11-12T22:17:57.755Z",
  "totals": {
   "actions": 17,
   "done": 17,
