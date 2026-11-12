@@ -842,30 +842,43 @@
    "failed": 0,
    "retry": 1,
    "errors": []
-  }
- ],
- "unprocessed": [
+  },
   {
-   "key": "check:9:0:1",
-   "why": "submit failed: Invalid parameters were provided to the RPC method.\nDouble check you have provided the correct parameters.\n\nDetails: NonceTooLow(expected=257,actual=256)\nVersio"
+   "started_at": 1794469477,
+   "finished_at": 1794469549,
+   "resumed": 0,
+   "bonds": 17,
+   "pages": 1,
+   "pages_failed": 0,
+   "heads_failed": 0,
+   "queued": 1,
+   "requeued": 0,
+   "submitted": 2,
+   "done": 2,
+   "already": 0,
+   "pending": 0,
+   "failed": 0,
+   "retry": 0,
+   "errors": []
   }
  ],
+ "unprocessed": [],
  "last_run": {
-  "started_at": 1794468140,
-  "finished_at": 1794468507,
+  "started_at": 1794469477,
+  "finished_at": 1794469549,
   "resumed": 0,
   "bonds": 17,
   "pages": 1,
   "pages_failed": 0,
   "heads_failed": 0,
-  "queued": 17,
+  "queued": 1,
   "requeued": 0,
-  "submitted": 16,
-  "done": 16,
+  "submitted": 2,
+  "done": 2,
   "already": 0,
   "pending": 0,
   "failed": 0,
-  "retry": 1,
+  "retry": 0,
   "errors": []
  },
  "bonds_listed_complete": true,
@@ -873,20 +886,20 @@
  "contract": "RugBond",
  "address": "0x42f22d3C3d782E678C0561217276be836cba93fb",
  "keeper": "0xfEC989fC1176c5524C3b20ef2c09bca724d6BD4e",
- "saved_at": "2026-11-12T07:45:49.385Z",
+ "saved_at": "2026-11-12T07:45:49.396Z",
  "totals": {
-  "actions": 34,
-  "done": 33,
+  "actions": 35,
+  "done": 35,
   "queued": 0,
   "pending": 0,
-  "retry": 1,
+  "retry": 0,
   "failed": 0,
   "by_result": {
    "RUGGED": 11,
    "PENDING": 4,
-   "HELD": 4,
+   "HELD": 5,
    "CLOSED": 9,
-   "SCANNED": 1,
+   "SCANNED": 2,
    "RETURNED": 4
   }
  }
