@@ -5,67 +5,67 @@
   "explorer": "https://explorer-studio-dev.genlayer.com/",
   "contracts": {
     "RugBond": {
-      "address": "0x42f22d3C3d782E678C0561217276be836cba93fb",
-      "deploy_tx": "0x4314ebb41bca4e7d2a5e207058c3336437cb0f9c69f9c47068b3a289a8e0ad63",
+      "address": "0x8295e5EE6dd5e74a2Ad4704B6025Ae4f2EcA1086",
+      "deploy_tx": "0xec4f89716ea59acfdb509d99c162f52efb15801d3db204c3269aefce9b52cdc1",
       "file": "build/RugBond.py",
       "source": "contracts/RugBond.py",
-      "commit": "9c8495ebcd8d2d42843ee17d51ed0d6ca0afce46",
-      "bytes": 81547,
-      "sha256": "b5ce871be818b41c6e0acdaf035f56c960fc3ba1980d0a8027e5f4afd7a3bd23",
+      "commit": "db54703f42c228a86ad36b77326b7b2037153688",
+      "bytes": 77200,
+      "sha256": "5342e5253ac0bd29a163799d370cee57c7d6518805393bc3f051b8703d28644b",
       "constructor_args": [
         "CANONICAL",
         "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7"
       ],
       "deployer": "0xDd4B5DeFd7198C5A4597655323b851967d7a814F",
-      "deployed_at": "2026-11-12T04:53:01.073Z",
+      "deployed_at": "2026-11-12T16:41:34.649Z",
       "mode": "CANONICAL",
       "fund": "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7"
     },
     "RugBondDemo": {
-      "address": "0x40aB41033194DFA35aeF2e7b295eFe3AF6ab5715",
-      "deploy_tx": "0xb6b6bd4e139a3cd1ceab83a8a4b736f1c1153a7238ad774563c642bf5f726644",
+      "address": "0xFf72e30494D0026DE964870F04f4Fba84F3543CE",
+      "deploy_tx": "0x9b5eaa9b531d981512ada97513f9c5e8efdddfe08efd543d9ecc891eba0f620e",
       "file": "build/RugBond.py",
       "source": "contracts/RugBond.py",
-      "commit": "9c8495ebcd8d2d42843ee17d51ed0d6ca0afce46",
-      "bytes": 81547,
-      "sha256": "b5ce871be818b41c6e0acdaf035f56c960fc3ba1980d0a8027e5f4afd7a3bd23",
+      "commit": "db54703f42c228a86ad36b77326b7b2037153688",
+      "bytes": 77200,
+      "sha256": "5342e5253ac0bd29a163799d370cee57c7d6518805393bc3f051b8703d28644b",
       "constructor_args": [
         "DEMO",
         "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7"
       ],
       "deployer": "0xDd4B5DeFd7198C5A4597655323b851967d7a814F",
-      "deployed_at": "2026-11-12T04:53:10.175Z",
+      "deployed_at": "2026-11-12T16:41:40.945Z",
       "mode": "DEMO",
       "fund": "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7"
     },
     "LaunchGate": {
-      "address": "0xf079A5119a0997E9d6b47B83E52EF6F3EFF03821",
-      "deploy_tx": "0xd266ab15750230af1c080c4687d4f34bbfb567dae97173ac2f81488133e85781",
+      "address": "0xe2038e12BC5D16546EC54BEda14D11B8366ADab3",
+      "deploy_tx": "0xc62d5691d9215d04f1eda1cab0225c6ff035526ebe9ce367ab64a09bce1ed8bb",
       "file": "build/LaunchGate.py",
       "source": "contracts/LaunchGate.py",
-      "commit": "9c8495ebcd8d2d42843ee17d51ed0d6ca0afce46",
-      "bytes": 25496,
-      "sha256": "7620bfa071feae719df9869f38368121d1db0418e4738a5e2c202f57d8e6c4e2",
+      "commit": "db54703f42c228a86ad36b77326b7b2037153688",
+      "bytes": 25252,
+      "sha256": "4d990cb76aa18f585d99f25261f78d41db504ad06562fc42a77f3c69e99a8f7d",
       "constructor_args": [
-        "0x42f22d3C3d782E678C0561217276be836cba93fb"
+        "0x8295e5EE6dd5e74a2Ad4704B6025Ae4f2EcA1086"
       ],
       "deployer": "0xDd4B5DeFd7198C5A4597655323b851967d7a814F",
-      "deployed_at": "2026-11-12T04:53:18.864Z",
+      "deployed_at": "2026-11-12T16:41:49.661Z",
       "mode": "CANONICAL"
     },
     "LaunchGateDemo": {
-      "address": "0xf851bC4dd469CccdB384bcDb2a480eb1255e312B",
-      "deploy_tx": "0xec4caccc837203043fae063176bc4b0ef72d499bc56dff8e0251ab8e4a8e852d",
+      "address": "0xef1eCaC9d8f75de4Bea854c47112aE1757A046C7",
+      "deploy_tx": "0x6a4188d33fae7eca1a1030ebbe82f59db07f0c78529e009c11cbe199ae2a5d5a",
       "file": "build/LaunchGate.py",
       "source": "contracts/LaunchGate.py",
-      "commit": "9c8495ebcd8d2d42843ee17d51ed0d6ca0afce46",
-      "bytes": 25496,
-      "sha256": "7620bfa071feae719df9869f38368121d1db0418e4738a5e2c202f57d8e6c4e2",
+      "commit": "db54703f42c228a86ad36b77326b7b2037153688",
+      "bytes": 25252,
+      "sha256": "4d990cb76aa18f585d99f25261f78d41db504ad06562fc42a77f3c69e99a8f7d",
       "constructor_args": [
-        "0x40aB41033194DFA35aeF2e7b295eFe3AF6ab5715"
+        "0xFf72e30494D0026DE964870F04f4Fba84F3543CE"
       ],
       "deployer": "0xDd4B5DeFd7198C5A4597655323b851967d7a814F",
-      "deployed_at": "2026-11-12T04:53:24.425Z",
+      "deployed_at": "2026-11-12T16:41:58.049Z",
       "mode": "DEMO"
     }
   },
@@ -285,6 +285,82 @@
       "mode": "DEMO",
       "superseded_by": "0xf851bC4dd469CccdB384bcDb2a480eb1255e312B",
       "why": "C1-C3: team transfers subtracted, no team-chosen fund (redistribution to claimants, registry fund), stored span and bound, validators derive the range"
+    },
+    {
+      "name": "RugBond",
+      "address": "0x42f22d3C3d782E678C0561217276be836cba93fb",
+      "deploy_tx": "0x4314ebb41bca4e7d2a5e207058c3336437cb0f9c69f9c47068b3a289a8e0ad63",
+      "file": "build/RugBond.py",
+      "source": "contracts/RugBond.py",
+      "commit": "9c8495ebcd8d2d42843ee17d51ed0d6ca0afce46",
+      "bytes": 81547,
+      "sha256": "b5ce871be818b41c6e0acdaf035f56c960fc3ba1980d0a8027e5f4afd7a3bd23",
+      "constructor_args": [
+        "CANONICAL",
+        "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7"
+      ],
+      "deployer": "0xDd4B5DeFd7198C5A4597655323b851967d7a814F",
+      "deployed_at": "2026-11-12T04:53:01.073Z",
+      "mode": "CANONICAL",
+      "fund": "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7",
+      "superseded_by": "0x8295e5EE6dd5e74a2Ad4704B6025Ae4f2EcA1086",
+      "why": "R1: no redistribution (each claimant gets its own share only; unclaimed GEN to the registry's fund); slack comment corrected"
+    },
+    {
+      "name": "RugBondDemo",
+      "address": "0x40aB41033194DFA35aeF2e7b295eFe3AF6ab5715",
+      "deploy_tx": "0xb6b6bd4e139a3cd1ceab83a8a4b736f1c1153a7238ad774563c642bf5f726644",
+      "file": "build/RugBond.py",
+      "source": "contracts/RugBond.py",
+      "commit": "9c8495ebcd8d2d42843ee17d51ed0d6ca0afce46",
+      "bytes": 81547,
+      "sha256": "b5ce871be818b41c6e0acdaf035f56c960fc3ba1980d0a8027e5f4afd7a3bd23",
+      "constructor_args": [
+        "DEMO",
+        "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7"
+      ],
+      "deployer": "0xDd4B5DeFd7198C5A4597655323b851967d7a814F",
+      "deployed_at": "2026-11-12T04:53:10.175Z",
+      "mode": "DEMO",
+      "fund": "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7",
+      "superseded_by": "0xFf72e30494D0026DE964870F04f4Fba84F3543CE",
+      "why": "R1: no redistribution (each claimant gets its own share only; unclaimed GEN to the registry's fund); slack comment corrected"
+    },
+    {
+      "name": "LaunchGate",
+      "address": "0xf079A5119a0997E9d6b47B83E52EF6F3EFF03821",
+      "deploy_tx": "0xd266ab15750230af1c080c4687d4f34bbfb567dae97173ac2f81488133e85781",
+      "file": "build/LaunchGate.py",
+      "source": "contracts/LaunchGate.py",
+      "commit": "9c8495ebcd8d2d42843ee17d51ed0d6ca0afce46",
+      "bytes": 25496,
+      "sha256": "7620bfa071feae719df9869f38368121d1db0418e4738a5e2c202f57d8e6c4e2",
+      "constructor_args": [
+        "0x42f22d3C3d782E678C0561217276be836cba93fb"
+      ],
+      "deployer": "0xDd4B5DeFd7198C5A4597655323b851967d7a814F",
+      "deployed_at": "2026-11-12T04:53:18.864Z",
+      "mode": "CANONICAL",
+      "superseded_by": "0xe2038e12BC5D16546EC54BEda14D11B8366ADab3",
+      "why": "R1: no redistribution (each claimant gets its own share only; unclaimed GEN to the registry's fund); slack comment corrected"
+    },
+    {
+      "name": "LaunchGateDemo",
+      "address": "0xf851bC4dd469CccdB384bcDb2a480eb1255e312B",
+      "deploy_tx": "0xec4caccc837203043fae063176bc4b0ef72d499bc56dff8e0251ab8e4a8e852d",
+      "file": "build/LaunchGate.py",
+      "source": "contracts/LaunchGate.py",
+      "commit": "9c8495ebcd8d2d42843ee17d51ed0d6ca0afce46",
+      "bytes": 25496,
+      "sha256": "7620bfa071feae719df9869f38368121d1db0418e4738a5e2c202f57d8e6c4e2",
+      "constructor_args": [
+        "0x40aB41033194DFA35aeF2e7b295eFe3AF6ab5715"
+      ],
+      "deployer": "0xDd4B5DeFd7198C5A4597655323b851967d7a814F",
+      "deployed_at": "2026-11-12T04:53:24.425Z",
+      "mode": "DEMO",
+      "superseded_by": "0xef1eCaC9d8f75de4Bea854c47112aE1757A046C7",
+      "why": "R1: no redistribution (each claimant gets its own share only; unclaimed GEN to the registry's fund); slack comment corrected"
     }
   ]
 }
