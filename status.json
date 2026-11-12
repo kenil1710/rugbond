@@ -1,12 +1,12 @@
 {
  "keeper": "0xfEC989fC1176c5524C3b20ef2c09bca724d6BD4e",
- "started_at": "2026-11-12T20:27:56.307Z",
+ "started_at": "2026-11-12T22:17:40.241Z",
  "contracts": {
   "RugBond": {
    "address": "0x8295e5EE6dd5e74a2Ad4704B6025Ae4f2EcA1086",
    "last_run": {
-    "started_at": 1794515276,
-    "finished_at": 1794515967,
+    "started_at": 1794521860,
+    "finished_at": 1794522254,
     "resumed": 0,
     "bonds": 17,
     "pages": 1,
@@ -23,16 +23,19 @@
     "errors": []
    },
    "totals": {
-    "actions": 17,
-    "done": 17,
+    "actions": 34,
+    "done": 34,
     "queued": 0,
     "pending": 0,
     "retry": 0,
     "failed": 0,
     "by_result": {
      "PENDING": 6,
-     "RUGGED": 6,
-     "HELD": 5
+     "RUGGED": 11,
+     "HELD": 5,
+     "CLOSED": 6,
+     "RETURNED": 5,
+     "SCANNED": 1
     }
    },
    "bonds": {
@@ -42,9 +45,9 @@
      "token": "0xd4f45dd47dd476378ee1b06f6a57be4ebc0f7199",
      "cursor": 0,
      "cursor_ts": 0,
-     "n_checks": 0,
-     "n_pending": 0,
-     "last_result": "",
+     "n_checks": 1,
+     "n_pending": 1,
+     "last_result": "PENDING",
      "due": "",
      "name": "Replay eth-01 0xd4f45d"
     },
@@ -54,46 +57,46 @@
      "token": "0x89d3a86b3dd25a8d58b8e390abb2a805d0e88dff",
      "cursor": 0,
      "cursor_ts": 0,
-     "n_checks": 0,
-     "n_pending": 0,
-     "last_result": "",
+     "n_checks": 1,
+     "n_pending": 1,
+     "last_result": "PENDING",
      "due": "",
      "name": "Replay eth-02 0x89d3a8"
     },
     "3": {
-     "status": "ACTIVE",
+     "status": "RUGGED",
      "chain": "ethereum",
      "token": "0xaf95e728195671a8be8da44dcd127f1bca732f8c",
-     "cursor": 0,
-     "cursor_ts": 0,
-     "n_checks": 0,
+     "cursor": 25710973,
+     "cursor_ts": 1786200899,
+     "n_checks": 1,
      "n_pending": 0,
-     "last_result": "",
-     "due": "",
+     "last_result": "RUGGED",
+     "due": "FUND",
      "name": "Replay eth-03 0xaf95e7"
     },
     "4": {
-     "status": "ACTIVE",
+     "status": "RUGGED",
      "chain": "ethereum",
      "token": "0xc97c6be6ee14693b01d79694bd73c26e4d58e31b",
-     "cursor": 0,
-     "cursor_ts": 0,
-     "n_checks": 0,
+     "cursor": 25714292,
+     "cursor_ts": 1786240835,
+     "n_checks": 1,
      "n_pending": 0,
-     "last_result": "",
-     "due": "",
+     "last_result": "RUGGED",
+     "due": "FUND",
      "name": "Replay eth-04 0xc97c6b"
     },
     "5": {
-     "status": "ACTIVE",
+     "status": "RUGGED",
      "chain": "ethereum",
      "token": "0x2c127a4991d0353c1e6e4a70f83892cedb110720",
-     "cursor": 0,
-     "cursor_ts": 0,
-     "n_checks": 0,
+     "cursor": 25702677,
+     "cursor_ts": 1786100735,
+     "n_checks": 1,
      "n_pending": 0,
-     "last_result": "",
-     "due": "",
+     "last_result": "RUGGED",
+     "due": "FUND",
      "name": "Replay eth-05 0x2c127a"
     },
     "6": {
@@ -102,9 +105,9 @@
      "token": "0xa5084c8d45c05560aecaf533982bd6e5210bf770",
      "cursor": 0,
      "cursor_ts": 0,
-     "n_checks": 0,
-     "n_pending": 0,
-     "last_result": "",
+     "n_checks": 1,
+     "n_pending": 1,
+     "last_result": "PENDING",
      "due": "",
      "name": "Replay eth-06 0xa5084c"
     },
@@ -114,58 +117,58 @@
      "token": "0xd9536442ebe8bc674107a0b1383f847a3aaa4d48",
      "cursor": 0,
      "cursor_ts": 0,
-     "n_checks": 0,
-     "n_pending": 0,
-     "last_result": "",
+     "n_checks": 1,
+     "n_pending": 1,
+     "last_result": "PENDING",
      "due": "",
      "name": "Replay eth-07 0xd95364"
     },
     "8": {
-     "status": "ACTIVE",
+     "status": "HELD",
      "chain": "ethereum",
      "token": "0x937e98238a40ce221a5bd412578dcb383c9126b6",
-     "cursor": 0,
-     "cursor_ts": 0,
-     "n_checks": 0,
+     "cursor": 25783716,
+     "cursor_ts": 1787077079,
+     "n_checks": 1,
      "n_pending": 0,
-     "last_result": "",
-     "due": "",
+     "last_result": "HELD",
+     "due": "RETURN",
      "name": "Replay eth-14 0x937e98"
     },
     "9": {
-     "status": "ACTIVE",
+     "status": "HELD",
      "chain": "ethereum",
      "token": "0xa324d9464e8d639ad3579c8f8bb07aec0c0651f6",
-     "cursor": 0,
-     "cursor_ts": 0,
-     "n_checks": 0,
+     "cursor": 25788487,
+     "cursor_ts": 1787134451,
+     "n_checks": 1,
      "n_pending": 0,
-     "last_result": "",
-     "due": "",
+     "last_result": "HELD",
+     "due": "RETURN",
      "name": "Replay eth-15 0xa324d9"
     },
     "10": {
-     "status": "ACTIVE",
+     "status": "HELD",
      "chain": "ethereum",
      "token": "0x1884daa51e761519d847e19b367ad1ba164370be",
-     "cursor": 0,
-     "cursor_ts": 0,
-     "n_checks": 0,
+     "cursor": 25782848,
+     "cursor_ts": 1787066627,
+     "n_checks": 1,
      "n_pending": 0,
-     "last_result": "",
-     "due": "",
+     "last_result": "HELD",
+     "due": "RETURN",
      "name": "Replay eth-16 0x1884da"
     },
     "11": {
-     "status": "ACTIVE",
+     "status": "HELD",
      "chain": "ethereum",
      "token": "0xff8691574741b015c2ec31f8752cf22ae611bc38",
-     "cursor": 0,
-     "cursor_ts": 0,
-     "n_checks": 0,
+     "cursor": 25582828,
+     "cursor_ts": 1784657711,
+     "n_checks": 1,
      "n_pending": 0,
-     "last_result": "",
-     "due": "",
+     "last_result": "HELD",
+     "due": "RETURN",
      "name": "Replay eth-17 0xff8691"
     },
     "12": {
@@ -174,58 +177,58 @@
      "token": "0xbeec04b78c6795bdb7f92e3f9789591081cbb609",
      "cursor": 0,
      "cursor_ts": 0,
-     "n_checks": 0,
-     "n_pending": 0,
-     "last_result": "",
+     "n_checks": 1,
+     "n_pending": 1,
+     "last_result": "PENDING",
      "due": "",
      "name": "Replay eth-18 0xbeec04"
     },
     "13": {
-     "status": "ACTIVE",
+     "status": "HELD",
      "chain": "ethereum",
      "token": "0x083428b98e3c274ab1194db7ea076d47998ee0c5",
-     "cursor": 0,
-     "cursor_ts": 0,
-     "n_checks": 0,
+     "cursor": 25587736,
+     "cursor_ts": 1784716835,
+     "n_checks": 1,
      "n_pending": 0,
-     "last_result": "",
-     "due": "",
+     "last_result": "HELD",
+     "due": "RETURN",
      "name": "Replay eth-19 0x083428"
     },
     "14": {
-     "status": "ACTIVE",
+     "status": "RUGGED",
      "chain": "ethereum",
      "token": "0xf72e876110de094f333241f42c2281baf0a6d923",
-     "cursor": 0,
-     "cursor_ts": 0,
-     "n_checks": 0,
+     "cursor": 25700691,
+     "cursor_ts": 1786076807,
+     "n_checks": 1,
      "n_pending": 0,
-     "last_result": "",
-     "due": "",
+     "last_result": "RUGGED",
+     "due": "FUND",
      "name": "Replay eth-20 0xf72e87"
     },
     "15": {
-     "status": "ACTIVE",
+     "status": "RUGGED",
      "chain": "ethereum",
      "token": "0x3f287a97fdf77f8ef40ef7440eccac3407810492",
-     "cursor": 0,
-     "cursor_ts": 0,
-     "n_checks": 0,
+     "cursor": 25702916,
+     "cursor_ts": 1786103627,
+     "n_checks": 1,
      "n_pending": 0,
-     "last_result": "",
-     "due": "",
+     "last_result": "RUGGED",
+     "due": "FUND",
      "name": "Replay eth-21 0x3f287a"
     },
     "16": {
-     "status": "ACTIVE",
+     "status": "RUGGED",
      "chain": "ethereum",
      "token": "0x4e9fccbd1b1e64efca8d0f72521ba065384fead5",
-     "cursor": 0,
-     "cursor_ts": 0,
-     "n_checks": 0,
+     "cursor": 25701193,
+     "cursor_ts": 1786082867,
+     "n_checks": 1,
      "n_pending": 0,
-     "last_result": "",
-     "due": "",
+     "last_result": "RUGGED",
+     "due": "FUND",
      "name": "Replay eth-22 0x4e9fcc"
     },
     "17": {
@@ -234,9 +237,9 @@
      "token": "0xc2742418134519e3b4a66b088e3c398f9f1214eb",
      "cursor": 0,
      "cursor_ts": 0,
-     "n_checks": 0,
-     "n_pending": 0,
-     "last_result": "",
+     "n_checks": 1,
+     "n_pending": 1,
+     "last_result": "PENDING",
      "due": "",
      "name": "Replay eth-23 0xc27424"
     }
@@ -412,6 +415,176 @@
      "tx": "0x66e7bf3db3239c8fcd48d97e52bdadcd8a12433a683d68a6f43bb2cd76e56546",
      "attempts": 0,
      "last_error": ""
+    },
+    {
+     "key": "check:1:0:1",
+     "kind": "CHECK",
+     "bond_id": 1,
+     "status": "DONE",
+     "result": "RUGGED",
+     "tx": "0x476210e77d584a561f8b293e3b62ab62e9d287eaaab21571cd6a0676fd99a210",
+     "attempts": 0,
+     "last_error": ""
+    },
+    {
+     "key": "check:2:0:1",
+     "kind": "CHECK",
+     "bond_id": 2,
+     "status": "DONE",
+     "result": "RUGGED",
+     "tx": "0x36a9e2973dbe460d8cec8290c3b650631f87b6b26d8039e0b0c064beb98e1397",
+     "attempts": 0,
+     "last_error": ""
+    },
+    {
+     "key": "settle:3",
+     "kind": "SETTLE",
+     "bond_id": 3,
+     "status": "DONE",
+     "result": "CLOSED",
+     "tx": "0x90c6af4a6fac23970b0a5c7265e49e848dfead28203d5b5de260df00b3f6323a",
+     "attempts": 0,
+     "last_error": ""
+    },
+    {
+     "key": "settle:4",
+     "kind": "SETTLE",
+     "bond_id": 4,
+     "status": "DONE",
+     "result": "CLOSED",
+     "tx": "0x98639edc16e7d941b166e9958aa96abf4469d7e9f97408c04b28d093729f2137",
+     "attempts": 0,
+     "last_error": ""
+    },
+    {
+     "key": "settle:5",
+     "kind": "SETTLE",
+     "bond_id": 5,
+     "status": "DONE",
+     "result": "CLOSED",
+     "tx": "0xdf93e3275b388f19324e2d19c52cd4f7bda7259badf7b1e8a59b63fb7ffc91f5",
+     "attempts": 0,
+     "last_error": ""
+    },
+    {
+     "key": "check:6:0:1",
+     "kind": "CHECK",
+     "bond_id": 6,
+     "status": "DONE",
+     "result": "RUGGED",
+     "tx": "0x25b7acebc73c3bbed3ceb1cb23dfbc6e02f7f473357fd009325d45293e8e8e13",
+     "attempts": 0,
+     "last_error": ""
+    },
+    {
+     "key": "check:7:0:1",
+     "kind": "CHECK",
+     "bond_id": 7,
+     "status": "DONE",
+     "result": "RUGGED",
+     "tx": "0x8430a8bdcc9dcb1671c400e8060e19ba7ecf6e4fd9f76451e636413a8eb36aa5",
+     "attempts": 0,
+     "last_error": ""
+    },
+    {
+     "key": "settle:8",
+     "kind": "SETTLE",
+     "bond_id": 8,
+     "status": "DONE",
+     "result": "RETURNED",
+     "tx": "0xf82fb1977c0f23b425753af25770d94c501541a7a9ab03b3e273add7142301a0",
+     "attempts": 0,
+     "last_error": ""
+    },
+    {
+     "key": "settle:9",
+     "kind": "SETTLE",
+     "bond_id": 9,
+     "status": "DONE",
+     "result": "RETURNED",
+     "tx": "0xee7acac6f93ff32b83d7838965b4938ed7ac534e4b6167d954bffc9a52ac29e7",
+     "attempts": 0,
+     "last_error": ""
+    },
+    {
+     "key": "settle:10",
+     "kind": "SETTLE",
+     "bond_id": 10,
+     "status": "DONE",
+     "result": "RETURNED",
+     "tx": "0xf0cd909d60b59dbc9fe9c6a8c830eb17f45e8927e78c9de4fa8825ca8874f846",
+     "attempts": 0,
+     "last_error": ""
+    },
+    {
+     "key": "settle:11",
+     "kind": "SETTLE",
+     "bond_id": 11,
+     "status": "DONE",
+     "result": "RETURNED",
+     "tx": "0xb100670792ad34d7f8d1ab53fbb063b84326bf040de4546ab7d4d0ce72c4db7b",
+     "attempts": 0,
+     "last_error": ""
+    },
+    {
+     "key": "check:12:0:1",
+     "kind": "CHECK",
+     "bond_id": 12,
+     "status": "DONE",
+     "result": "SCANNED",
+     "tx": "0x0d0bcc42150f9984e6c0b8b7bac0a376c9025e6097f26f25be3e1ed04ce2c8df",
+     "attempts": 0,
+     "last_error": ""
+    },
+    {
+     "key": "settle:13",
+     "kind": "SETTLE",
+     "bond_id": 13,
+     "status": "DONE",
+     "result": "RETURNED",
+     "tx": "0xecbb959ecd5519e343b11a6119483dc6591578b40f40c002614fd86de84fba98",
+     "attempts": 0,
+     "last_error": ""
+    },
+    {
+     "key": "settle:14",
+     "kind": "SETTLE",
+     "bond_id": 14,
+     "status": "DONE",
+     "result": "CLOSED",
+     "tx": "0x5838a5ee75973be366edb2357e2ca44c2b680bad693044fe76fd9bb834c42e65",
+     "attempts": 0,
+     "last_error": ""
+    },
+    {
+     "key": "settle:15",
+     "kind": "SETTLE",
+     "bond_id": 15,
+     "status": "DONE",
+     "result": "CLOSED",
+     "tx": "0x14448d81ab87f08e234cd033eaa7b35748ecfc436ef9e0445f73c8c3c097c15e",
+     "attempts": 0,
+     "last_error": ""
+    },
+    {
+     "key": "settle:16",
+     "kind": "SETTLE",
+     "bond_id": 16,
+     "status": "DONE",
+     "result": "CLOSED",
+     "tx": "0x5d7f30bc18abb4d48e09f9c217eccf93e840988326d44b0537c28bbb9f5f911d",
+     "attempts": 0,
+     "last_error": ""
+    },
+    {
+     "key": "check:17:0:1",
+     "kind": "CHECK",
+     "bond_id": 17,
+     "status": "DONE",
+     "result": "RUGGED",
+     "tx": "0x716017e273b3be8e3921282070fe703a0b8e943100680707d99a193c87c925c3",
+     "attempts": 0,
+     "last_error": ""
     }
    ]
   },
@@ -554,8 +727,8 @@
   "RugBond@0x24ff68A1": {
    "address": "0x24ff68A1adc70B9EA9eEE518a5f912ce65eb2CAE",
    "last_run": {
-    "started_at": 1794515968,
-    "finished_at": 1794515968,
+    "started_at": 1794522255,
+    "finished_at": 1794522257,
     "resumed": 0,
     "bonds": 17,
     "pages": 1,
@@ -792,8 +965,8 @@
   "RugBond@0x07ED5695": {
    "address": "0x07ED56951513d01B06f350476C4501015256aB2c",
    "last_run": {
-    "started_at": 1794515970,
-    "finished_at": 1794515971,
+    "started_at": 1794522258,
+    "finished_at": 1794522258,
     "resumed": 0,
     "bonds": 17,
     "pages": 1,
@@ -1423,8 +1596,8 @@
   "RugBond@0x4D2a5e25": {
    "address": "0x4D2a5e250a419b1D1798E103F80A23aC5be59a23",
    "last_run": {
-    "started_at": 1794515972,
-    "finished_at": 1794515973,
+    "started_at": 1794522260,
+    "finished_at": 1794522261,
     "resumed": 0,
     "bonds": 17,
     "pages": 1,
@@ -2192,8 +2365,8 @@
   "RugBond@0x42f22d3C": {
    "address": "0x42f22d3C3d782E678C0561217276be836cba93fb",
    "last_run": {
-    "started_at": 1794515974,
-    "finished_at": 1794515976,
+    "started_at": 1794522262,
+    "finished_at": 1794522263,
     "resumed": 0,
     "bonds": 17,
     "pages": 1,
@@ -2796,9 +2969,9 @@
    ]
   }
  },
- "finished_at": "2026-11-12T20:39:37.342Z",
+ "finished_at": "2026-11-12T22:24:24.782Z",
  "trigger": "schedule",
- "run_url": "https://github.com/kenil1710/rugbond/actions/runs/43300526085",
+ "run_url": "https://github.com/kenil1710/rugbond/actions/runs/43318498506",
  "history": [
   {
    "started_at": "2026-11-10T12:51:34.472Z",
@@ -3605,6 +3778,68 @@
    "finished_at": "2026-11-12T20:39:37.342Z",
    "trigger": "schedule",
    "run_url": "https://github.com/kenil1710/rugbond/actions/runs/43300526085",
+   "runs": {
+    "RugBond": {
+     "submitted": 17,
+     "done": 17,
+     "pages": 1,
+     "pages_failed": 0
+    },
+    "RugBondDemo": {
+     "submitted": 0,
+     "done": 0,
+     "pages": 1,
+     "pages_failed": 0
+    },
+    "RugBond@0x24ff68A1": {
+     "submitted": 0,
+     "done": 0,
+     "pages": 1,
+     "pages_failed": 0
+    },
+    "RugBond@0x07ED5695": {
+     "submitted": 0,
+     "done": 0,
+     "pages": 1,
+     "pages_failed": 0
+    },
+    "RugBondDemo@0xbaa8FD3e": {
+     "submitted": 0,
+     "done": 0,
+     "pages": 1,
+     "pages_failed": 0
+    },
+    "RugBondDemo@0x6dfF7cFE": {
+     "submitted": 0,
+     "done": 0,
+     "pages": 1,
+     "pages_failed": 0
+    },
+    "RugBond@0x4D2a5e25": {
+     "submitted": 0,
+     "done": 0,
+     "pages": 1,
+     "pages_failed": 0
+    },
+    "RugBondDemo@0x3491AAC8": {
+     "submitted": 0,
+     "done": 0,
+     "pages": 1,
+     "pages_failed": 0
+    },
+    "RugBond@0x42f22d3C": {
+     "submitted": 0,
+     "done": 0,
+     "pages": 1,
+     "pages_failed": 0
+    }
+   }
+  },
+  {
+   "started_at": "2026-11-12T22:17:40.241Z",
+   "finished_at": "2026-11-12T22:24:24.782Z",
+   "trigger": "schedule",
+   "run_url": "https://github.com/kenil1710/rugbond/actions/runs/43318498506",
    "runs": {
     "RugBond": {
      "submitted": 17,
