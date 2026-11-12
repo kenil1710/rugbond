@@ -31,7 +31,7 @@ if (hb?.checks_with_transfers) L.push("", "### The flood, as the registry scanne
   `${hb.lp_transfers_scanned} LP transfers out, across ${hb.checks_with_transfers.length} checks (at most 400 per check, cut at block boundaries); stored lower bound of the holders' LP at the end ${hb.lp_low} (promise ${hb.min_lp}, minted ${hb.lp_minted}).`, "",
   "| check | blocks | LP transfers | balance reads | result |", "|---|---|---|---|---|", ...hb.checks_with_transfers.map((c) => `| ${c.check_id} | ${c.a} - ${c.b} | ${c.n_logs} | ${c.probes} | ${c.result} |`));
 const ca = run.steps.find((s) => s.id === "conservation_A");
-if (ca) L.push("", "### Bond A, to the last wei", "", `bond ${gen(ca.amount)} GEN = claims ${gen(ca.claims_paid)} + bonuses ${gen(ca.bonuses_paid)} + leftover to the registry's fund ${ca.to_fund} wei. Nothing went to the team.`);
+if (ca) L.push("", "### Bond A, to the last wei", "", `bond ${gen(ca.amount)} GEN = claims ${gen(ca.claims_paid)} + unclaimed to the registry's fund ${gen(ca.to_fund)} (${ca.to_fund} wei). No claimant received more than its own share; nothing went to the team.`);
 const last = [...run.steps].reverse().find((s) => s.id.startsWith("balance_zero"));
 L.push("", last ? `The demo registry's eth_getBalance at the end: **${last.eth_getBalance} wei**. The registries' fund \`${last.fund}\` holds ${gen(last.fund_balance)} GEN.` : "", "",
   "A contract holder (the HOLDDEMO contract holds RUGDEMO tokens) cannot sign a GenLayer transaction, so its refusal (`CONTRACT_HOLDER`) cannot be produced by a real claim; it is pinned by the offline and Direct Mode tests and shown by the site's \"Am I owed?\" page.", "");

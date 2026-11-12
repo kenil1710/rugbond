@@ -54,7 +54,7 @@ export function TeamForm() {
           <div style={{ flex: "1 1 160px" }}><label htmlFor="t-bond">Bond (GEN)</label><input id="t-bond" value={f.bond} onChange={set("bond")} inputMode="decimal" /></div>
           <div style={{ flex: "1 1 160px" }}><label htmlFor="t-dust">Dust floor (GEN)</label><input id="t-dust" value={f.dust} onChange={set("dust")} inputMode="decimal" /></div>
         </div>
-        <p className="small">Unclaimed shares are redistributed to the holders who claimed. A bond cannot name a destination for them.</p>
+        <p className="small">Each holder is paid its own share only. Unclaimed shares go to the registry's fund, an address fixed when the registry was deployed; a bond cannot name a destination for them.</p>
         <label htmlFor="t-ex">Extra excluded addresses (routers, other team wallets)</label><input id="t-ex" className="mono" value={f.excluded} onChange={set("excluded")} />
         <div className="row" style={{ marginTop: 16 }}><button className="btn" onClick={() => void create()} disabled={!w.account || w.onWrongNetwork}>Post bond</button></div>
         <TxStatus p={p} />

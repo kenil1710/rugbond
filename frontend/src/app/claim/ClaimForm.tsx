@@ -14,7 +14,7 @@ export function ClaimForm() {
   const initial = sp.get("bond") ?? "";
   const [id, setId] = useState(initial);
   const [b, setB] = useState<Bond | null>(null);
-  const [mine, setMine] = useState<{ found: boolean; share?: string; payee?: string; beneficiary: string; bonus?: string; bonus_paid?: boolean } | null>(null);
+  const [mine, setMine] = useState<{ found: boolean; share?: string; payee?: string; beneficiary: string } | null>(null);
   const [ben, setBen] = useState("");
   const [p, setP] = useState<TxProgress | null>(null);
   const [err, setErr] = useState("");
@@ -48,9 +48,9 @@ export function ClaimForm() {
     <div className="sticker" style={{ maxWidth: 760 }}>
       <label htmlFor="c-id">Bond (number, or demo-number for the demo registry)</label>
       <input id="c-id" className="mono" value={id} onChange={(e) => { setId(e.target.value.trim()); setB(null); setMine(null); }} placeholder="demo-1" />
-      {b ? <p className="small">{b.name} · {b.status} · bond {gen(b.amount)} GEN · {b.status === "RUGGED" ? `claims until ${when(b.claim_deadline)}` : b.rug_block ? "the claim window is over; what nobody claimed is shared among the holders who did" : "claims open only after RUGGED"}</p> : null}
+      {b ? <p className="small">{b.name} · {b.status} · bond {gen(b.amount)} GEN · {b.status === "RUGGED" ? `claims until ${when(b.claim_deadline)}` : b.rug_block ? "the claim window is over; what nobody claimed goes to the registry's fund" : "claims open only after RUGGED"}</p> : null}
       {!w.account ? <p className="note">Connect a wallet to claim.</p> : null}
-      {mine?.found ? <p className="note">You claimed {gen(mine.share)} GEN, paid to <span className="mono">{mine.payee}</span>.{mine.bonus_paid ? <> Your part of the unclaimed GEN: {gen(mine.bonus ?? "0")} GEN.</> : b && b.status === "RUGGED" ? <> When the window ends you also get your part of whatever nobody claims.</> : null}</p> : null}
+      {mine?.found ? <p className="note">You claimed {gen(mine.share)} GEN, paid to <span className="mono">{mine.payee}</span>.</p> : null}
       <div className="row" style={{ marginTop: 12 }}>
         <button className="btn pink" onClick={() => void claim()} disabled={!w.account || w.onWrongNetwork || !b || b.status !== "RUGGED" || mine?.found}>Claim my share</button>
       </div>

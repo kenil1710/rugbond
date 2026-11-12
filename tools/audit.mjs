@@ -22,11 +22,11 @@ const add = (id, name, ok, detail) => rows.push({ id, name, ok, detail });
 
 add("A", "source", C("source match").ok && C("build and site copies fresh").ok, C("source match").detail);
 add("B", "funds", C("balances match ledgers").ok && C("payouts arrived").ok,
-  `${C("payouts arrived").detail}; ${C("balances match ledgers").detail}; conservation, share and redistribution tests: ${unit("test_claims.Conservation", "test_claims.ShareMatrix", "test_claims.Redistribution").n} pass`);
+  `${C("payouts arrived").detail}; ${C("balances match ledgers").detail}; conservation, share and unclaimed-GEN tests: ${unit("test_claims.Conservation", "test_claims.ShareMatrix", "test_claims.Unclaimed").n} pass`);
 {
-  const u = unit("test_claims.Settle", "test_claims.Redistribution", "test_pending.Pending", "test_create.More", "test_scan.Flood");
+  const u = unit("test_claims.Settle", "test_claims.Unclaimed", "test_pending.Pending", "test_create.More", "test_scan.Flood");
   add("C", "stuck states", u.ok && C("canonical replays decided and settled").ok,
-    `every status has an exit (HELD/VOID -> team; RUGGED after the window -> REDISTRIBUTING -> one bonus per claim -> CLOSED, or straight to the registry's fund when nobody claimed; ACTIVE with no cursor movement for the recovery window -> the registry's fund; credits withdrawable; stray swept); a flood of 1,000+ LP transfers out is scanned across checks and the recovery deadline moves with every check that moves the cursor: ${u.n} tests; on chain: ${C("canonical replays decided and settled").detail}`);
+    `every status has an exit (HELD/VOID -> team; RUGGED after the window -> one settle sends everything unclaimed to the registry's fund -> CLOSED; ACTIVE with no cursor movement for the recovery window -> the registry's fund; credits withdrawable; stray swept); a flood of 1,000+ LP transfers out is scanned across checks and the recovery deadline moves with every check that moves the cursor: ${u.n} tests; on chain: ${C("canonical replays decided and settled").detail}`);
 }
 {
   const u = unit("test_scan.Detection", "test_scan.PairValidity", "test_attacks", "test_claims.TeamTransfers", "test_claims.ClaimLogFlood");
@@ -41,8 +41,8 @@ add("B", "funds", C("balances match ledgers").ok && C("payouts arrived").ok,
 }
 {
   const u = unit("test_claims.Beneficiary", "test_attacks.Attacks.test_a26_claimant_is_sender_not_argument", "test_attacks.Attacks.test_a17_victim_fund_cannot_be_team",
-    "test_attacks.Attacks.test_a17b_the_fund_itself_cannot_post_a_bond", "test_attacks.Attacks.test_a18b_team_second_wallet_gets_nothing_from_any_path", "test_claims.Redistribution.test_fund_is_fixed_at_deployment");
-  add("F", "identity", u.ok, `the claimant is msg.sender (claim takes only the bond id); a beneficiary is committed once by the holder itself; the team is the bond's sender and names no destination: unclaimed GEN goes to claimants or to the registry's fund, fixed in the constructor; ${u.n} tests`);
+    "test_attacks.Attacks.test_a17b_the_fund_itself_cannot_post_a_bond", "test_attacks.Attacks.test_a18b_team_second_wallet_gets_nothing_from_any_path", "test_claims.Unclaimed.test_fund_is_fixed_at_deployment", "test_claims.Unclaimed.test_team_pre_start_float_gets_only_its_own_share");
+  add("F", "identity", u.ok, `the claimant is msg.sender (claim takes only the bond id); a beneficiary is committed once by the holder itself; the team is the bond's sender and names no destination: a claimant gets its own share only and unclaimed GEN goes to the registry's fund, fixed in the constructor; ${u.n} tests`);
 }
 add("G", "coverage", C("tests").ok && C("e2e").ok, `${C("tests").detail}; ${C("e2e").detail}`);
 {
@@ -66,7 +66,7 @@ add("M", "verification package", fc.passed === fc.total, `tools/final_check.mjs 
 {
   const d = existsSync(root + "docs/demo-run.json") ? JSON.parse(rd("docs/demo-run.json")) : { steps: [] };
   const z = [...d.steps].reverse().find((s) => s.id.startsWith("balance_zero"));
-  add("N", "demo", d.steps.length > 0 && d.steps.every((s) => s.ok) && !!z?.ok, `${d.steps.filter((s) => s.ok).length}/${d.steps.length} demo steps ok on Base Sepolia (rug, claims with a dusting attempt and a real team transfer, refusals, redistribution to claimants, a bond nobody claimed, a flood of 1,100 LP transfers, held, copycat, gate); payouts verified; demo registry eth_getBalance ${z?.eth_getBalance ?? "?"} wei`);
+  add("N", "demo", d.steps.length > 0 && d.steps.every((s) => s.ok) && !!z?.ok, `${d.steps.filter((s) => s.ok).length}/${d.steps.length} demo steps ok on Base Sepolia (rug, claims with a dusting attempt and a real team transfer, refusals, no bonus for claimants, unclaimed GEN to the registry's fund, a bond nobody claimed, a flood of 1,100 LP transfers, held, copycat, gate); payouts verified; demo registry eth_getBalance ${z?.eth_getBalance ?? "?"} wei`);
 }
 const ok = rows.filter((r) => r.ok).length;
 const L = ["# Audit A-N", "", `\`node tools/audit.mjs\` at ${new Date().toISOString()} (final check of ${fc.at}, HEAD ${fc.head.slice(0, 7)}): **${ok}/${rows.length}**.`, "", "| | item | result | evidence |", "|---|---|---|---|"];

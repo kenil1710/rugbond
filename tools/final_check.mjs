@@ -105,7 +105,7 @@ const now = () => Math.floor(Date.now() / 1000);
   let dn = 0;
   if (existsSync(root + "docs/demo-run.json")) {
     const demo = JSON.parse(rd("docs/demo-run.json"));
-    // every payout the demo recorded, wherever it sits in a step (claims, bonuses, settles, the close-outs at the end)
+    // every payout the demo recorded, wherever it sits in a step (claims, settles, the close-outs at the end)
     const found = [];
     const walk = (o, id) => { if (!o || typeof o !== "object") return; if (o.payout && o.tx) found.push({ id, tx: o.tx, payout: o.payout }); for (const v of Object.values(o)) if (v !== o.payout) walk(v, id); };
     for (const st of demo.steps) walk(st, st.id);

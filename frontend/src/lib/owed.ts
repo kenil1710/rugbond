@@ -18,12 +18,12 @@ export async function owed(a: string): Promise<{ address: string; rows: OwedRow[
     if (!addr) continue;
     const [bonds, claims] = await Promise.all([allBonds(addr), holderClaims(addr, address)]);
     for (const b of bonds) {
-      if (!["RUGGED", "REDISTRIBUTING", "CLOSED"].includes(b.status)) continue;
+      if (!["RUGGED", "CLOSED"].includes(b.status)) continue;
       scanned++;
       const claim = claims.find((c) => c.bond_id === b.bond_id) ?? null;
       const base = { reg, bond: { bond_id: b.bond_id, name: b.name, chain: b.chain, token: b.token, status: b.status, rug_block: b.rug_block,
         claim_deadline: b.claim_deadline, denominator: b.denominator, amount: b.amount, replay: b.replay }, claim };
-      if (claim) { rows.push({ ...base, state: "CLAIMED", balance: claim.balance, start: "", atR: "", fromTeam: claim.from_team ?? "0", share: (BigInt(claim.share) + BigInt(claim.bonus ?? "0")).toString() }); continue; }
+      if (claim) { rows.push({ ...base, state: "CLAIMED", balance: claim.balance, start: "", atR: "", fromTeam: claim.from_team ?? "0", share: claim.share }); continue; }
       if (b.excluded_all.includes(address)) { rows.push({ ...base, state: "EXCLUDED", balance: "0", start: "", atR: "", fromTeam: "0", share: "0" }); continue; }
       const h = await claimPreview(b, address);
       if (!h) { rows.push({ ...base, state: "UNREADABLE", balance: "0", start: "", atR: "", fromTeam: "0", share: "0" }); continue; }

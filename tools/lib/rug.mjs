@@ -276,12 +276,6 @@ export const claimBalance = (start, r, fromTeam = 0n) => {
   const m = (BigInt(start) < BigInt(r) ? BigInt(start) : BigInt(r)) - BigInt(fromTeam);
   return m > 0n ? m : 0n;
 };
-export const bonusOf = (pool, share, base) => {
-  pool = BigInt(pool); share = BigInt(share); base = BigInt(base);
-  if (pool <= 0n || share <= 0n || base <= 0n) return 0n;
-  const x = (pool * share) / base;
-  return x < pool ? x : pool;
-};
 
 /** read_claim: both views (log RPC n + state RPC n), compared. */
 export async function readClaim(chain, t, holder, rugBlock) {

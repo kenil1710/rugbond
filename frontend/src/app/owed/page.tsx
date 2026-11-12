@@ -10,7 +10,7 @@ const TEXT: Record<string, string> = {
   CLAIMED: "Claimed", CLAIMABLE: "Claimable now", EXCLUDED: "Excluded by the bond's terms (team, pair, LP holder, router…)",
   CONTRACT: "A contract: contracts cannot claim", NO_BALANCE: "Held nothing at the bond's start block (tokens bought after the bond opened earn nothing)",
   TEAM_ONLY: "Everything this address could be paid on was sent to it by the team after the bond opened: tokens the team hands over earn nothing", BELOW_DUST: "Below the bond's dust floor",
-  WINDOW_OVER: "The claim window is over (unclaimed GEN is shared among the holders who claimed)", UNREADABLE: "The chain could not be read right now; try again",
+  WINDOW_OVER: "The claim window is over (unclaimed GEN goes to the registry's fund)", UNREADABLE: "The chain could not be read right now; try again",
 };
 
 export default async function Owed({ searchParams }: { searchParams: Promise<{ a?: string }> }) {

@@ -9,14 +9,14 @@ export type Bond = {
   rug_block: number; rug_ts: number; rug: Rug | Record<string, never>; denominator: string; rugged_at: number;
   claim_deadline: number; paid: string; n_claims: number; remaining: string; settled_amount: string; settled_to: string;
   settled_at: number; settled_by: string; verdict_at: number; due: string; checkable: boolean;
-  span: number; lp_low: string; bonus_pool: string; bonus_base: string; bonus_paid: string; n_bonus: number; shared_at: number; bonuses_due: number;
+  span: number; lp_low: string;
 };
 export type Check = { check_id: number; bond_id: number; by: string; at: number; result: string; reason: string; detail: string; a: number; b: number;
   n_logs: number; probes: [number, string][]; logs: [number, number, string, string, string, string][] };
 export type Claim = { bond_id: number; holder: string; payee: string; balance: string; start_balance: string; r_balance: string; from_team: string; share: string;
-  claimed_at: number; claim_no: number; bonus: string; bonus_paid: boolean; bonus_at: number };
+  claimed_at: number; claim_no: number };
 export type Stats = { bonds: number; checks: number; counts: Record<string, number>; received_total: string; open_total: string; claims_paid_total: string;
-  returned_total: string; fund_total: string; bonus_paid_total: string; credit_owed_total: string; credit_paid_total: string; stray_swept_total: string; held: string; balance: string };
+  returned_total: string; fund_total: string; credit_owed_total: string; credit_paid_total: string; stray_swept_total: string; held: string; balance: string };
 export type GateAnswer = { state: string; safe: boolean; why: string; bond_id?: number; token: string; team: string; status?: string; bonds?: { bond_id: number; state: string; why: string }[] };
 export type TxProgress = { phase: "signing" | "submitted" | "accepted" | "finalized" | "failed" | "rejected"; hash: string | null; message: string };
 export type WriteResult<T> = { kind: "ok"; hash: string; data: T } | { kind: "rejected"; hash: string; reason: string } | { kind: "failed"; hash: string | null; error: string };

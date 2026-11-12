@@ -43,7 +43,6 @@ export const STATUS: Record<string, { label: string; tone: "safe" | "rug" | "wai
   HELD: { label: "Held · bond back to team", tone: "safe" },
   RETURNED: { label: "Held · bond returned", tone: "done" },
   RUGGED: { label: "Rugged · holders claim", tone: "rug" },
-  REDISTRIBUTING: { label: "Rugged · sharing the unclaimed", tone: "rug" },
   CLOSED: { label: "Rugged · closed", tone: "rug" },
   VOID: { label: "Void · not a pool of the token", tone: "wait" },
   UNRESOLVED: { label: "Unresolved · to the registry's fund", tone: "wait" },
