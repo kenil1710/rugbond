@@ -1,9 +1,9 @@
 {
- "generated_at": "2026-11-11T21:26:47.777Z",
+ "generated_at": "2026-11-12T11:45:44.504Z",
  "registries": [
   {
    "label": "current canonical registry",
-   "address": "0x4D2a5e250a419b1D1798E103F80A23aC5be59a23",
+   "address": "0x42f22d3C3d782E678C0561217276be836cba93fb",
    "rows": [
     {
      "case_id": "eth-01",
@@ -20,16 +20,22 @@
      "n_checks": 1,
      "n_claims": 0,
      "amount": "10000000000000000",
-     "settled_to": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
+     "settled_to": "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7",
      "settled_amount": "10000000000000000",
-     "settled_at": 1794393763,
-     "to_victim_fund": true,
+     "settled_at": 1794468144,
+     "to_fund": true,
      "to_launchpad": false,
      "settle_proof": {
-      "tx": "0x406a97bb41d9ae756e496d0bc3e68924c70c3d4a938feea755640d421026ee80",
+      "tx": "0x35873cabbbad589901081798b039b2a81d487669dbbf06bb79304c848e7f7401",
       "status": "FINALIZED",
       "delivered": true,
       "why": ""
+     },
+     "reads": {
+      "checks": 1,
+      "identical": 1,
+      "pending": 0,
+      "diffs": []
      }
     },
     {
@@ -47,16 +53,22 @@
      "n_checks": 1,
      "n_claims": 0,
      "amount": "20000000000000000",
-     "settled_to": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
+     "settled_to": "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7",
      "settled_amount": "20000000000000000",
-     "settled_at": 1794393833,
-     "to_victim_fund": true,
+     "settled_at": 1794468161,
+     "to_fund": true,
      "to_launchpad": false,
      "settle_proof": {
-      "tx": "0xb41cfddebabc90dfdc93bdc467b8be2f2bcb348c2627bbf77d230bdb13305607",
+      "tx": "0x6ceb47fa4013dc0554680e6b5c81b67af2edea3c32e741fce37d1a55a823d585",
       "status": "FINALIZED",
       "delivered": true,
       "why": ""
+     },
+     "reads": {
+      "checks": 1,
+      "identical": 1,
+      "pending": 0,
+      "diffs": []
      }
     },
     {
@@ -74,16 +86,22 @@
      "n_checks": 1,
      "n_claims": 0,
      "amount": "30000000000000000",
-     "settled_to": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
+     "settled_to": "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7",
      "settled_amount": "30000000000000000",
-     "settled_at": 1794393849,
-     "to_victim_fund": true,
+     "settled_at": 1794468178,
+     "to_fund": true,
      "to_launchpad": false,
      "settle_proof": {
-      "tx": "0xdd989b64dc242719fbdd53079a62e1edf1e91f9dd988ae46a47a30b326f8a375",
+      "tx": "0x6c0d78718cba2c36c5a635fbad5209c40aeba7e8e2048ddfd46893b2a91ddb68",
       "status": "FINALIZED",
       "delivered": true,
       "why": ""
+     },
+     "reads": {
+      "checks": 1,
+      "identical": 1,
+      "pending": 0,
+      "diffs": []
      }
     },
     {
@@ -101,16 +119,22 @@
      "n_checks": 1,
      "n_claims": 0,
      "amount": "40000000000000000",
-     "settled_to": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
+     "settled_to": "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7",
      "settled_amount": "40000000000000000",
-     "settled_at": 1794393868,
-     "to_victim_fund": true,
+     "settled_at": 1794468195,
+     "to_fund": true,
      "to_launchpad": false,
      "settle_proof": {
-      "tx": "0x74c33871a38957861b28005b40c9c10d77d36cda6c1a92c18487a6e67e7fc6d7",
+      "tx": "0xc5f98f8b134474584dce185ff1eb5b8204c7fe25ecd46cc0a7c28799e23db62d",
       "status": "FINALIZED",
       "delivered": true,
       "why": ""
+     },
+     "reads": {
+      "checks": 1,
+      "identical": 1,
+      "pending": 0,
+      "diffs": []
      }
     },
     {
@@ -128,16 +152,22 @@
      "n_checks": 1,
      "n_claims": 0,
      "amount": "50000000000000000",
-     "settled_to": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
+     "settled_to": "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7",
      "settled_amount": "50000000000000000",
-     "settled_at": 1794393885,
-     "to_victim_fund": true,
+     "settled_at": 1794468213,
+     "to_fund": true,
      "to_launchpad": false,
      "settle_proof": {
-      "tx": "0x31838f0e1298af09f90beb7982e02b80ee74504eccc576bb446d4fe9d43c1a37",
+      "tx": "0x2851213c082e444cceb8822ae9f27128eb4fee21e6e88b4f9831fa2c56954e81",
       "status": "FINALIZED",
       "delivered": true,
       "why": ""
+     },
+     "reads": {
+      "checks": 1,
+      "identical": 1,
+      "pending": 0,
+      "diffs": []
      }
     },
     {
@@ -155,16 +185,22 @@
      "n_checks": 1,
      "n_claims": 0,
      "amount": "60000000000000000",
-     "settled_to": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
+     "settled_to": "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7",
      "settled_amount": "60000000000000000",
-     "settled_at": 1794393903,
-     "to_victim_fund": true,
+     "settled_at": 1794468230,
+     "to_fund": true,
      "to_launchpad": false,
      "settle_proof": {
-      "tx": "0x398ac68f7e6c46a76120af2ba4ffee0f6f4da81700456600bdc63b98a6da69dc",
+      "tx": "0xb187f7cd59d004014e2c7844965707553ed5350d237a14c85814e9514c0ab38f",
       "status": "FINALIZED",
       "delivered": true,
       "why": ""
+     },
+     "reads": {
+      "checks": 1,
+      "identical": 1,
+      "pending": 0,
+      "diffs": []
      }
     },
     {
@@ -182,16 +218,17 @@
      "n_checks": 2,
      "n_claims": 0,
      "amount": "70000000000000000",
-     "settled_to": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
+     "settled_to": "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7",
      "settled_amount": "70000000000000000",
-     "settled_at": 1794402798,
-     "to_victim_fund": true,
+     "settled_at": 1794480624,
+     "to_fund": true,
      "to_launchpad": false,
-     "settle_proof": {
-      "tx": "0x616589c8f40a0cb359b4b132e718bbeef36e7298b3a53d9175027b6d820c4bb9",
-      "status": "FINALIZED",
-      "delivered": true,
-      "why": ""
+     "settle_proof": null,
+     "reads": {
+      "checks": 1,
+      "identical": 1,
+      "pending": 1,
+      "diffs": []
      }
     },
     {
@@ -206,19 +243,20 @@
      "feasibility_rug_block": 0,
      "rug_block_matches": true,
      "replay": true,
-     "n_checks": 1,
+     "n_checks": 3,
      "n_claims": 0,
      "amount": "80000000000000000",
      "settled_to": "0x0272651ae66438836a2bbc2e4ef3598831f8ad41",
      "settled_amount": "80000000000000000",
-     "settled_at": 1794392011,
-     "to_victim_fund": false,
+     "settled_at": 1794480646,
+     "to_fund": false,
      "to_launchpad": true,
-     "settle_proof": {
-      "tx": "0x4db4ea68d3026873702fd0d1097fc09870bc2909875b418f029719794fa29121",
-      "status": "FINALIZED",
-      "delivered": true,
-      "why": ""
+     "settle_proof": null,
+     "reads": {
+      "checks": 2,
+      "identical": 2,
+      "pending": 1,
+      "diffs": []
      }
     },
     {
@@ -233,19 +271,25 @@
      "feasibility_rug_block": 0,
      "rug_block_matches": true,
      "replay": true,
-     "n_checks": 1,
+     "n_checks": 3,
      "n_claims": 0,
      "amount": "90000000000000000",
      "settled_to": "0x0272651ae66438836a2bbc2e4ef3598831f8ad41",
      "settled_amount": "90000000000000000",
-     "settled_at": 1794392027,
-     "to_victim_fund": false,
+     "settled_at": 1794483780,
+     "to_fund": false,
      "to_launchpad": true,
      "settle_proof": {
-      "tx": "0xcf75bdcf925319a173701c2bbb59bf91c51d8fddac8c9145f408709e81e34ee1",
+      "tx": "0xfb4f9f32029a69bf5347eef651bfae99bf6ddd2ca2dbc8fedc55c0197bfbec46",
       "status": "FINALIZED",
       "delivered": true,
       "why": ""
+     },
+     "reads": {
+      "checks": 2,
+      "identical": 2,
+      "pending": 1,
+      "diffs": []
      }
     },
     {
@@ -265,14 +309,20 @@
      "amount": "100000000000000000",
      "settled_to": "0x0272651ae66438836a2bbc2e4ef3598831f8ad41",
      "settled_amount": "100000000000000000",
-     "settled_at": 1794391941,
-     "to_victim_fund": false,
+     "settled_at": 1794468361,
+     "to_fund": false,
      "to_launchpad": true,
      "settle_proof": {
-      "tx": "0xdc418dda3a86cfff8e5f613336ac9a3a2e7f0023dce2851d5c334af1f23fda7e",
+      "tx": "0xab68b39f918daaf54a16e7d2ba9a513524072e7ab0a132e8fb6bada62c887002",
       "status": "FINALIZED",
       "delivered": true,
       "why": ""
+     },
+     "reads": {
+      "checks": 1,
+      "identical": 1,
+      "pending": 0,
+      "diffs": []
      }
     },
     {
@@ -292,14 +342,20 @@
      "amount": "110000000000000000",
      "settled_to": "0x0272651ae66438836a2bbc2e4ef3598831f8ad41",
      "settled_amount": "110000000000000000",
-     "settled_at": 1794391958,
-     "to_victim_fund": false,
+     "settled_at": 1794468378,
+     "to_fund": false,
      "to_launchpad": true,
      "settle_proof": {
-      "tx": "0xe1d0b6a4a2bde9e378142ad011306f61619959750f12fbb53d85c77ef7ea4c1b",
+      "tx": "0xf6526c1b09aa83823a3b60bcc84888ec06d8664b36157028563e9d5cb53f21ce",
       "status": "FINALIZED",
       "delivered": true,
       "why": ""
+     },
+     "reads": {
+      "checks": 1,
+      "identical": 1,
+      "pending": 0,
+      "diffs": []
      }
     },
     {
@@ -319,14 +375,20 @@
      "amount": "120000000000000000",
      "settled_to": "0x0272651ae66438836a2bbc2e4ef3598831f8ad41",
      "settled_amount": "120000000000000000",
-     "settled_at": 1794391976,
-     "to_victim_fund": false,
+     "settled_at": 1794468395,
+     "to_fund": false,
      "to_launchpad": true,
      "settle_proof": {
-      "tx": "0xfed1b4e56850fab9c2acadc011a548e549cca68dda7193b4049858ef9bd152a5",
+      "tx": "0xd7f4aa0a8d95c00251a0ac47d450790d2aaf54161ac883a8ad8caca0c9c85837",
       "status": "FINALIZED",
       "delivered": true,
       "why": ""
+     },
+     "reads": {
+      "checks": 1,
+      "identical": 1,
+      "pending": 0,
+      "diffs": []
      }
     },
     {
@@ -346,14 +408,20 @@
      "amount": "130000000000000000",
      "settled_to": "0x0272651ae66438836a2bbc2e4ef3598831f8ad41",
      "settled_amount": "130000000000000000",
-     "settled_at": 1794391993,
-     "to_victim_fund": false,
+     "settled_at": 1794468413,
+     "to_fund": false,
      "to_launchpad": true,
      "settle_proof": {
-      "tx": "0x532e292448e17c6c8a5d1edcdbf527f32a041e0137296c3bd020c25b31d5817d",
+      "tx": "0x17a5a5c95aadf12e043696a7760390eede39ef23cdc07ded35b418592fbd51c4",
       "status": "FINALIZED",
       "delivered": true,
       "why": ""
+     },
+     "reads": {
+      "checks": 1,
+      "identical": 1,
+      "pending": 0,
+      "diffs": []
      }
     },
     {
@@ -368,19 +436,20 @@
      "feasibility_rug_block": 25700691,
      "rug_block_matches": true,
      "replay": true,
-     "n_checks": 1,
+     "n_checks": 2,
      "n_claims": 0,
      "amount": "140000000000000000",
-     "settled_to": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
+     "settled_to": "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7",
      "settled_amount": "140000000000000000",
-     "settled_at": 1794393780,
-     "to_victim_fund": true,
+     "settled_at": 1794480703,
+     "to_fund": true,
      "to_launchpad": false,
-     "settle_proof": {
-      "tx": "0xbc26dabf5b150d0b15cec67a27b7a4246a5180443bede95840f634f873910ba8",
-      "status": "FINALIZED",
-      "delivered": true,
-      "why": ""
+     "settle_proof": null,
+     "reads": {
+      "checks": 1,
+      "identical": 1,
+      "pending": 1,
+      "diffs": []
      }
     },
     {
@@ -398,16 +467,22 @@
      "n_checks": 1,
      "n_claims": 0,
      "amount": "150000000000000000",
-     "settled_to": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
+     "settled_to": "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7",
      "settled_amount": "150000000000000000",
-     "settled_at": 1794393798,
-     "to_victim_fund": true,
+     "settled_at": 1794468430,
+     "to_fund": true,
      "to_launchpad": false,
      "settle_proof": {
-      "tx": "0xd39ffc2639766033065531c3f2f9d8b4e85f07c7acb463a962e5bca4cf6fb1c2",
+      "tx": "0x0ce9a72aced93c01209a580598c6313ec74dfb7ad4b49851017bf8a7ac99bcd7",
       "status": "FINALIZED",
       "delivered": true,
       "why": ""
+     },
+     "reads": {
+      "checks": 1,
+      "identical": 1,
+      "pending": 0,
+      "diffs": []
      }
     },
     {
@@ -425,16 +500,22 @@
      "n_checks": 1,
      "n_claims": 0,
      "amount": "160000000000000000",
-     "settled_to": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
+     "settled_to": "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7",
      "settled_amount": "160000000000000000",
-     "settled_at": 1794393815,
-     "to_victim_fund": true,
+     "settled_at": 1794468448,
+     "to_fund": true,
      "to_launchpad": false,
      "settle_proof": {
-      "tx": "0x580803f91b909f5be26e386827973aad441790d672f936899e6f95da0fbd9fa3",
+      "tx": "0xa4c251a3510cc6897f3a2b49a336467850955d0f628aaf7f60b80d64fdc4dcf3",
       "status": "FINALIZED",
       "delivered": true,
       "why": ""
+     },
+     "reads": {
+      "checks": 1,
+      "identical": 1,
+      "pending": 0,
+      "diffs": []
      }
     },
     {
@@ -449,19 +530,25 @@
      "feasibility_rug_block": 25704885,
      "rug_block_matches": true,
      "replay": true,
-     "n_checks": 2,
+     "n_checks": 1,
      "n_claims": 0,
      "amount": "170000000000000000",
-     "settled_to": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
+     "settled_to": "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7",
      "settled_amount": "170000000000000000",
-     "settled_at": 1794402781,
-     "to_victim_fund": true,
+     "settled_at": 1794468465,
+     "to_fund": true,
      "to_launchpad": false,
      "settle_proof": {
-      "tx": "0xc116b89916a12bff4b0b6117c7a1043b45b7ad94f8cb223c177819bb15c3303d",
+      "tx": "0x1d918ccfcdf7b949f249369e8358087c7517013cb2e1527139edfd16bdc652c8",
       "status": "FINALIZED",
       "delivered": true,
       "why": ""
+     },
+     "reads": {
+      "checks": 1,
+      "identical": 1,
+      "pending": 0,
+      "diffs": []
      }
     }
    ],
@@ -470,18 +557,21 @@
    "stats": {
     "balance": "0",
     "bonds": 17,
-    "checks": 19,
+    "bonus_paid_total": "0",
+    "checks": 23,
     "claims_paid_total": "0",
     "counts": {
      "beneficiaries": 0,
      "bonds": 17,
-     "checks": 19,
-     "checks_pending": 2,
-     "checks_scanned": 0,
+     "bonuses": 0,
+     "checks": 23,
+     "checks_pending": 4,
+     "checks_scanned": 2,
      "claims": 0,
      "create_refused": 0,
      "credit_withdrawals": 0,
      "held": 6,
+     "redistributions": 0,
      "rugged": 11,
      "settles": 17,
      "sweeps": 0,
@@ -489,12 +579,12 @@
     },
     "credit_owed_total": "0",
     "credit_paid_total": "0",
+    "fund_total": "900000000000000000",
     "held": "0",
     "open_total": "0",
     "received_total": "1530000000000000000",
     "returned_total": "630000000000000000",
-    "stray_swept_total": "0",
-    "victim_total": "900000000000000000"
+    "stray_swept_total": "0"
    }
   },
   {
@@ -519,7 +609,7 @@
      "settled_to": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
      "settled_amount": "10000000000000000",
      "settled_at": 1794357813,
-     "to_victim_fund": true,
+     "to_fund": true,
      "to_launchpad": false,
      "settle_proof": {
       "tx": "0xd1ba461818b7ed46910425075c5100649ff6060dbf3d30f6dcf0382f35aa2fcf",
@@ -546,7 +636,7 @@
      "settled_to": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
      "settled_amount": "20000000000000000",
      "settled_at": 1794357881,
-     "to_victim_fund": true,
+     "to_fund": true,
      "to_launchpad": false,
      "settle_proof": {
       "tx": "0x344a4c5421e0df56041832dd3749703e4fb26275e50b0d82b80437ef1c1674c3",
@@ -573,7 +663,7 @@
      "settled_to": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
      "settled_amount": "30000000000000000",
      "settled_at": 1794357898,
-     "to_victim_fund": true,
+     "to_fund": true,
      "to_launchpad": false,
      "settle_proof": {
       "tx": "0xa8a8902d307cd0d5733c61ad857a1d7a2cc6303c03ab2965547a218c159ccddb",
@@ -600,7 +690,7 @@
      "settled_to": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
      "settled_amount": "40000000000000000",
      "settled_at": 1794340643,
-     "to_victim_fund": true,
+     "to_fund": true,
      "to_launchpad": false,
      "settle_proof": {
       "tx": "0xb5cdef676566230817277fa29ff50e9dfe1c2ae9a557c71f0ecab06aa3e3bc25",
@@ -627,7 +717,7 @@
      "settled_to": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
      "settled_amount": "50000000000000000",
      "settled_at": 1794340661,
-     "to_victim_fund": true,
+     "to_fund": true,
      "to_launchpad": false,
      "settle_proof": {
       "tx": "0x16c0bb99b56aa3282c303d0fd0f75ebb39f3886c54ffb16ad360aef9da40fdab",
@@ -654,7 +744,7 @@
      "settled_to": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
      "settled_amount": "60000000000000000",
      "settled_at": 1794340677,
-     "to_victim_fund": true,
+     "to_fund": true,
      "to_launchpad": false,
      "settle_proof": {
       "tx": "0x67afc9784804db5887fe4fa93b2aec17890d7bdd8c4ae08bbdf833267d7fbc55",
@@ -681,7 +771,7 @@
      "settled_to": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
      "settled_amount": "70000000000000000",
      "settled_at": 1794340695,
-     "to_victim_fund": true,
+     "to_fund": true,
      "to_launchpad": false,
      "settle_proof": {
       "tx": "0x41fbc50e74504ff8b52d172e1aaf1a22e132891ebee0f1131798cf7468eb5ab9",
@@ -708,7 +798,7 @@
      "settled_to": "0x0272651ae66438836a2bbc2e4ef3598831f8ad41",
      "settled_amount": "80000000000000000",
      "settled_at": 1794340712,
-     "to_victim_fund": false,
+     "to_fund": false,
      "to_launchpad": true,
      "settle_proof": {
       "tx": "0xfb93d89c18f9cafd5901ff5ff9907f905dde23068a45dba072b9e203a8a47759",
@@ -735,7 +825,7 @@
      "settled_to": "0x0272651ae66438836a2bbc2e4ef3598831f8ad41",
      "settled_amount": "90000000000000000",
      "settled_at": 1794340730,
-     "to_victim_fund": false,
+     "to_fund": false,
      "to_launchpad": true,
      "settle_proof": {
       "tx": "0xd48eaf8b033c84094d90086d15b60b9dd84aa9956cf7468a2ee9ec1970a39390",
@@ -762,7 +852,7 @@
      "settled_to": "0x0272651ae66438836a2bbc2e4ef3598831f8ad41",
      "settled_amount": "100000000000000000",
      "settled_at": 1794340557,
-     "to_victim_fund": false,
+     "to_fund": false,
      "to_launchpad": true,
      "settle_proof": {
       "tx": "0xe30590524f68fa8b4c2a47d047a8f375f4d5d1d037e0c0517049b82b08a92a83",
@@ -789,7 +879,7 @@
      "settled_to": "0x0272651ae66438836a2bbc2e4ef3598831f8ad41",
      "settled_amount": "110000000000000000",
      "settled_at": 1794340573,
-     "to_victim_fund": false,
+     "to_fund": false,
      "to_launchpad": true,
      "settle_proof": {
       "tx": "0x8fc9fe81079a3ef4b8df80e727ae89cfba2452ad82251849052d94c770a70a87",
@@ -816,7 +906,7 @@
      "settled_to": "0x0272651ae66438836a2bbc2e4ef3598831f8ad41",
      "settled_amount": "120000000000000000",
      "settled_at": 1794340592,
-     "to_victim_fund": false,
+     "to_fund": false,
      "to_launchpad": true,
      "settle_proof": {
       "tx": "0xd3876170db5e191241b2e0332b282aa0ecde87556d7e9c6fedd7b2c6b8a69b1b",
@@ -843,7 +933,7 @@
      "settled_to": "0x0272651ae66438836a2bbc2e4ef3598831f8ad41",
      "settled_amount": "130000000000000000",
      "settled_at": 1794340608,
-     "to_victim_fund": false,
+     "to_fund": false,
      "to_launchpad": true,
      "settle_proof": {
       "tx": "0xf34021e74b31b01d344d726f139444df9d408061afa5893e07b8ba36fdaae284",
@@ -870,7 +960,7 @@
      "settled_to": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
      "settled_amount": "140000000000000000",
      "settled_at": 1794340626,
-     "to_victim_fund": true,
+     "to_fund": true,
      "to_launchpad": false,
      "settle_proof": {
       "tx": "0xcced65de67c04c59490e634a6ef8596739fb4ebf213dff828869d2c35246130d",
@@ -897,7 +987,7 @@
      "settled_to": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
      "settled_amount": "150000000000000000",
      "settled_at": 1794357829,
-     "to_victim_fund": true,
+     "to_fund": true,
      "to_launchpad": false,
      "settle_proof": {
       "tx": "0x8949b6ec452dcc43219c500af8effdbc938c5cf874dbe9a8c6bce1f064e196a0",
@@ -924,7 +1014,7 @@
      "settled_to": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
      "settled_amount": "160000000000000000",
      "settled_at": 1794357847,
-     "to_victim_fund": true,
+     "to_fund": true,
      "to_launchpad": false,
      "settle_proof": {
       "tx": "0xe5ab9c813224df8932af90fd0eb5ef96944b8bd1551a49e109d34dc4bb5c5f22",
@@ -951,7 +1041,7 @@
      "settled_to": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
      "settled_amount": "170000000000000000",
      "settled_at": 1794357864,
-     "to_victim_fund": true,
+     "to_fund": true,
      "to_launchpad": false,
      "settle_proof": {
       "tx": "0x5a6186e4b829a645fb81b452cb10106fd2106580ecd86f6e8b0b8dfd9d7b1b58",
@@ -1015,7 +1105,7 @@
      "settled_to": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
      "settled_amount": "10000000000000000",
      "settled_at": 1794393962,
-     "to_victim_fund": true,
+     "to_fund": true,
      "to_launchpad": false,
      "settle_proof": {
       "tx": "0x963bbd38540b3a0e411a5c2328e3bff56ad0213cda0b7b2554078da655fa9577",
@@ -1042,7 +1132,7 @@
      "settled_to": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
      "settled_amount": "20000000000000000",
      "settled_at": 1794393997,
-     "to_victim_fund": true,
+     "to_fund": true,
      "to_launchpad": false,
      "settle_proof": {
       "tx": "0x4150a950d4ae253305c48069af8d3b4238205587afb9df3f520355765841a5fd",
@@ -1069,7 +1159,7 @@
      "settled_to": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
      "settled_amount": "30000000000000000",
      "settled_at": 1794394014,
-     "to_victim_fund": true,
+     "to_fund": true,
      "to_launchpad": false,
      "settle_proof": {
       "tx": "0xc61d925a235f8cc57b397a20015fbc19624f908c24753727f8ffe648e88d00b9",
@@ -1096,7 +1186,7 @@
      "settled_to": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
      "settled_amount": "40000000000000000",
      "settled_at": 1794402857,
-     "to_victim_fund": true,
+     "to_fund": true,
      "to_launchpad": false,
      "settle_proof": {
       "tx": "0xa11d1948d9ba78e3ee1a0ec6dd9ea5680b54296a017b5971e2998e367f21eefd",
@@ -1123,7 +1213,7 @@
      "settled_to": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
      "settled_amount": "50000000000000000",
      "settled_at": 1794394032,
-     "to_victim_fund": true,
+     "to_fund": true,
      "to_launchpad": false,
      "settle_proof": {
       "tx": "0x8a10d4a89ff335b04b973e0877f785c40edf15240caef9c7846e670527273cc2",
@@ -1150,7 +1240,7 @@
      "settled_to": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
      "settled_amount": "60000000000000000",
      "settled_at": 1794392171,
-     "to_victim_fund": true,
+     "to_fund": true,
      "to_launchpad": false,
      "settle_proof": {
       "tx": "0x1ae736acef50dd7a3151cdadeb0858238c4a35396c0114d8e353fe63d679131d",
@@ -1177,7 +1267,7 @@
      "settled_to": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
      "settled_amount": "70000000000000000",
      "settled_at": 1794392189,
-     "to_victim_fund": true,
+     "to_fund": true,
      "to_launchpad": false,
      "settle_proof": {
       "tx": "0xb6b12ac19069d94085c257167b077c9e76382782d2609bbe9e16f496c238e314",
@@ -1204,7 +1294,7 @@
      "settled_to": "0x0272651ae66438836a2bbc2e4ef3598831f8ad41",
      "settled_amount": "80000000000000000",
      "settled_at": 1794392205,
-     "to_victim_fund": false,
+     "to_fund": false,
      "to_launchpad": true,
      "settle_proof": {
       "tx": "0x8461655b7ca7b0921be01413b284c01cf97fe239ce1f5b8f2d8201031a5627e6",
@@ -1231,7 +1321,7 @@
      "settled_to": "0x0272651ae66438836a2bbc2e4ef3598831f8ad41",
      "settled_amount": "90000000000000000",
      "settled_at": 1794389795,
-     "to_victim_fund": false,
+     "to_fund": false,
      "to_launchpad": true,
      "settle_proof": {
       "tx": "0xe8697a9d7f6cab15643607a9ec14e140ea560984b28a9b3dde2aba7a53887b8a",
@@ -1258,7 +1348,7 @@
      "settled_to": "0x0272651ae66438836a2bbc2e4ef3598831f8ad41",
      "settled_amount": "100000000000000000",
      "settled_at": 1794389725,
-     "to_victim_fund": false,
+     "to_fund": false,
      "to_launchpad": true,
      "settle_proof": {
       "tx": "0xd3369c0096ea91117e6ab910fbde43c828719321dbcf4bf44d89e5d6deef59ce",
@@ -1285,7 +1375,7 @@
      "settled_to": "0x0272651ae66438836a2bbc2e4ef3598831f8ad41",
      "settled_amount": "110000000000000000",
      "settled_at": 1794389741,
-     "to_victim_fund": false,
+     "to_fund": false,
      "to_launchpad": true,
      "settle_proof": {
       "tx": "0x6073f84fdc0fe9ee4984d1d61bdbbe359fecd19ad4e0d73947eddf42c679255c",
@@ -1312,7 +1402,7 @@
      "settled_to": "0x0272651ae66438836a2bbc2e4ef3598831f8ad41",
      "settled_amount": "120000000000000000",
      "settled_at": 1794389760,
-     "to_victim_fund": false,
+     "to_fund": false,
      "to_launchpad": true,
      "settle_proof": {
       "tx": "0x4a502d284a57c7c0250c19d7fded05aa595789211cc230d65e364703b512726a",
@@ -1339,7 +1429,7 @@
      "settled_to": "0x0272651ae66438836a2bbc2e4ef3598831f8ad41",
      "settled_amount": "130000000000000000",
      "settled_at": 1794389777,
-     "to_victim_fund": false,
+     "to_fund": false,
      "to_launchpad": true,
      "settle_proof": {
       "tx": "0x5d2c58c92a6bde3562d1f297be650263a0cc42748b28cc59fcacc76517db5a87",
@@ -1366,7 +1456,7 @@
      "settled_to": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
      "settled_amount": "140000000000000000",
      "settled_at": 1794392120,
-     "to_victim_fund": true,
+     "to_fund": true,
      "to_launchpad": false,
      "settle_proof": {
       "tx": "0x47851a7f352fc3a2f103b1c9d542e707ab6715c9e6017cafbc50598bd418cee8",
@@ -1393,7 +1483,7 @@
      "settled_to": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
      "settled_amount": "150000000000000000",
      "settled_at": 1794393979,
-     "to_victim_fund": true,
+     "to_fund": true,
      "to_launchpad": false,
      "settle_proof": {
       "tx": "0x4e2df93a43e412aff848ca46d21352e368d8b3dab0430394a16af4e489f0590a",
@@ -1420,7 +1510,7 @@
      "settled_to": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
      "settled_amount": "160000000000000000",
      "settled_at": 1794392136,
-     "to_victim_fund": true,
+     "to_fund": true,
      "to_launchpad": false,
      "settle_proof": {
       "tx": "0xaf817b78b88cbb7185a57b423079160f116e03ee4cc5191e7b8ac34c755a532e",
@@ -1447,7 +1537,7 @@
      "settled_to": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
      "settled_amount": "170000000000000000",
      "settled_at": 1794392154,
-     "to_victim_fund": true,
+     "to_fund": true,
      "to_launchpad": false,
      "settle_proof": {
       "tx": "0x646a2eb2315473f77d9cf162c51c1193209c430f594ce1e62c9bc217df00e934",
@@ -1469,6 +1559,502 @@
      "bonds": 17,
      "checks": 25,
      "checks_pending": 8,
+     "checks_scanned": 0,
+     "claims": 0,
+     "create_refused": 0,
+     "credit_withdrawals": 0,
+     "held": 6,
+     "rugged": 11,
+     "settles": 17,
+     "sweeps": 0,
+     "void": 0
+    },
+    "credit_owed_total": "0",
+    "credit_paid_total": "0",
+    "held": "0",
+    "open_total": "0",
+    "received_total": "1530000000000000000",
+    "returned_total": "630000000000000000",
+    "stray_swept_total": "0",
+    "victim_total": "900000000000000000"
+   }
+  },
+  {
+   "label": "superseded canonical registry (third deployment)",
+   "address": "0x4D2a5e250a419b1D1798E103F80A23aC5be59a23",
+   "rows": [
+    {
+     "case_id": "eth-01",
+     "bond_id": 1,
+     "name": "Replay eth-01 0xd4f45d",
+     "expect": "RUGGED",
+     "status": "CLOSED",
+     "verdict": "RUGGED",
+     "matches": true,
+     "rug_block": 25723942,
+     "feasibility_rug_block": 25723942,
+     "rug_block_matches": true,
+     "replay": true,
+     "n_checks": 1,
+     "n_claims": 0,
+     "amount": "10000000000000000",
+     "settled_to": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
+     "settled_amount": "10000000000000000",
+     "settled_at": 1794393763,
+     "to_fund": true,
+     "to_launchpad": false,
+     "settle_proof": {
+      "tx": "0x406a97bb41d9ae756e496d0bc3e68924c70c3d4a938feea755640d421026ee80",
+      "status": "FINALIZED",
+      "delivered": true,
+      "why": ""
+     }
+    },
+    {
+     "case_id": "eth-02",
+     "bond_id": 2,
+     "name": "Replay eth-02 0x89d3a8",
+     "expect": "RUGGED",
+     "status": "CLOSED",
+     "verdict": "RUGGED",
+     "matches": true,
+     "rug_block": 25707553,
+     "feasibility_rug_block": 25707553,
+     "rug_block_matches": true,
+     "replay": true,
+     "n_checks": 1,
+     "n_claims": 0,
+     "amount": "20000000000000000",
+     "settled_to": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
+     "settled_amount": "20000000000000000",
+     "settled_at": 1794393833,
+     "to_fund": true,
+     "to_launchpad": false,
+     "settle_proof": {
+      "tx": "0xb41cfddebabc90dfdc93bdc467b8be2f2bcb348c2627bbf77d230bdb13305607",
+      "status": "FINALIZED",
+      "delivered": true,
+      "why": ""
+     }
+    },
+    {
+     "case_id": "eth-03",
+     "bond_id": 3,
+     "name": "Replay eth-03 0xaf95e7",
+     "expect": "RUGGED",
+     "status": "CLOSED",
+     "verdict": "RUGGED",
+     "matches": true,
+     "rug_block": 25710973,
+     "feasibility_rug_block": 25710973,
+     "rug_block_matches": true,
+     "replay": true,
+     "n_checks": 1,
+     "n_claims": 0,
+     "amount": "30000000000000000",
+     "settled_to": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
+     "settled_amount": "30000000000000000",
+     "settled_at": 1794393849,
+     "to_fund": true,
+     "to_launchpad": false,
+     "settle_proof": {
+      "tx": "0xdd989b64dc242719fbdd53079a62e1edf1e91f9dd988ae46a47a30b326f8a375",
+      "status": "FINALIZED",
+      "delivered": true,
+      "why": ""
+     }
+    },
+    {
+     "case_id": "eth-04",
+     "bond_id": 4,
+     "name": "Replay eth-04 0xc97c6b",
+     "expect": "RUGGED",
+     "status": "CLOSED",
+     "verdict": "RUGGED",
+     "matches": true,
+     "rug_block": 25714292,
+     "feasibility_rug_block": 25714292,
+     "rug_block_matches": true,
+     "replay": true,
+     "n_checks": 1,
+     "n_claims": 0,
+     "amount": "40000000000000000",
+     "settled_to": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
+     "settled_amount": "40000000000000000",
+     "settled_at": 1794393868,
+     "to_fund": true,
+     "to_launchpad": false,
+     "settle_proof": {
+      "tx": "0x74c33871a38957861b28005b40c9c10d77d36cda6c1a92c18487a6e67e7fc6d7",
+      "status": "FINALIZED",
+      "delivered": true,
+      "why": ""
+     }
+    },
+    {
+     "case_id": "eth-05",
+     "bond_id": 5,
+     "name": "Replay eth-05 0x2c127a",
+     "expect": "RUGGED",
+     "status": "CLOSED",
+     "verdict": "RUGGED",
+     "matches": true,
+     "rug_block": 25702677,
+     "feasibility_rug_block": 25702677,
+     "rug_block_matches": true,
+     "replay": true,
+     "n_checks": 1,
+     "n_claims": 0,
+     "amount": "50000000000000000",
+     "settled_to": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
+     "settled_amount": "50000000000000000",
+     "settled_at": 1794393885,
+     "to_fund": true,
+     "to_launchpad": false,
+     "settle_proof": {
+      "tx": "0x31838f0e1298af09f90beb7982e02b80ee74504eccc576bb446d4fe9d43c1a37",
+      "status": "FINALIZED",
+      "delivered": true,
+      "why": ""
+     }
+    },
+    {
+     "case_id": "eth-06",
+     "bond_id": 6,
+     "name": "Replay eth-06 0xa5084c",
+     "expect": "RUGGED",
+     "status": "CLOSED",
+     "verdict": "RUGGED",
+     "matches": true,
+     "rug_block": 25712799,
+     "feasibility_rug_block": 25712799,
+     "rug_block_matches": true,
+     "replay": true,
+     "n_checks": 1,
+     "n_claims": 0,
+     "amount": "60000000000000000",
+     "settled_to": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
+     "settled_amount": "60000000000000000",
+     "settled_at": 1794393903,
+     "to_fund": true,
+     "to_launchpad": false,
+     "settle_proof": {
+      "tx": "0x398ac68f7e6c46a76120af2ba4ffee0f6f4da81700456600bdc63b98a6da69dc",
+      "status": "FINALIZED",
+      "delivered": true,
+      "why": ""
+     }
+    },
+    {
+     "case_id": "eth-07",
+     "bond_id": 7,
+     "name": "Replay eth-07 0xd95364",
+     "expect": "RUGGED",
+     "status": "CLOSED",
+     "verdict": "RUGGED",
+     "matches": true,
+     "rug_block": 25707372,
+     "feasibility_rug_block": 25707372,
+     "rug_block_matches": true,
+     "replay": true,
+     "n_checks": 2,
+     "n_claims": 0,
+     "amount": "70000000000000000",
+     "settled_to": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
+     "settled_amount": "70000000000000000",
+     "settled_at": 1794402798,
+     "to_fund": true,
+     "to_launchpad": false,
+     "settle_proof": {
+      "tx": "0x616589c8f40a0cb359b4b132e718bbeef36e7298b3a53d9175027b6d820c4bb9",
+      "status": "FINALIZED",
+      "delivered": true,
+      "why": ""
+     }
+    },
+    {
+     "case_id": "eth-14",
+     "bond_id": 8,
+     "name": "Replay eth-14 0x937e98",
+     "expect": "HELD",
+     "status": "RETURNED",
+     "verdict": "HELD",
+     "matches": true,
+     "rug_block": 0,
+     "feasibility_rug_block": 0,
+     "rug_block_matches": true,
+     "replay": true,
+     "n_checks": 1,
+     "n_claims": 0,
+     "amount": "80000000000000000",
+     "settled_to": "0x0272651ae66438836a2bbc2e4ef3598831f8ad41",
+     "settled_amount": "80000000000000000",
+     "settled_at": 1794392011,
+     "to_fund": false,
+     "to_launchpad": true,
+     "settle_proof": {
+      "tx": "0x4db4ea68d3026873702fd0d1097fc09870bc2909875b418f029719794fa29121",
+      "status": "FINALIZED",
+      "delivered": true,
+      "why": ""
+     }
+    },
+    {
+     "case_id": "eth-15",
+     "bond_id": 9,
+     "name": "Replay eth-15 0xa324d9",
+     "expect": "HELD",
+     "status": "RETURNED",
+     "verdict": "HELD",
+     "matches": true,
+     "rug_block": 0,
+     "feasibility_rug_block": 0,
+     "rug_block_matches": true,
+     "replay": true,
+     "n_checks": 1,
+     "n_claims": 0,
+     "amount": "90000000000000000",
+     "settled_to": "0x0272651ae66438836a2bbc2e4ef3598831f8ad41",
+     "settled_amount": "90000000000000000",
+     "settled_at": 1794392027,
+     "to_fund": false,
+     "to_launchpad": true,
+     "settle_proof": {
+      "tx": "0xcf75bdcf925319a173701c2bbb59bf91c51d8fddac8c9145f408709e81e34ee1",
+      "status": "FINALIZED",
+      "delivered": true,
+      "why": ""
+     }
+    },
+    {
+     "case_id": "eth-16",
+     "bond_id": 10,
+     "name": "Replay eth-16 0x1884da",
+     "expect": "HELD",
+     "status": "RETURNED",
+     "verdict": "HELD",
+     "matches": true,
+     "rug_block": 0,
+     "feasibility_rug_block": 0,
+     "rug_block_matches": true,
+     "replay": true,
+     "n_checks": 1,
+     "n_claims": 0,
+     "amount": "100000000000000000",
+     "settled_to": "0x0272651ae66438836a2bbc2e4ef3598831f8ad41",
+     "settled_amount": "100000000000000000",
+     "settled_at": 1794391941,
+     "to_fund": false,
+     "to_launchpad": true,
+     "settle_proof": {
+      "tx": "0xdc418dda3a86cfff8e5f613336ac9a3a2e7f0023dce2851d5c334af1f23fda7e",
+      "status": "FINALIZED",
+      "delivered": true,
+      "why": ""
+     }
+    },
+    {
+     "case_id": "eth-17",
+     "bond_id": 11,
+     "name": "Replay eth-17 0xff8691",
+     "expect": "HELD",
+     "status": "RETURNED",
+     "verdict": "HELD",
+     "matches": true,
+     "rug_block": 0,
+     "feasibility_rug_block": 0,
+     "rug_block_matches": true,
+     "replay": true,
+     "n_checks": 1,
+     "n_claims": 0,
+     "amount": "110000000000000000",
+     "settled_to": "0x0272651ae66438836a2bbc2e4ef3598831f8ad41",
+     "settled_amount": "110000000000000000",
+     "settled_at": 1794391958,
+     "to_fund": false,
+     "to_launchpad": true,
+     "settle_proof": {
+      "tx": "0xe1d0b6a4a2bde9e378142ad011306f61619959750f12fbb53d85c77ef7ea4c1b",
+      "status": "FINALIZED",
+      "delivered": true,
+      "why": ""
+     }
+    },
+    {
+     "case_id": "eth-18",
+     "bond_id": 12,
+     "name": "Replay eth-18 0xbeec04",
+     "expect": "HELD",
+     "status": "RETURNED",
+     "verdict": "HELD",
+     "matches": true,
+     "rug_block": 0,
+     "feasibility_rug_block": 0,
+     "rug_block_matches": true,
+     "replay": true,
+     "n_checks": 1,
+     "n_claims": 0,
+     "amount": "120000000000000000",
+     "settled_to": "0x0272651ae66438836a2bbc2e4ef3598831f8ad41",
+     "settled_amount": "120000000000000000",
+     "settled_at": 1794391976,
+     "to_fund": false,
+     "to_launchpad": true,
+     "settle_proof": {
+      "tx": "0xfed1b4e56850fab9c2acadc011a548e549cca68dda7193b4049858ef9bd152a5",
+      "status": "FINALIZED",
+      "delivered": true,
+      "why": ""
+     }
+    },
+    {
+     "case_id": "eth-19",
+     "bond_id": 13,
+     "name": "Replay eth-19 0x083428",
+     "expect": "HELD",
+     "status": "RETURNED",
+     "verdict": "HELD",
+     "matches": true,
+     "rug_block": 0,
+     "feasibility_rug_block": 0,
+     "rug_block_matches": true,
+     "replay": true,
+     "n_checks": 1,
+     "n_claims": 0,
+     "amount": "130000000000000000",
+     "settled_to": "0x0272651ae66438836a2bbc2e4ef3598831f8ad41",
+     "settled_amount": "130000000000000000",
+     "settled_at": 1794391993,
+     "to_fund": false,
+     "to_launchpad": true,
+     "settle_proof": {
+      "tx": "0x532e292448e17c6c8a5d1edcdbf527f32a041e0137296c3bd020c25b31d5817d",
+      "status": "FINALIZED",
+      "delivered": true,
+      "why": ""
+     }
+    },
+    {
+     "case_id": "eth-20",
+     "bond_id": 14,
+     "name": "Replay eth-20 0xf72e87",
+     "expect": "RUGGED",
+     "status": "CLOSED",
+     "verdict": "RUGGED",
+     "matches": true,
+     "rug_block": 25700691,
+     "feasibility_rug_block": 25700691,
+     "rug_block_matches": true,
+     "replay": true,
+     "n_checks": 1,
+     "n_claims": 0,
+     "amount": "140000000000000000",
+     "settled_to": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
+     "settled_amount": "140000000000000000",
+     "settled_at": 1794393780,
+     "to_fund": true,
+     "to_launchpad": false,
+     "settle_proof": {
+      "tx": "0xbc26dabf5b150d0b15cec67a27b7a4246a5180443bede95840f634f873910ba8",
+      "status": "FINALIZED",
+      "delivered": true,
+      "why": ""
+     }
+    },
+    {
+     "case_id": "eth-21",
+     "bond_id": 15,
+     "name": "Replay eth-21 0x3f287a",
+     "expect": "RUGGED",
+     "status": "CLOSED",
+     "verdict": "RUGGED",
+     "matches": true,
+     "rug_block": 25702916,
+     "feasibility_rug_block": 25702916,
+     "rug_block_matches": true,
+     "replay": true,
+     "n_checks": 1,
+     "n_claims": 0,
+     "amount": "150000000000000000",
+     "settled_to": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
+     "settled_amount": "150000000000000000",
+     "settled_at": 1794393798,
+     "to_fund": true,
+     "to_launchpad": false,
+     "settle_proof": {
+      "tx": "0xd39ffc2639766033065531c3f2f9d8b4e85f07c7acb463a962e5bca4cf6fb1c2",
+      "status": "FINALIZED",
+      "delivered": true,
+      "why": ""
+     }
+    },
+    {
+     "case_id": "eth-22",
+     "bond_id": 16,
+     "name": "Replay eth-22 0x4e9fcc",
+     "expect": "RUGGED",
+     "status": "CLOSED",
+     "verdict": "RUGGED",
+     "matches": true,
+     "rug_block": 25701193,
+     "feasibility_rug_block": 25701193,
+     "rug_block_matches": true,
+     "replay": true,
+     "n_checks": 1,
+     "n_claims": 0,
+     "amount": "160000000000000000",
+     "settled_to": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
+     "settled_amount": "160000000000000000",
+     "settled_at": 1794393815,
+     "to_fund": true,
+     "to_launchpad": false,
+     "settle_proof": {
+      "tx": "0x580803f91b909f5be26e386827973aad441790d672f936899e6f95da0fbd9fa3",
+      "status": "FINALIZED",
+      "delivered": true,
+      "why": ""
+     }
+    },
+    {
+     "case_id": "eth-23",
+     "bond_id": 17,
+     "name": "Replay eth-23 0xc27424",
+     "expect": "RUGGED",
+     "status": "CLOSED",
+     "verdict": "RUGGED",
+     "matches": true,
+     "rug_block": 25704885,
+     "feasibility_rug_block": 25704885,
+     "rug_block_matches": true,
+     "replay": true,
+     "n_checks": 2,
+     "n_claims": 0,
+     "amount": "170000000000000000",
+     "settled_to": "0xd3e687d45d49e99e4f2300c0d5362ca23ec3115a",
+     "settled_amount": "170000000000000000",
+     "settled_at": 1794402781,
+     "to_fund": true,
+     "to_launchpad": false,
+     "settle_proof": {
+      "tx": "0xc116b89916a12bff4b0b6117c7a1043b45b7ad94f8cb223c177819bb15c3303d",
+      "status": "FINALIZED",
+      "delivered": true,
+      "why": ""
+     }
+    }
+   ],
+   "eth_getBalance": "0",
+   "held": "0",
+   "stats": {
+    "balance": "0",
+    "bonds": 17,
+    "checks": 19,
+    "claims_paid_total": "0",
+    "counts": {
+     "beneficiaries": 0,
+     "bonds": 17,
+     "checks": 19,
+     "checks_pending": 2,
      "checks_scanned": 0,
      "claims": 0,
      "create_refused": 0,
