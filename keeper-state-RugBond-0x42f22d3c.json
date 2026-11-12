@@ -623,10 +623,12 @@
    "bond_id": 9,
    "cursor": 0,
    "n_checks_before": 1,
-   "status": "QUEUED",
-   "attempts": 0,
+   "status": "RETRY",
+   "attempts": 1,
    "first_seen_at": 1794468143,
-   "tx": null
+   "tx": null,
+   "last_error": "submit failed: Invalid parameters were provided to the RPC method.\nDouble check you have provided the correct parameters.\n\nDetails: NonceTooLow(expected=257,actual=256)\nVersio",
+   "next_try_at": 1794468420
   },
   "settle:10": {
    "key": "settle:10",
@@ -765,7 +767,7 @@
  "contract": "RugBond",
  "address": "0x42f22d3C3d782E678C0561217276be836cba93fb",
  "keeper": "0xfEC989fC1176c5524C3b20ef2c09bca724d6BD4e",
- "saved_at": "2026-11-12T07:25:59.424Z",
+ "saved_at": "2026-11-12T07:26:00.371Z",
  "totals": {
   "actions": 17,
   "done": 17,
