@@ -1,7 +1,23 @@
 {
  "version": 1,
  "bonds_offset": 0,
- "bonds": {},
+ "bonds": {
+  "1": {
+   "status": "CLOSED",
+   "chain": "base-sepolia",
+   "token": "0xc9b2a82a6e75b7746f95ca69f3348e3c809d0e4b",
+   "cursor": 57689336,
+   "cursor_ts": 1794459736,
+   "n_checks": 2,
+   "n_pending": 0,
+   "last_result": "RUGGED",
+   "due": "",
+   "name": "RUGDEMO liquidity bond",
+   "claims_paid": "712640038947990589",
+   "claims_offset": 3,
+   "claims_seen": 3
+  }
+ },
  "actions": {},
  "runs": [],
  "unprocessed": [],
@@ -11,5 +27,5 @@
  "contract": "RugBondDemo",
  "address": "0x40aB41033194DFA35aeF2e7b295eFe3AF6ab5715",
  "keeper": "0xfEC989fC1176c5524C3b20ef2c09bca724d6BD4e",
- "saved_at": "2026-11-12T11:43:50.130Z"
+ "saved_at": "2026-11-12T11:43:50.465Z"
 }
