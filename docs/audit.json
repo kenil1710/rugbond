@@ -1,5 +1,5 @@
 {
- "at": "2026-11-12T12:12:06.334Z",
+ "at": "2026-11-13T09:56:40.952Z",
  "ok": 14,
  "total": 14,
  "rows": [
@@ -7,19 +7,19 @@
    "id": "A",
    "name": "source",
    "ok": true,
-   "detail": "4/4 contracts read back from Studio Dev are byte-identical to build/ at 9c8495e and HEAD; all from one commit: true"
+   "detail": "4/4 contracts read back from Studio Dev are byte-identical to build/ at db54703 and HEAD; all from one commit: true"
   },
   {
    "id": "B",
    "name": "funds",
    "ok": true,
-   "detail": "68 canonical settle payouts finalized and delivered to their recipients; 13 demo payouts finalized, delivered and matched by the recipient's balance delta; RugBond 0x42f22d3C: eth_getBalance 0 wei, ledger holds 0; RugBondDemo 0x40aB4103: eth_getBalance 0 wei, ledger holds 0; RugBond (superseded) 0x24ff68A1: eth_getBalance 0 wei, ledger holds 0; RugBondDemo (superseded) 0xbaa8FD3e: eth_getBalance 0 wei, ledger holds 0; RugBond (superseded) 0x07ED5695: eth_getBalance 0 wei, ledger holds 0; RugBondDemo (superseded) 0x6dfF7cFE: eth_getBalance 0 wei, ledger holds 0; RugBond (superseded) 0x4D2a5e25: eth_getBalance 0 wei, ledger holds 0; RugBondDemo (superseded) 0x3491AAC8: eth_getBalance 0 wei, ledger holds 0; the current registries are at 0; conservation, share and redistribution tests: 33 pass"
+   "detail": "85 canonical settle payouts finalized and delivered to their recipients; 12 demo payouts finalized, delivered and matched by the recipient's balance delta; RugBond 0x8295e5EE: eth_getBalance 0 wei, ledger holds 0; RugBondDemo 0xFf72e304: eth_getBalance 0 wei, ledger holds 0; RugBond (superseded) 0x24ff68A1: eth_getBalance 0 wei, ledger holds 0; RugBondDemo (superseded) 0xbaa8FD3e: eth_getBalance 0 wei, ledger holds 0; RugBond (superseded) 0x07ED5695: eth_getBalance 0 wei, ledger holds 0; RugBondDemo (superseded) 0x6dfF7cFE: eth_getBalance 0 wei, ledger holds 0; RugBond (superseded) 0x4D2a5e25: eth_getBalance 0 wei, ledger holds 0; RugBondDemo (superseded) 0x3491AAC8: eth_getBalance 0 wei, ledger holds 0; RugBond (superseded) 0x42f22d3C: eth_getBalance 0 wei, ledger holds 0; RugBondDemo (superseded) 0x40aB4103: eth_getBalance 0 wei, ledger holds 0; the current registries are at 0; conservation, share and unclaimed-GEN tests: 32 pass"
   },
   {
    "id": "C",
    "name": "stuck states",
    "ok": true,
-   "detail": "every status has an exit (HELD/VOID -> team; RUGGED after the window -> REDISTRIBUTING -> one bonus per claim -> CLOSED, or straight to the registry's fund when nobody claimed; ACTIVE with no cursor movement for the recovery window -> the registry's fund; credits withdrawable; stray swept); a flood of 1,000+ LP transfers out is scanned across checks and the recovery deadline moves with every check that moves the cursor: 71 tests; on chain: 17 replay bonds on 0x42f22d3C3d782E678C0561217276be836cba93fb: 17 at the expected verdict and rug block; 17 settled (11 to the registry's fund after a claim window in which nobody claimed, 6 back to the launchpad); 19/19 checks stored by GenVM read identically from this machine"
+   "detail": "every status has an exit (HELD/VOID -> team; RUGGED after the window -> one settle sends everything unclaimed to the registry's fund -> CLOSED; ACTIVE with no cursor movement for the recovery window -> the registry's fund; credits withdrawable; stray swept); a flood of 1,000+ LP transfers out is scanned across checks and the recovery deadline moves with every check that moves the cursor: 69 tests; on chain: 17 replay bonds on 0x8295e5EE6dd5e74a2Ad4704B6025Ae4f2EcA1086: 17 at the expected verdict and rug block; 17 settled (11 to the registry's fund after a claim window in which nobody claimed, 6 back to the launchpad); 18/18 checks stored by GenVM read identically from this machine"
   },
   {
    "id": "D",
@@ -37,13 +37,13 @@
    "id": "F",
    "name": "identity",
    "ok": true,
-   "detail": "the claimant is msg.sender (claim takes only the bond id); a beneficiary is committed once by the holder itself; the team is the bond's sender and names no destination: unclaimed GEN goes to claimants or to the registry's fund, fixed in the constructor; 13 tests"
+   "detail": "the claimant is msg.sender (claim takes only the bond id); a beneficiary is committed once by the holder itself; the team is the bond's sender and names no destination: a claimant gets its own share only and unclaimed GEN goes to the registry's fund, fixed in the constructor; 14 tests"
   },
   {
    "id": "G",
    "name": "coverage",
    "ok": true,
-   "detail": "offline contract suite 406 tests, keeper suite 26 tests, Direct Mode 24 tests; all pass: true; Playwright on https://rugbond.vercel.app (the site's production build), demo registry 0x40aB41033194DFA35aeF2e7b295eFe3AF6ab5715: 1 passed, 0 failed; steps wallet, setup, rug_check_click, rugged, claimed, refused, created, closed (docs/e2e/)"
+   "detail": "offline contract suite 404 tests, keeper suite 23 tests, Direct Mode 24 tests; all pass: true; Playwright on https://rugbond.vercel.app (the site's production build), demo registry 0xFf72e30494D0026DE964870F04f4Fba84F3543CE: 1 passed, 0 failed; steps wallet, setup, rug_check_click, rugged, claimed, refused, created, lapsed, closed (docs/e2e/)"
   },
   {
    "id": "H",
@@ -61,7 +61,7 @@
    "id": "J",
    "name": "keeper",
    "ok": true,
-   "detail": "last run finished 0.5 h ago (workflow_dispatch); 0 failed actions; latest successful scheduled run since the deployment (2026-11-12T04:53:01.073Z): https://github.com/kenil1710/rugbond/actions/runs/43177480645; keeper tests: 26"
+   "detail": "last run finished 2.6 h ago (schedule); 0 failed actions; latest successful scheduled run since the deployment (2026-11-12T16:41:34.649Z): https://github.com/kenil1710/rugbond/actions/runs/43384933626; keeper tests: 23"
   },
   {
    "id": "K",
@@ -85,7 +85,7 @@
    "id": "N",
    "name": "demo",
    "ok": true,
-   "detail": "51/51 demo steps ok on Base Sepolia (rug, claims with a dusting attempt and a real team transfer, refusals, redistribution to claimants, a bond nobody claimed, a flood of 1,100 LP transfers, held, copycat, gate); payouts verified; demo registry eth_getBalance 0 wei"
+   "detail": "45/45 demo steps ok on Base Sepolia (rug, claims with a dusting attempt and a real team transfer, refusals, no bonus for claimants, unclaimed GEN to the registry's fund, a bond nobody claimed, a flood of 1,100 LP transfers, held, copycat, gate); payouts verified; demo registry eth_getBalance 0 wei"
   }
  ]
 }

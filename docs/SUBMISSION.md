@@ -8,35 +8,35 @@ RugBond: a token team bonds GEN behind a frozen liquidity promise; if the LP is 
 
 ## Description
 
-A team or launchpad posts GEN behind a frozen promise: these wallets keep at least this much of a Uniswap V2-style pool's LP until a set time. Validators read LP Transfer logs and balances from two log RPCs and two state RPCs that must agree; each validator derives the block range from contract state and accepts a failed read only if its own read fails too. The first block below the floor is the rug: holders claim bond x eligible / claimable supply, eligible = min(balance at start, at R-1) minus tokens the team sent them (dust costs only the dust). Unclaimed GEN is shared pro rata among claimants; no team picks a destination (leftovers go to a fund fixed at deployment). A held promise returns the bond. A flood of LP transfers is scanned across checks. Errors are PENDING, never a verdict. LaunchGate never answers favorably on stale data. Built on 23 real cases (17 rugs: 11 Ethereum, 6 Base; 6 held), 23/23 confirmed by chain signals; seeds are replays.
+A team or launchpad posts GEN behind a frozen promise: these wallets keep at least this much of a Uniswap V2-style pool's LP until a set time. Validators read LP Transfer logs and balances from two log RPCs and two state RPCs that must agree; each validator derives the block range from contract state and accepts a failed read only if its own read fails too. The first block below the floor is the rug: holders claim bond x eligible / claimable supply, eligible = min(balance at start, at R-1) minus tokens the team sent them (dust costs only the dust). Each claimant gets its own share only, whatever the turnout; unclaimed GEN goes to a registry fund fixed at deployment, never chosen by a team. A held promise returns the bond. A flood of LP transfers is scanned across checks. Errors are PENDING, never a verdict. LaunchGate never answers favorably on stale data. Built on 23 real cases (17 rugs: 11 Ethereum, 6 Base; 6 held), 23/23 confirmed by chain signals; seeds are replays.
 
-(964 characters)
+(984 characters)
 
 ## Review verification
 
-Open https://rugbond.vercel.app/verify (on-chain code = build/ at one commit). Run sh test/run_offline.sh (406 tests) and pytest tests/direct (24). docs/DEMO.md: a real Base Sepolia rug, a dusting attempt, a 1,100-transfer flood, claims, bonuses, refusals, payouts checked at recipients, balance 0. docs/SEEDS.md: 17 replays settled. node tools/final_check.mjs: 12/12; docs/AUDIT.md: 14/14.
+Open https://rugbond.vercel.app/verify (on-chain code = build/ at one commit). Run sh test/run_offline.sh (404 tests) and pytest tests/direct (24). docs/DEMO.md: a real Base Sepolia rug, a dusting attempt, a 1,100-transfer flood, claims, refusals, unclaimed GEN to the fund, payouts checked at recipients, balance 0. docs/SEEDS.md: 17 replays settled. node tools/final_check.mjs: 12/12; docs/AUDIT.md: 14/14.
 
-(390 characters)
+(408 characters)
 
 ## Counts
 
 - real cases: 23 (17 rugs: 11 Ethereum, 6 Base; 6 held), all verdicts as expected
-- checks GenVM stored on the canonical registry that this machine reads identically: 19/19
+- checks GenVM stored on the canonical registry that this machine reads identically: 18/18
 - feasibility study (first read code): GenVM reads identical to this machine's 39/39, claim reads 2/2
 - real-world check: 23/23
-- tests: offline 406, keeper 26, Direct Mode 24, Playwright e2e on the live site
+- tests: offline 404, keeper 23, Direct Mode 24, Playwright e2e on the live site
 - canonical replay bonds: 17, settled 17
 - final check 12/12, audit 14/14
 
 ## Addresses (GenLayer Studio Dev, chain 61997)
 
-- RugBond: `0x42f22d3C3d782E678C0561217276be836cba93fb`
-- RugBondDemo: `0x40aB41033194DFA35aeF2e7b295eFe3AF6ab5715`
-- LaunchGate: `0xf079A5119a0997E9d6b47B83E52EF6F3EFF03821`
-- LaunchGateDemo: `0xf851bC4dd469CccdB384bcDb2a480eb1255e312B`
+- RugBond: `0x8295e5EE6dd5e74a2Ad4704B6025Ae4f2EcA1086`
+- RugBondDemo: `0xFf72e30494D0026DE964870F04f4Fba84F3543CE`
+- LaunchGate: `0xe2038e12BC5D16546EC54BEda14D11B8366ADab3`
+- LaunchGateDemo: `0xef1eCaC9d8f75de4Bea854c47112aE1757A046C7`
 - the registries' fund (constructor argument of both): `0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7`
 
-All four deployed from commit `9c8495ebcd8d2d42843ee17d51ed0d6ca0afce46`.
+All four deployed from commit `db54703f42c228a86ad36b77326b7b2037153688`.
 
 ## Evidence
 
