@@ -146,12 +146,1117 @@
    "rug_block": 57900553,
    "rug_tx": "0x693599657122e6699719444365d2ec7e85940baefa8e6ddb9b1f4018a6c6b759",
    "at": "2026-11-12T16:46:20.646Z"
+  },
+  {
+   "id": "first_check_A",
+   "what": "the first rug check of bond A reads the start block",
+   "ok": true,
+   "tx": "0x551e114e173534bffa00d492945951ceb53ad4268c577cb60246087c838badea",
+   "returned": {
+    "check_id": 2,
+    "claim_deadline": 1794504785,
+    "denominator": "157162092892417328249047",
+    "ok": true,
+    "result": "RUGGED",
+    "rug_block": 57900553
+   },
+   "at": "2026-11-12T17:13:13.782Z"
+  },
+  {
+   "id": "rugged_A",
+   "what": "rug checks on bond A until RUGGED at the rug block",
+   "ok": true,
+   "status": "RUGGED",
+   "checks": [],
+   "rug_block": 57900553,
+   "cursor": 57900553,
+   "rug_txs": [
+    "0x693599657122e6699719444365d2ec7e85940baefa8e6ddb9b1f4018a6c6b759"
+   ],
+   "denominator": "157162092892417328249047",
+   "claim_deadline": 1794504785,
+   "at": "2026-11-12T17:13:15.351Z"
+  },
+  {
+   "id": "gate_rugged",
+   "what": "LaunchGate: RUGGED_PAYING",
+   "ok": true,
+   "check_for": {
+    "amount": "2000000000000000000",
+    "bond_id": 1,
+    "chain": "base-sepolia",
+    "claim_deadline": 1794504785,
+    "cursor_ts": 1794501979,
+    "rug_block": 57900553,
+    "safe": false,
+    "state": "RUGGED_PAYING",
+    "status": "RUGGED",
+    "team": "0x6365881b460e79216303fc370348ca857d8da9ef",
+    "token": "0x5690d05bbb8940ce98c62b09e120cc4e3f0b4cb7",
+    "why": ""
+   },
+   "at": "2026-11-12T17:13:16.837Z"
+  },
+  {
+   "id": "claim_holder1",
+   "what": "holder1 claims: held 10,000 at the start, the team sent it 4,000 after: paid on 6,000, to its committed beneficiary",
+   "ok": true,
+   "tx": "0x7a95b8e67318fd38901b8eec5020a5fba1a825e4a8cf192baabd8fad3505b631",
+   "status": "FINALIZED",
+   "returned": {
+    "balance": "6000000000000000000000",
+    "bond_id": 1,
+    "denominator": "157162092892417328249047",
+    "from_team": "4000000000000000000000",
+    "holder": "0x708119149a9e4915fb918b3aff8052f750aacbba",
+    "ok": true,
+    "payee": "0xd8834fb21396dfcca2d1c317294458e9ab2b69b4",
+    "r_balance": "14000000000000000000000",
+    "share": "76354289887284706",
+    "start_balance": "10000000000000000000000"
+   },
+   "payout": {
+    "to": "0xd8834fb21396dfcca2d1c317294458e9ab2b69b4",
+    "amount": "76354289887284706",
+    "delivered": true,
+    "why": "",
+    "recipient_delta": "76354289887284706",
+    "contract_delta": "-76354289887284706",
+    "self_paid": false,
+    "fee": "126764750000823",
+    "arrived": true
+   },
+   "expected": {
+    "from_team": "4000000000000000000000",
+    "balance": "6000000000000000000000"
+   },
+   "at": "2026-11-12T17:14:07.674Z"
+  },
+  {
+   "id": "claim_holder2",
+   "what": "holder2 claims: the team's zero-value transfer changed nothing (paid on all 20,000)",
+   "ok": true,
+   "tx": "0x2b3b626d956a44a7ab07148387ba62bca31c1f896694d81e512fc36a8c0ffa1d",
+   "status": "FINALIZED",
+   "returned": {
+    "balance": "20000000000000000000000",
+    "bond_id": 1,
+    "denominator": "157162092892417328249047",
+    "from_team": "0",
+    "holder": "0x3d8481f9393f8909166206d9ff3b6063b0b7cb74",
+    "ok": true,
+    "payee": "0x3d8481f9393f8909166206d9ff3b6063b0b7cb74",
+    "r_balance": "20000000000000000000000",
+    "share": "254514299624282353",
+    "start_balance": "20000000000000000000000"
+   },
+   "payout": {
+    "to": "0x3d8481f9393f8909166206d9ff3b6063b0b7cb74",
+    "amount": "254514299624282353",
+    "delivered": true,
+    "why": "",
+    "recipient_delta": "254387614374281530",
+    "contract_delta": "-254514299624282353",
+    "self_paid": true,
+    "fee": "126685250000823",
+    "arrived": true
+   },
+   "expected": {
+    "from_team": "0",
+    "balance": "20000000000000000000000"
+   },
+   "at": "2026-11-12T17:16:01.130Z"
+  },
+  {
+   "id": "claim_holder3",
+   "what": "holder3 claims: the team's 1 wei transfer cost 1 wei (paid on 30,000 minus 1 wei)",
+   "ok": true,
+   "tx": "0x1f1eb4766b3e8c6ec17c40082bc8ca64daa19232fc1ca8116e3403632db77166",
+   "status": "FINALIZED",
+   "returned": {
+    "balance": "29999999999999999999999",
+    "bond_id": 1,
+    "denominator": "157162092892417328249047",
+    "from_team": "1",
+    "holder": "0x22d1455fd917f494b847b6fdabe78258b84d3a3c",
+    "ok": true,
+    "payee": "0x22d1455fd917f494b847b6fdabe78258b84d3a3c",
+    "r_balance": "30000000000000000000001",
+    "share": "381771449436423530",
+    "start_balance": "30000000000000000000000"
+   },
+   "payout": {
+    "to": "0x22d1455fd917f494b847b6fdabe78258b84d3a3c",
+    "amount": "381771449436423530",
+    "delivered": true,
+    "why": "",
+    "recipient_delta": "381644763936422707",
+    "contract_delta": "-381771449436423530",
+    "self_paid": true,
+    "fee": "126685500000823",
+    "arrived": true
+   },
+   "expected": {
+    "from_team": "1",
+    "balance": "29999999999999999999999"
+   },
+   "at": "2026-11-12T17:17:57.627Z"
+  },
+  {
+   "id": "refuse_double",
+   "what": "holder2 claims again: ALREADY_CLAIMED",
+   "ok": true,
+   "tx": "0x8ca7f349349f8f927ad7493d16827f9b1165a0996cb5474032dd18c5c537bd1f",
+   "status": "ACCEPTED",
+   "reason": "REFUSED: ALREADY_CLAIMED",
+   "at": "2026-11-12T17:18:09.279Z"
+  },
+  {
+   "id": "refuse_excluded",
+   "what": "the excluded stranger: EXCLUDED_ADDRESS",
+   "ok": true,
+   "tx": "0x4a6c98cffb05e89db607137900055a0102a6f9889e2e1526b23c43fca49d548e",
+   "status": "ACCEPTED",
+   "reason": "REFUSED: EXCLUDED_ADDRESS",
+   "at": "2026-11-12T17:18:21.944Z"
+  },
+  {
+   "id": "refuse_team_funded",
+   "what": "holder5, a fresh wallet the team funded after the start: NO_BALANCE_AT_START_AND_R_MINUS_1",
+   "ok": true,
+   "tx": "0x33f82bc36d2bfb8c9f7b84a03dd5312fe823a2cb5d820c30824edae5e1073b75",
+   "status": "ACCEPTED",
+   "reason": "REFUSED: NO_BALANCE_AT_START_AND_R_MINUS_1",
+   "at": "2026-11-12T17:18:32.663Z"
+  },
+  {
+   "id": "refuse_bought_after_start",
+   "what": "the deployer bought after the start: NO_BALANCE_AT_START_AND_R_MINUS_1",
+   "ok": true,
+   "tx": "0x6809f57eadbac03471ded5c3123ea663a27b1b7e9c96f034ac4f72c1b2db49e8",
+   "status": "ACCEPTED",
+   "reason": "REFUSED: NO_BALANCE_AT_START_AND_R_MINUS_1",
+   "at": "2026-11-12T17:18:52.425Z"
+  },
+  {
+   "id": "refuse_team",
+   "what": "the team: EXCLUDED_ADDRESS",
+   "ok": true,
+   "tx": "0x0db3b476477216a6c36323bb776214cc3d538f54ba8f6de9758f582f00c56338",
+   "status": "ACCEPTED",
+   "reason": "REFUSED: EXCLUDED_ADDRESS",
+   "at": "2026-11-12T17:19:04.719Z"
+  },
+  {
+   "id": "refuse_wrong_bond",
+   "what": "holder1 claims on bond B (not rugged): BOND_IS_ACTIVE",
+   "ok": true,
+   "tx": "0x9471631c05e9657279a49a232c6b3395c88d6338c649b0cafe41ef0f47775775",
+   "status": "ACCEPTED",
+   "reason": "REFUSED: BOND_IS_ACTIVE",
+   "at": "2026-11-12T17:19:16.794Z"
+  },
+  {
+   "id": "refuse_beneficiary_twice",
+   "what": "holder1 commits a second beneficiary: refused",
+   "ok": true,
+   "tx": "0xd51a716f76d2d93b057541334969edabde1e42892ab6f6b0d302bb80b01a6b77",
+   "status": "ACCEPTED",
+   "reason": "REFUSED: BENEFICIARY_ALREADY_COMMITTED",
+   "at": "2026-11-12T17:19:31.142Z"
+  },
+  {
+   "id": "gate_active",
+   "what": "LaunchGate on bond A: RUGGED_PAYING once the rug is read; the real team is not safe, a copycat team neither",
+   "ok": true,
+   "check_for": {
+    "amount": "2000000000000000000",
+    "bond_id": 1,
+    "chain": "base-sepolia",
+    "claim_deadline": 1794504785,
+    "cursor_ts": 1794501979,
+    "rug_block": 57900553,
+    "safe": false,
+    "state": "RUGGED_PAYING",
+    "status": "RUGGED",
+    "team": "0x6365881b460e79216303fc370348ca857d8da9ef",
+    "token": "0x5690d05bbb8940ce98c62b09e120cc4e3f0b4cb7",
+    "why": ""
+   },
+   "is_safe_for": {
+    "bonds": [
+     {
+      "bond_id": 1,
+      "state": "RUGGED_PAYING",
+      "why": ""
+     }
+    ],
+    "safe": false,
+    "state": "RUGGED_PAYING",
+    "team": "0x6365881b460e79216303fc370348ca857d8da9ef",
+    "token": "0x5690d05bbb8940ce98c62b09e120cc4e3f0b4cb7",
+    "why": ""
+   },
+   "wrong_token": {
+    "amount": "2000000000000000000",
+    "bond_id": 1,
+    "chain": "base-sepolia",
+    "claim_deadline": 1794504785,
+    "cursor_ts": 1794501979,
+    "rug_block": 57900553,
+    "safe": false,
+    "state": "NO_BOND",
+    "status": "RUGGED",
+    "team": "0x6365881b460e79216303fc370348ca857d8da9ef",
+    "token": "0xe2dc055adc53676add2d3f8fef09f713b4dbc8af",
+    "why": "the bond is for another token"
+   },
+   "at": "2026-11-12T17:19:35.214Z"
+  },
+  {
+   "id": "gate_attest",
+   "what": "LaunchGate: attest(RUGDEMO, A) stored on chain",
+   "ok": true,
+   "tx": "0x5a7cf28681ab999234e4c35cf7e769fda882e8c287d1f824a4acaba4e756f311",
+   "returned": {
+    "attestation_id": 1,
+    "ok": true,
+    "safe": false,
+    "state": "RUGGED_PAYING"
+   },
+   "at": "2026-11-12T17:19:47.511Z"
+  },
+  {
+   "id": "held_B",
+   "what": "rug checks on bond B (flooded with 1,100 LP transfers out) until HELD",
+   "ok": true,
+   "status": "HELD",
+   "checks": [
+    {
+     "tx": "0x68bc04c98765c402b4c37c38213f9057f44360c7eb92fabeb322face934ea868",
+     "ok": true,
+     "reason": ".\bcheck_id\u0019\u0006cursor����\u0001\tcursor_ts�Խ�5\u0002ok\u0010\u0006result<SCANNED",
+     "result": "SCANNED"
+    },
+    {
+     "tx": "0xd97ed6c609752fc58098067a3693263939754c7801c00149b09fc353b3d73f7b",
+     "ok": true,
+     "reason": ".\bcheck_id!\u0006cursor����\u0001\tcursor_ts�Խ�5\u0002ok\u0010\u0006result<SCANNED",
+     "result": "SCANNED"
+    },
+    {
+     "tx": "0x8cd07f41db31301982072937f4f087d8e634106371e1381d3889fe30f44aaa70",
+     "ok": true,
+     "reason": ".\bcheck_id)\u0006cursor����\u0001\tcursor_ts�Խ�5\u0002ok\u0010\u0006result<SCANNED",
+     "result": "SCANNED"
+    },
+    {
+     "tx": "0x5e5d39025f9f6b5d2e8e1b946da475ae50ce21e0c644b15b5d12b2337e4a3a70",
+     "ok": true,
+     "reason": ".\bcheck_id1\u0006cursor����\u0001\tcursor_ts�Խ�5\u0002ok\u0010\u0006result<SCANNED",
+     "result": "SCANNED"
+    },
+    {
+     "tx": "0x9b133e302002d1e8a4274f41067b3e2de44798d9eac72fa305eb47c61cc96ace",
+     "ok": true,
+     "reason": ".\bcheck_id9\u0006cursor����\u0001\tcursor_ts����5\u0002ok\u0010\u0006result<SCANNED",
+     "result": "SCANNED"
+    },
+    {
+     "tx": "0x05a664c41473323de75853f7c8a78da4b55e1d04e0ed4c18bd4ecffb807b7199",
+     "ok": false,
+     "reason": "REFUSED: NOTHING_NEW_FINALIZED",
+     "result": ""
+    },
+    {
+     "tx": "0x55fd6601b90e44ba54c8ae513631a65958d81b0b74a56f49c809744ac548d5ce",
+     "ok": false,
+     "reason": "REFUSED: NOTHING_NEW_FINALIZED",
+     "result": ""
+    },
+    {
+     "tx": "0x140034cb39ed9e7c5b8e1a59facfb319428bc120c2f4d0d93a12599dde0d0454",
+     "ok": true,
+     "reason": ".\bcheck_idA\u0006cursor����\u0001\tcursor_ts����5\u0002ok\u0010\u0006result<SCANNED",
+     "result": "SCANNED"
+    },
+    {
+     "tx": "0x4ec4f33b9702c78a7d7dbe9e1ea82b4735ccf59a0ed4c55aec1e87e98d1f80e4",
+     "ok": false,
+     "reason": "REFUSED: NOTHING_NEW_FINALIZED",
+     "result": ""
+    },
+    {
+     "tx": "0x4d60b0d1c830c5ac995294b56a28f5d41fb53d22b950265575cc6cdc960338ae",
+     "ok": true,
+     "reason": ".\bcheck_idI\u0006cursor����\u0001\tcursor_ts�ƾ�5\u0002ok\u0010\u0006result<SCANNED",
+     "result": "SCANNED"
+    },
+    {
+     "tx": "0x5fac228ba480789060eafc024103906df6f9856833130a3f377d72a458476573",
+     "ok": false,
+     "reason": "REFUSED: NOTHING_NEW_FINALIZED",
+     "result": ""
+    },
+    {
+     "tx": "0xb3365af09ec9baac1c6e9aaaf2202d99bd18f652b0799a78aa833d77836814c5",
+     "ok": false,
+     "reason": "REFUSED: NOTHING_NEW_FINALIZED",
+     "result": ""
+    },
+    {
+     "tx": "0x78ff0d890b2f5d0aa164cb13e5c82f3440d1ed7c16dd67d03a379f1441813a67",
+     "ok": true,
+     "reason": ".\bcheck_idQ\u0006cursor����\u0001\tcursor_ts�Ծ�5\u0002ok\u0010\u0006result<SCANNED",
+     "result": "SCANNED"
+    },
+    {
+     "tx": "0x49a315b260c28d9496406d20249a83939d8547a78374b4c3617d862708647af0",
+     "ok": false,
+     "reason": "REFUSED: NOTHING_NEW_FINALIZED",
+     "result": ""
+    },
+    {
+     "tx": "0xe2daae4ac3b85b4fea4202a41efab6a3c7cd0a3d575761a3200a72e90411a16a",
+     "ok": true,
+     "reason": ".\bcheck_idY\u0006cursorф��\u0001\tcursor_ts����5\u0002ok\u0010\u0006result<SCANNED",
+     "result": "SCANNED"
+    },
+    {
+     "tx": "0x44c95896a7f0066f6eb9c5fa1b27f7588f6318211d3349077dd8c7b678a272fa",
+     "ok": false,
+     "reason": "REFUSED: NOTHING_NEW_FINALIZED",
+     "result": ""
+    },
+    {
+     "tx": "0x6f2baa7766bfa3e044b83c82c5c680b88745f322e10981255ea456bb969540c8",
+     "ok": false,
+     "reason": "REFUSED: NOTHING_NEW_FINALIZED",
+     "result": ""
+    },
+    {
+     "tx": "0xb82bf356ad0bd2f122309160ec649052f161599150e9ae580d581fbec2946649",
+     "ok": true,
+     "reason": ".\bcheck_ida\u0006cursor����\u0001\tcursor_tsɅ��5\u0002ok\u0010\u0006result$HELD",
+     "result": "HELD"
+    }
+   ],
+   "rug_block": 0,
+   "cursor": 57914623,
+   "lp_transfers_scanned": 1100,
+   "checks_with_transfers": [
+    {
+     "check_id": 3,
+     "a": 57899851,
+     "b": 57900450,
+     "n_logs": 220,
+     "probes": 2,
+     "result": "SCANNED"
+    },
+    {
+     "check_id": 4,
+     "a": 57900451,
+     "b": 57900458,
+     "n_logs": 220,
+     "probes": 0,
+     "result": "SCANNED"
+    },
+    {
+     "check_id": 5,
+     "a": 57900459,
+     "b": 57900471,
+     "n_logs": 220,
+     "probes": 0,
+     "result": "SCANNED"
+    },
+    {
+     "check_id": 6,
+     "a": 57900472,
+     "b": 57900479,
+     "n_logs": 220,
+     "probes": 0,
+     "result": "SCANNED"
+    },
+    {
+     "check_id": 7,
+     "a": 57900480,
+     "b": 57905813,
+     "n_logs": 220,
+     "probes": 0,
+     "result": "SCANNED"
+    }
+   ],
+   "lp_low": "38729833462074166751",
+   "min_lp": "34856850115866751065",
+   "lp_minted": "38729833462074167851",
+   "at": "2026-11-12T17:58:58.721Z"
+  },
+  {
+   "id": "gate_held",
+   "what": "LaunchGate: HELD_FINAL",
+   "ok": true,
+   "check_for": {
+    "amount": "1000000000000000000",
+    "bond_id": 2,
+    "chain": "base-sepolia",
+    "claim_deadline": 0,
+    "cursor_ts": 1794504793,
+    "rug_block": 0,
+    "safe": false,
+    "state": "HELD_FINAL",
+    "status": "HELD",
+    "team": "0xcdb369f092f67edf02fc987394115d6f62b71ce6",
+    "token": "0xe2dc055adc53676add2d3f8fef09f713b4dbc8af",
+    "why": ""
+   },
+   "at": "2026-11-12T17:59:00.270Z"
+  },
+  {
+   "id": "settle_B",
+   "what": "settle B: the bond back to team2",
+   "ok": true,
+   "tx": "0x074cf6c69ab97d4d6189ba2817144a2309efdbe17434a9d8e8328cd0e14b0666",
+   "status": "FINALIZED",
+   "returned": {
+    "amount": "1000000000000000000",
+    "bond_id": 2,
+    "ok": true,
+    "status": "RETURNED",
+    "to": "0xcdb369f092f67edf02fc987394115d6f62b71ce6"
+   },
+   "payout": {
+    "to": "0xcdb369f092f67edf02fc987394115d6f62b71ce6",
+    "amount": "1000000000000000000",
+    "delivered": true,
+    "why": "",
+    "recipient_delta": "1000000000000000000",
+    "contract_delta": "-1000000000000000000",
+    "self_paid": false,
+    "fee": "126309000000823",
+    "arrived": true
+   },
+   "at": "2026-11-12T17:59:47.360Z"
+  },
+  {
+   "id": "wait_window_A",
+   "what": "wait for bond A's claim window to end",
+   "ok": true,
+   "claim_deadline": 1794504785,
+   "at": "2026-11-12T17:59:48.304Z"
+  },
+  {
+   "id": "refuse_late",
+   "what": "holder4 claims after the window: CLAIM_WINDOW_OVER",
+   "ok": true,
+   "tx": "0xc54265250e64297e9674a9c531334fa42f982886e29eff00c701ecce66395bb8",
+   "status": "ACCEPTED",
+   "reason": "REFUSED: CLAIM_WINDOW_OVER",
+   "at": "2026-11-12T18:00:01.145Z"
+  },
+  {
+   "id": "settle_A_unclaimed_to_fund",
+   "what": "settle A (called by the team itself): everything nobody claimed goes to the registry's fund; no claimant is paid again",
+   "ok": true,
+   "tx": "0xdadfce53b194c5d3247d90b7d28d35e0972d4cb3b6ab430a5ccb818831548e68",
+   "status": "FINALIZED",
+   "returned": {
+    "amount": "1287359961052009411",
+    "bond_id": 1,
+    "ok": true,
+    "status": "CLOSED",
+    "to": "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7"
+   },
+   "payout": {
+    "to": "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7",
+    "amount": "1287359961052009411",
+    "delivered": true,
+    "why": "",
+    "recipient_delta": "1287359961052009411",
+    "contract_delta": "-1287359961052009411",
+    "self_paid": false,
+    "fee": "126307500000823",
+    "arrived": true
+   },
+   "unclaimed": "1287359961052009411",
+   "claimants_delta": {
+    "holder2": "0",
+    "holder3": "0"
+   },
+   "claims": 3,
+   "at": "2026-11-12T18:00:49.621Z"
+  },
+  {
+   "id": "refuse_settle_twice",
+   "what": "settle A again: BOND_IS_CLOSED",
+   "ok": true,
+   "tx": "0x84fc3de890054d1cfa8f65873134f4000bfb0b6c33dd73a4506558bbdca9ea83",
+   "status": "ACCEPTED",
+   "reason": "REFUSED: BOND_IS_CLOSED",
+   "at": "2026-11-12T18:01:02.112Z"
+  },
+  {
+   "id": "no_bonus_A",
+   "what": "bond A: every claimant holds exactly its own share (bond x eligible / claimable supply), although only 3 holders claimed",
+   "ok": true,
+   "claims": [
+    {
+     "holder": "holder1",
+     "eligible": "6000000000000000000000",
+     "share": "76354289887284706",
+     "expected": "76354289887284706",
+     "ok": true
+    },
+    {
+     "holder": "holder2",
+     "eligible": "20000000000000000000000",
+     "share": "254514299624282353",
+     "expected": "254514299624282353",
+     "ok": true
+    },
+    {
+     "holder": "holder3",
+     "eligible": "29999999999999999999999",
+     "share": "381771449436423530",
+     "expected": "381771449436423530",
+     "ok": true
+    }
+   ],
+   "at": "2026-11-12T18:01:05.255Z"
+  },
+  {
+   "id": "conservation_A",
+   "what": "bond A: claims + the registry's fund = the bond; nothing went to the team",
+   "ok": true,
+   "amount": "2000000000000000000",
+   "claims_paid": "712640038947990589",
+   "to_fund": "1287359961052009411",
+   "settled_to": "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7",
+   "at": "2026-11-12T18:01:06.108Z"
+  },
+  {
+   "id": "gate_closed",
+   "what": "LaunchGate: RUGGED_CLOSED",
+   "ok": true,
+   "check_for": {
+    "amount": "2000000000000000000",
+    "bond_id": 1,
+    "chain": "base-sepolia",
+    "claim_deadline": 1794504785,
+    "cursor_ts": 1794501979,
+    "rug_block": 57900553,
+    "safe": false,
+    "state": "RUGGED_CLOSED",
+    "status": "CLOSED",
+    "team": "0x6365881b460e79216303fc370348ca857d8da9ef",
+    "token": "0x5690d05bbb8940ce98c62b09e120cc4e3f0b4cb7",
+    "why": ""
+   },
+   "at": "2026-11-12T18:01:06.986Z"
+  },
+  {
+   "id": "copycat_unresolved",
+   "what": "the copycat bond had no check for its whole recovery window: checks are refused, settle sends it to the registry's fund (UNRESOLVED)",
+   "ok": true,
+   "tx": "0x3591d5195c01c3b899f6d0f399bb362a938ec5b9c61779e152e3b293511fb52c",
+   "status": "FINALIZED",
+   "returned": {
+    "amount": "10000000000000000",
+    "bond_id": 3,
+    "ok": true,
+    "status": "UNRESOLVED",
+    "to": "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7"
+   },
+   "payout": {
+    "to": "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7",
+    "amount": "10000000000000000",
+    "delivered": true,
+    "why": "",
+    "recipient_delta": "10000000000000000",
+    "contract_delta": "-10000000000000000",
+    "self_paid": false,
+    "fee": "126307750000823",
+    "arrived": true
+   },
+   "refused_check": {
+    "ok": true,
+    "tx": "0x455953fef2117a13d6b9ee12e42e9967b512b826134884f99ffe8f857b222ba9",
+    "status": "ACCEPTED",
+    "reason": "REFUSED: RECOVERY_WINDOW_OVER_SETTLE_IT"
+   },
+   "recovery_deadline": 1794507332,
+   "at": "2026-11-13T04:56:09.502Z"
+  },
+  {
+   "id": "open_E",
+   "what": "a stranger bonds RUGDEMO again (its liquidity is already gone); nobody will claim",
+   "ok": true,
+   "tx": "0x58caacec6013557dd597d838222fba51b868f2d6f6508d9157dd1f4a6d611d43",
+   "bond_id": 6,
+   "at": "2026-11-13T04:56:23.294Z"
+  },
+  {
+   "id": "nobody_claimed_E",
+   "what": "bond E: RUGGED, nobody claims in its window, settle sends the whole bond to the registry's fund",
+   "ok": true,
+   "tx": "0xc863884888120ab79eb9b10ed38cdc8df68bf23ef6e8e1b409c8d1b6d418b476",
+   "status": "FINALIZED",
+   "returned": {
+    "amount": "10000000000000000",
+    "bond_id": 6,
+    "ok": true,
+    "status": "CLOSED",
+    "to": "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7"
+   },
+   "payout": {
+    "to": "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7",
+    "amount": "10000000000000000",
+    "delivered": true,
+    "why": "",
+    "recipient_delta": "10000000000000000",
+    "contract_delta": "-10000000000000000",
+    "self_paid": false,
+    "fee": "126308000000823",
+    "arrived": true
+   },
+   "rug_block": 57900553,
+   "at": "2026-11-13T04:59:58.596Z"
+  },
+  {
+   "id": "lapsed_D_7",
+   "what": "bond 7 (a HOLDDEMO short bond) had no check for its whole recovery window while the machine running the demo slept: settle sends it to the registry's fund (UNRESOLVED); the step is run again with a new bond",
+   "ok": true,
+   "status": "UNRESOLVED",
+   "actions": [
+    {
+     "action": "settle -> registry fund",
+     "ok": true,
+     "tx": "0x115474a7cd46f6313fc5bcd95112c38812647f1ab661bb5ec37a2b02485b84c2",
+     "status": "FINALIZED",
+     "returned": {
+      "amount": "500000000000000000",
+      "bond_id": 7,
+      "ok": true,
+      "status": "UNRESOLVED",
+      "to": "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7"
+     },
+     "payout": {
+      "to": "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7",
+      "amount": "500000000000000000",
+      "delivered": true,
+      "why": "",
+      "recipient_delta": "500000000000000000",
+      "contract_delta": "0",
+      "self_paid": false,
+      "fee": "126307500000823",
+      "arrived": true
+     }
+    }
+   ],
+   "bond_id": 7,
+   "recovery_deadline": 1794553255,
+   "at": "2026-11-13T08:18:47.259Z",
+   "note": "registry delta 0 over this interval: the e2e run's bond 8 (0.5 GEN in) was posted while this settle (0.5 GEN out) finalized; the payout is proved by its delivery and the fund's balance delta, and the registry's ledger is checked at balance_zero_end"
+  },
+  {
+   "id": "open_D",
+   "what": "team2 opens a second HOLDDEMO bond (ends in about an hour)",
+   "ok": true,
+   "tx": "0xb1ea2639c0fac899bc7ca0d71cde68cfd1baddbbabb2f2a8dbf791325527a829",
+   "bond_id": 9,
+   "start_block": 58180527,
+   "at": "2026-11-13T08:19:49.171Z"
+  },
+  {
+   "id": "check_D",
+   "what": "the first check of bond D (SCANNED while the promise runs)",
+   "ok": true,
+   "tx": "0xd6e60cfb77e5885c7ba419479d11905647380f7973d88575c876ce19ac64180f",
+   "returned": {
+    "check_id": 23,
+    "cursor": 58182345,
+    "cursor_ts": 1794558337,
+    "ok": true,
+    "result": "SCANNED"
+   },
+   "at": "2026-11-13T08:47:09.425Z"
+  },
+  {
+   "id": "gate_active_D",
+   "what": "LaunchGate: check_for(HOLDDEMO, D) is ACTIVE_HELD_SO_FAR and safe; a copycat team and another token are not",
+   "ok": true,
+   "check_for": {
+    "amount": "500000000000000000",
+    "bond_id": 9,
+    "chain": "base-sepolia",
+    "claim_deadline": 0,
+    "cursor_ts": 1794558337,
+    "rug_block": 0,
+    "safe": true,
+    "state": "ACTIVE_HELD_SO_FAR",
+    "status": "ACTIVE",
+    "team": "0xcdb369f092f67edf02fc987394115d6f62b71ce6",
+    "token": "0xe2dc055adc53676add2d3f8fef09f713b4dbc8af",
+    "why": ""
+   },
+   "is_safe_for": {
+    "bonds": [
+     {
+      "bond_id": 2,
+      "state": "HELD_FINAL",
+      "why": ""
+     },
+     {
+      "bond_id": 7,
+      "state": "PENDING",
+      "why": "status UNRESOLVED"
+     },
+     {
+      "bond_id": 9,
+      "state": "ACTIVE_HELD_SO_FAR",
+      "why": ""
+     }
+    ],
+    "safe": false,
+    "state": "PENDING",
+    "team": "0xcdb369f092f67edf02fc987394115d6f62b71ce6",
+    "token": "0xe2dc055adc53676add2d3f8fef09f713b4dbc8af",
+    "why": ""
+   },
+   "team_has_unresolved_bond": true,
+   "wrong_token": {
+    "amount": "500000000000000000",
+    "bond_id": 9,
+    "chain": "base-sepolia",
+    "claim_deadline": 0,
+    "cursor_ts": 1794558337,
+    "rug_block": 0,
+    "safe": false,
+    "state": "NO_BOND",
+    "status": "ACTIVE",
+    "team": "0xcdb369f092f67edf02fc987394115d6f62b71ce6",
+    "token": "0x5690d05bbb8940ce98c62b09e120cc4e3f0b4cb7",
+    "why": "the bond is for another token"
+   },
+   "copycat_team": {
+    "bonds": [],
+    "safe": false,
+    "state": "NO_BOND",
+    "team": "0x0a24216da7e0bbbb224a9f9847f87cf64c18177e",
+    "token": "0xe2dc055adc53676add2d3f8fef09f713b4dbc8af",
+    "why": "no bond of this team for this token"
+   },
+   "attest_tx": "0x7e02f8a458c09f07c586571a17f7fab82d5c18cbaae9db9a7988055def686f57",
+   "at": "2026-11-13T08:51:08.396Z"
+  },
+  {
+   "id": "held_D",
+   "what": "rug checks on bond D until HELD",
+   "ok": true,
+   "status": "HELD",
+   "checks": [
+    {
+     "tx": "0xddd1393444cc41c89128b2ed261708275435bf0e9a5a2071eda2c1bf0d4abe47",
+     "ok": true,
+     "reason": ".\bcheck_id�\u0001\u0006cursor����\u0001\tcursor_ts�ڽ5\u0002ok\u0010\u0006result<SCANNED",
+     "result": "SCANNED"
+    },
+    {
+     "tx": "0x8d3e0a3f0301f6b0aaef7aa81a08fa2ff71e3823bfe4c1bb8896aa9ec808d95f",
+     "ok": false,
+     "reason": "REFUSED: NOTHING_NEW_FINALIZED",
+     "result": ""
+    },
+    {
+     "tx": "0x5b62ab6aabc8e30abe71dd9cfa2ca80b3264765c80890a53bf9dc02153dac847",
+     "ok": true,
+     "reason": ".\bcheck_id�\u0001\u0006cursor���\u0001\tcursor_ts��ڽ5\u0002ok\u0010\u0006result<SCANNED",
+     "result": "SCANNED"
+    },
+    {
+     "tx": "0xdfc2886a65706367206fe3d597be9e5b6c6169ac2ab664910d090f58305fa140",
+     "ok": false,
+     "reason": "REFUSED: NOTHING_NEW_FINALIZED",
+     "result": ""
+    },
+    {
+     "tx": "0x756d822757b70ee46dae9618124a41c35befb16330b5fa6d8157e0f790f11c71",
+     "ok": true,
+     "reason": ".\bcheck_id�\u0001\u0006cursor����\u0001\tcursor_ts�ڽ5\u0002ok\u0010\u0006result<SCANNED",
+     "result": "SCANNED"
+    },
+    {
+     "tx": "0x208331bce3af8730dcf7cebbdf352c06b8aed93f3c9092049548df66592b0b0d",
+     "ok": false,
+     "reason": "REFUSED: NOTHING_NEW_FINALIZED",
+     "result": ""
+    },
+    {
+     "tx": "0x3dd909dcd5a9403998f28a2751b67d7d092f85a833f6c09d90af8e9882b7442b",
+     "ok": false,
+     "reason": "REFUSED: NOTHING_NEW_FINALIZED",
+     "result": ""
+    },
+    {
+     "tx": "0xa5d5319181755ea652f5f3a061c13ad63bbe0db2b16c87bb6bf5f0f0a5bcb4c6",
+     "ok": true,
+     "reason": ".\bcheck_id�\u0001\u0006cursor���\u0001\tcursor_ts��ڽ5\u0002ok\u0010\u0006result<SCANNED",
+     "result": "SCANNED"
+    },
+    {
+     "tx": "0x39d957120d55c5df5a0fbac908ece12178616b9b4db1931b4048e6b18cb4b53c",
+     "ok": false,
+     "reason": "REFUSED: NOTHING_NEW_FINALIZED",
+     "result": ""
+    },
+    {
+     "tx": "0x3d28c94c544c7a088c596346652ed1c77dc1e6f47e1164f21fa91ee6fa46f01c",
+     "ok": true,
+     "reason": ".\bcheck_id�\u0002\u0006cursor���\u0001\tcursor_ts��ڽ5\u0002ok\u0010\u0006result$HELD",
+     "result": "HELD"
+    }
+   ],
+   "rug_block": 0,
+   "cursor": 58199800,
+   "at": "2026-11-13T09:44:09.453Z"
+  },
+  {
+   "id": "settle_D",
+   "what": "settle D: the bond back to team2",
+   "ok": true,
+   "tx": "0x86efc245b5a9c8b39592a21fbb6c18070aae89822c0b8691495ea0ad4fee831b",
+   "status": "FINALIZED",
+   "returned": {
+    "amount": "500000000000000000",
+    "bond_id": 9,
+    "ok": true,
+    "status": "RETURNED",
+    "to": "0xcdb369f092f67edf02fc987394115d6f62b71ce6"
+   },
+   "payout": {
+    "to": "0xcdb369f092f67edf02fc987394115d6f62b71ce6",
+    "amount": "500000000000000000",
+    "delivered": true,
+    "why": "",
+    "recipient_delta": "500000000000000000",
+    "contract_delta": "-500000000000000000",
+    "self_paid": false,
+    "fee": "126307750000823",
+    "arrived": true
+   },
+   "at": "2026-11-13T09:44:59.456Z"
+  },
+  {
+   "id": "balance_zero_end",
+   "what": "the demo registry's balance is 0 at the end (after the e2e run's bonds close too)",
+   "ok": true,
+   "eth_getBalance": "0",
+   "fund": "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7",
+   "fund_balance": "4728359961052009413",
+   "stats": {
+    "balance": "0",
+    "bonds": 9,
+    "checks": 32,
+    "claims_paid_total": "1112640038947990589",
+    "counts": {
+     "beneficiaries": 1,
+     "bonds": 9,
+     "checks": 32,
+     "checks_pending": 0,
+     "checks_scanned": 26,
+     "claims": 4,
+     "create_refused": 1,
+     "credit_withdrawals": 1,
+     "held": 3,
+     "rugged": 3,
+     "settles": 9,
+     "sweeps": 0,
+     "void": 0
+    },
+    "credit_owed_total": "0",
+    "credit_paid_total": "10000000000000000",
+    "fund_total": "2907359961052009411",
+    "held": "0",
+    "open_total": "0",
+    "received_total": "6030000000000000000",
+    "returned_total": "2000000000000000000",
+    "stray_swept_total": "0"
+   },
+   "leftovers": [
+    {
+     "bond_id": 4,
+     "name": "E2EDEMO5 liquidity bond 57900710",
+     "ok": true,
+     "status": "CLOSED",
+     "actions": [
+      {
+       "action": "settle -> registry fund",
+       "ok": true,
+       "tx": "0xb903be3f43aea4003431071dcf9d1847d4a7f6b4bc72f6b5d2ac2057fcf115a4",
+       "status": "FINALIZED",
+       "returned": {
+        "amount": "600000000000000000",
+        "bond_id": 4,
+        "ok": true,
+        "status": "CLOSED",
+        "to": "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7"
+       },
+       "payout": {
+        "to": "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7",
+        "amount": "600000000000000000",
+        "delivered": true,
+        "why": "",
+        "recipient_delta": "600000000000000000",
+        "contract_delta": "-600000000000000000",
+        "self_paid": false,
+        "fee": "126307500000823",
+        "arrived": true
+       }
+      }
+     ]
+    },
+    {
+     "bond_id": 5,
+     "name": "e2e bond 57922958",
+     "ok": true,
+     "status": "UNRESOLVED",
+     "actions": [
+      {
+       "action": "settle -> registry fund",
+       "ok": true,
+       "tx": "0x954e1e243978a96ea16753fcce4f7087caf1cdf94654c4d3836aa36e060aca05",
+       "status": "FINALIZED",
+       "returned": {
+        "amount": "500000000000000000",
+        "bond_id": 5,
+        "ok": true,
+        "status": "UNRESOLVED",
+        "to": "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7"
+       },
+       "payout": {
+        "to": "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7",
+        "amount": "500000000000000000",
+        "delivered": true,
+        "why": "",
+        "recipient_delta": "500000000000000000",
+        "contract_delta": "-500000000000000000",
+        "self_paid": false,
+        "fee": "126307750000823",
+        "arrived": true
+       }
+      }
+     ]
+    }
+   ],
+   "bonds": [
+    {
+     "bond_id": 1,
+     "name": "RUGDEMO liquidity bond",
+     "team": "0x6365881b460e79216303fc370348ca857d8da9ef",
+     "status": "CLOSED",
+     "amount": "2000000000000000000",
+     "paid": "712640038947990589",
+     "settled_to": "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7",
+     "settled_amount": "1287359961052009411",
+     "rug_block": 57900553
+    },
+    {
+     "bond_id": 2,
+     "name": "HOLDDEMO liquidity bond",
+     "team": "0xcdb369f092f67edf02fc987394115d6f62b71ce6",
+     "status": "RETURNED",
+     "amount": "1000000000000000000",
+     "paid": "0",
+     "settled_to": "0xcdb369f092f67edf02fc987394115d6f62b71ce6",
+     "settled_amount": "1000000000000000000",
+     "rug_block": 0
+    },
+    {
+     "bond_id": 3,
+     "name": "RUGDEMO copycat",
+     "team": "0x0a24216da7e0bbbb224a9f9847f87cf64c18177e",
+     "status": "UNRESOLVED",
+     "amount": "10000000000000000",
+     "paid": "0",
+     "settled_to": "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7",
+     "settled_amount": "10000000000000000",
+     "rug_block": 0
+    },
+    {
+     "bond_id": 4,
+     "name": "E2EDEMO5 liquidity bond 57900710",
+     "team": "0x6365881b460e79216303fc370348ca857d8da9ef",
+     "status": "CLOSED",
+     "amount": "1000000000000000000",
+     "paid": "400000000000000000",
+     "settled_to": "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7",
+     "settled_amount": "600000000000000000",
+     "rug_block": 57901008
+    },
+    {
+     "bond_id": 5,
+     "name": "e2e bond 57922958",
+     "team": "0xca0881c0403e080e7099a4351710eed0f22fb991",
+     "status": "UNRESOLVED",
+     "amount": "500000000000000000",
+     "paid": "0",
+     "settled_to": "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7",
+     "settled_amount": "500000000000000000",
+     "rug_block": 0
+    },
+    {
+     "bond_id": 6,
+     "name": "RUGDEMO unclaimed 57899851",
+     "team": "0x0a24216da7e0bbbb224a9f9847f87cf64c18177e",
+     "status": "CLOSED",
+     "amount": "10000000000000000",
+     "paid": "0",
+     "settled_to": "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7",
+     "settled_amount": "10000000000000000",
+     "rug_block": 57900553
+    },
+    {
+     "bond_id": 7,
+     "name": "HOLDDEMO short bond 58120654",
+     "team": "0xcdb369f092f67edf02fc987394115d6f62b71ce6",
+     "status": "UNRESOLVED",
+     "amount": "500000000000000000",
+     "paid": "0",
+     "settled_to": "0x9459cb7725ebcbdcda8c4fc679f495e45855c9a7",
+     "settled_amount": "500000000000000000",
+     "rug_block": 0
+    },
+    {
+     "bond_id": 8,
+     "name": "e2e bond 58180103",
+     "team": "0xca0881c0403e080e7099a4351710eed0f22fb991",
+     "status": "RETURNED",
+     "amount": "500000000000000000",
+     "paid": "0",
+     "settled_to": "0xca0881c0403e080e7099a4351710eed0f22fb991",
+     "settled_amount": "500000000000000000",
+     "rug_block": 0
+    },
+    {
+     "bond_id": 9,
+     "name": "HOLDDEMO short bond 58180527",
+     "team": "0xcdb369f092f67edf02fc987394115d6f62b71ce6",
+     "status": "RETURNED",
+     "amount": "500000000000000000",
+     "paid": "0",
+     "settled_to": "0xcdb369f092f67edf02fc987394115d6f62b71ce6",
+     "settled_amount": "500000000000000000",
+     "rug_block": 0
+    }
+   ],
+   "at": "2026-11-13T09:47:56.977Z"
   }
  ],
  "bonds": {
   "A": 1,
   "B": 2,
-  "C": 3
+  "C": 3,
+  "E": 6,
+  "D": 9
  },
  "start_block": 57899851
 }

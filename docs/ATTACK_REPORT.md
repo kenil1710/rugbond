@@ -63,6 +63,25 @@ What a strict reviewer found in the code as deployed from `9c8495e`.
 The other notes of that review (R2 to R6, R8) describe where the rule ends, not defects; they are listed with the
 scope boundaries below.
 
+## Third strict review, of the code deployed from `db54703`
+
+The same review once more, on the registries without redistribution. **No High, Medium or Low finding.** What was
+checked:
+
+| question | answer | pinned by |
+|---|---|---|
+| Can turnout, an early claim or a short claim window pay any claimant more than bond x eligible / claimable supply? | No. `claim` computes one share from the stored bond amount and denominator and pays it once; no later payment to a claimant exists in the code | test_claims Unclaimed: low_turnout_gives_no_bonus, turnout_never_changes_a_share, no_redistribution_in_the_code; the demo's no_bonus_A |
+| Can a team, a settler or a claimant choose where unclaimed GEN goes? | No. `settle` takes a bond id only and pays the team (HELD, VOID) or the fund stored by the constructor | test_claims Unclaimed: settler_cannot_redirect, fund_is_fixed_at_deployment, bad_fund_refused_at_deployment |
+| Does every wei leave? | received = held + claims + returned + to the fund + credits paid + swept; rounding stays in the bond and goes to the fund with the rest | test_claims Conservation, Unclaimed.test_rounding_goes_to_the_fund; conservation_A and balance_zero_end in the demo |
+| Is there a status with no exit after REDISTRIBUTING was removed? | No: ACTIVE, RUGGED, HELD and VOID each settle once into UNRESOLVED, CLOSED or RETURNED; LaunchGate reads an unknown status as PENDING, never as safe | test_claims Settle, test_gate |
+| Do validators still take nothing from the leader? | Unchanged from C3: range, span and lower bound come from storage; a leader's failure is accepted only if the validator's own read fails | Direct Mode validator tests |
+
+One observation from this round's demo, not a defect: the run was interrupted for hours (the machine driving it
+slept, and Studio Dev stopped answering for a while), and two demo bonds whose liquidity was never pulled went
+without a check for their whole recovery window (1 hour on the demo registry). They settled as UNRESOLVED to the
+registry's fund, exactly as the rule says, and LaunchGate stopped calling their team safe by team. The demo records
+it (docs/DEMO.md, `lapsed_D_7`; docs/e2e/summary.json, `lapsed`). It is the boundary R3 below, seen live.
+
 ## Scope boundaries
 
 - **Wallets funded before the start block.** A wallet holding tokens at the start block is a holder like any other,
@@ -74,8 +93,9 @@ scope boundaries below.
   `get_config` publishes it. On these testnet deployments it is a throwaway address; a production registry would be
   deployed with a public, jointly held one.
 - **A bond needs a check inside its recovery window** (R3). A bond whose cursor no check has moved for the whole
-  window (7 days on the canonical registry) is UNRESOLVED and goes to the registry's fund, not to holders, even if
-  its liquidity was pulled. Anyone can file a check and the keeper files them hourly.
+  window (7 days on the canonical registry) is UNRESOLVED and goes to the registry's fund: not to holders even if its
+  liquidity was pulled, and not back to the team even if the promise held. Anyone can file a check, the team
+  included, and the keeper files them hourly.
 - **A claim is never paid on a guess** (R4). More team transfers to one holder in a single block than an endpoint
   returns leave that holder's claim PENDING, never a wrong share
   (`test_more_dust_in_one_block_than_an_endpoint_returns_is_pending_not_a_wrong_share`); it takes thousands of

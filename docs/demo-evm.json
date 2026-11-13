@@ -184,6 +184,38 @@
    "status": "success",
    "block": 57900672,
    "address": "0xdeaf47231c24e50cb4782cbb1eeb364520c37e0c"
+  },
+  "approve_E2EDEMO5": {
+   "tx": "0xbfbc870e0fefdb061a673555350def529c7fa1d0d44a360c8a8800c0b36049cc",
+   "status": "success",
+   "block": 57900679
+  },
+  "liquidity_E2EDEMO5": {
+   "tx": "0xcf30cf857803458338b735ae4ae51afdbd2a18e0487277a5bd373816150c6b8e",
+   "status": "success",
+   "block": 57900685,
+   "pair": "0x6c1f76df0b05ac6ca4aa8e22b4dce479fabaabf6",
+   "lp": "31622776601683792319"
+  },
+  "send_E2EDEMO5_wallet": {
+   "tx": "0xe57328c57c0917c42223ec87e34fa081647ce7a082e5baef8471e657d8e5773d",
+   "status": "success",
+   "block": 57900693
+  },
+  "send_E2EDEMO5_holder1": {
+   "tx": "0x9446cc5efef95f4d3d21be4bf0a8c56e6684bbde999196fb423712adc5eeba5a",
+   "status": "success",
+   "block": 57900699
+  },
+  "approve_lp_E2EDEMO5": {
+   "tx": "0xcb12138cdb2f0d8b0b07264386065defe434240d2c8dbee631539e23309a3271",
+   "status": "success",
+   "block": 57901002
+  },
+  "rug_E2EDEMO5": {
+   "tx": "0x3aafa8ca0dfb9e001037eee29b94af784396f6257580f25a708d67dd0478e9dc",
+   "status": "success",
+   "block": 57901008
   }
  },
  "RUGDEMO": {
@@ -236,5 +268,17 @@
    ],
    "lp_after": "38729833462074166751"
   }
+ },
+ "E2EDEMO5": {
+  "token": "0xdeaf47231c24e50cb4782cbb1eeb364520c37e0c",
+  "pair": "0x6c1f76df0b05ac6ca4aa8e22b4dce479fabaabf6",
+  "team": "0x6365881b460e79216303fc370348ca857d8da9ef",
+  "lp_minted": "31622776601683792319",
+  "wallet": "0xca0881c0403e080e7099a4351710eed0f22fb991",
+  "bond_id": 4,
+  "start_block": 57900710,
+  "bond_tx": "0x72bee717c946b5adfb8cc5f459b384eb0483e965da041d91cd2e8f75b08fc558",
+  "rug_block": 57901008,
+  "rug_tx": "0x3aafa8ca0dfb9e001037eee29b94af784396f6257580f25a708d67dd0478e9dc"
  }
 }
