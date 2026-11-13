@@ -1,21 +1,21 @@
 {
  "keeper": "0xfEC989fC1176c5524C3b20ef2c09bca724d6BD4e",
- "started_at": "2026-11-13T02:40:15.368Z",
+ "started_at": "2026-11-13T07:19:40.785Z",
  "contracts": {
   "RugBond": {
    "address": "0x8295e5EE6dd5e74a2Ad4704B6025Ae4f2EcA1086",
    "last_run": {
-    "started_at": 1794537615,
-    "finished_at": 1794537850,
+    "started_at": 1794554380,
+    "finished_at": 1794554431,
     "resumed": 0,
     "bonds": 17,
     "pages": 1,
     "pages_failed": 0,
     "heads_failed": 0,
-    "queued": 6,
+    "queued": 1,
     "requeued": 0,
-    "submitted": 6,
-    "done": 6,
+    "submitted": 1,
+    "done": 1,
     "already": 0,
     "pending": 0,
     "failed": 0,
@@ -23,8 +23,8 @@
     "errors": []
    },
    "totals": {
-    "actions": 40,
-    "done": 40,
+    "actions": 41,
+    "done": 41,
     "queued": 0,
     "pending": 0,
     "retry": 0,
@@ -34,13 +34,13 @@
      "RUGGED": 11,
      "HELD": 6,
      "CLOSED": 11,
-     "RETURNED": 5,
+     "RETURNED": 6,
      "SCANNED": 1
     }
    },
    "bonds": {
     "1": {
-     "status": "RUGGED",
+     "status": "CLOSED",
      "chain": "ethereum",
      "token": "0xd4f45dd47dd476378ee1b06f6a57be4ebc0f7199",
      "cursor": 25723942,
@@ -48,11 +48,11 @@
      "n_checks": 2,
      "n_pending": 1,
      "last_result": "RUGGED",
-     "due": "FUND",
+     "due": "",
      "name": "Replay eth-01 0xd4f45d"
     },
     "2": {
-     "status": "RUGGED",
+     "status": "CLOSED",
      "chain": "ethereum",
      "token": "0x89d3a86b3dd25a8d58b8e390abb2a805d0e88dff",
      "cursor": 25707553,
@@ -60,7 +60,7 @@
      "n_checks": 2,
      "n_pending": 1,
      "last_result": "RUGGED",
-     "due": "FUND",
+     "due": "",
      "name": "Replay eth-02 0x89d3a8"
     },
     "3": {
@@ -100,7 +100,7 @@
      "name": "Replay eth-05 0x2c127a"
     },
     "6": {
-     "status": "RUGGED",
+     "status": "CLOSED",
      "chain": "ethereum",
      "token": "0xa5084c8d45c05560aecaf533982bd6e5210bf770",
      "cursor": 25712799,
@@ -108,11 +108,11 @@
      "n_checks": 2,
      "n_pending": 1,
      "last_result": "RUGGED",
-     "due": "FUND",
+     "due": "",
      "name": "Replay eth-06 0xa5084c"
     },
     "7": {
-     "status": "RUGGED",
+     "status": "CLOSED",
      "chain": "ethereum",
      "token": "0xd9536442ebe8bc674107a0b1383f847a3aaa4d48",
      "cursor": 25707372,
@@ -120,7 +120,7 @@
      "n_checks": 2,
      "n_pending": 1,
      "last_result": "RUGGED",
-     "due": "FUND",
+     "due": "",
      "name": "Replay eth-07 0xd95364"
     },
     "8": {
@@ -172,15 +172,15 @@
      "name": "Replay eth-17 0xff8691"
     },
     "12": {
-     "status": "ACTIVE",
+     "status": "HELD",
      "chain": "ethereum",
      "token": "0xbeec04b78c6795bdb7f92e3f9789591081cbb609",
-     "cursor": 25547196,
-     "cursor_ts": 1784228591,
-     "n_checks": 2,
+     "cursor": 25627196,
+     "cursor_ts": 1785192023,
+     "n_checks": 3,
      "n_pending": 1,
-     "last_result": "SCANNED",
-     "due": "",
+     "last_result": "HELD",
+     "due": "RETURN",
      "name": "Replay eth-18 0xbeec04"
     },
     "13": {
@@ -232,7 +232,7 @@
      "name": "Replay eth-22 0x4e9fcc"
     },
     "17": {
-     "status": "RUGGED",
+     "status": "CLOSED",
      "chain": "ethereum",
      "token": "0xc2742418134519e3b4a66b088e3c398f9f1214eb",
      "cursor": 25704885,
@@ -240,7 +240,7 @@
      "n_checks": 2,
      "n_pending": 1,
      "last_result": "RUGGED",
-     "due": "FUND",
+     "due": "",
      "name": "Replay eth-23 0xc27424"
     }
    },
@@ -645,6 +645,16 @@
      "tx": "0x75304343ac235b252a01232b8abee1828f92834cebaa7a49c7481f62ebcd4631",
      "attempts": 0,
      "last_error": ""
+    },
+    {
+     "key": "settle:12",
+     "kind": "SETTLE",
+     "bond_id": 12,
+     "status": "DONE",
+     "result": "RETURNED",
+     "tx": "0x1f5d51a8934422f31595b7326e99116397fd2fbe8d12f073ce4610aec1f5aebe",
+     "attempts": 0,
+     "last_error": ""
     }
    ]
   },
@@ -787,8 +797,8 @@
   "RugBond@0x24ff68A1": {
    "address": "0x24ff68A1adc70B9EA9eEE518a5f912ce65eb2CAE",
    "last_run": {
-    "started_at": 1794537852,
-    "finished_at": 1794537852,
+    "started_at": 1794554432,
+    "finished_at": 1794554433,
     "resumed": 0,
     "bonds": 17,
     "pages": 1,
@@ -1025,8 +1035,8 @@
   "RugBond@0x07ED5695": {
    "address": "0x07ED56951513d01B06f350476C4501015256aB2c",
    "last_run": {
-    "started_at": 1794537854,
-    "finished_at": 1794537855,
+    "started_at": 1794554434,
+    "finished_at": 1794554435,
     "resumed": 0,
     "bonds": 17,
     "pages": 1,
@@ -1656,8 +1666,8 @@
   "RugBond@0x4D2a5e25": {
    "address": "0x4D2a5e250a419b1D1798E103F80A23aC5be59a23",
    "last_run": {
-    "started_at": 1794537856,
-    "finished_at": 1794537858,
+    "started_at": 1794554436,
+    "finished_at": 1794554437,
     "resumed": 0,
     "bonds": 17,
     "pages": 1,
@@ -2425,8 +2435,8 @@
   "RugBond@0x42f22d3C": {
    "address": "0x42f22d3C3d782E678C0561217276be836cba93fb",
    "last_run": {
-    "started_at": 1794537859,
-    "finished_at": 1794537859,
+    "started_at": 1794554438,
+    "finished_at": 1794554439,
     "resumed": 0,
     "bonds": 17,
     "pages": 1,
@@ -3029,9 +3039,9 @@
    ]
   }
  },
- "finished_at": "2026-11-13T02:44:21.184Z",
+ "finished_at": "2026-11-13T07:20:41.068Z",
  "trigger": "schedule",
- "run_url": "https://github.com/kenil1710/rugbond/actions/runs/43353743060",
+ "run_url": "https://github.com/kenil1710/rugbond/actions/runs/43384933626",
  "history": [
   {
    "started_at": "2026-11-10T12:51:34.472Z",
@@ -3966,6 +3976,68 @@
     "RugBond": {
      "submitted": 6,
      "done": 6,
+     "pages": 1,
+     "pages_failed": 0
+    },
+    "RugBondDemo": {
+     "submitted": 0,
+     "done": 0,
+     "pages": 1,
+     "pages_failed": 0
+    },
+    "RugBond@0x24ff68A1": {
+     "submitted": 0,
+     "done": 0,
+     "pages": 1,
+     "pages_failed": 0
+    },
+    "RugBond@0x07ED5695": {
+     "submitted": 0,
+     "done": 0,
+     "pages": 1,
+     "pages_failed": 0
+    },
+    "RugBondDemo@0xbaa8FD3e": {
+     "submitted": 0,
+     "done": 0,
+     "pages": 1,
+     "pages_failed": 0
+    },
+    "RugBondDemo@0x6dfF7cFE": {
+     "submitted": 0,
+     "done": 0,
+     "pages": 1,
+     "pages_failed": 0
+    },
+    "RugBond@0x4D2a5e25": {
+     "submitted": 0,
+     "done": 0,
+     "pages": 1,
+     "pages_failed": 0
+    },
+    "RugBondDemo@0x3491AAC8": {
+     "submitted": 0,
+     "done": 0,
+     "pages": 1,
+     "pages_failed": 0
+    },
+    "RugBond@0x42f22d3C": {
+     "submitted": 0,
+     "done": 0,
+     "pages": 1,
+     "pages_failed": 0
+    }
+   }
+  },
+  {
+   "started_at": "2026-11-13T07:19:40.785Z",
+   "finished_at": "2026-11-13T07:20:41.068Z",
+   "trigger": "schedule",
+   "run_url": "https://github.com/kenil1710/rugbond/actions/runs/43384933626",
+   "runs": {
+    "RugBond": {
+     "submitted": 1,
+     "done": 1,
      "pages": 1,
      "pages_failed": 0
     },
