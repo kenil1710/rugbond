@@ -16,6 +16,45 @@
    "claims_paid": "712640038947990589",
    "claims_offset": 3,
    "claims_seen": 3
+  },
+  "2": {
+   "status": "RETURNED",
+   "chain": "base-sepolia",
+   "token": "0xe2dc055adc53676add2d3f8fef09f713b4dbc8af",
+   "cursor": 57914623,
+   "cursor_ts": 1794504793,
+   "n_checks": 10,
+   "n_pending": 0,
+   "last_result": "HELD",
+   "due": "",
+   "name": "HOLDDEMO liquidity bond"
+  },
+  "3": {
+   "status": "UNRESOLVED",
+   "chain": "base-sepolia",
+   "token": "0x5690d05bbb8940ce98c62b09e120cc4e3f0b4cb7",
+   "cursor": 0,
+   "cursor_ts": 0,
+   "n_checks": 0,
+   "n_pending": 0,
+   "last_result": "",
+   "due": "",
+   "name": "RUGDEMO copycat"
+  },
+  "4": {
+   "status": "CLOSED",
+   "chain": "base-sepolia",
+   "token": "0xdeaf47231c24e50cb4782cbb1eeb364520c37e0c",
+   "cursor": 57901008,
+   "cursor_ts": 1794502070,
+   "n_checks": 1,
+   "n_pending": 0,
+   "last_result": "RUGGED",
+   "due": "",
+   "name": "E2EDEMO5 liquidity bond 57900710",
+   "claims_paid": "400000000000000000",
+   "claims_offset": 1,
+   "claims_seen": 1
   }
  },
  "actions": {},
@@ -27,5 +66,5 @@
  "contract": "RugBondDemo",
  "address": "0xFf72e30494D0026DE964870F04f4Fba84F3543CE",
  "keeper": "0xfEC989fC1176c5524C3b20ef2c09bca724d6BD4e",
- "saved_at": "2026-11-13T11:11:12.061Z"
+ "saved_at": "2026-11-13T11:11:12.709Z"
 }
