@@ -1,21 +1,21 @@
 {
  "keeper": "0xfEC989fC1176c5524C3b20ef2c09bca724d6BD4e",
- "started_at": "2026-11-13T07:19:40.785Z",
+ "started_at": "2026-11-13T11:11:06.787Z",
  "contracts": {
   "RugBond": {
    "address": "0x8295e5EE6dd5e74a2Ad4704B6025Ae4f2EcA1086",
    "last_run": {
-    "started_at": 1794554380,
-    "finished_at": 1794554431,
+    "started_at": 1794568266,
+    "finished_at": 1794568269,
     "resumed": 0,
     "bonds": 17,
     "pages": 1,
     "pages_failed": 0,
     "heads_failed": 0,
-    "queued": 1,
+    "queued": 0,
     "requeued": 0,
-    "submitted": 1,
-    "done": 1,
+    "submitted": 0,
+    "done": 0,
     "already": 0,
     "pending": 0,
     "failed": 0,
@@ -172,7 +172,7 @@
      "name": "Replay eth-17 0xff8691"
     },
     "12": {
-     "status": "HELD",
+     "status": "RETURNED",
      "chain": "ethereum",
      "token": "0xbeec04b78c6795bdb7f92e3f9789591081cbb609",
      "cursor": 25627196,
@@ -180,7 +180,7 @@
      "n_checks": 3,
      "n_pending": 1,
      "last_result": "HELD",
-     "due": "RETURN",
+     "due": "",
      "name": "Replay eth-18 0xbeec04"
     },
     "13": {
@@ -659,13 +659,13 @@
    ]
   },
   "RugBondDemo": {
-   "address": "0x40aB41033194DFA35aeF2e7b295eFe3AF6ab5715",
+   "address": "0xFf72e30494D0026DE964870F04f4Fba84F3543CE",
    "last_run": {
-    "started_at": 1794499461,
-    "finished_at": 1794499462,
+    "started_at": 1794568270,
+    "finished_at": 1794568272,
     "resumed": 0,
-    "bonds": 8,
-    "pages": 1,
+    "bonds": 9,
+    "pages": 3,
     "pages_failed": 0,
     "heads_failed": 0,
     "queued": 0,
@@ -691,10 +691,10 @@
     "1": {
      "status": "CLOSED",
      "chain": "base-sepolia",
-     "token": "0xc9b2a82a6e75b7746f95ca69f3348e3c809d0e4b",
-     "cursor": 57689336,
-     "cursor_ts": 1794459736,
-     "n_checks": 2,
+     "token": "0x5690d05bbb8940ce98c62b09e120cc4e3f0b4cb7",
+     "cursor": 57900553,
+     "cursor_ts": 1794501979,
+     "n_checks": 1,
      "n_pending": 0,
      "last_result": "RUGGED",
      "due": "",
@@ -706,10 +706,10 @@
     "2": {
      "status": "RETURNED",
      "chain": "base-sepolia",
-     "token": "0xc18d3969d66f8c87f95dc14d550e99882699855f",
-     "cursor": 57715638,
-     "cursor_ts": 1794464996,
-     "n_checks": 9,
+     "token": "0xe2dc055adc53676add2d3f8fef09f713b4dbc8af",
+     "cursor": 57914623,
+     "cursor_ts": 1794504793,
+     "n_checks": 10,
      "n_pending": 0,
      "last_result": "HELD",
      "due": "",
@@ -718,7 +718,7 @@
     "3": {
      "status": "UNRESOLVED",
      "chain": "base-sepolia",
-     "token": "0xc9b2a82a6e75b7746f95ca69f3348e3c809d0e4b",
+     "token": "0x5690d05bbb8940ce98c62b09e120cc4e3f0b4cb7",
      "cursor": 0,
      "cursor_ts": 0,
      "n_checks": 0,
@@ -730,65 +730,77 @@
     "4": {
      "status": "CLOSED",
      "chain": "base-sepolia",
-     "token": "0xc9b2a82a6e75b7746f95ca69f3348e3c809d0e4b",
-     "cursor": 57689336,
-     "cursor_ts": 1794459736,
+     "token": "0xdeaf47231c24e50cb4782cbb1eeb364520c37e0c",
+     "cursor": 57901008,
+     "cursor_ts": 1794502070,
      "n_checks": 1,
      "n_pending": 0,
      "last_result": "RUGGED",
      "due": "",
-     "name": "RUGDEMO unclaimed 57688320"
-    },
-    "5": {
-     "status": "CLOSED",
-     "chain": "base-sepolia",
-     "token": "0xa9acd221a0c809a1eb2ce829ff07e5b0e493ee4a",
-     "cursor": 57765384,
-     "cursor_ts": 1794474945,
-     "n_checks": 2,
-     "n_pending": 0,
-     "last_result": "RUGGED",
-     "due": "",
-     "name": "E2EDEMO4 liquidity bond 57765134",
+     "name": "E2EDEMO5 liquidity bond 57900710",
      "claims_paid": "400000000000000000",
      "claims_offset": 1,
      "claims_seen": 1
     },
-    "6": {
-     "status": "RETURNED",
+    "5": {
+     "status": "UNRESOLVED",
      "chain": "base-sepolia",
-     "token": "0xc18d3969d66f8c87f95dc14d550e99882699855f",
-     "cursor": 57784846,
-     "cursor_ts": 1794478838,
-     "n_checks": 10,
+     "token": "0xe2dc055adc53676add2d3f8fef09f713b4dbc8af",
+     "cursor": 0,
+     "cursor_ts": 0,
+     "n_checks": 0,
      "n_pending": 0,
-     "last_result": "HELD",
+     "last_result": "",
      "due": "",
-     "name": "HOLDDEMO short bond 57765837"
+     "name": "e2e bond 57922958"
+    },
+    "6": {
+     "status": "CLOSED",
+     "chain": "base-sepolia",
+     "token": "0x5690d05bbb8940ce98c62b09e120cc4e3f0b4cb7",
+     "cursor": 57900553,
+     "cursor_ts": 1794501979,
+     "n_checks": 1,
+     "n_pending": 0,
+     "last_result": "RUGGED",
+     "due": "",
+     "name": "RUGDEMO unclaimed 57899851"
     },
     "7": {
-     "status": "RETURNED",
+     "status": "UNRESOLVED",
      "chain": "base-sepolia",
-     "token": "0xc18d3969d66f8c87f95dc14d550e99882699855f",
-     "cursor": 57777229,
-     "cursor_ts": 1794477314,
-     "n_checks": 2,
+     "token": "0xe2dc055adc53676add2d3f8fef09f713b4dbc8af",
+     "cursor": 58132533,
+     "cursor_ts": 1794548375,
+     "n_checks": 7,
      "n_pending": 0,
-     "last_result": "HELD",
+     "last_result": "SCANNED",
      "due": "",
-     "name": "e2e bond 57774306"
+     "name": "HOLDDEMO short bond 58120654"
     },
     "8": {
      "status": "RETURNED",
      "chain": "base-sepolia",
-     "token": "0xc18d3969d66f8c87f95dc14d550e99882699855f",
-     "cursor": 57796020,
-     "cursor_ts": 1794481072,
+     "token": "0xe2dc055adc53676add2d3f8fef09f713b4dbc8af",
+     "cursor": 58182345,
+     "cursor_ts": 1794558337,
      "n_checks": 2,
      "n_pending": 0,
      "last_result": "HELD",
      "due": "",
-     "name": "e2e bond 57793839"
+     "name": "e2e bond 58180103"
+    },
+    "9": {
+     "status": "RETURNED",
+     "chain": "base-sepolia",
+     "token": "0xe2dc055adc53676add2d3f8fef09f713b4dbc8af",
+     "cursor": 58199800,
+     "cursor_ts": 1794561828,
+     "n_checks": 10,
+     "n_pending": 0,
+     "last_result": "HELD",
+     "due": "",
+     "name": "HOLDDEMO short bond 58180527"
     }
    },
    "unprocessed": [],
@@ -797,8 +809,8 @@
   "RugBond@0x24ff68A1": {
    "address": "0x24ff68A1adc70B9EA9eEE518a5f912ce65eb2CAE",
    "last_run": {
-    "started_at": 1794554432,
-    "finished_at": 1794554433,
+    "started_at": 1794568273,
+    "finished_at": 1794568275,
     "resumed": 0,
     "bonds": 17,
     "pages": 1,
@@ -1035,8 +1047,8 @@
   "RugBond@0x07ED5695": {
    "address": "0x07ED56951513d01B06f350476C4501015256aB2c",
    "last_run": {
-    "started_at": 1794554434,
-    "finished_at": 1794554435,
+    "started_at": 1794568278,
+    "finished_at": 1794568279,
     "resumed": 0,
     "bonds": 17,
     "pages": 1,
@@ -1530,8 +1542,8 @@
   "RugBondDemo@0xbaa8FD3e": {
    "address": "0xbaa8FD3ecdCef962A59cc71a335B81E0Cf9b5016",
    "last_run": {
-    "started_at": 1794499465,
-    "finished_at": 1794499466,
+    "started_at": 1794568276,
+    "finished_at": 1794568276,
     "resumed": 0,
     "bonds": 0,
     "pages": 1,
@@ -1563,8 +1575,8 @@
   "RugBondDemo@0x6dfF7cFE": {
    "address": "0x6dfF7cFEb1e4e13b7FAC28e0CDf7807a742b9dA6",
    "last_run": {
-    "started_at": 1794499470,
-    "finished_at": 1794499471,
+    "started_at": 1794568280,
+    "finished_at": 1794568281,
     "resumed": 0,
     "bonds": 3,
     "pages": 1,
@@ -1666,8 +1678,8 @@
   "RugBond@0x4D2a5e25": {
    "address": "0x4D2a5e250a419b1D1798E103F80A23aC5be59a23",
    "last_run": {
-    "started_at": 1794554436,
-    "finished_at": 1794554437,
+    "started_at": 1794568282,
+    "finished_at": 1794568284,
     "resumed": 0,
     "bonds": 17,
     "pages": 1,
@@ -2271,8 +2283,8 @@
   "RugBondDemo@0x3491AAC8": {
    "address": "0x3491AAC81ec96B05B50B25AD9F8b3CAeE7fF51b8",
    "last_run": {
-    "started_at": 1794499474,
-    "finished_at": 1794499474,
+    "started_at": 1794568285,
+    "finished_at": 1794568286,
     "resumed": 0,
     "bonds": 9,
     "pages": 1,
@@ -2435,8 +2447,8 @@
   "RugBond@0x42f22d3C": {
    "address": "0x42f22d3C3d782E678C0561217276be836cba93fb",
    "last_run": {
-    "started_at": 1794554438,
-    "finished_at": 1794554439,
+    "started_at": 1794568287,
+    "finished_at": 1794568288,
     "resumed": 0,
     "bonds": 17,
     "pages": 1,
@@ -3037,11 +3049,147 @@
      "last_error": ""
     }
    ]
+  },
+  "RugBondDemo@0x40aB4103": {
+   "address": "0x40aB41033194DFA35aeF2e7b295eFe3AF6ab5715",
+   "last_run": {
+    "started_at": 1794568289,
+    "finished_at": 1794568290,
+    "resumed": 0,
+    "bonds": 8,
+    "pages": 1,
+    "pages_failed": 0,
+    "heads_failed": 0,
+    "queued": 0,
+    "requeued": 0,
+    "submitted": 0,
+    "done": 0,
+    "already": 0,
+    "pending": 0,
+    "failed": 0,
+    "retry": 0,
+    "errors": []
+   },
+   "totals": {
+    "actions": 0,
+    "done": 0,
+    "queued": 0,
+    "pending": 0,
+    "retry": 0,
+    "failed": 0,
+    "by_result": {}
+   },
+   "bonds": {
+    "1": {
+     "status": "CLOSED",
+     "chain": "base-sepolia",
+     "token": "0xc9b2a82a6e75b7746f95ca69f3348e3c809d0e4b",
+     "cursor": 57689336,
+     "cursor_ts": 1794459736,
+     "n_checks": 2,
+     "n_pending": 0,
+     "last_result": "RUGGED",
+     "due": "",
+     "name": "RUGDEMO liquidity bond",
+     "claims_paid": "712640038947990589",
+     "claims_offset": 3,
+     "claims_seen": 3
+    },
+    "2": {
+     "status": "RETURNED",
+     "chain": "base-sepolia",
+     "token": "0xc18d3969d66f8c87f95dc14d550e99882699855f",
+     "cursor": 57715638,
+     "cursor_ts": 1794464996,
+     "n_checks": 9,
+     "n_pending": 0,
+     "last_result": "HELD",
+     "due": "",
+     "name": "HOLDDEMO liquidity bond"
+    },
+    "3": {
+     "status": "UNRESOLVED",
+     "chain": "base-sepolia",
+     "token": "0xc9b2a82a6e75b7746f95ca69f3348e3c809d0e4b",
+     "cursor": 0,
+     "cursor_ts": 0,
+     "n_checks": 0,
+     "n_pending": 0,
+     "last_result": "",
+     "due": "",
+     "name": "RUGDEMO copycat"
+    },
+    "4": {
+     "status": "CLOSED",
+     "chain": "base-sepolia",
+     "token": "0xc9b2a82a6e75b7746f95ca69f3348e3c809d0e4b",
+     "cursor": 57689336,
+     "cursor_ts": 1794459736,
+     "n_checks": 1,
+     "n_pending": 0,
+     "last_result": "RUGGED",
+     "due": "",
+     "name": "RUGDEMO unclaimed 57688320"
+    },
+    "5": {
+     "status": "CLOSED",
+     "chain": "base-sepolia",
+     "token": "0xa9acd221a0c809a1eb2ce829ff07e5b0e493ee4a",
+     "cursor": 57765384,
+     "cursor_ts": 1794474945,
+     "n_checks": 2,
+     "n_pending": 0,
+     "last_result": "RUGGED",
+     "due": "",
+     "name": "E2EDEMO4 liquidity bond 57765134",
+     "claims_paid": "400000000000000000",
+     "claims_offset": 1,
+     "claims_seen": 1
+    },
+    "6": {
+     "status": "RETURNED",
+     "chain": "base-sepolia",
+     "token": "0xc18d3969d66f8c87f95dc14d550e99882699855f",
+     "cursor": 57784846,
+     "cursor_ts": 1794478838,
+     "n_checks": 10,
+     "n_pending": 0,
+     "last_result": "HELD",
+     "due": "",
+     "name": "HOLDDEMO short bond 57765837"
+    },
+    "7": {
+     "status": "RETURNED",
+     "chain": "base-sepolia",
+     "token": "0xc18d3969d66f8c87f95dc14d550e99882699855f",
+     "cursor": 57777229,
+     "cursor_ts": 1794477314,
+     "n_checks": 2,
+     "n_pending": 0,
+     "last_result": "HELD",
+     "due": "",
+     "name": "e2e bond 57774306"
+    },
+    "8": {
+     "status": "RETURNED",
+     "chain": "base-sepolia",
+     "token": "0xc18d3969d66f8c87f95dc14d550e99882699855f",
+     "cursor": 57796020,
+     "cursor_ts": 1794481072,
+     "n_checks": 2,
+     "n_pending": 0,
+     "last_result": "HELD",
+     "due": "",
+     "name": "e2e bond 57793839"
+    }
+   },
+   "unprocessed": [],
+   "actions": []
   }
  },
- "finished_at": "2026-11-13T07:20:41.068Z",
+ "finished_at": "2026-11-13T11:11:31.936Z",
  "trigger": "schedule",
- "run_url": "https://github.com/kenil1710/rugbond/actions/runs/43384933626",
+ "run_url": "https://github.com/kenil1710/rugbond/actions/runs/43414973033",
  "history": [
   {
    "started_at": "2026-11-10T12:51:34.472Z",
@@ -4084,6 +4232,74 @@
      "pages_failed": 0
     },
     "RugBond@0x42f22d3C": {
+     "submitted": 0,
+     "done": 0,
+     "pages": 1,
+     "pages_failed": 0
+    }
+   }
+  },
+  {
+   "started_at": "2026-11-13T11:11:06.787Z",
+   "finished_at": "2026-11-13T11:11:31.936Z",
+   "trigger": "schedule",
+   "run_url": "https://github.com/kenil1710/rugbond/actions/runs/43414973033",
+   "runs": {
+    "RugBond": {
+     "submitted": 0,
+     "done": 0,
+     "pages": 1,
+     "pages_failed": 0
+    },
+    "RugBondDemo": {
+     "submitted": 0,
+     "done": 0,
+     "pages": 3,
+     "pages_failed": 0
+    },
+    "RugBond@0x24ff68A1": {
+     "submitted": 0,
+     "done": 0,
+     "pages": 1,
+     "pages_failed": 0
+    },
+    "RugBond@0x07ED5695": {
+     "submitted": 0,
+     "done": 0,
+     "pages": 1,
+     "pages_failed": 0
+    },
+    "RugBondDemo@0xbaa8FD3e": {
+     "submitted": 0,
+     "done": 0,
+     "pages": 1,
+     "pages_failed": 0
+    },
+    "RugBondDemo@0x6dfF7cFE": {
+     "submitted": 0,
+     "done": 0,
+     "pages": 1,
+     "pages_failed": 0
+    },
+    "RugBond@0x4D2a5e25": {
+     "submitted": 0,
+     "done": 0,
+     "pages": 1,
+     "pages_failed": 0
+    },
+    "RugBondDemo@0x3491AAC8": {
+     "submitted": 0,
+     "done": 0,
+     "pages": 1,
+     "pages_failed": 0
+    },
+    "RugBond@0x42f22d3C": {
+     "submitted": 0,
+     "done": 0,
+     "pages": 1,
+     "pages_failed": 0
+    },
+    "RugBondDemo@0x40aB4103": {
      "submitted": 0,
      "done": 0,
      "pages": 1,
