@@ -104,6 +104,8 @@ const team = cl("team"), team2 = cl("team2");
 const now = () => Math.floor(Date.now() / 1000);
 const FUND = (await team.view("get_config", [])).fund;
 const E18 = 10n ** 18n;
+const E2E_SUM = new URL("../docs/e2e/summary.json", import.meta.url);
+const E2E_WALLET = existsSync(E2E_SUM) ? (JSON.parse(readFileSync(E2E_SUM)).steps.find((x) => x.step === "wallet")?.address ?? "").toLowerCase() : "";
 const HOLD_FLOOR = ((BigInt(HOLD.lp_minted) * 9n) / 10n).toString();      // HOLDDEMO promises 90% of its LP
 
 /** A write that pays nobody (or must not): finalized, and the registry's balance unchanged. */
@@ -317,7 +319,8 @@ await step("gate_closed", "LaunchGate: RUGGED_CLOSED", async () => {
 //    so it is UNRESOLVED: the whole bond goes to the registry's fund, not to anyone its poster chose
 await step("copycat_unresolved", "the copycat bond had no check for its whole recovery window: checks are refused, settle sends it to the registry's fund (UNRESOLVED)", async () => {
   const C = doc.bonds.C;
-  const b = await team.view("get_bond", [C, now()]);
+  let b = await team.view("get_bond", [C, now()]);
+  while (b.status === "ACTIVE" && b.due !== "FUND" && now() <= b.recovery_deadline + 30) { await sleep(60000); b = await team.view("get_bond", [C, now()]); }
   if (b.status !== "ACTIVE" || b.due !== "FUND") return { ok: false, status: b.status, due: b.due };
   const chk = await refused(cl("keeper"), "check", [C], "RECOVERY_WINDOW_OVER_SETTLE_IT");
   const p = await paying(cl("stranger"), "settle", [C], FUND, (x) => x?.amount);        // its own poster settles it and still cannot redirect it
@@ -345,6 +348,20 @@ await step("nobody_claimed_E", "bond E: RUGGED, nobody claims in its window, set
 });
 
 // 9. a live promise read recently: LaunchGate's ACTIVE_HELD_SO_FAR, then held and settled
+// a bond D left unchecked for its whole recovery window (the machine running this demo slept) is UNRESOLVED like any
+// other: its settle goes to the registry's fund, and the step is run again with a new bond
+if (doc.bonds.D && !done("settle_D")) {
+  const b = await team.view("get_bond", [doc.bonds.D, now()]);
+  if (b.status === "UNRESOLVED" || (b.status === "ACTIVE" && b.due === "FUND")) {
+    const old = doc.bonds.D;
+    await step("lapsed_D_" + old, `bond ${old} (a HOLDDEMO short bond) had no check for its whole recovery window while the machine running the demo slept: settle sends it to the registry's fund (UNRESOLVED); the step is run again with a new bond`, async () => {
+      const p = await closeOut(old);
+      return { ...p, ok: p.ok && p.status === "UNRESOLVED", bond_id: old, recovery_deadline: b.recovery_deadline };
+    });
+    doc.steps = doc.steps.filter((x) => !["open_D", "check_D", "gate_active_D", "held_D"].includes(x.id));
+    delete doc.bonds.D; save();
+  }
+}
 await step("open_D", "team2 opens a second HOLDDEMO bond (ends in about an hour)", async () => {
   const head = Number(runEvm("head").trim());
   const name = "HOLDDEMO short bond " + head;
@@ -368,9 +385,11 @@ await step("gate_active_D", "LaunchGate: check_for(HOLDDEMO, D) is ACTIVE_HELD_S
   const t = await g.view("is_safe_for", [HOLD.token, ad("team2")]);
   const wrong = await g.view("check_for", [RUG.token, doc.bonds.D]);
   const cop = await g.view("is_safe_for", [HOLD.token, ad("stranger")]);
+  // by team: safe only if every bond of that team for the token is; a team with an UNRESOLVED bond (one that lapsed) is not
+  const lapsed = (t.bonds ?? []).some((x) => /UNRESOLVED/.test(x.why ?? ""));
   const w = await g.write("attest", [HOLD.token, doc.bonds.D]);
-  return { ok: a.state === "ACTIVE_HELD_SO_FAR" && a.safe === true && t.safe === true && wrong.state === "NO_BOND" && cop.safe === false && w.returned?.state === "ACTIVE_HELD_SO_FAR",
-    check_for: a, is_safe_for: t, wrong_token: wrong, copycat_team: cop, attest_tx: w.hash };
+  return { ok: a.state === "ACTIVE_HELD_SO_FAR" && a.safe === true && t.safe === !lapsed && wrong.state === "NO_BOND" && cop.safe === false && w.returned?.state === "ACTIVE_HELD_SO_FAR",
+    check_for: a, is_safe_for: t, team_has_unresolved_bond: lapsed, wrong_token: wrong, copycat_team: cop, attest_tx: w.hash };
 });
 await step("held_D", "rug checks on bond D until HELD", () => checkUntil(doc.bonds.D, ["HELD"]));
 await step("settle_D", "settle D: the bond back to team2", () => paying(cl("keeper"), "settle", [doc.bonds.D], ad("team2"), (r) => r?.amount));
@@ -389,6 +408,14 @@ await step("balance_zero_end", "the demo registry's balance is 0 at the end (aft
         console.log("   closed out bond", b.bond_id, p.ok, p.status);
       }
       off = pg.next_offset;
+    }
+    if (E2E_WALLET) {         // an e2e bond that lapsed (no check for its recovery window) goes to the fund here; its held bond the e2e settles itself
+      const pg = await team.view("bonds_by_team", [E2E_WALLET, 0, 50, now()]);
+      for (const b of pg.items) if (b.status === "ACTIVE" && b.due === "FUND" && !leftovers.find((x) => x.bond_id === b.bond_id)) {
+        const p = await closeOut(b.bond_id);
+        leftovers.push({ bond_id: b.bond_id, name: b.name, ...p });
+        console.log("   closed out lapsed e2e bond", b.bond_id, p.ok, p.status);
+      }
     }
     if (i % 10 === 0) console.log("   waiting for open bonds to settle; held", st.held);
     await sleep(60000);

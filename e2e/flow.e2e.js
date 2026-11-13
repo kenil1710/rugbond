@@ -122,7 +122,7 @@ test("rug check, claim, refusal, create, close on the demo registry", async ({ p
   // this wallet already posted is used, never a second one)
   const hold = evm().HOLDDEMO;
   let mine = await view(page, "bonds_by_team", [address.toLowerCase(), 0, 50, Math.floor(Date.now() / 1000)]);
-  let H = mine.items.find((b) => b.name.startsWith("e2e bond ") && ["ACTIVE", "HELD"].includes(b.status))?.bond_id;
+  let H = mine.items.find((b) => b.name.startsWith("e2e bond ") && ["ACTIVE", "HELD"].includes(b.status) && b.due !== "FUND")?.bond_id;   // a lapsed bond (no check for its recovery window) is not used
   if (!H) {
     const headNow = Number(node("test/demo_evm.mjs", "head"));
     await go(page, "/team");
@@ -157,7 +157,7 @@ test("rug check, claim, refusal, create, close on the demo registry", async ({ p
   }
   await expect(statusText(page)).toContainText(/accepted|finalized/i, { timeout: 60_000 });
   let a2 = await balance(address);
-  for (let i = 0; i < 30 && a2 - b2 <= 0n; i++) { await sleep(10_000); a2 = await balance(address); }
+  for (let i = 0; i < 60 && a2 - b2 < 400_000_000_000_000_000n; i++) { await sleep(10_000); a2 = await balance(address); }   // the 0.5 GEN bond less the fee; a fee refund alone is not the payout
   const fin = await view(page, "get_bond", [H, Math.floor(Date.now() / 1000)]);
   await shot(page, "06-closed");
   log("closed", { bond: H, status: fin.status, settled_to: fin.settled_to, amount: fin.settled_amount, wallet_delta: String(a2 - b2) });

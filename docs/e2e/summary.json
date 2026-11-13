@@ -7,6 +7,1018 @@
    "address": "0xCa0881c0403e080e7099A4351710eeD0F22fB991",
    "note": "throwaway key saved in test/.accounts.json by e2e/prepare.mjs before use; funded from the Studio Dev faucet",
    "at": "2026-11-12T16:46:41.038Z"
+  },
+  {
+   "step": "setup",
+   "token": "0xdeaf47231c24e50cb4782cbb1eeb364520c37e0c",
+   "pair": "0x6c1f76df0b05ac6ca4aa8e22b4dce479fabaabf6",
+   "bond": 4,
+   "rug_block": 57901008,
+   "rug_tx": "0x3aafa8ca0dfb9e001037eee29b94af784396f6257580f25a708d67dd0478e9dc",
+   "at": "2026-11-12T16:47:51.820Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xab8408cc\u2026",
+   "at": "2026-11-12T16:48:10.759Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x4a3920d5\u2026",
+   "at": "2026-11-12T16:48:27.840Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xd20f1601\u2026",
+   "at": "2026-11-12T16:48:45.149Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xc67d1d07\u2026",
+   "at": "2026-11-12T16:49:01.432Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x26fd72f1\u2026",
+   "at": "2026-11-12T16:49:24.080Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x8e4f9a80\u2026",
+   "at": "2026-11-12T16:49:40.622Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x48e21e4b\u2026",
+   "at": "2026-11-12T16:49:58.002Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x7c2b926e\u2026",
+   "at": "2026-11-12T16:50:12.366Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xb656440f\u2026",
+   "at": "2026-11-12T16:50:29.829Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x1df5bd7a\u2026",
+   "at": "2026-11-12T16:50:46.591Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x312fa92f\u2026",
+   "at": "2026-11-12T16:51:02.986Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xcb4ea1de\u2026",
+   "at": "2026-11-12T16:51:16.349Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x39bea4aa\u2026",
+   "at": "2026-11-12T16:51:32.192Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x76c9633b\u2026",
+   "at": "2026-11-12T16:51:54.078Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x7dd2a76f\u2026",
+   "at": "2026-11-12T16:52:11.179Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xcc7a7512\u2026",
+   "at": "2026-11-12T16:52:27.723Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xeb3b9816\u2026",
+   "at": "2026-11-12T16:52:40.138Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xea6d4440\u2026",
+   "at": "2026-11-12T16:52:56.913Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x697bae23\u2026",
+   "at": "2026-11-12T16:53:14.699Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x06b3e8e1\u2026",
+   "at": "2026-11-12T16:53:26.929Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x8720ae0c\u2026",
+   "at": "2026-11-12T16:53:42.734Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x1ce7ad5b\u2026",
+   "at": "2026-11-12T16:53:59.599Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x31d9dbe2\u2026",
+   "at": "2026-11-12T16:54:13.178Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xdd3fe0b3\u2026",
+   "at": "2026-11-12T16:54:29.852Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x284e6e63\u2026",
+   "at": "2026-11-12T16:54:47.227Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x529e58f5\u2026",
+   "at": "2026-11-12T16:55:00.409Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xb916a5dd\u2026",
+   "at": "2026-11-12T16:55:16.233Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xfc04e042\u2026",
+   "at": "2026-11-12T16:55:33.719Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x7ab73ab7\u2026",
+   "at": "2026-11-12T16:55:50.488Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xe36a6430\u2026",
+   "at": "2026-11-12T16:56:06.809Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xd5da815f\u2026",
+   "at": "2026-11-12T16:56:24.184Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xf59e49ac\u2026",
+   "at": "2026-11-12T16:56:41.702Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xf12e131b\u2026",
+   "at": "2026-11-12T16:56:58.044Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xda3ad818\u2026",
+   "at": "2026-11-12T16:57:15.373Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xc81f6de8\u2026",
+   "at": "2026-11-12T16:57:30.651Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xe0099903\u2026",
+   "at": "2026-11-12T16:57:47.008Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x79e21972\u2026",
+   "at": "2026-11-12T16:58:03.861Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xcb018569\u2026",
+   "at": "2026-11-12T16:58:20.891Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x4f5a75ba\u2026",
+   "at": "2026-11-12T16:58:43.252Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xa1d60000\u2026",
+   "at": "2026-11-12T16:59:00.079Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x5ed8dc80\u2026",
+   "at": "2026-11-12T16:59:12.393Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x5413f9bb\u2026",
+   "at": "2026-11-12T16:59:28.812Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x0d331eb3\u2026",
+   "at": "2026-11-12T16:59:46.223Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x9d449fba\u2026",
+   "at": "2026-11-12T17:00:02.745Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x52aac52e\u2026",
+   "at": "2026-11-12T17:00:19.951Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x67d7c688\u2026",
+   "at": "2026-11-12T17:00:32.255Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x380d22f2\u2026",
+   "at": "2026-11-12T17:00:49.228Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x8556f8ea\u2026",
+   "at": "2026-11-12T17:01:10.593Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x698d1c86\u2026",
+   "at": "2026-11-12T17:01:22.784Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xc74ea3d2\u2026",
+   "at": "2026-11-12T17:01:39.184Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xa2e5e810\u2026",
+   "at": "2026-11-12T17:01:55.700Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x01fc3489\u2026",
+   "at": "2026-11-12T17:02:08.662Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x4ba924a1\u2026",
+   "at": "2026-11-12T17:02:20.274Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xe2ada935\u2026",
+   "at": "2026-11-12T17:02:37.019Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x1a9d1683\u2026",
+   "at": "2026-11-12T17:02:48.511Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x3e8719bd\u2026",
+   "at": "2026-11-12T17:03:07.310Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xe9e2e1d4\u2026",
+   "at": "2026-11-12T17:03:18.762Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x842541c8\u2026",
+   "at": "2026-11-12T17:03:35.245Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xc8dce469\u2026",
+   "at": "2026-11-12T17:03:52.662Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x16c86b4f\u2026",
+   "at": "2026-11-12T17:04:10.162Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x72d82cc6\u2026",
+   "at": "2026-11-12T17:04:22.228Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x51e96b5c\u2026",
+   "at": "2026-11-12T17:04:39.110Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xbe78008b\u2026",
+   "at": "2026-11-12T17:04:52.459Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x7b6604d8\u2026",
+   "at": "2026-11-12T17:05:03.188Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x72b1d081\u2026",
+   "at": "2026-11-12T17:05:19.523Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xf870b092\u2026",
+   "at": "2026-11-12T17:05:35.951Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xcdc2de68\u2026",
+   "at": "2026-11-12T17:05:52.244Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xe85d0368\u2026",
+   "at": "2026-11-12T17:06:04.490Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x94107a52\u2026",
+   "at": "2026-11-12T17:06:16.086Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x056ef2b7\u2026",
+   "at": "2026-11-12T17:06:33.644Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xd2389a3d\u2026",
+   "at": "2026-11-12T17:06:49.754Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x4f994978\u2026",
+   "at": "2026-11-12T17:07:02.929Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xf49d3f5d\u2026",
+   "at": "2026-11-12T17:07:18.524Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xeab49659\u2026",
+   "at": "2026-11-12T17:07:34.706Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x1101653c\u2026",
+   "at": "2026-11-12T17:07:55.243Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xb74e6632\u2026",
+   "at": "2026-11-12T17:08:12.802Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x92d041ce\u2026",
+   "at": "2026-11-12T17:08:30.137Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x81e675fd\u2026",
+   "at": "2026-11-12T17:08:46.389Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x3f344c7b\u2026",
+   "at": "2026-11-12T17:08:59.501Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xe9f367ac\u2026",
+   "at": "2026-11-12T17:09:11.232Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xa75a83a2\u2026",
+   "at": "2026-11-12T17:09:30.000Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xcd67dc06\u2026",
+   "at": "2026-11-12T17:09:48.305Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xb349a138\u2026",
+   "at": "2026-11-12T17:10:02.353Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xe1e18112\u2026",
+   "at": "2026-11-12T17:10:18.857Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x6bf212a0\u2026",
+   "at": "2026-11-12T17:10:36.321Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xf125b3cf\u2026",
+   "at": "2026-11-12T17:10:57.685Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x12bb3abb\u2026",
+   "at": "2026-11-12T17:11:15.315Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 4,
+   "status": "accepted \u00b7 Accepted. Re-reading the contract to confirm. \u00b7 tx 0xcec37abf\u2026",
+   "at": "2026-11-12T17:11:45.888Z"
+  },
+  {
+   "step": "rugged",
+   "bond": 4,
+   "rug_block": 57901008,
+   "denominator": "50000000000000000000000",
+   "at": "2026-11-12T17:11:52.275Z"
+  },
+  {
+   "step": "claimed",
+   "share": "400000000000000000",
+   "paid_to": "0xca0881c0403e080e7099a4351710eed0f22fb991",
+   "wallet_delta": "499711619500007941",
+   "at": "2026-11-12T17:12:45.423Z"
+  },
+  {
+   "step": "refused",
+   "what": "commit_beneficiary after claiming",
+   "status": "failed \u00b7 REFUSED: ALREADY_CLAIMED",
+   "at": "2026-11-12T17:12:50.464Z"
+  },
+  {
+   "step": "refused",
+   "bond": 1,
+   "what": "claim on a closed bond",
+   "status": "claim button disabled: the bond is CLOSED",
+   "at": "2026-11-12T18:00:58.962Z"
+  },
+  {
+   "step": "created",
+   "bond": 5,
+   "at": "2026-11-12T18:01:20.134Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 5,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x98e4d922\u2026",
+   "at": "2026-11-12T18:01:37.593Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 5,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xc00a28dc\u2026",
+   "at": "2026-11-12T18:01:51.453Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 5,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x02d2be2f\u2026",
+   "at": "2026-11-12T18:02:10.913Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 5,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xde65eb5c\u2026",
+   "at": "2026-11-12T18:02:25.606Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 5,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x4ae4418d\u2026",
+   "at": "2026-11-12T18:02:44.300Z"
+  },
+  {
+   "step": "lapsed",
+   "bond": 5,
+   "note": "Studio Dev stopped answering for hours after this bond was posted and no check reached it within its recovery window; it is UNRESOLVED (its settle goes to the registry's fund) and the create step is run again with a new bond",
+   "at": "2026-11-13T08:30:00.000Z"
+  },
+  {
+   "step": "created",
+   "bond": 8,
+   "at": "2026-11-13T08:18:28.368Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x58ee6d8b\u2026",
+   "at": "2026-11-13T08:18:45.872Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x2540e279\u2026",
+   "at": "2026-11-13T08:19:03.729Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x76e40b6d\u2026",
+   "at": "2026-11-13T08:19:18.159Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x8c7f9380\u2026",
+   "at": "2026-11-13T08:19:35.003Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xddf342fe\u2026",
+   "at": "2026-11-13T08:19:55.916Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x7b2f40e7\u2026",
+   "at": "2026-11-13T08:20:13.668Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x2db9863b\u2026",
+   "at": "2026-11-13T08:20:53.254Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x82a6a4f6\u2026",
+   "at": "2026-11-13T08:22:03.429Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x5283c0e2\u2026",
+   "at": "2026-11-13T08:22:21.091Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x2aa74351\u2026",
+   "at": "2026-11-13T08:22:40.049Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xe214bb13\u2026",
+   "at": "2026-11-13T08:22:57.345Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x0ec82a4f\u2026",
+   "at": "2026-11-13T08:23:48.889Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x63177e1a\u2026",
+   "at": "2026-11-13T08:25:21.302Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xa7052176\u2026",
+   "at": "2026-11-13T08:25:41.594Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x7bc1733d\u2026",
+   "at": "2026-11-13T08:25:59.279Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x50bbcc60\u2026",
+   "at": "2026-11-13T08:26:16.769Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x2f5e8b85\u2026",
+   "at": "2026-11-13T08:26:36.310Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x4bd44f5b\u2026",
+   "at": "2026-11-13T08:26:56.940Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x6586a936\u2026",
+   "at": "2026-11-13T08:27:46.945Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x7e4fa626\u2026",
+   "at": "2026-11-13T08:28:00.417Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xf364cfcc\u2026",
+   "at": "2026-11-13T08:28:18.212Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x91a381d9\u2026",
+   "at": "2026-11-13T08:28:40.797Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xdd9fb5ea\u2026",
+   "at": "2026-11-13T08:29:01.876Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xa4868bf0\u2026",
+   "at": "2026-11-13T08:29:20.917Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xf2ecc854\u2026",
+   "at": "2026-11-13T08:29:35.263Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x331ed0b7\u2026",
+   "at": "2026-11-13T08:29:52.431Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x605a6d0c\u2026",
+   "at": "2026-11-13T08:30:47.259Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x405d960b\u2026",
+   "at": "2026-11-13T08:31:06.609Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xbcd06a5d\u2026",
+   "at": "2026-11-13T08:32:14.709Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x224a4ee2\u2026",
+   "at": "2026-11-13T08:33:08.711Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x34e94bf3\u2026",
+   "at": "2026-11-13T08:33:29.133Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x722ba506\u2026",
+   "at": "2026-11-13T08:34:25.085Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x2fe6188d\u2026",
+   "at": "2026-11-13T08:34:38.759Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x61e35bad\u2026",
+   "at": "2026-11-13T08:34:50.605Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x83cccc1f\u2026",
+   "at": "2026-11-13T08:35:09.442Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xf5094f38\u2026",
+   "at": "2026-11-13T08:35:29.877Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x242fa1a0\u2026",
+   "at": "2026-11-13T08:35:50.286Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xa54f37f6\u2026",
+   "at": "2026-11-13T08:36:03.104Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x4628aacf\u2026",
+   "at": "2026-11-13T08:36:24.988Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x2a48f2c5\u2026",
+   "at": "2026-11-13T08:36:42.468Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x224e85ef\u2026",
+   "at": "2026-11-13T08:36:54.030Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x0ceedabd\u2026",
+   "at": "2026-11-13T08:37:10.895Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x3fc2632e\u2026",
+   "at": "2026-11-13T08:37:23.680Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x28a08e13\u2026",
+   "at": "2026-11-13T08:37:39.650Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xdc24d665\u2026",
+   "at": "2026-11-13T08:37:51.969Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x6408972a\u2026",
+   "at": "2026-11-13T08:38:15.141Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x95c6096f\u2026",
+   "at": "2026-11-13T08:38:33.474Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "accepted \u00b7 Accepted. Re-reading the contract to confirm. \u00b7 tx 0xb9c07e1b\u2026",
+   "at": "2026-11-13T08:39:35.345Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xcfc1430d\u2026",
+   "at": "2026-11-13T08:39:58.821Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x9e43208c\u2026",
+   "at": "2026-11-13T08:40:18.768Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x30b3ca03\u2026",
+   "at": "2026-11-13T08:40:37.649Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x12e3d342\u2026",
+   "at": "2026-11-13T08:40:56.562Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x57ef268e\u2026",
+   "at": "2026-11-13T08:41:12.572Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x4c02d255\u2026",
+   "at": "2026-11-13T08:41:32.895Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xd05c47d5\u2026",
+   "at": "2026-11-13T08:41:55.715Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xd7476f5b\u2026",
+   "at": "2026-11-13T08:42:15.785Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xc18b56d5\u2026",
+   "at": "2026-11-13T08:42:35.517Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x14ed3768\u2026",
+   "at": "2026-11-13T08:42:56.258Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x7acd2757\u2026",
+   "at": "2026-11-13T08:43:19.190Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x65661106\u2026",
+   "at": "2026-11-13T08:43:35.879Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x59369515\u2026",
+   "at": "2026-11-13T08:45:06.420Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0xac3c0366\u2026",
+   "at": "2026-11-13T08:45:26.300Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "failed \u00b7 REFUSED: NOTHING_NEW_FINALIZED \u00b7 tx 0x9a026aca\u2026",
+   "at": "2026-11-13T08:45:55.061Z"
+  },
+  {
+   "step": "rug_check_click",
+   "bond": 8,
+   "status": "accepted \u00b7 Accepted. Re-reading the contract to confirm. \u00b7 tx 0xd034038e\u2026",
+   "at": "2026-11-13T08:46:16.080Z"
+  },
+  {
+   "step": "closed",
+   "bond": 8,
+   "status": "RETURNED",
+   "settled_to": "0xca0881c0403e080e7099a4351710eed0f22fb991",
+   "amount": "500000000000000000",
+   "wallet_delta": "32808000008706",
+   "at": "2026-11-13T08:46:54.134Z",
+   "payout_tx": "0x312bdfac93df47378fbfda2f23f9028cad32411cf20542c005af07d776d9ecc2",
+   "payout": {
+    "from": "0xFf72e30494D0026DE964870F04f4Fba84F3543CE",
+    "to": "0xca0881c0403e080e7099a4351710eed0f22fb991",
+    "value": "500000000000000000",
+    "status": "FINALIZED",
+    "created_at": "2026-11-13T08:47:06Z"
+   },
+   "note": "wallet_delta was read 12 s before the registry's value message to this wallet was created (it counts a fee refund only); the payout is the FINALIZED value message payout_tx, 0.5 GEN from the registry to this wallet"
   }
  ]
 }
