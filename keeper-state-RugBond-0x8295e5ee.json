@@ -3,7 +3,7 @@
  "bonds_offset": 0,
  "bonds": {
   "1": {
-   "status": "RUGGED",
+   "status": "CLOSED",
    "chain": "ethereum",
    "token": "0xd4f45dd47dd476378ee1b06f6a57be4ebc0f7199",
    "cursor": 25723942,
@@ -11,11 +11,11 @@
    "n_checks": 2,
    "n_pending": 1,
    "last_result": "RUGGED",
-   "due": "FUND",
+   "due": "",
    "name": "Replay eth-01 0xd4f45d"
   },
   "2": {
-   "status": "RUGGED",
+   "status": "CLOSED",
    "chain": "ethereum",
    "token": "0x89d3a86b3dd25a8d58b8e390abb2a805d0e88dff",
    "cursor": 25707553,
@@ -23,7 +23,7 @@
    "n_checks": 2,
    "n_pending": 1,
    "last_result": "RUGGED",
-   "due": "FUND",
+   "due": "",
    "name": "Replay eth-02 0x89d3a8"
   },
   "3": {
@@ -63,7 +63,7 @@
    "name": "Replay eth-05 0x2c127a"
   },
   "6": {
-   "status": "RUGGED",
+   "status": "CLOSED",
    "chain": "ethereum",
    "token": "0xa5084c8d45c05560aecaf533982bd6e5210bf770",
    "cursor": 25712799,
@@ -71,11 +71,11 @@
    "n_checks": 2,
    "n_pending": 1,
    "last_result": "RUGGED",
-   "due": "FUND",
+   "due": "",
    "name": "Replay eth-06 0xa5084c"
   },
   "7": {
-   "status": "RUGGED",
+   "status": "CLOSED",
    "chain": "ethereum",
    "token": "0xd9536442ebe8bc674107a0b1383f847a3aaa4d48",
    "cursor": 25707372,
@@ -83,7 +83,7 @@
    "n_checks": 2,
    "n_pending": 1,
    "last_result": "RUGGED",
-   "due": "FUND",
+   "due": "",
    "name": "Replay eth-07 0xd95364"
   },
   "8": {
@@ -135,15 +135,15 @@
    "name": "Replay eth-17 0xff8691"
   },
   "12": {
-   "status": "ACTIVE",
+   "status": "HELD",
    "chain": "ethereum",
    "token": "0xbeec04b78c6795bdb7f92e3f9789591081cbb609",
-   "cursor": 25547196,
-   "cursor_ts": 1784228591,
-   "n_checks": 2,
+   "cursor": 25627196,
+   "cursor_ts": 1785192023,
+   "n_checks": 3,
    "n_pending": 1,
-   "last_result": "SCANNED",
-   "due": "",
+   "last_result": "HELD",
+   "due": "RETURN",
    "name": "Replay eth-18 0xbeec04"
   },
   "13": {
@@ -195,7 +195,7 @@
    "name": "Replay eth-22 0x4e9fcc"
   },
   "17": {
-   "status": "RUGGED",
+   "status": "CLOSED",
    "chain": "ethereum",
    "token": "0xc2742418134519e3b4a66b088e3c398f9f1214eb",
    "cursor": 25704885,
@@ -203,7 +203,7 @@
    "n_checks": 2,
    "n_pending": 1,
    "last_result": "RUGGED",
-   "due": "FUND",
+   "due": "",
    "name": "Replay eth-23 0xc27424"
   }
  },
@@ -871,6 +871,16 @@
    ],
    "verified_at": 1794537850,
    "result": "CLOSED"
+  },
+  "settle:12": {
+   "key": "settle:12",
+   "kind": "SETTLE",
+   "bond_id": 12,
+   "payee": "0x0272651ae66438836a2bbc2e4ef3598831f8ad41",
+   "status": "QUEUED",
+   "attempts": 0,
+   "first_seen_at": 1794554383,
+   "tx": null
   }
  },
  "runs": [
@@ -953,7 +963,7 @@
  "contract": "RugBond",
  "address": "0x8295e5EE6dd5e74a2Ad4704B6025Ae4f2EcA1086",
  "keeper": "0xfEC989fC1176c5524C3b20ef2c09bca724d6BD4e",
- "saved_at": "2026-11-13T07:19:41.942Z",
+ "saved_at": "2026-11-13T07:19:43.196Z",
  "totals": {
   "actions": 40,
   "done": 40,
