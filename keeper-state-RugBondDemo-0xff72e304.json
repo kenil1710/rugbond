@@ -1,0 +1,15 @@
+{
+ "version": 1,
+ "bonds_offset": 0,
+ "bonds": {},
+ "actions": {},
+ "runs": [],
+ "unprocessed": [],
+ "last_run": null,
+ "bonds_listed_complete": true,
+ "bonds_total": 9,
+ "contract": "RugBondDemo",
+ "address": "0xFf72e30494D0026DE964870F04f4Fba84F3543CE",
+ "keeper": "0xfEC989fC1176c5524C3b20ef2c09bca724d6BD4e",
+ "saved_at": "2026-11-13T11:11:11.450Z"
+}
