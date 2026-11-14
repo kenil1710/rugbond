@@ -1,12 +1,12 @@
 {
  "keeper": "0xfEC989fC1176c5524C3b20ef2c09bca724d6BD4e",
- "started_at": "2026-11-14T00:21:58.291Z",
+ "started_at": "2026-11-14T06:45:09.403Z",
  "contracts": {
   "RugBond": {
    "address": "0x8295e5EE6dd5e74a2Ad4704B6025Ae4f2EcA1086",
    "last_run": {
-    "started_at": 1794615718,
-    "finished_at": 1794615721,
+    "started_at": 1794638709,
+    "finished_at": 1794638712,
     "resumed": 0,
     "bonds": 17,
     "pages": 1,
@@ -661,8 +661,8 @@
   "RugBondDemo": {
    "address": "0xFf72e30494D0026DE964870F04f4Fba84F3543CE",
    "last_run": {
-    "started_at": 1794615722,
-    "finished_at": 1794615723,
+    "started_at": 1794638713,
+    "finished_at": 1794638714,
     "resumed": 0,
     "bonds": 9,
     "pages": 1,
@@ -809,8 +809,8 @@
   "RugBond@0x24ff68A1": {
    "address": "0x24ff68A1adc70B9EA9eEE518a5f912ce65eb2CAE",
    "last_run": {
-    "started_at": 1794615724,
-    "finished_at": 1794615726,
+    "started_at": 1794638715,
+    "finished_at": 1794638716,
     "resumed": 0,
     "bonds": 17,
     "pages": 1,
@@ -1047,8 +1047,8 @@
   "RugBond@0x07ED5695": {
    "address": "0x07ED56951513d01B06f350476C4501015256aB2c",
    "last_run": {
-    "started_at": 1794615729,
-    "finished_at": 1794615731,
+    "started_at": 1794638719,
+    "finished_at": 1794638720,
     "resumed": 0,
     "bonds": 17,
     "pages": 1,
@@ -1542,8 +1542,8 @@
   "RugBondDemo@0xbaa8FD3e": {
    "address": "0xbaa8FD3ecdCef962A59cc71a335B81E0Cf9b5016",
    "last_run": {
-    "started_at": 1794615727,
-    "finished_at": 1794615728,
+    "started_at": 1794638717,
+    "finished_at": 1794638718,
     "resumed": 0,
     "bonds": 0,
     "pages": 1,
@@ -1575,8 +1575,8 @@
   "RugBondDemo@0x6dfF7cFE": {
    "address": "0x6dfF7cFEb1e4e13b7FAC28e0CDf7807a742b9dA6",
    "last_run": {
-    "started_at": 1794615732,
-    "finished_at": 1794615734,
+    "started_at": 1794638721,
+    "finished_at": 1794638722,
     "resumed": 0,
     "bonds": 3,
     "pages": 1,
@@ -1678,8 +1678,8 @@
   "RugBond@0x4D2a5e25": {
    "address": "0x4D2a5e250a419b1D1798E103F80A23aC5be59a23",
    "last_run": {
-    "started_at": 1794615735,
-    "finished_at": 1794615736,
+    "started_at": 1794638723,
+    "finished_at": 1794638724,
     "resumed": 0,
     "bonds": 17,
     "pages": 1,
@@ -2283,8 +2283,8 @@
   "RugBondDemo@0x3491AAC8": {
    "address": "0x3491AAC81ec96B05B50B25AD9F8b3CAeE7fF51b8",
    "last_run": {
-    "started_at": 1794615737,
-    "finished_at": 1794615738,
+    "started_at": 1794638725,
+    "finished_at": 1794638726,
     "resumed": 0,
     "bonds": 9,
     "pages": 1,
@@ -2447,8 +2447,8 @@
   "RugBond@0x42f22d3C": {
    "address": "0x42f22d3C3d782E678C0561217276be836cba93fb",
    "last_run": {
-    "started_at": 1794615739,
-    "finished_at": 1794615741,
+    "started_at": 1794638727,
+    "finished_at": 1794638729,
     "resumed": 0,
     "bonds": 17,
     "pages": 1,
@@ -3053,8 +3053,8 @@
   "RugBondDemo@0x40aB4103": {
    "address": "0x40aB41033194DFA35aeF2e7b295eFe3AF6ab5715",
    "last_run": {
-    "started_at": 1794615742,
-    "finished_at": 1794615743,
+    "started_at": 1794638730,
+    "finished_at": 1794638731,
     "resumed": 0,
     "bonds": 8,
     "pages": 1,
@@ -3187,9 +3187,9 @@
    "actions": []
   }
  },
- "finished_at": "2026-11-14T00:22:24.685Z",
+ "finished_at": "2026-11-14T06:45:32.521Z",
  "trigger": "schedule",
- "run_url": "https://github.com/kenil1710/rugbond/actions/runs/43533671467",
+ "run_url": "https://github.com/kenil1710/rugbond/actions/runs/43567838419",
  "history": [
   {
    "started_at": "2026-11-10T12:51:34.472Z",
@@ -4448,6 +4448,74 @@
    "finished_at": "2026-11-14T00:22:24.685Z",
    "trigger": "schedule",
    "run_url": "https://github.com/kenil1710/rugbond/actions/runs/43533671467",
+   "runs": {
+    "RugBond": {
+     "submitted": 0,
+     "done": 0,
+     "pages": 1,
+     "pages_failed": 0
+    },
+    "RugBondDemo": {
+     "submitted": 0,
+     "done": 0,
+     "pages": 1,
+     "pages_failed": 0
+    },
+    "RugBond@0x24ff68A1": {
+     "submitted": 0,
+     "done": 0,
+     "pages": 1,
+     "pages_failed": 0
+    },
+    "RugBond@0x07ED5695": {
+     "submitted": 0,
+     "done": 0,
+     "pages": 1,
+     "pages_failed": 0
+    },
+    "RugBondDemo@0xbaa8FD3e": {
+     "submitted": 0,
+     "done": 0,
+     "pages": 1,
+     "pages_failed": 0
+    },
+    "RugBondDemo@0x6dfF7cFE": {
+     "submitted": 0,
+     "done": 0,
+     "pages": 1,
+     "pages_failed": 0
+    },
+    "RugBond@0x4D2a5e25": {
+     "submitted": 0,
+     "done": 0,
+     "pages": 1,
+     "pages_failed": 0
+    },
+    "RugBondDemo@0x3491AAC8": {
+     "submitted": 0,
+     "done": 0,
+     "pages": 1,
+     "pages_failed": 0
+    },
+    "RugBond@0x42f22d3C": {
+     "submitted": 0,
+     "done": 0,
+     "pages": 1,
+     "pages_failed": 0
+    },
+    "RugBondDemo@0x40aB4103": {
+     "submitted": 0,
+     "done": 0,
+     "pages": 1,
+     "pages_failed": 0
+    }
+   }
+  },
+  {
+   "started_at": "2026-11-14T06:45:09.403Z",
+   "finished_at": "2026-11-14T06:45:32.521Z",
+   "trigger": "schedule",
+   "run_url": "https://github.com/kenil1710/rugbond/actions/runs/43567838419",
    "runs": {
     "RugBond": {
      "submitted": 0,
