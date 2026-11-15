@@ -758,12 +758,30 @@
    "failed": 0,
    "retry": 0,
    "errors": []
+  },
+  {
+   "started_at": 1794740979,
+   "finished_at": 1794740980,
+   "resumed": 0,
+   "bonds": 17,
+   "pages": 1,
+   "pages_failed": 0,
+   "heads_failed": 0,
+   "queued": 0,
+   "requeued": 0,
+   "submitted": 0,
+   "done": 0,
+   "already": 0,
+   "pending": 0,
+   "failed": 0,
+   "retry": 0,
+   "errors": []
   }
  ],
  "unprocessed": [],
  "last_run": {
-  "started_at": 1794726818,
-  "finished_at": 1794726819,
+  "started_at": 1794740979,
+  "finished_at": 1794740980,
   "resumed": 0,
   "bonds": 17,
   "pages": 1,
@@ -784,7 +802,7 @@
  "contract": "RugBond@0x24ff68A1",
  "address": "0x24ff68A1adc70B9EA9eEE518a5f912ce65eb2CAE",
  "keeper": "0xfEC989fC1176c5524C3b20ef2c09bca724d6BD4e",
- "saved_at": "2026-11-15T11:09:40.926Z",
+ "saved_at": "2026-11-15T11:09:40.936Z",
  "totals": {
   "actions": 0,
   "done": 0,
