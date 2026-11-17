@@ -668,6 +668,26 @@
    "errors": [
     "list_bonds 0: Missing or invalid parameters.\nDouble check you have provided the correct parameters.\n\nDetails: execution failed\nVersion: viem@2.57.7"
    ]
+  },
+  {
+   "started_at": 1794926178,
+   "finished_at": 1794926178,
+   "resumed": 0,
+   "bonds": 0,
+   "pages": 0,
+   "pages_failed": 1,
+   "heads_failed": 0,
+   "queued": 0,
+   "requeued": 0,
+   "submitted": 0,
+   "done": 0,
+   "already": 0,
+   "pending": 0,
+   "failed": 0,
+   "retry": 0,
+   "errors": [
+    "list_bonds 0: Missing or invalid parameters.\nDouble check you have provided the correct parameters.\n\nDetails: execution failed\nVersion: viem@2.57.7"
+   ]
   }
  ],
  "unprocessed": [
@@ -677,8 +697,8 @@
   }
  ],
  "last_run": {
-  "started_at": 1794904258,
-  "finished_at": 1794904258,
+  "started_at": 1794926178,
+  "finished_at": 1794926178,
   "resumed": 0,
   "bonds": 0,
   "pages": 0,
@@ -701,7 +721,7 @@
  "contract": "RugBondDemo@0x6dfF7cFE",
  "address": "0x6dfF7cFEb1e4e13b7FAC28e0CDf7807a742b9dA6",
  "keeper": "0xfEC989fC1176c5524C3b20ef2c09bca724d6BD4e",
- "saved_at": "2026-11-17T14:36:18.485Z",
+ "saved_at": "2026-11-17T14:36:18.526Z",
  "totals": {
   "actions": 3,
   "done": 3,
